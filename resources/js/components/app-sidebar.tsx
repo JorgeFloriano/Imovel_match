@@ -4,14 +4,24 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { BookOpen, Folder, House, LayoutGrid, User } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Dashboard',
+        title: 'Painel',
         href: '/dashboard',
         icon: LayoutGrid,
+    },
+    {
+        title: 'Clientes',
+        href: '/clients',
+        icon: User,
+    },
+    {
+        title: 'Imóveis',
+        href: '/properties',
+        icon: House,
     },
 ];
 
