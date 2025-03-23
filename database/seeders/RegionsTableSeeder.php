@@ -16,11 +16,6 @@ class RegionsTableSeeder extends Seeder
             ['name' => 'Zona Sul'],
             ['name' => 'Zona Leste'],
             ['name' => 'Zona Oeste'],
-            ['name' => 'Região do Éden'],
-            ['name' => 'Região do Wanel Ville'],
-            ['name' => 'Região do Parque Campolim'],
-            ['name' => 'Região do Itavuvu'],
-            ['name' => 'Região do Cajuru'],
         ];
 
         // Inserir os dados na tabela `regions`

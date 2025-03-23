@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PropertyController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -9,20 +10,12 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
-});
+        return Inertia::render('dashboard');})->name('dashboard');
 
-Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('clients', function () {
-        return Inertia::render('clients');
-    })->name('clients');
-});
+        return Inertia::render('clients');})->name('clients');
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('properties', function () {
-        return Inertia::render('properties');
-    })->name('properties');
+    Route::resource('/properties', PropertyController::class);
 });
 
 require __DIR__.'/settings.php';
