@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('wishes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('client_id')->constrained();
             $table->foreignId('district_id')->constrained();
             $table->tinyInteger('rooms')->nullable();
             $table->tinyInteger('bathrooms')->nullable();
