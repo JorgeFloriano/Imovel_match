@@ -1,7 +1,16 @@
+import { Icon } from '@/components/icon';
+import { Button } from '@/components/ui/button';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
+
+import { Delete, Edit, Expand } from 'lucide-react';
+
+
+
+
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -15,31 +24,122 @@ export default function Clients() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Clientes" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-3">
-                        Nome: Jorge Luis<br/>
-                        Endereço: Rua 123<br/>
-                        Fone: (11) 1234-5678<br/>
-                        E-mail: 7PmZ7@example.com<br/>
-                        Data de Nascimento: 01/01/2000<br/>
-                    </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-3">
-                        Nome: Maria<br/>
-                        Endereço: Rua 456<br/>
-                        Fone: (11) 8765-4321<br/>
-                        E-mail: 6lKo3@example.com<br/>
-                        Data de Nascimento: 02/02/1999<br/>
-                    </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-3">
-                        Nome: Pedro<br/>
-                        Endereço: Rua 789<br/>
-                        Fone: (11) 5432-1098<br/>
-                        E-mail: 6lKo3@example.com<br/>
-                        Data de Nascimento: 03/03/1998<br/>
-                    </div>
+                <div className="flex items-center justify-between">
+                    <h1 className="text-xl font-semibold">Clientes</h1>
+                    <Button className='self-end'>Cadastrar</Button>
                 </div>
-                <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
-                    <PlaceholderPattern className="absolute inset-0 size-full stroke-green-700 dark:stroke-neutral-100/20" />
+                <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" className="px-6 py-3">
+                                    Product name
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Color
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Category
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Price
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    <span>Opções</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    Apple MacBook Pro 17"
+                                </th>
+                                <td className="px-6 py-4">
+                                    Silver
+                                </td>
+                                <td className="px-6 py-4">
+                                    Laptop
+                                </td>
+                                <td className="px-6 py-4"> 
+                                    $2999
+                                </td>
+                                <td className="px-6 py-4 flex gap-2">
+                                    <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                        {Edit && <Icon iconNode={Edit} className="h-5 w-5" />}
+                                    </a>
+
+                                    <a href="#" className="font-medium text-red-600 dark:text-red-500 hover:underline">
+                                        {Delete && <Icon iconNode={Delete} className="h-5 w-5" />}
+                                    </a>
+                            
+                                    <Dialog>
+                                        <DialogTrigger asChild>
+                                            <button >{Expand && <Icon iconNode={Expand} className="h-5 w-5" />}</button>
+                                        </DialogTrigger>
+                                        <DialogContent>
+                                            <DialogTitle>Are you sure you want to delete your account?</DialogTitle>
+                                            <DialogDescription>
+                                                Once your account is deleted, all of its resources and data will also be permanently deleted. Please enter your password
+                                                to confirm you would like to permanently delete your account.
+                                            </DialogDescription>
+                                            enter your password
+                                                to confirm you would like to permanently delete your account.
+                                        </DialogContent>
+                                    </Dialog>
+                                </td>
+                            </tr>
+                            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    Microsoft Surface Pro
+                                </th>
+                                <td className="px-6 py-4">
+                                    White
+                                </td>
+                                <td className="px-6 py-4">
+                                    Laptop PC
+                                </td>
+                                <td className="px-6 py-4">
+                                    $1999
+                                </td>
+                                <td className="px-6 py-4 flex gap-2">
+                                    <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                        {Edit && <Icon iconNode={Edit} className="h-5 w-5" />}
+                                    </a>
+                                    <a href="#" className="font-medium text-red-600 dark:text-red-500 hover:underline">
+                                        {Delete && <Icon iconNode={Delete} className="h-5 w-5" />}
+                                    </a>
+                                    <a href="#" className="font-medium hover:underline">
+                                        {Expand && <Icon iconNode={Expand} className="h-5 w-5" />}
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr className="bg-white dark:bg-gray-800">
+                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    Magic Mouse 2
+                                </th>
+                                <td className="px-6 py-4">
+                                    Black
+                                </td>
+                                <td className="px-6 py-4">
+                                    Accessories
+                                </td>
+                                <td className="px-6 py-4">
+                                    $99
+                                </td>
+                                <td className="px-6 py-4 flex gap-2">
+                                    <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                        {Edit && <Icon iconNode={Edit} className="h-5 w-5" />}
+                                    </a>
+                                    <a href="#" className="font-medium text-red-600 dark:text-red-500 hover:underline">
+                                        {Delete && <Icon iconNode={Delete} className="h-5 w-5" />}
+                                    </a>
+                                    <a href="#" className="font-medium hover:underline">
+                                        {Expand && <Icon iconNode={Expand} className="h-5 w-5" />}
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </AppLayout>
