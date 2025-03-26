@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\District;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\District;
 
-class PropertyController extends Controller
+class ClientController extends Controller
 {
-    
     public function index()
     {
         $district = District::first();
 
-        return Inertia::render('properties/properties-index' , [
+        return Inertia::render('clients/clients-index' , [
             'district' => $district ? [
                 'name' => $district->name,
                 'region' => $district->region->name
@@ -24,7 +23,18 @@ class PropertyController extends Controller
     
     public function create()
     {
-        return Inertia::render('properties/properties-create');
+        return Inertia::render('clients/clients-create', [
+            'maritalStatusOptions' => [
+                'single' => 'Single',
+                'married' => 'Married',
+                'divorced' => 'Divorced',
+                'widowed' => 'Widowed',
+            ],
+            'booleanOptions' => [
+                true => 'Yes',
+                false => 'No',
+            ],
+        ]);
     }
 
     /**

@@ -1,6 +1,5 @@
 import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
@@ -26,7 +25,15 @@ export default function Clients() {
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="flex items-center justify-between">
                     <h1 className="text-xl font-semibold">Clientes</h1>
-                    <Button className='self-end'>Cadastrar</Button>
+
+                    {/* Button to call route 'clients.create' */}
+                    <Button asChild>
+                        <a href={route('clients.create')}>
+                            <span className="flex items-center gap-2">
+                                <span>Cadastrar</span>
+                            </span>
+                        </a>
+                    </Button>
                 </div>
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -65,16 +72,16 @@ export default function Clients() {
                                 </td>
                                 <td className="px-6 py-4 flex gap-2">
                                     <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                        {Edit && <Icon iconNode={Edit} className="h-5 w-5" />}
+                                        {Edit && <Icon iconNode={Edit}/>}
                                     </a>
 
                                     <a href="#" className="font-medium text-red-600 dark:text-red-500 hover:underline">
-                                        {Delete && <Icon iconNode={Delete} className="h-5 w-5" />}
+                                        {Delete && <Icon iconNode={Delete}/>}
                                     </a>
                             
                                     <Dialog>
                                         <DialogTrigger asChild>
-                                            <button >{Expand && <Icon iconNode={Expand} className="h-5 w-5" />}</button>
+                                            <button >{Expand && <Icon iconNode={Expand}/>}</button>
                                         </DialogTrigger>
                                         <DialogContent>
                                             <DialogTitle>Are you sure you want to delete your account?</DialogTitle>
@@ -103,13 +110,13 @@ export default function Clients() {
                                 </td>
                                 <td className="px-6 py-4 flex gap-2">
                                     <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                        {Edit && <Icon iconNode={Edit} className="h-5 w-5" />}
+                                        {Edit && <Icon iconNode={Edit}/>}
                                     </a>
                                     <a href="#" className="font-medium text-red-600 dark:text-red-500 hover:underline">
-                                        {Delete && <Icon iconNode={Delete} className="h-5 w-5" />}
+                                        {Delete && <Icon iconNode={Delete}/>}
                                     </a>
                                     <a href="#" className="font-medium hover:underline">
-                                        {Expand && <Icon iconNode={Expand} className="h-5 w-5" />}
+                                        {Expand && <Icon iconNode={Expand}/>}
                                     </a>
                                 </td>
                             </tr>
@@ -128,13 +135,13 @@ export default function Clients() {
                                 </td>
                                 <td className="px-6 py-4 flex gap-2">
                                     <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                        {Edit && <Icon iconNode={Edit} className="h-5 w-5" />}
+                                        {Edit && <Icon iconNode={Edit}/>}
                                     </a>
                                     <a href="#" className="font-medium text-red-600 dark:text-red-500 hover:underline">
-                                        {Delete && <Icon iconNode={Delete} className="h-5 w-5" />}
+                                        {Delete && <Icon iconNode={Delete}/>}
                                     </a>
                                     <a href="#" className="font-medium hover:underline">
-                                        {Expand && <Icon iconNode={Expand} className="h-5 w-5" />}
+                                        {Expand && <Icon iconNode={Expand}/>}
                                     </a>
                                 </td>
                             </tr>

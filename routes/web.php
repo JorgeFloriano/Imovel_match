@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\PropertyController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -12,8 +13,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');})->name('dashboard');
 
-    Route::get('clients', function () {
-        return Inertia::render('clients');})->name('clients');
+    Route::resource('/clients', ClientController::class);
 
     Route::resource('/properties', PropertyController::class);
 });
