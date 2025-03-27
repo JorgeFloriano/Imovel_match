@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
 use App\Models\District;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -25,14 +27,14 @@ class ClientController extends Controller
     {
         return Inertia::render('clients/clients-create', [
             'maritalStatusOptions' => [
-                'single' => 'Single',
-                'married' => 'Married',
-                'divorced' => 'Divorced',
-                'widowed' => 'Widowed',
+                'solteiro' => 'Solteiro(a)',
+                'casado' => 'Casado(a)',
+                'divorciado' => 'Divorciado(a)',
+                'viúvo' => 'Viúvo(a)',
             ],
             'booleanOptions' => [
-                true => 'Yes',
-                false => 'No',
+                true => 'Sim',
+                false => 'Não',
             ],
         ]);
     }
@@ -40,10 +42,35 @@ class ClientController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        //
+        try {
+            $client = Client::create([
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'email' => $request->email,
+                'address' => $request->address,
+                'marital_status' => $request->marital_status,
+                'need_financing' => $request->boolean('need_financing'),
+                'dependents' => $request->dependents,
+                'profession' => $request->profession,
+                'revenue' => $request->revenue,
+                'capital' => $request->capital,
+                'fgts' => $request->fgts,
+                'has_property' => $request->boolean('has_property'),
+                'compromised_income' => $request->compromised_income,
+            ]);
+
+            return redirect()->route('clients.index')
+                ->with('success', 'Cliente cadastrado com sucesso!');
+
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Erro ao cadastrar cliente: ' . $e->getMessage());
+        }
     }
+
 
     /**
      * Display the specified resource.
