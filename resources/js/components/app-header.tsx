@@ -133,6 +133,9 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                         {page.url === item.href && (
                                             <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"></div>
                                         )}
+                                        {page.url === item.href+'/create' && (
+                                            <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"></div>
+                                        )}
                                     </NavigationMenuItem>
                                 ))}
                             </NavigationMenuList>

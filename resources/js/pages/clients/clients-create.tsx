@@ -7,21 +7,38 @@ import { BreadcrumbItem } from '@/types';
 import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
+import { FormEventHandler } from 'react';
 
-const breadcrumbs: BreadcrumbItem[] = [
+type ClientCreateForm = {
+    name: string;
+    phone: string;
+    email: string;
+    address: string;
+    marital_status: string;
+    need_financing: boolean;
+    dependents: number;
+    profession: string;
+    revenue: number;
+    capital: number;
+    fgts: number;
+    has_property: boolean;
+    compromised_income: number;
+  };
+  
+  interface CreateClientProps {
+    maritalStatusOptions: Record<string, string>;
+    booleanOptions: Record<string, string>;
+  }
+
+  const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Password settings',
-        href: '/settings/password',
+        title: 'Clientes',
+        href: '/clients',
     },
 ];
 
-interface CreateClientProps {
-    maritalStatusOptions: Record<string, string>;
-    booleanOptions: Record<'true' | 'false', string>; // More precise typing
-}
-
 export default function CreateClient({ maritalStatusOptions, booleanOptions }: CreateClientProps) {
-    const { data, setData, post, processing, errors, recentlySuccessful } = useForm({
+    const { data, setData, post, processing, errors, recentlySuccessful } = useForm<ClientCreateForm>({
         name: '',
         phone: '',
         email: '',
@@ -35,17 +52,18 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
         fgts: 0,
         has_property: false,
         compromised_income: 0,
-    });
+      });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        post(route('clients.store'));
-    };
-
-    const handleNumberChange = (field, e) => {
-        const value = parseFloat(e.target.value) || 0;
+    const handleNumberChange = (field: keyof typeof data, e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = parseFloat(e.target.value) || '';
         setData(field, value);
     };
+
+    const submit: FormEventHandler = (e) => {
+        e.preventDefault();
+        
+        post(route('clients.store'));
+      };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -53,7 +71,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
             <div className="h-full gap-4 space-y-6 rounded-xl p-4">
                 <h1 className="mb-6 text-2xl font-bold">Cadastro de Cliente</h1>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={submit} className="space-y-6">
                     {/* Personal Information Section */}
                     <div className="space-y-4 border-b pb-6">
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -108,7 +126,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
                                     type="number"
                                     min="0"
                                     value={data.dependents}
-                                    onChange={(e) => handleNumberChange('dependents', e)}
+                                    onChange={(e) => setData('dependents', parseInt(e.target.value))}
                                 />
                                 {errors.dependents && <p className="mt-1 text-sm text-red-600">{errors.dependents}</p>}
                             </div>
@@ -181,11 +199,12 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
                     {/* Property Information Section */}
                     <div className="space-y-4">
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            {/* Need Financing Select */}
                             <div>
                                 <Label>Precisa de Financiamento?</Label>
                                 <Select
                                     value={data.need_financing ? 'true' : 'false'}
-                                    onValueChange={(value: 'true' | 'false') => setData('need_financing', value === 'true')}
+                                    onValueChange={(value) => setData('need_financing', value === 'true')}
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Selecione sim ou não" />
@@ -201,16 +220,16 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
                                 {errors.need_financing && <p className="mt-1 text-sm text-red-600">{errors.need_financing}</p>}
                             </div>
 
+                            {/* Has Property Select */}
                             <div>
                                 <Label>Já possúi propriedade?</Label>
                                 <Select
                                     value={data.has_property ? 'true' : 'false'}
-                                    onValueChange={(value: 'true' | 'false') => setData('has_property', value === 'true')}
+                                    onValueChange={(value) => setData('has_property', value === 'true')}
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Selecione sim ou não" />
                                     </SelectTrigger>
-
                                     <SelectContent>
                                         {Object.entries(booleanOptions).map(([value, label]) => (
                                             <SelectItem key={value} value={value}>
@@ -225,7 +244,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <Button disabled={processing}>
+                        <Button disabled={processing} type="submit">
                             {processing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                             Salvar
                         </Button>

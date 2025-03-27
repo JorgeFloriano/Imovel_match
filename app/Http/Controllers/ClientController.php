@@ -33,8 +33,8 @@ class ClientController extends Controller
                 'viúvo' => 'Viúvo(a)',
             ],
             'booleanOptions' => [
-                true => 'Sim',
-                false => 'Não',
+                'true' => 'Sim',
+                'false' => 'Não',
             ],
         ]);
     }
@@ -44,6 +44,8 @@ class ClientController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+
+        dd($request->all());
         try {
             $client = Client::create([
                 'name' => $request->name,
