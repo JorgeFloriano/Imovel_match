@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('wishe_id')->constrained();
-            $table->string('name');
+            $table->foreignId('wishe_id')->constrained()->nullable();
+            $table->string('name')->default('Sem nome');
             $table->string('phone')->nullable();
             $table->string('email')->unique()->nullable();
             $table->string('address')->nullable();

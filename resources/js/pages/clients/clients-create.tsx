@@ -44,14 +44,14 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
         email: '',
         address: '',
         marital_status: '',
-        need_financing: false,
-        dependents: 0,
+        need_financing: true,
+        dependents: parseInt(''),
         profession: '',
-        revenue: 0,
-        capital: 0,
-        fgts: 0,
+        revenue: parseInt(''),
+        capital: parseInt(''),
+        fgts: parseInt(''),
         has_property: false,
-        compromised_income: 0,
+        compromised_income: parseInt(''),
       });
 
     const handleNumberChange = (field: keyof typeof data, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,13 +77,13 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
                                 <Label htmlFor="name">Nome Completo</Label>
-                                <Input id="name" type="text" value={data.name} onChange={(e) => setData('name', e.target.value)} />
+                                <Input id="name" type="text" value={data.name} onChange={(e) => setData('name', e.target.value)} required/>
                                 {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
                             </div>
 
                             <div>
                                 <Label htmlFor="phone">Telefone</Label>
-                                <Input id="phone" type="tel" value={data.phone} onChange={(e) => setData('phone', e.target.value)} />
+                                <Input id="phone" type="tel" value={data.phone} onChange={(e) => setData('phone', e.target.value)} required/>
                                 {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
                             </div>
 
@@ -127,6 +127,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
                                     min="0"
                                     value={data.dependents}
                                     onChange={(e) => setData('dependents', parseInt(e.target.value))}
+                                    required
                                 />
                                 {errors.dependents && <p className="mt-1 text-sm text-red-600">{errors.dependents}</p>}
                             </div>
@@ -138,7 +139,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
                                 <Label htmlFor="profession">Profissão</Label>
-                                <Input id="profession" type="text" value={data.profession} onChange={(e) => setData('profession', e.target.value)} />
+                                <Input id="profession" type="text" value={data.profession} onChange={(e) => setData('profession', e.target.value)} required />
                                 {errors.profession && <p className="mt-1 text-sm text-red-600">{errors.profession}</p>}
                             </div>
 
@@ -151,6 +152,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
                                     step="0.01"
                                     value={data.revenue}
                                     onChange={(e) => handleNumberChange('revenue', e)}
+                                    required
                                 />
                                 {errors.revenue && <p className="mt-1 text-sm text-red-600">{errors.revenue}</p>}
                             </div>
@@ -164,6 +166,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
                                     step="0.01"
                                     value={data.capital}
                                     onChange={(e) => handleNumberChange('capital', e)}
+                                    required
                                 />
                                 {errors.capital && <p className="mt-1 text-sm text-red-600">{errors.capital}</p>}
                             </div>
@@ -190,6 +193,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
                                     max="100"
                                     value={data.compromised_income}
                                     onChange={(e) => handleNumberChange('compromised_income', e)}
+                                    required
                                 />
                                 {errors.compromised_income && <p className="mt-1 text-sm text-red-600">{errors.compromised_income}</p>}
                             </div>
@@ -205,7 +209,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
                                 <Select
                                     value={data.need_financing ? 'true' : 'false'}
                                     onValueChange={(value) => setData('need_financing', value === 'true')}
-                                >
+                           >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Selecione sim ou não" />
                                     </SelectTrigger>

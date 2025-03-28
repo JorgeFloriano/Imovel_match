@@ -14,7 +14,7 @@ class ClientController extends Controller
     {
         $district = District::first();
 
-        return Inertia::render('clients/clients-index' , [
+        return Inertia::render('clients/clients-index', [
             'district' => $district ? [
                 'name' => $district->name,
                 'region' => $district->region->name
@@ -22,7 +22,7 @@ class ClientController extends Controller
         ]);
     }
 
-    
+
     public function create()
     {
         return Inertia::render('clients/clients-create', [
@@ -44,39 +44,30 @@ class ClientController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        
 
-        dd($request->all());
-        try {
-            $client = Client::create([
-                'name' => $request->name,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'address' => $request->address,
-                'marital_status' => $request->marital_status,
-                'need_financing' => $request->boolean('need_financing'),
-                'dependents' => $request->dependents,
-                'profession' => $request->profession,
-                'revenue' => $request->revenue,
-                'capital' => $request->capital,
-                'fgts' => $request->fgts,
-                'has_property' => $request->boolean('has_property'),
-                'compromised_income' => $request->compromised_income,
-            ]);
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'address' => 'nullable|string',
+            'marital_status' => 'required|string',
+            'need_financing' => 'required|boolean',
+            'dependents' => 'required|integer|min:0',
+            'profession' => 'required|string',
+            'revenue' => 'required|numeric|min:0',
+            'capital' => 'required|numeric|min:0',
+            'fgts' => 'nullable|numeric|min:0',
+            'has_property' => 'required|boolean',
+            'compromised_income' => 'required|numeric|min:0|max:100',
+        ]);
 
-            return redirect()->route('clients.index')
-                ->with('success', 'Cliente cadastrado com sucesso!');
+        // Create the client
+        $client = Client::create([$validated , 'user_id' => auth()->user()->id]);
 
-        } catch (\Exception $e) {
-            return back()
-                ->withInput()
-                ->with('error', 'Erro ao cadastrar cliente: ' . $e->getMessage());
-        }
+        return redirect()->route('clients.index')
+            ->with('success', 'Client created successfully.');
     }
-
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
