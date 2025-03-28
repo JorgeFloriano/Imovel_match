@@ -1,24 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Client;
-use App\Models\District;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ClientController extends Controller
 {
     public function index()
     {
-        $district = District::first();
-
         return Inertia::render('clients/clients-index', [
-            'district' => $district ? [
-                'name' => $district->name,
-                'region' => $district->region->name
-            ] : null,
+            'clients' => Client::all(),
         ]);
     }
 
@@ -63,10 +57,28 @@ class ClientController extends Controller
         ]);
 
         // Create the client
-        $client = Client::create([$validated , 'user_id' => auth()->user()->id]);
+        $client = Client::create([
+            'user_id' => Auth::user()->id,
+            'name' => $validated['name'],
+            'phone' => $validated['phone'],
+            'email' => $validated['email'],
+            'address' => $validated['address'],
+            'marital_status' => $validated['marital_status'],
+            'need_financing' => $validated['need_financing'],
+            'dependents' => $validated['dependents'],
+            'profession' => $validated['profession'],
+            'revenue' => $validated['revenue'],
+            'capital' => $validated['capital'],
+            'fgts' => $validated['fgts'],
+            'has_property' => $validated['has_property'],
+            'compromised_income' => $validated['compromised_income'],
+        ]);
 
-        return redirect()->route('clients.index')
-            ->with('success', 'Client created successfully.');
+        if ($client) {
+            return to_route('clients.create');
+        }
+
+        return to_route('clients.create');
     }
     public function show(string $id)
     {

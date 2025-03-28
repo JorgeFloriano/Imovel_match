@@ -20,14 +20,14 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->string('address')->nullable();
             $table->enum('marital_status', ['solteiro', 'casado', 'viúvo', 'divorciado'])->nullable();
-            $table->boolean('need_financing');
-            $table->integer('dependents');
-            $table->string('profession');
-            $table->integer('revenue');
-            $table->integer('capital');
-            $table->integer('fgts')->nullable();
-            $table->boolean('has_property');
-            $table->integer('compromised_income')->nullable();
+            $table->boolean('need_financing')->default(true);
+            $table->integer('dependents')->default(0);
+            $table->string('profession')->default('autônomo');
+            $table->integer('revenue')->default(0);
+            $table->integer('capital')->default(0);
+            $table->integer('fgts')->nullable()->default(0);
+            $table->boolean('has_property')->default(false);
+            $table->integer('compromised_income')->nullable()->default(0);
             $table->timestamps();
         });
     }

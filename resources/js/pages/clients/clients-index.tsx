@@ -6,9 +6,6 @@ import { Head } from '@inertiajs/react';
 
 import { Delete, Edit, Expand } from 'lucide-react';
 
-
-
-
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -18,7 +15,24 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Clients() {
+interface Client {
+    id: number;
+    name: string;
+    phone: string;
+    email: string;
+    address: string;
+    marital_status: string;
+    need_financing: boolean;
+    dependents: number;
+    profession: string;
+    revenue: number;
+    capital: number;
+    fgts: number;
+    has_property: boolean;
+    compromised_income: number;
+  }
+
+export default function Clients({ clients }: { clients: Client[] }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Clientes" />
@@ -36,115 +50,61 @@ export default function Clients() {
                     </Button>
                 </div>
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+                        <thead className="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" className="px-6 py-3">
-                                    Product name
+                                    Nome
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Color
+                                    Profissão
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Category
+                                    Renda
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Price
+                                    Telefone
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    <span>Opções</span>
+                                    <span>Ações</span>
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    Apple MacBook Pro 17"
-                                </th>
-                                <td className="px-6 py-4">
-                                    Silver
-                                </td>
-                                <td className="px-6 py-4">
-                                    Laptop
-                                </td>
-                                <td className="px-6 py-4"> 
-                                    $2999
-                                </td>
-                                <td className="px-6 py-4 flex gap-2">
-                                    <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                        {Edit && <Icon iconNode={Edit}/>}
-                                    </a>
+                            {clients.map((client) => (
+                                <tr key={client.id} className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+                                    <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-gray-900 dark:text-white">
+                                        {client.name}
+                                    </th>
+                                    <td className="px-6 py-4">{client.profession}</td>
+                                    <td className="px-6 py-4">{client.revenue}</td>
+                                    <td className="px-6 py-4">{client.phone}</td>
 
-                                    <a href="#" className="font-medium text-red-600 dark:text-red-500 hover:underline">
-                                        {Delete && <Icon iconNode={Delete}/>}
-                                    </a>
-                            
-                                    <Dialog>
-                                        <DialogTrigger asChild>
-                                            <button >{Expand && <Icon iconNode={Expand}/>}</button>
-                                        </DialogTrigger>
-                                        <DialogContent>
-                                            <DialogTitle>Are you sure you want to delete your account?</DialogTitle>
-                                            <DialogDescription>
-                                                Once your account is deleted, all of its resources and data will also be permanently deleted. Please enter your password
-                                                to confirm you would like to permanently delete your account.
-                                            </DialogDescription>
-                                            enter your password
-                                                to confirm you would like to permanently delete your account.
-                                        </DialogContent>
-                                    </Dialog>
-                                </td>
-                            </tr>
-                            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    Microsoft Surface Pro
-                                </th>
-                                <td className="px-6 py-4">
-                                    White
-                                </td>
-                                <td className="px-6 py-4">
-                                    Laptop PC
-                                </td>
-                                <td className="px-6 py-4">
-                                    $1999
-                                </td>
-                                <td className="px-6 py-4 flex gap-2">
-                                    <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                        {Edit && <Icon iconNode={Edit}/>}
-                                    </a>
-                                    <a href="#" className="font-medium text-red-600 dark:text-red-500 hover:underline">
-                                        {Delete && <Icon iconNode={Delete}/>}
-                                    </a>
-                                    <a href="#" className="font-medium hover:underline">
-                                        {Expand && <Icon iconNode={Expand}/>}
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr className="bg-white dark:bg-gray-800">
-                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    Magic Mouse 2
-                                </th>
-                                <td className="px-6 py-4">
-                                    Black
-                                </td>
-                                <td className="px-6 py-4">
-                                    Accessories
-                                </td>
-                                <td className="px-6 py-4">
-                                    $99
-                                </td>
-                                <td className="px-6 py-4 flex gap-2">
-                                    <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                        {Edit && <Icon iconNode={Edit}/>}
-                                    </a>
-                                    <a href="#" className="font-medium text-red-600 dark:text-red-500 hover:underline">
-                                        {Delete && <Icon iconNode={Delete}/>}
-                                    </a>
-                                    <a href="#" className="font-medium hover:underline">
-                                        {Expand && <Icon iconNode={Expand}/>}
-                                    </a>
-                                </td>
-                            </tr>
+                                    <td className="flex gap-2 px-6 py-4">
+                                        <a href="#" className="font-medium text-blue-600 hover:underline dark:text-blue-500">
+                                            {Edit && <Icon iconNode={Edit} />}
+                                        </a>
+
+                                        <a href="#" className="font-medium text-red-600 hover:underline dark:text-red-500">
+                                            {Delete && <Icon iconNode={Delete} />}
+                                        </a>
+
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <button>{Expand && <Icon iconNode={Expand} />}</button>
+                                            </DialogTrigger>
+                                            <DialogContent>
+                                                <DialogTitle>Are you sure you want to delete your account?</DialogTitle>
+                                                <DialogDescription>
+                                                    Once your account is deleted, all of its resources and data will also be permanently deleted.
+                                                    Please enter your password to confirm you would like to permanently delete your account.
+                                                </DialogDescription>
+                                                enter your password to confirm you would like to permanently delete your account.
+                                            </DialogContent>
+                                        </Dialog>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>

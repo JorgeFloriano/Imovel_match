@@ -38,20 +38,20 @@ type ClientCreateForm = {
 ];
 
 export default function CreateClient({ maritalStatusOptions, booleanOptions }: CreateClientProps) {
-    const { data, setData, post, processing, errors, recentlySuccessful } = useForm<ClientCreateForm>({
+    const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm<ClientCreateForm>({
         name: '',
         phone: '',
         email: '',
         address: '',
         marital_status: '',
         need_financing: true,
-        dependents: parseInt(''),
+        dependents: 0,
         profession: '',
-        revenue: parseInt(''),
-        capital: parseInt(''),
-        fgts: parseInt(''),
+        revenue: 0,
+        capital: 0,
+        fgts: 0,
         has_property: false,
-        compromised_income: parseInt(''),
+        compromised_income: 0,
       });
 
     const handleNumberChange = (field: keyof typeof data, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,7 +62,9 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         
-        post(route('clients.store'));
+        post(route('clients.store'), {
+          onSuccess: () => reset('address', 'capital', 'dependents', 'email', 'fgts', 'has_property', 'marital_status', 'name', 'phone', 'profession', 'revenue', 'compromised_income'),
+        });
       };
 
     return (
@@ -124,8 +126,9 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
                                 <Input
                                     id="dependents"
                                     type="number"
-                                    min="0"
+                                    min={0}
                                     value={data.dependents}
+                                    onFocus={(e) => parseInt(e.target.value) === 0 && setData('dependents', '')}
                                     onChange={(e) => setData('dependents', parseInt(e.target.value))}
                                     required
                                 />
@@ -151,6 +154,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
                                     min="0"
                                     step="0.01"
                                     value={data.revenue}
+                                    onFocus={(e) => parseFloat(e.target.value) === 0 && setData('revenue', '')}
                                     onChange={(e) => handleNumberChange('revenue', e)}
                                     required
                                 />
@@ -165,6 +169,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
                                     min="0"
                                     step="0.01"
                                     value={data.capital}
+                                    onFocus={(e) => parseInt(e.target.value) === 0 && setData('capital', '')}
                                     onChange={(e) => handleNumberChange('capital', e)}
                                     required
                                 />
@@ -179,6 +184,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
                                     min="0"
                                     step="0.01"
                                     value={data.fgts}
+                                    onFocus={(e) => parseInt(e.target.value) === 0 && setData('fgts', '')}
                                     onChange={(e) => handleNumberChange('fgts', e)}
                                 />
                                 {errors.fgts && <p className="mt-1 text-sm text-red-600">{errors.fgts}</p>}
@@ -192,6 +198,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions }: C
                                     min="0"
                                     max="100"
                                     value={data.compromised_income}
+                                    onFocus={(e) => parseInt(e.target.value) === 0 && setData('compromised_income', '')}
                                     onChange={(e) => handleNumberChange('compromised_income', e)}
                                     required
                                 />
