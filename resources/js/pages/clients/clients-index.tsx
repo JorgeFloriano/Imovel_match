@@ -60,7 +60,7 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                     Profissão
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Renda
+                                    Renda (R$)
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Telefone
@@ -94,12 +94,21 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                                 <button>{Expand && <Icon iconNode={Expand} />}</button>
                                             </DialogTrigger>
                                             <DialogContent>
-                                                <DialogTitle>Are you sure you want to delete your account?</DialogTitle>
-                                                <DialogDescription>
-                                                    Once your account is deleted, all of its resources and data will also be permanently deleted.
-                                                    Please enter your password to confirm you would like to permanently delete your account.
-                                                </DialogDescription>
-                                                enter your password to confirm you would like to permanently delete your account.
+                                                <DialogTitle>{client.name}</DialogTitle>
+                                                <p>
+                                                    <strong>Telefone: </strong> {client.phone}<br/>
+                                                    <strong>Email: </strong> {client.email}<br/>
+                                                    <strong>Endereço: </strong> {client.address}<br/>
+                                                    <strong>Estado Civil: </strong> {client.marital_status}<br/>
+                                                    <strong>Precisa de Financiamento: </strong> {client.need_financing ? 'Sim' : 'Não'}<br/>
+                                                    <strong>Número de Dependentes: </strong> {client.dependents}<br/>
+                                                    <strong>Profissão: </strong> {client.profession}<br/>
+                                                    <strong>Renda (R$): </strong> {client.revenue}<br/>
+                                                    <strong>Capital Disponível(R$): </strong> {client.capital}<br/>
+                                                    <strong>FGTS (R$): </strong> {client.fgts}<br/>
+                                                    <strong>Possúi Propriedade: </strong> {client.has_property ? 'Sim' : 'Não'}<br/>
+                                                    <strong>Renda Comprometida (R$): </strong> {client.compromised_income}<br/>
+                                                </p>
                                             </DialogContent>
                                         </Dialog>
                                     </td>
