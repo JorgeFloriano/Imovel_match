@@ -148,6 +148,20 @@
     --sidebar-ring: oklch(0.439 0 0);
 }
 
+/* For WebKit browsers */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: var(--tw-text-opacity);
+  color: currentColor;
+  opacity: 1;
+}
+
+/* For Firefox */
+input[type="date"]::-moz-calendar-picker-indicator {
+  filter: var(--tw-text-opacity);
+  color: currentColor;
+  opacity: 1;
+}
+
 @layer base {
     * {
         @apply border-border;

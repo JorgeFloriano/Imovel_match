@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('wishes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('district_id')->constrained();
+            $table->foreignId('district_id')->constrained()->nullable();
             $table->tinyInteger('rooms')->nullable();
             $table->tinyInteger('bathrooms')->nullable();
             $table->tinyInteger('suites')->nullable();
             $table->tinyInteger('garages')->nullable();
             $table->date('delivery_key')->nullable();
             $table->integer('min_act')->nullable();
-            $table->boolean('installment_payment')->default(false);
+            $table->boolean('installment_payment')->default(false); // entrada parcelada
             $table->enum('air_conditioning', [
                 'incluso',
                 'somente infra',
