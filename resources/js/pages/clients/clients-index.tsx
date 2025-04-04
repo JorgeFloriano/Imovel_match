@@ -20,18 +20,11 @@ interface Region {
     name: string;
 }
 
-interface District {
-    id: number;
-    region_id: number;
-    region: Region;
-    // other district fields...
-}
-
 interface Wishe {
     id: number;
     client_id: number;
-    district_id: number | null;
-    district: District | null; // Add this
+    region_id: number | null;
+    region: Region | null;
     rooms: number | null;
     bathrooms: number | null;
     suites: number | null;
@@ -85,7 +78,7 @@ export default function Clients({ clients }: { clients: Client[] }) {
                 </div>
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-                        <thead className="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
+                        <thead className="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-800 dark:text-gray-400">
                             <tr>
                                 <th scope="col" className="px-6 py-3">
                                     Nome
@@ -106,7 +99,7 @@ export default function Clients({ clients }: { clients: Client[] }) {
                         </thead>
                         <tbody>
                             {clients.map((client) => (
-                                <tr key={client.id} className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+                                <tr key={client.id} className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
                                     <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                         {client.name}
                                     </th>
@@ -152,7 +145,7 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                                     <br />
                                                     <strong>Possúi Propriedade: </strong> {client.has_property ? 'Sim' : 'Não'}
                                                     <br />
-                                                    <strong>Renda Comprometida (R$): </strong> {client.compromised_income}
+                                                    <strong>Renda Comprometida (%): </strong> {client.compromised_income}
                                                     <br />
                                                 </p>
 
@@ -160,7 +153,7 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                                     <div className="mt-4">
                                                         <h2 className="pb-3 text-lg font-semibold">Caracteristicas do imóvel desejado:</h2>
                                                         <p>
-                                                            <strong>Localização:</strong> {client.wishe?.district?.region?.name || 'Not specified'}
+                                                            <strong>Localização:</strong> {client.wishe?.region?.name || 'Não especificado'}
                                                             <br />
                                                             <strong>Número de Quartos: </strong> {client.wishe.rooms || 'Não especificado'}
                                                             <br />

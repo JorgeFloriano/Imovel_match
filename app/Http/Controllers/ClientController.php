@@ -14,7 +14,7 @@ class ClientController extends Controller
     public function index()
     {
         return Inertia::render('clients/clients-index', [
-            'clients' => Client::with(['wishe.district.region'])->get(),
+            'clients' => Client::with(['wishe.region'])->get(),
         ]);
     }
 
@@ -32,7 +32,7 @@ class ClientController extends Controller
                 'true' => 'Sim',
                 'false' => 'Não',
             ],
-            'districtOptions' => Region::all()->pluck('name', 'id'),
+            'regionOptions' => Region::all()->pluck('name', 'id'),
         ]);
     }
 
@@ -55,7 +55,7 @@ class ClientController extends Controller
             'compromised_income' => 'required|numeric|min:0|max:100',
 
             // Wishes validation rules
-            'district_id' => 'nullable|exists:regions,id',
+            'region_id' => 'nullable|integer|exists:regions,id',
             'rooms' => 'nullable|integer|min:0',
             'bathrooms' => 'nullable|integer|min:0',
             'suites' => 'nullable|integer|min:0',
@@ -93,7 +93,6 @@ class ClientController extends Controller
         // Create the wish if client was created successfully
         if ($client) {
             $wishData = [
-                'district_id' => $validated['district_id'] ?? null,
                 'rooms' => $validated['rooms'] ?? null,
                 'bathrooms' => $validated['bathrooms'] ?? null,
                 'suites' => $validated['suites'] ?? null,
@@ -108,6 +107,7 @@ class ClientController extends Controller
                 'acept_pets' => $validated['acept_pets'] ?? null,
                 'acessibility' => $validated['acessibility'] ?? null,
                 'obs' => $validated['obs'] ?? null,
+                'region_id' => $validated['region_id'] ?? null,
             ];
 
             // Create the wish associated with the client

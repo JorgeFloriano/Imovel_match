@@ -23,6 +23,7 @@ class Wishe extends Model
      */
     protected $fillable = [
         'district_id',
+        'region_id',
         'rooms',
         'bathrooms',
         'suites',
@@ -62,5 +63,9 @@ class Wishe extends Model
     public function district()
     {
         return $this->belongsTo(District::class);
+    }
+
+    public function region() {
+        return $this->belongsTo(Region::class);
     }
 }
