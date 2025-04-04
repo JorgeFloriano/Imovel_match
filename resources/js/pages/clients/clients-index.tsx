@@ -158,9 +158,9 @@ export default function Clients({ clients }: { clients: Client[] }) {
 
                                                 {client.wishe && (
                                                     <div className="mt-4">
-                                                        <h2 className="text-lg pb-3 font-semibold">Caracteristicas do imóvel desejado:</h2>
+                                                        <h2 className="pb-3 text-lg font-semibold">Caracteristicas do imóvel desejado:</h2>
                                                         <p>
-                                                        <strong>Localização:</strong> {client.wishe?.district?.region?.name || 'Not specified'}
+                                                            <strong>Localização:</strong> {client.wishe?.district?.region?.name || 'Not specified'}
                                                             <br />
                                                             <strong>Número de Quartos: </strong> {client.wishe.rooms || 'Não especificado'}
                                                             <br />
@@ -170,7 +170,10 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                                             <br />
                                                             <strong>Vagas de Garagem: </strong> {client.wishe.garages || 'Não especificado'}
                                                             <br />
-                                                            <strong>Data prevista de Entrega: </strong> {client.wishe.delivery_key || 'Não especificada'}
+                                                            <strong>Data prevista de Entrega: </strong>
+                                                            {client.wishe?.delivery_key
+                                                                ? new Date(client.wishe.delivery_key).toLocaleDateString('pt-BR')
+                                                                : 'Não especificada'}
                                                             <br />
                                                             <strong>Ato Mínimo: </strong> {client.wishe.min_act || 'Não especificado'}
                                                             <br />
