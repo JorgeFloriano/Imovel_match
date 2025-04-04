@@ -64,6 +64,6 @@ class Client extends Model
      */
     public function wishe()
     {
-        return $this->hasOne(Wishe::class, 'wishe_id');
+        return $this->hasOne(Wishe::class, 'client_id');
     }
 }

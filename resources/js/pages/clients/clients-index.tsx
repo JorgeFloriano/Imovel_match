@@ -6,7 +6,7 @@ import { Head } from '@inertiajs/react';
 
 import { Delete, Edit, Expand } from 'lucide-react';
 
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -14,6 +14,39 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/clients',
     },
 ];
+
+interface Region {
+    id: number;
+    name: string;
+}
+
+interface District {
+    id: number;
+    region_id: number;
+    region: Region;
+    // other district fields...
+}
+
+interface Wishe {
+    id: number;
+    client_id: number;
+    district_id: number | null;
+    district: District | null; // Add this
+    rooms: number | null;
+    bathrooms: number | null;
+    suites: number | null;
+    garages: number | null;
+    delivery_key: string | null;
+    min_act: number | null;
+    installment_payment: boolean;
+    air_conditioning: 'incluso' | 'somente infra' | 'não incluso';
+    garden: boolean | null;
+    pool: boolean | null;
+    balcony: boolean | null;
+    acept_pets: boolean | null;
+    acessibility: boolean | null;
+    obs: string | null;
+}
 
 interface Client {
     id: number;
@@ -30,7 +63,8 @@ interface Client {
     fgts: number;
     has_property: boolean;
     compromised_income: number;
-  }
+    wishe: Wishe | null;
+}
 
 export default function Clients({ clients }: { clients: Client[] }) {
     return (
@@ -96,19 +130,69 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                             <DialogContent>
                                                 <DialogTitle>{client.name}</DialogTitle>
                                                 <p>
-                                                    <strong>Telefone: </strong> {client.phone}<br/>
-                                                    <strong>Email: </strong> {client.email}<br/>
-                                                    <strong>Endereço: </strong> {client.address}<br/>
-                                                    <strong>Estado Civil: </strong> {client.marital_status}<br/>
-                                                    <strong>Precisa de Financiamento: </strong> {client.need_financing ? 'Sim' : 'Não'}<br/>
-                                                    <strong>Número de Dependentes: </strong> {client.dependents}<br/>
-                                                    <strong>Profissão: </strong> {client.profession}<br/>
-                                                    <strong>Renda (R$): </strong> {client.revenue}<br/>
-                                                    <strong>Capital Disponível(R$): </strong> {client.capital}<br/>
-                                                    <strong>FGTS (R$): </strong> {client.fgts}<br/>
-                                                    <strong>Possúi Propriedade: </strong> {client.has_property ? 'Sim' : 'Não'}<br/>
-                                                    <strong>Renda Comprometida (R$): </strong> {client.compromised_income}<br/>
+                                                    <strong>Telefone: </strong> {client.phone}
+                                                    <br />
+                                                    <strong>Email: </strong> {client.email}
+                                                    <br />
+                                                    <strong>Endereço: </strong> {client.address}
+                                                    <br />
+                                                    <strong>Estado Civil: </strong> {client.marital_status}
+                                                    <br />
+                                                    <strong>Precisa de Financiamento: </strong> {client.need_financing ? 'Sim' : 'Não'}
+                                                    <br />
+                                                    <strong>Número de Dependentes: </strong> {client.dependents}
+                                                    <br />
+                                                    <strong>Profissão: </strong> {client.profession}
+                                                    <br />
+                                                    <strong>Renda (R$): </strong> {client.revenue}
+                                                    <br />
+                                                    <strong>Capital Disponível(R$): </strong> {client.capital}
+                                                    <br />
+                                                    <strong>FGTS (R$): </strong> {client.fgts}
+                                                    <br />
+                                                    <strong>Possúi Propriedade: </strong> {client.has_property ? 'Sim' : 'Não'}
+                                                    <br />
+                                                    <strong>Renda Comprometida (R$): </strong> {client.compromised_income}
+                                                    <br />
                                                 </p>
+
+                                                {client.wishe && (
+                                                    <div className="mt-4">
+                                                        <h2 className="text-lg pb-3 font-semibold">Caracteristicas do imóvel desejado:</h2>
+                                                        <p>
+                                                        <strong>Localização:</strong> {client.wishe?.district?.region?.name || 'Not specified'}
+                                                            <br />
+                                                            <strong>Número de Quartos: </strong> {client.wishe.rooms || 'Não especificado'}
+                                                            <br />
+                                                            <strong>Banheiros: </strong> {client.wishe.bathrooms || 'Não especificado'}
+                                                            <br />
+                                                            <strong>Suítes: </strong> {client.wishe.suites || 'Não especificado'}
+                                                            <br />
+                                                            <strong>Vagas de Garagem: </strong> {client.wishe.garages || 'Não especificado'}
+                                                            <br />
+                                                            <strong>Data prevista de Entrega: </strong> {client.wishe.delivery_key || 'Não especificada'}
+                                                            <br />
+                                                            <strong>Ato Mínimo: </strong> {client.wishe.min_act || 'Não especificado'}
+                                                            <br />
+                                                            <strong>Entrada Parcelada: </strong> {client.wishe.installment_payment ? 'Sim' : 'Não'}
+                                                            <br />
+                                                            <strong>Ar Condicionado: </strong> {client.wishe.air_conditioning}
+                                                            <br />
+                                                            <strong>Jardim: </strong> {client.wishe.garden ? 'Sim' : 'Não'}
+                                                            <br />
+                                                            <strong>Piscina: </strong> {client.wishe.pool ? 'Sim' : 'Não'}
+                                                            <br />
+                                                            <strong>Varanda: </strong> {client.wishe.balcony ? 'Sim' : 'Não'}
+                                                            <br />
+                                                            <strong>Aceita Pets: </strong> {client.wishe.acept_pets ? 'Sim' : 'Não'}
+                                                            <br />
+                                                            <strong>Acessibilidade: </strong> {client.wishe.acessibility ? 'Sim' : 'Não'}
+                                                            <br />
+                                                            <strong>Observações: </strong> {client.wishe.obs || 'Nenhuma'}
+                                                            <br />
+                                                        </p>
+                                                    </div>
+                                                )}
                                             </DialogContent>
                                         </Dialog>
                                     </td>

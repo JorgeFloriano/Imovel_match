@@ -61,6 +61,6 @@ class Wishe extends Model
      */
     public function district()
     {
-        return $this->hasOne(District::class);
+        return $this->belongsTo(District::class);
     }
 }
