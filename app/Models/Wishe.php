@@ -24,6 +24,7 @@ class Wishe extends Model
     protected $fillable = [
         'district_id',
         'region_id',
+        'type',
         'rooms',
         'bathrooms',
         'suites',

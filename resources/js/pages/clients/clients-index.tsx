@@ -108,7 +108,10 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                     <td className="px-6 py-4">{client.phone}</td>
 
                                     <td className="flex gap-2 px-6 py-4">
-                                        <a href="#" className="font-medium text-blue-600 hover:underline dark:text-blue-500">
+                                        <a
+                                            href={route('clients.edit', client.id)}
+                                            className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                                        >
                                             {Edit && <Icon iconNode={Edit} />}
                                         </a>
 

@@ -8,22 +8,22 @@ import { Head, useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
-type ClientCreateForm = {
+type ClientEditForm = {
     name: string;
     phone: string;
-    email: string;
-    address: string;
+    email?: string;
+    address?: string;
     marital_status: string;
     need_financing: boolean;
     dependents: number;
     profession: string;
     revenue: number;
     capital: number;
-    fgts: number;
+    fgts?: number;
     has_property: boolean;
     compromised_income: number;
     region_id?: number;
-    type: string;
+    type?: string;
     rooms?: number;
     bathrooms?: number;
     suites?: number;
@@ -40,7 +40,8 @@ type ClientCreateForm = {
     obs?: string;
 };
 
-interface CreateClientProps {
+interface EditClientProps {
+    client: ClientEditForm & { id: number; wishe: any };
     maritalStatusOptions: Record<string, string>;
     booleanOptions: Record<string, string>;
     regionOptions: Record<string, number>;
@@ -56,100 +57,42 @@ const typeOptions = [
     { value: 'outros', label: 'Outros' },
 ];
 
-export default function CreateClient({ maritalStatusOptions, booleanOptions, regionOptions }: CreateClientProps) {
-    const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm<ClientCreateForm>({
-        name: '',
-        phone: '',
-        email: '',
-        address: '',
-        marital_status: '',
-        need_financing: true,
-        dependents: 0,
-        profession: '',
-        revenue: 0,
-        capital: 0,
-        fgts: 0,
-        has_property: false,
-        compromised_income: 0,
-        region_id: undefined,
-        type: 'apartamento',
-        rooms: 2,
-        bathrooms: 1,
-        suites: 0,
-        garages: 1,
-        delivery_key: '',
-        min_act: 0,
-        installment_payment: undefined,
-        air_conditioning: undefined,
-        garden: undefined,
-        pool: undefined,
-        balcony: undefined,
-        acept_pets: undefined,
-        acessibility: undefined,
-        obs: '',
+const airConditioningOptions = [
+    { value: 'incluso', label: 'Incluso' },
+    { value: 'somente infra', label: 'Somente Infra' },
+    { value: 'não incluso', label: 'Não incluso' },
+];
+
+const booleanFeatureLabels = {
+    garden: 'Jardim',
+    pool: 'Piscina',
+    balcony: 'Varanda',
+    acept_pets: 'Aceita Pets',
+    acessibility: 'Acessibilidade',
+};
+
+export default function EditClient({ client, maritalStatusOptions, booleanOptions, regionOptions }: EditClientProps) {
+    const { data, setData, put, processing, errors, recentlySuccessful } = useForm<ClientEditForm>({
+        ...client,
+        ...client.wishe,
+        need_financing: client.need_financing ?? true,
+        has_property: client.has_property ?? false,
     });
 
-    const handleSetData = (field: keyof ClientCreateForm, value: any) => {
+    const handleSetData = (field: keyof ClientEditForm, value: any) => {
         setData(field, value);
-    };
-
-    const airConditioningOptions = [
-        { value: 'incluso', label: 'Incluso' },
-        { value: 'somente infra', label: 'Somente Infra' },
-        { value: 'não incluso', label: 'Não incluso' },
-    ];
-
-    const booleanFeatureLabels = {
-        garden: 'Jardim',
-        pool: 'Piscina',
-        balcony: 'Varanda',
-        acept_pets: 'Aceita Pets',
-        acessibility: 'Acessibilidade',
     };
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
-        post(route('clients.store'), {
-            onSuccess: () => reset(
-                'name',
-                'phone',
-                'email',
-                'address',
-                'marital_status',
-                'need_financing',
-                'dependents',
-                'profession',
-                'revenue',
-                'capital',
-                'fgts',
-                'has_property',
-                'compromised_income',
-                'region_id',
-                'type',
-                'rooms',
-                'bathrooms',
-                'suites',
-                'garages',
-                'delivery_key',
-                'min_act',
-                'installment_payment',
-                'air_conditioning',
-                'garden',
-                'pool',
-                'balcony',
-                'acept_pets',
-                'acessibility',
-                'obs',
-            ),
-        });
+        put(route('clients.update', client.id));
     };
 
     return (
         <AppLayout>
-            <Head title="Cadastro de Cliente" />
+            <Head title="Editar Cliente" />
             <div className="h-full gap-4 space-y-6 rounded-xl p-4">
-                <h1 className="mb-6 text-2xl font-bold">Cadastro de Cliente</h1>
+                <h1 className="mb-6 text-2xl font-bold">Editar Cliente</h1>
 
                 <form onSubmit={submit} className="space-y-6">
                     {/* Personal Information Section */}
@@ -158,7 +101,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <FormInput
                                 label="Nome Completo"
-                                placeholder='Nome Completo'
+                                placeholder="Nome Completo"
                                 value={data.name}
                                 onChange={(value) => handleSetData('name', value)}
                                 error={errors.name}
@@ -187,14 +130,14 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                             <FormInput
                                 label="E-mail"
                                 type="email"
-                                value={data.email}
+                                value={data.email || ''}
                                 onChange={(value) => handleSetData('email', value)}
                                 error={errors.email}
                             />
 
                             <FormInput
                                 label="Endereço"
-                                value={data.address}
+                                value={data.address || ''}
                                 onChange={(value) => handleSetData('address', value)}
                                 error={errors.address}
                             />
@@ -214,7 +157,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                     min={0}
                                     step={0.01}
                                     value={data.revenue}
-                                    onChange={(value) => handleSetData('revenue', value)}
+                                    onChange={(value) => handleSetData('revenue', Number(value))}
                                     error={errors.revenue}
                                     required
                                 />
@@ -224,8 +167,8 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                     type="number"
                                     min={0}
                                     step={0.01}
-                                    value={data.fgts}
-                                    onChange={(value) => handleSetData('fgts', value)}
+                                    value={data.fgts || ''}
+                                    onChange={(value) => handleSetData('fgts', value ? Number(value) : undefined)}
                                     error={errors.fgts}
                                 />
                             </div>
@@ -241,7 +184,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                     type="number"
                                     min={0}
                                     value={data.dependents}
-                                    onChange={(value) => handleSetData('dependents', value)}
+                                    onChange={(value) => handleSetData('dependents', Number(value))}
                                     error={errors.dependents}
                                     required
                                 />
@@ -252,7 +195,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                     min={0}
                                     max={100}
                                     value={data.compromised_income}
-                                    onChange={(value) => handleSetData('compromised_income', value)}
+                                    onChange={(value) => handleSetData('compromised_income', Number(value))}
                                     error={errors.compromised_income}
                                     required
                                 />
@@ -264,14 +207,14 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                     min={0}
                                     step={0.01}
                                     value={data.capital}
-                                    onChange={(value) => handleSetData('capital', value)}
+                                    onChange={(value) => handleSetData('capital', Number(value))}
                                     error={errors.capital}
                                     required
                                 />
 
                                 <FormSelect
                                     label="Já possúi propriedade?"
-                                    value={data.has_property}
+                                    value={data.has_property.toString()}
                                     onValueChange={(value) => handleSetData('has_property', value === 'true')}
                                     options={booleanOptions}
                                     error={errors.has_property}
@@ -286,16 +229,15 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                             <FormSelect
                                 label="Selecione a Região"
-                                value={data.region_id?.toString()} // Convert number to string for the select
-                                onValueChange={(value) => handleSetData('region_id', Number(value))}
+                                value={data.region_id?.toString() || ''}
+                                onValueChange={(value) => handleSetData('region_id', value ? Number(value) : undefined)}
                                 options={regionOptions}
                                 error={errors.region_id}
-                                numeric // Add this prop
                             />
 
                             <FormSelect
                                 label="Tipo de Imóvel"
-                                value={data.type}
+                                value={data.type || ''}
                                 onValueChange={(value) => handleSetData('type', value)}
                                 customOptions={typeOptions}
                                 error={errors.type}
@@ -305,8 +247,8 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 label="Quartos"
                                 type="number"
                                 min={0}
-                                value={data.rooms}
-                                onChange={(value) => handleSetData('rooms', value)}
+                                value={data.rooms || ''}
+                                onChange={(value) => handleSetData('rooms', value ? Number(value) : undefined)}
                                 error={errors.rooms}
                             />
 
@@ -314,8 +256,8 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 label="Banheiros"
                                 type="number"
                                 min={0}
-                                value={data.bathrooms}
-                                onChange={(value) => handleSetData('bathrooms', value)}
+                                value={data.bathrooms || ''}
+                                onChange={(value) => handleSetData('bathrooms', value ? Number(value) : undefined)}
                                 error={errors.bathrooms}
                             />
 
@@ -323,8 +265,8 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 label="Suítes"
                                 type="number"
                                 min={0}
-                                value={data.suites}
-                                onChange={(value) => handleSetData('suites', value)}
+                                value={data.suites || ''}
+                                onChange={(value) => handleSetData('suites', value ? Number(value) : undefined)}
                                 error={errors.suites}
                             />
 
@@ -332,16 +274,16 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 label="Vagas na Garagem"
                                 type="number"
                                 min={0}
-                                value={data.garages}
-                                onChange={(value) => handleSetData('garages', value)}
+                                value={data.garages || ''}
+                                onChange={(value) => handleSetData('garages', value ? Number(value) : undefined)}
                                 error={errors.garages}
                             />
 
                             <FormInput
                                 label="Previsão Entrega"
                                 type="date"
-                                value={data.delivery_key}
-                                onChange={(value) => handleSetData('delivery_key', value)}
+                                value={data.delivery_key || ''}
+                                onChange={(value) => handleSetData('delivery_key', value || '')}
                                 error={errors.delivery_key}
                             />
 
@@ -349,14 +291,14 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 label="Área Útil (m2)"
                                 type="number"
                                 min={0}
-                                value={data.min_act}
-                                onChange={(value) => handleSetData('min_act', value)}
+                                value={data.min_act || ''}
+                                onChange={(value) => handleSetData('min_act', value ? Number(value) : undefined)}
                                 error={errors.min_act}
                             />
 
                             <FormSelect
                                 label="Financiado"
-                                value={data.need_financing}
+                                value={data.need_financing.toString()}
                                 onValueChange={(value) => handleSetData('need_financing', value === 'true')}
                                 options={booleanOptions}
                                 error={errors.need_financing}
@@ -364,7 +306,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
 
                             <FormSelect
                                 label="Entrada Parcelada"
-                                value={data.installment_payment}
+                                value={data.installment_payment?.toString() || ''}
                                 onValueChange={(value) => handleSetData('installment_payment', value === 'true')}
                                 options={booleanOptions}
                                 error={errors.installment_payment}
@@ -372,7 +314,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
 
                             <FormSelect
                                 label="Ar Condicionado"
-                                value={data.air_conditioning}
+                                value={data.air_conditioning || ''}
                                 onValueChange={(value) => handleSetData('air_conditioning', value)}
                                 customOptions={airConditioningOptions}
                                 error={errors.air_conditioning}
@@ -383,7 +325,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 <FormSelect
                                     key={field}
                                     label={label}
-                                    value={data[field]}
+                                    value={data[field]?.toString() || ''}
                                     onValueChange={(value) => handleSetData(field, value === 'true')}
                                     options={booleanOptions}
                                     error={errors[field]}
@@ -403,7 +345,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                     <div className="flex items-center gap-4">
                         <Button disabled={processing} type="submit">
                             {processing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Salvar
+                            Atualizar
                         </Button>
 
                         <Transition
@@ -413,7 +355,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                             leave="transition ease-in-out"
                             leaveTo="opacity-0"
                         >
-                            <p className="text-sm text-neutral-600">Cadastro Salvo</p>
+                            <p className="text-sm text-neutral-600">Alterações salvas</p>
                         </Transition>
                     </div>
                 </form>

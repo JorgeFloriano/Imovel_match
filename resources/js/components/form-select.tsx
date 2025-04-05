@@ -26,7 +26,7 @@ import {
     onValueChange,
     options,
     customOptions,
-    placeholder = 'Selecione uma opção',
+    placeholder = 'Opções',
     error,
     className,
     numeric = false,

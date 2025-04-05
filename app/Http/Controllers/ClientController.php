@@ -32,7 +32,7 @@ class ClientController extends Controller
                 'true' => 'Sim',
                 'false' => 'Não',
             ],
-            'regionOptions' => Region::all()->pluck('name', 'id'),
+            'regionOptions' => Region::orderBy('name')->get()->pluck('name', 'id'),
         ]);
     }
 
@@ -56,6 +56,8 @@ class ClientController extends Controller
 
             // Wishes validation rules
             'region_id' => 'nullable|integer|exists:regions,id',
+            'district_id' => 'nullable|integer|exists:districts,id',
+            'type' => 'nullable|in:casa,apartamento,terreno,loja,garagem,sala,outros',
             'rooms' => 'nullable|integer|min:0',
             'bathrooms' => 'nullable|integer|min:0',
             'suites' => 'nullable|integer|min:0',
@@ -93,6 +95,9 @@ class ClientController extends Controller
         // Create the wish if client was created successfully
         if ($client) {
             $wishData = [
+                'region_id' => $validated['region_id'] ?? null,
+                'district_id' => $validated['district_id'] ?? null,
+                'type' => $validated['type'] ?? null,
                 'rooms' => $validated['rooms'] ?? null,
                 'bathrooms' => $validated['bathrooms'] ?? null,
                 'suites' => $validated['suites'] ?? null,
@@ -107,7 +112,6 @@ class ClientController extends Controller
                 'acept_pets' => $validated['acept_pets'] ?? null,
                 'acessibility' => $validated['acessibility'] ?? null,
                 'obs' => $validated['obs'] ?? null,
-                'region_id' => $validated['region_id'] ?? null,
             ];
 
             // Create the wish associated with the client
@@ -129,9 +133,22 @@ class ClientController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Client $client)
     {
-        //
+        return Inertia::render('clients/clients-edit', [
+            'client' => $client->load('wishe'),
+            'maritalStatusOptions' => [
+                'solteiro' => 'Solteiro(a)',
+                'casado' => 'Casado(a)',
+                'divorciado' => 'Divorciado(a)',
+                'viúvo' => 'Viúvo(a)',
+            ],
+            'booleanOptions' => [
+                'true' => 'Sim',
+                'false' => 'Não',
+            ],
+            'regionOptions' => Region::orderBy('name')->get()->pluck('name', 'id'),
+        ]);
     }
 
     /**

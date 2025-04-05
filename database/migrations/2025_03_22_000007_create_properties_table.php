@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('district_id')->constrained();
+            $table->enum('type', ['casa', 'apartamento', 'terreno', 'loja', 'garagem', 'sala', 'outros'])->nullable();
             $table->string('iptu')->nullable();
             $table->string('description')->nullable();
             $table->integer('price');

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('client_id')->constrained();
             $table->foreignId('district_id')->constrained()->nullable();
+            $table->foreignId('region_id')->constrained()->nullable();
+            $table->enum('type', ['casa', 'apartamento', 'terreno', 'loja', 'garagem', 'sala', 'outros'])->nullable();
             $table->tinyInteger('rooms')->nullable();
             $table->tinyInteger('bathrooms')->nullable();
             $table->tinyInteger('suites')->nullable();
