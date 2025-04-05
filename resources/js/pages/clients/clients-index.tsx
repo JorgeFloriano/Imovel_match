@@ -115,7 +115,7 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                             {Edit && <Icon iconNode={Edit} />}
                                         </a>
 
-                                        <a href="#" className="font-medium text-red-600 hover:underline dark:text-red-500">
+                                        <a href={route('clients.show', client.id)} className="font-medium text-red-600 hover:underline dark:text-red-500">
                                             {Delete && <Icon iconNode={Delete} />}
                                         </a>
 

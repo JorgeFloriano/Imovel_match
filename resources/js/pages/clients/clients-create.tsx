@@ -43,7 +43,7 @@ type ClientCreateForm = {
 interface CreateClientProps {
     maritalStatusOptions: Record<string, string>;
     booleanOptions: Record<string, string>;
-    regionOptions: Record<string, number>;
+    regionOptions: Record<string, string>;
 }
 
 const typeOptions = [
@@ -89,7 +89,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
         obs: '',
     });
 
-    const handleSetData = (field: keyof ClientCreateForm, value: any) => {
+    const handleSetData = (field: keyof ClientCreateForm, value: string | number | undefined | boolean) => {
         setData(field, value);
     };
 
@@ -111,37 +111,38 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
         e.preventDefault();
 
         post(route('clients.store'), {
-            onSuccess: () => reset(
-                'name',
-                'phone',
-                'email',
-                'address',
-                'marital_status',
-                'need_financing',
-                'dependents',
-                'profession',
-                'revenue',
-                'capital',
-                'fgts',
-                'has_property',
-                'compromised_income',
-                'region_id',
-                'type',
-                'rooms',
-                'bathrooms',
-                'suites',
-                'garages',
-                'delivery_key',
-                'min_act',
-                'installment_payment',
-                'air_conditioning',
-                'garden',
-                'pool',
-                'balcony',
-                'acept_pets',
-                'acessibility',
-                'obs',
-            ),
+            onSuccess: () =>
+                reset(
+                    'name',
+                    'phone',
+                    'email',
+                    'address',
+                    'marital_status',
+                    'need_financing',
+                    'dependents',
+                    'profession',
+                    'revenue',
+                    'capital',
+                    'fgts',
+                    'has_property',
+                    'compromised_income',
+                    'region_id',
+                    'type',
+                    'rooms',
+                    'bathrooms',
+                    'suites',
+                    'garages',
+                    'delivery_key',
+                    'min_act',
+                    'installment_payment',
+                    'air_conditioning',
+                    'garden',
+                    'pool',
+                    'balcony',
+                    'acept_pets',
+                    'acessibility',
+                    'obs',
+                ),
         });
     };
 
@@ -158,7 +159,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <FormInput
                                 label="Nome Completo"
-                                placeholder='Nome Completo'
+                                placeholder="Nome Completo"
                                 value={data.name}
                                 onChange={(value) => handleSetData('name', value)}
                                 error={errors.name}
@@ -286,16 +287,15 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                             <FormSelect
                                 label="Selecione a Região"
-                                value={data.region_id?.toString()} // Convert number to string for the select
-                                onValueChange={(value) => handleSetData('region_id', Number(value))}
+                                value={data.region_id?.toString() || ''}
+                                onValueChange={(value) => handleSetData('region_id', value)}
                                 options={regionOptions}
                                 error={errors.region_id}
-                                numeric // Add this prop
                             />
 
                             <FormSelect
                                 label="Tipo de Imóvel"
-                                value={data.type}
+                                value={data.type ?? ''} // Provide an empty string as a fallback value
                                 onValueChange={(value) => handleSetData('type', value)}
                                 customOptions={typeOptions}
                                 error={errors.type}
@@ -305,7 +305,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 label="Quartos"
                                 type="number"
                                 min={0}
-                                value={data.rooms}
+                                value={data.rooms ?? 0}
                                 onChange={(value) => handleSetData('rooms', value)}
                                 error={errors.rooms}
                             />
@@ -314,7 +314,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 label="Banheiros"
                                 type="number"
                                 min={0}
-                                value={data.bathrooms}
+                                value={data.bathrooms ?? 0}
                                 onChange={(value) => handleSetData('bathrooms', value)}
                                 error={errors.bathrooms}
                             />
@@ -323,7 +323,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 label="Suítes"
                                 type="number"
                                 min={0}
-                                value={data.suites}
+                                value={data.suites ?? 0}
                                 onChange={(value) => handleSetData('suites', value)}
                                 error={errors.suites}
                             />
@@ -332,7 +332,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 label="Vagas na Garagem"
                                 type="number"
                                 min={0}
-                                value={data.garages}
+                                value={data.garages ?? 0}
                                 onChange={(value) => handleSetData('garages', value)}
                                 error={errors.garages}
                             />
@@ -340,7 +340,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                             <FormInput
                                 label="Previsão Entrega"
                                 type="date"
-                                value={data.delivery_key}
+                                value={data.delivery_key ?? ''}
                                 onChange={(value) => handleSetData('delivery_key', value)}
                                 error={errors.delivery_key}
                             />
@@ -349,7 +349,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 label="Área Útil (m2)"
                                 type="number"
                                 min={0}
-                                value={data.min_act}
+                                value={data.min_act ?? 0}
                                 onChange={(value) => handleSetData('min_act', value)}
                                 error={errors.min_act}
                             />
@@ -364,7 +364,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
 
                             <FormSelect
                                 label="Entrada Parcelada"
-                                value={data.installment_payment}
+                                value={data.installment_payment ?? false}
                                 onValueChange={(value) => handleSetData('installment_payment', value === 'true')}
                                 options={booleanOptions}
                                 error={errors.installment_payment}
@@ -372,7 +372,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
 
                             <FormSelect
                                 label="Ar Condicionado"
-                                value={data.air_conditioning}
+                                value={data.air_conditioning ?? false}
                                 onValueChange={(value) => handleSetData('air_conditioning', value)}
                                 customOptions={airConditioningOptions}
                                 error={errors.air_conditioning}
@@ -383,10 +383,10 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 <FormSelect
                                     key={field}
                                     label={label}
-                                    value={data[field]}
-                                    onValueChange={(value) => handleSetData(field, value === 'true')}
+                                    value={data[field as keyof ClientCreateForm]?.toString() || ''}
+                                    onValueChange={(value) => handleSetData(field as keyof ClientCreateForm, value === 'true')}
                                     options={booleanOptions}
-                                    error={errors[field]}
+                                    error={(errors as Record<string, string>)[field]}
                                 />
                             ))}
 

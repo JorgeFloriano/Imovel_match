@@ -41,10 +41,10 @@ type ClientEditForm = {
 };
 
 interface EditClientProps {
-    client: ClientEditForm & { id: number; wishe: any };
+    client: ClientEditForm & { id: number; wishe: undefined };
     maritalStatusOptions: Record<string, string>;
     booleanOptions: Record<string, string>;
-    regionOptions: Record<string, number>;
+    regionOptions: Record<string, string>;
 }
 
 const typeOptions = [
@@ -74,12 +74,12 @@ const booleanFeatureLabels = {
 export default function EditClient({ client, maritalStatusOptions, booleanOptions, regionOptions }: EditClientProps) {
     const { data, setData, put, processing, errors, recentlySuccessful } = useForm<ClientEditForm>({
         ...client,
-        ...client.wishe,
+        ...client.wishe ?? {},
         need_financing: client.need_financing ?? true,
         has_property: client.has_property ?? false,
     });
 
-    const handleSetData = (field: keyof ClientEditForm, value: any) => {
+    const handleSetData = (field: keyof ClientEditForm, value: string | number | undefined | boolean) => {
         setData(field, value);
     };
 
@@ -87,6 +87,10 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
         e.preventDefault();
         put(route('clients.update', client.id));
     };
+
+    // Converting delivery_key to date
+    if (data.delivery_key !== null && typeof data.delivery_key === 'string' && data.delivery_key !== '') 
+    data.delivery_key = new Date(data.delivery_key ?? '').toISOString().split('T')[0];
 
     return (
         <AppLayout>
@@ -157,7 +161,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                     min={0}
                                     step={0.01}
                                     value={data.revenue}
-                                    onChange={(value) => handleSetData('revenue', Number(value))}
+                                    onChange={(value) => handleSetData('revenue', value)}
                                     error={errors.revenue}
                                     required
                                 />
@@ -168,7 +172,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                     min={0}
                                     step={0.01}
                                     value={data.fgts || ''}
-                                    onChange={(value) => handleSetData('fgts', value ? Number(value) : undefined)}
+                                    onChange={(value) => handleSetData('fgts', value)}
                                     error={errors.fgts}
                                 />
                             </div>
@@ -184,7 +188,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                     type="number"
                                     min={0}
                                     value={data.dependents}
-                                    onChange={(value) => handleSetData('dependents', Number(value))}
+                                    onChange={(value) => handleSetData('dependents', value)}
                                     error={errors.dependents}
                                     required
                                 />
@@ -195,7 +199,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                     min={0}
                                     max={100}
                                     value={data.compromised_income}
-                                    onChange={(value) => handleSetData('compromised_income', Number(value))}
+                                    onChange={(value) => handleSetData('compromised_income', value)}
                                     error={errors.compromised_income}
                                     required
                                 />
@@ -207,7 +211,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                     min={0}
                                     step={0.01}
                                     value={data.capital}
-                                    onChange={(value) => handleSetData('capital', Number(value))}
+                                    onChange={(value) => handleSetData('capital', value)}
                                     error={errors.capital}
                                     required
                                 />
@@ -230,7 +234,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                             <FormSelect
                                 label="Selecione a Região"
                                 value={data.region_id?.toString() || ''}
-                                onValueChange={(value) => handleSetData('region_id', value ? Number(value) : undefined)}
+                                onValueChange={(value) => handleSetData('region_id', value ? value : undefined)}
                                 options={regionOptions}
                                 error={errors.region_id}
                             />
@@ -248,7 +252,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                 type="number"
                                 min={0}
                                 value={data.rooms || ''}
-                                onChange={(value) => handleSetData('rooms', value ? Number(value) : undefined)}
+                                onChange={(value) => handleSetData('rooms', value ? value : undefined)}
                                 error={errors.rooms}
                             />
 
@@ -257,7 +261,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                 type="number"
                                 min={0}
                                 value={data.bathrooms || ''}
-                                onChange={(value) => handleSetData('bathrooms', value ? Number(value) : undefined)}
+                                onChange={(value) => handleSetData('bathrooms', value ? value : undefined)}
                                 error={errors.bathrooms}
                             />
 
@@ -266,7 +270,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                 type="number"
                                 min={0}
                                 value={data.suites || ''}
-                                onChange={(value) => handleSetData('suites', value ? Number(value) : undefined)}
+                                onChange={(value) => handleSetData('suites', value ? value : undefined)}
                                 error={errors.suites}
                             />
 
@@ -275,7 +279,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                 type="number"
                                 min={0}
                                 value={data.garages || ''}
-                                onChange={(value) => handleSetData('garages', value ? Number(value) : undefined)}
+                                onChange={(value) => handleSetData('garages', value ? value : undefined)}
                                 error={errors.garages}
                             />
 
@@ -292,7 +296,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                 type="number"
                                 min={0}
                                 value={data.min_act || ''}
-                                onChange={(value) => handleSetData('min_act', value ? Number(value) : undefined)}
+                                onChange={(value) => handleSetData('min_act', value ? value : undefined)}
                                 error={errors.min_act}
                             />
 
@@ -325,10 +329,10 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                 <FormSelect
                                     key={field}
                                     label={label}
-                                    value={data[field]?.toString() || ''}
-                                    onValueChange={(value) => handleSetData(field, value === 'true')}
+                                    value={data[field as keyof ClientEditForm]?.toString() || ''}
+                                    onValueChange={(value) => handleSetData(field as keyof ClientEditForm, value === 'true')}
                                     options={booleanOptions}
-                                    error={errors[field]}
+                                    error={(errors as Record<string, string>)[field]}
                                 />
                             ))}
 
