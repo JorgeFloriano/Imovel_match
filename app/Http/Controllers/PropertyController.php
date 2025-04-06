@@ -2,68 +2,188 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Inertia\Inertia;
+use App\Models\Property;
 use App\Models\District;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class PropertyController extends Controller
 {
-    
     public function index()
     {
-        $district = District::first();
-
-        return Inertia::render('properties/properties-index' , [
-            'district' => $district ? [
-                'name' => $district->name,
-                'region' => $district->region->name
-            ] : null,
+        return Inertia::render('properties/properties-index', [
+            'properties' => Property::with(['user', 'district'])->get(),
         ]);
     }
 
-    
     public function create()
     {
-        return Inertia::render('properties/properties-create');
+        return Inertia::render('properties/properties-create', [
+            'typeOptions' => [
+                'casa' => 'Casa',
+                'apartamento' => 'Apartamento',
+                'terreno' => 'Terreno',
+                'loja' => 'Loja',
+                'garagem' => 'Garagem',
+                'sala' => 'Sala',
+                'outros' => 'Outros',
+            ],
+            'airConditioningOptions' => [
+                'incluso' => 'Incluso',
+                'somente infra' => 'Somente Infraestrutura',
+                'não incluso' => 'Não Incluso',
+            ],
+            'booleanOptions' => [
+                'true' => 'Sim',
+                'false' => 'Não',
+            ],
+            'districtOptions' => District::orderBy('name')->get()->pluck('name', 'id'),
+            'userOptions' => User::orderBy('name')->get()->pluck('name', 'id'),
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        //
+        $validated = $request->validate([
+            'user_id' => 'required|integer|exists:users,id',
+            'district_id' => 'required|integer|exists:districts,id',
+            'type' => 'nullable|in:casa,apartamento,terreno,loja,garagem,sala,outros',
+            'iptu' => 'nullable|string',
+            'description' => 'nullable|string',
+            'price' => 'required|integer|min:0',
+            'land_area' => 'nullable|numeric|min:0',
+            'building_area' => 'nullable|numeric|min:0',
+            'image' => 'nullable|string',
+            'address' => 'nullable|string',
+            'rooms' => 'nullable|integer|min:0',
+            'bathrooms' => 'nullable|integer|min:0',
+            'suites' => 'nullable|integer|min:0',
+            'garages' => 'nullable|integer|min:0',
+            'floor' => 'nullable|integer|min:0',
+            'building_floors' => 'nullable|integer|min:0',
+            'property_floors' => 'nullable|integer|min:0',
+            'delivery_key' => 'nullable|date',
+            'min_act' => 'nullable|integer|min:0',
+            'installment_payment' => 'nullable|boolean',
+            'incc_financing' => 'nullable|boolean',
+            'documents' => 'nullable|boolean',
+            'finsh_type' => 'nullable|string',
+            'air_conditioning' => 'nullable|in:incluso,somente infra,não incluso',
+            'garden' => 'nullable|boolean',
+            'pool' => 'nullable|boolean',
+            'balcony' => 'nullable|boolean',
+            'acept_pets' => 'nullable|boolean',
+            'acessibility' => 'nullable|boolean',
+            'obs' => 'nullable|string',
+        ]);
+
+        $property = Property::create($validated);
+
+        if ($property) {
+            return to_route('properties.index')->with('success', 'Property created successfully');
+        }
+
+        return back()->with('error', 'Failed to create property');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(Property $property)
     {
-        //
+        return Inertia::render('properties/properties-show', [
+            'property' => $property->load(['user', 'district']),
+            'typeOptions' => [
+                'casa' => 'Casa',
+                'apartamento' => 'Apartamento',
+                'terreno' => 'Terreno',
+                'loja' => 'Loja',
+                'garagem' => 'Garagem',
+                'sala' => 'Sala',
+                'outros' => 'Outros',
+            ],
+            'airConditioningOptions' => [
+                'incluso' => 'Incluso',
+                'somente infra' => 'Somente Infraestrutura',
+                'não incluso' => 'Não Incluso',
+            ],
+            'booleanOptions' => [
+                'true' => 'Sim',
+                'false' => 'Não',
+            ],
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(Property $property)
     {
-        //
+        return Inertia::render('properties/properties-edit', [
+            'property' => $property,
+            'typeOptions' => [
+                'casa' => 'Casa',
+                'apartamento' => 'Apartamento',
+                'terreno' => 'Terreno',
+                'loja' => 'Loja',
+                'garagem' => 'Garagem',
+                'sala' => 'Sala',
+                'outros' => 'Outros',
+            ],
+            'airConditioningOptions' => [
+                'incluso' => 'Incluso',
+                'somente infra' => 'Somente Infraestrutura',
+                'não incluso' => 'Não Incluso',
+            ],
+            'booleanOptions' => [
+                'true' => 'Sim',
+                'false' => 'Não',
+            ],
+            'districtOptions' => District::orderBy('name')->get()->pluck('name', 'id'),
+            'userOptions' => User::orderBy('name')->get()->pluck('name', 'id'),
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Property $property): RedirectResponse
     {
-        //
+        $validated = $request->validate([
+            'user_id' => 'required|integer|exists:users,id',
+            'district_id' => 'required|integer|exists:districts,id',
+            'type' => 'nullable|in:casa,apartamento,terreno,loja,garagem,sala,outros',
+            'iptu' => 'nullable|string',
+            'description' => 'nullable|string',
+            'price' => 'required|integer|min:0',
+            'land_area' => 'nullable|numeric|min:0',
+            'building_area' => 'nullable|numeric|min:0',
+            'image' => 'nullable|string',
+            'address' => 'nullable|string',
+            'rooms' => 'nullable|integer|min:0',
+            'bathrooms' => 'nullable|integer|min:0',
+            'suites' => 'nullable|integer|min:0',
+            'garages' => 'nullable|integer|min:0',
+            'floor' => 'nullable|integer|min:0',
+            'building_floors' => 'nullable|integer|min:0',
+            'property_floors' => 'nullable|integer|min:0',
+            'delivery_key' => 'nullable|date',
+            'min_act' => 'nullable|integer|min:0',
+            'installment_payment' => 'nullable|boolean',
+            'incc_financing' => 'nullable|boolean',
+            'documents' => 'nullable|boolean',
+            'finsh_type' => 'nullable|string',
+            'air_conditioning' => 'nullable|in:incluso,somente infra,não incluso',
+            'garden' => 'nullable|boolean',
+            'pool' => 'nullable|boolean',
+            'balcony' => 'nullable|boolean',
+            'acept_pets' => 'nullable|boolean',
+            'acessibility' => 'nullable|boolean',
+            'obs' => 'nullable|string',
+        ]);
+
+        $property->update($validated);
+
+        return back()->with('success', 'Property updated successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Property $property): RedirectResponse
     {
-        //
+        $property->delete();
+        return to_route('properties.index')->with('success', 'Property deleted successfully');
     }
 }
