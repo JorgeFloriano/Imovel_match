@@ -45,7 +45,10 @@ interface ClientShowProps {
 
 const typeLabels: Record<string, string> = {
     casa: 'Casa',
+    'casa (condom.)': 'Casa (Condom.)',
+    sobrado: 'Sobrado',
     apartamento: 'Apartamento',
+    'apart. c/ elevad.': 'Apart. c/ Elevad.',
     terreno: 'Terreno',
     loja: 'Loja',
     garagem: 'Garagem',

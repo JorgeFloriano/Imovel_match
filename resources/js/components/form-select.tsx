@@ -18,6 +18,7 @@ import {
     error?: string;
     className?: string;
     numeric?: boolean;
+    required?: boolean;
   }
   
   export function FormSelect({

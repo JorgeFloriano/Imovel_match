@@ -24,6 +24,8 @@ class Property extends Model
     protected $fillable = [
         'user_id',
         'district_id',
+        'contact_name',
+        'contact_phone',
         'type',
         'iptu',
         'description',

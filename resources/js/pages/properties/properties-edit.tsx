@@ -11,7 +11,7 @@ import { FormEventHandler } from 'react';
 type PropertyEditForm = {
     user_id: number;
     district_id: number;
-    type: 'casa' | 'apartamento' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
+    type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
     iptu: string | null;
     description: string | null;
     price: number;

@@ -10,16 +10,18 @@ import { FormEventHandler } from 'react';
 
 type PropertyCreateForm = {
     user_id: number;
-    district_id: number;
-    type: 'casa' | 'apartamento' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
-    iptu: string | null;
+    contact_name: string | null;
+    contact_phone: string | null;
+    district_id?: number;
+    type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
+    iptu: number;
     description: string | null;
     price: number;
-    land_area: number | null;
-    building_area: number | null;
+    land_area: number;
+    building_area: number;
     image: string | null;
     address: string | null;
-    rooms: number | null;
+    rooms?: number;
     bathrooms: number | null;
     suites: number | null;
     garages: number | null;
@@ -60,32 +62,28 @@ const booleanFeatureLabels = {
     documents: 'Documentação OK',
 };
 
-export default function CreateProperty({ 
-    typeOptions, 
-    airConditioningOptions, 
-    booleanOptions, 
-    districtOptions, 
-    userOptions 
-}: CreatePropertyProps) {
+export default function CreateProperty({ typeOptions, airConditioningOptions, booleanOptions, districtOptions }: CreatePropertyProps) {
     const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm<PropertyCreateForm>({
         user_id: 0,
-        district_id: 0,
+        contact_name: null,
+        contact_phone: null,
+        district_id: undefined,
         type: null,
-        iptu: null,
+        iptu: 0,
         description: null,
         price: 0,
-        land_area: null,
-        building_area: null,
+        land_area: 0,
+        building_area: 0,
         image: null,
-        address: null,
-        rooms: null,
-        bathrooms: null,
-        suites: null,
-        garages: null,
-        floor: null,
-        building_floors: null,
-        property_floors: null,
-        delivery_key: null,
+        address: '',
+        rooms: 0,
+        bathrooms: 0,
+        suites: 0,
+        garages: 0,
+        floor: 0,
+        building_floors: 0,
+        property_floors: 0,
+        delivery_key: '',
         min_act: null,
         installment_payment: false,
         incc_financing: null,
@@ -115,24 +113,36 @@ export default function CreateProperty({
         <AppLayout>
             <Head title="Cadastro de Propriedade" />
             <div className="h-full gap-4 space-y-6 rounded-xl p-4">
-                <h1 className="mb-6 text-2xl font-bold">Cadastro de Propriedade</h1>
+                <h1 className="mb-6 text-2xl font-bold">Cadastro de Imóvel</h1>
 
                 <form onSubmit={submit} className="space-y-6">
-                    {/* Basic Information Section */}
-                    <h2 className="text-lg font-semibold">Informações Básicas</h2>
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <FormSelect
-                            label="Proprietário"
-                            value={data.user_id.toString()}
-                            onValueChange={(value) => handleSetData('user_id', parseInt(value))}
-                            options={userOptions}
-                            error={errors.user_id}
-                            required
+                        <FormInput
+                            label="Descrição"
+                            placeholder="Ex: Troplical Park (duplex)"
+                            value={data.address || ''}
+                            onChange={(value) => handleSetData('description', value)}
+                            error={errors.address}
+                        />
+                        <FormInput
+                            label="Nome do Contato"
+                            placeholder="Ex: João da Silva (Construtora Planeta)"
+                            value={data.address || ''}
+                            onChange={(value) => handleSetData('contact_name', value)}
+                            error={errors.address}
+                        />
+                        <FormInput
+                            label="Telefone do Contato"
+                            value={data.address || ''}
+                            placeholder="Ex: (99) 99999-9999"
+                            onChange={(value) => handleSetData('contact_phone', value)}
+                            error={errors.address}
                         />
 
                         <FormSelect
                             label="Bairro"
-                            value={data.district_id.toString()}
+                            placeholder="Selecione um bairro"
+                            value={(data.district_id || '').toString()}
                             onValueChange={(value) => handleSetData('district_id', parseInt(value))}
                             options={districtOptions}
                             error={errors.district_id}
@@ -153,36 +163,38 @@ export default function CreateProperty({
                             min={0}
                             step={0.01}
                             value={data.price}
-                            onChange={(value) => handleSetData('price', parseFloat(value))}
+                            onChange={(value) => handleSetData('price', value)}
                             error={errors.price}
                             required
                         />
 
                         <FormInput
                             label="Endereço"
+                            placeholder="Ex: Rua das Laranjeiras, 087 - Centro"
                             value={data.address || ''}
                             onChange={(value) => handleSetData('address', value)}
                             error={errors.address}
                         />
 
                         <FormInput
-                            label="IPTU"
-                            value={data.iptu || ''}
+                            label="IPTU (R$)"
+                            type="number"
+                            min={0}
+                            value={data.iptu}
                             onChange={(value) => handleSetData('iptu', value)}
                             error={errors.iptu}
+                            required
                         />
                     </div>
 
-                    {/* Area Information Section */}
-                    <h2 className="text-lg font-semibold">Áreas</h2>
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <FormInput
                             label="Área do Terreno (m²)"
                             type="number"
                             min={0}
                             step={0.01}
-                            value={data.land_area || ''}
-                            onChange={(value) => handleSetData('land_area', value ? parseFloat(value) : null)}
+                            value={data.land_area}
+                            onChange={(value) => handleSetData('land_area', value ? value : null)}
                             error={errors.land_area}
                         />
 
@@ -191,21 +203,19 @@ export default function CreateProperty({
                             type="number"
                             min={0}
                             step={0.01}
-                            value={data.building_area || ''}
-                            onChange={(value) => handleSetData('building_area', value ? parseFloat(value) : null)}
+                            value={data.building_area}
+                            onChange={(value) => handleSetData('building_area', value ? value : null)}
                             error={errors.building_area}
                         />
                     </div>
 
-                    {/* Rooms and Floors Section */}
-                    <h2 className="text-lg font-semibold">Composição</h2>
                     <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                         <FormInput
                             label="Quartos"
                             type="number"
                             min={0}
-                            value={data.rooms || ''}
-                            onChange={(value) => handleSetData('rooms', value ? parseInt(value) : null)}
+                            value={data.rooms ?? 0}
+                            onChange={(value) => handleSetData('rooms', value)}
                             error={errors.rooms}
                         />
 
@@ -213,8 +223,8 @@ export default function CreateProperty({
                             label="Banheiros"
                             type="number"
                             min={0}
-                            value={data.bathrooms || ''}
-                            onChange={(value) => handleSetData('bathrooms', value ? parseInt(value) : null)}
+                            value={data.bathrooms ?? 0}
+                            onChange={(value) => handleSetData('bathrooms', value)}
                             error={errors.bathrooms}
                         />
 
@@ -222,8 +232,8 @@ export default function CreateProperty({
                             label="Suítes"
                             type="number"
                             min={0}
-                            value={data.suites || ''}
-                            onChange={(value) => handleSetData('suites', value ? parseInt(value) : null)}
+                            value={data.suites ?? 0}
+                            onChange={(value) => handleSetData('suites', value)}
                             error={errors.suites}
                         />
 
@@ -231,8 +241,8 @@ export default function CreateProperty({
                             label="Vagas de Garagem"
                             type="number"
                             min={0}
-                            value={data.garages || ''}
-                            onChange={(value) => handleSetData('garages', value ? parseInt(value) : null)}
+                            value={data.garages ?? 0}
+                            onChange={(value) => handleSetData('garages', value)}
                             error={errors.garages}
                         />
 
@@ -240,8 +250,8 @@ export default function CreateProperty({
                             label="Andar"
                             type="number"
                             min={0}
-                            value={data.floor || ''}
-                            onChange={(value) => handleSetData('floor', value ? parseInt(value) : null)}
+                            value={data.floor ?? 0}
+                            onChange={(value) => handleSetData('floor', value)}
                             error={errors.floor}
                         />
 
@@ -249,8 +259,8 @@ export default function CreateProperty({
                             label="Andares do Prédio"
                             type="number"
                             min={0}
-                            value={data.building_floors || ''}
-                            onChange={(value) => handleSetData('building_floors', value ? parseInt(value) : null)}
+                            value={data.building_floors ?? 0}
+                            onChange={(value) => handleSetData('building_floors', value)}
                             error={errors.building_floors}
                         />
 
@@ -258,14 +268,12 @@ export default function CreateProperty({
                             label="Andares da Propriedade"
                             type="number"
                             min={0}
-                            value={data.property_floors || ''}
-                            onChange={(value) => handleSetData('property_floors', value ? parseInt(value) : null)}
+                            value={data.property_floors ?? 0}
+                            onChange={(value) => handleSetData('property_floors', value)}
                             error={errors.property_floors}
                         />
                     </div>
 
-                    {/* Features Section */}
-                    <h2 className="text-lg font-semibold">Características</h2>
                     <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                         <FormInput
                             label="Data de Entrega"
@@ -279,8 +287,8 @@ export default function CreateProperty({
                             label="Ato Mínimo"
                             type="number"
                             min={0}
-                            value={data.min_act || ''}
-                            onChange={(value) => handleSetData('min_act', value ? parseInt(value) : null)}
+                            value={data.min_act ?? 0}
+                            onChange={(value) => handleSetData('min_act', value)}
                             error={errors.min_act}
                         />
 
@@ -294,6 +302,7 @@ export default function CreateProperty({
 
                         <FormInput
                             label="Tipo de Acabamento"
+                            placeholder='Ex: Cerâmica, Porcelanato, etc.'
                             value={data.finsh_type || ''}
                             onChange={(value) => handleSetData('finsh_type', value)}
                             error={errors.finsh_type}
@@ -314,13 +323,6 @@ export default function CreateProperty({
 
                     {/* Description Section */}
                     <div>
-                        <FormTextarea
-                            label="Descrição"
-                            value={data.description || ''}
-                            onChange={(value) => handleSetData('description', value)}
-                            error={errors.description}
-                        />
-
                         <FormTextarea
                             label="Observações"
                             value={data.obs || ''}

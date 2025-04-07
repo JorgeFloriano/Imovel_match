@@ -14,9 +14,22 @@ return new class extends Migration
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
+            $table->string('contact_name')->nullable();
+            $table->string('contact_phone')->nullable();
             $table->foreignId('district_id')->constrained();
-            $table->enum('type', ['casa', 'apartamento', 'terreno', 'loja', 'garagem', 'sala', 'outros'])->nullable();
-            $table->string('iptu')->nullable();
+            $table->enum('type', [
+                'casa',
+                'casa (condom.)',
+                'sobrado',
+                'apartamento',
+                'apart. c/ elevad.',
+                'terreno',
+                'loja',
+                'garagem',
+                'sala',
+                'outros'
+            ])->nullable();
+            $table->integer('iptu')->nullable();
             $table->string('description')->nullable();
             $table->integer('price');
             $table->float('land_area')->nullable();

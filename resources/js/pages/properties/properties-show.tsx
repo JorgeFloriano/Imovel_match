@@ -11,7 +11,7 @@ interface PropertyShowProps {
         district: {
             name: string;
         };
-        type: 'casa' | 'apartamento' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
+        type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
         iptu: string | null;
         description: string | null;
         price: number;
@@ -47,7 +47,10 @@ interface PropertyShowProps {
 
 const typeLabels: Record<string, string> = {
     casa: 'Casa',
+    'casa (condom.)': 'Casa (Condomínio)',
+    sobrado: 'Sobrado',
     apartamento: 'Apartamento',
+    'apart. c/ elevad.': 'Apart. c/ Elevad.',
     terreno: 'Terreno',
     loja: 'Loja',
     garagem: 'Garagem',

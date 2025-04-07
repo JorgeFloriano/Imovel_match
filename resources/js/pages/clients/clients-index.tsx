@@ -1,19 +1,9 @@
 import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-
 import { Delete, Edit, Expand } from 'lucide-react';
-
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Clientes',
-        href: '/clients',
-    },
-];
 
 interface Region {
     id: number;
@@ -61,7 +51,7 @@ interface Client {
 
 export default function Clients({ clients }: { clients: Client[] }) {
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <Head title="Clientes" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="flex items-center justify-between">
@@ -87,7 +77,7 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                     Profissão
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Renda (R$)
+                                    Renda
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Telefone
@@ -104,7 +94,10 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                         {client.name}
                                     </th>
                                     <td className="px-6 py-4">{client.profession}</td>
-                                    <td className="px-6 py-4">{client.revenue}</td>
+                                    <td className="px-6 py-4">{new Intl.NumberFormat('pt-BR', {
+                                            style: 'currency',
+                                            currency: 'BRL'
+                                        }).format(client.revenue)}</td>
                                     <td className="px-6 py-4">{client.phone}</td>
 
                                     <td className="flex gap-2 px-6 py-4">

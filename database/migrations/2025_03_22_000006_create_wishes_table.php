@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('client_id')->constrained();
             $table->foreignId('district_id')->constrained()->nullable();
             $table->foreignId('region_id')->constrained()->nullable();
-            $table->enum('type', ['casa', 'apartamento', 'terreno', 'loja', 'garagem', 'sala', 'outros'])->nullable();
+            $table->enum('type', ['casa', 'casa (condom.)', 'sobrado', 'apartamento', 'apart. c/ elevad.', 'terreno', 'loja', 'garagem', 'sala', 'outros'])->nullable();
             $table->tinyInteger('rooms')->nullable();
             $table->tinyInteger('bathrooms')->nullable();
             $table->tinyInteger('suites')->nullable();
@@ -28,7 +28,7 @@ return new class extends Migration
                 'incluso',
                 'somente infra',
                 'não incluso'
-                ])
+            ])
                 ->default('não incluso');
             $table->boolean('garden')->nullable();
             $table->boolean('pool')->nullable();

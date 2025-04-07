@@ -49,7 +49,10 @@ interface EditClientProps {
 
 const typeOptions = [
     { value: 'casa', label: 'Casa' },
+    { value: 'casa (condom.)', label: 'Casa (Condom.)' },
+    { value: 'sobrado', label: 'Sobrado' },
     { value: 'apartamento', label: 'Apartamento' },
+    { value: 'apart. c/ elevad.', label: 'Apart. c/ Elevad.' },
     { value: 'terreno', label: 'Terreno' },
     { value: 'loja', label: 'Loja' },
     { value: 'garagem', label: 'Garagem' },

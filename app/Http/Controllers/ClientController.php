@@ -57,7 +57,7 @@ class ClientController extends Controller
             // Wishes validation rules
             'region_id' => 'nullable|integer|exists:regions,id',
             'district_id' => 'nullable|integer|exists:districts,id',
-            'type' => 'nullable|in:casa,apartamento,terreno,loja,garagem,sala,outros',
+            'type' => 'nullable|in:casa,casa (condom.),sobrado,apartamento,apart. c/ elevad.,terreno,loja,garagem,sala,outros',
             'rooms' => 'nullable|integer|min:0',
             'bathrooms' => 'nullable|integer|min:0',
             'suites' => 'nullable|integer|min:0',
@@ -179,7 +179,7 @@ class ClientController extends Controller
             // Wishes validation rules
             'region_id' => 'nullable|integer|exists:regions,id',
             'district_id' => 'nullable|integer|exists:districts,id',
-            'type' => 'nullable|in:casa,apartamento,terreno,loja,garagem,sala,outros',
+            'type' => 'nullable|in:casa,casa (condom.),sobrado,apartamento,apart. c/ elevad.,terreno,loja,garagem,sala,outros',
             'rooms' => 'nullable|integer|min:0',
             'bathrooms' => 'nullable|integer|min:0',
             'suites' => 'nullable|integer|min:0',

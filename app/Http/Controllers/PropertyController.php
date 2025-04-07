@@ -15,7 +15,7 @@ class PropertyController extends Controller
     public function index()
     {
         return Inertia::render('properties/properties-index', [
-            'properties' => Property::with(['user', 'district'])->get(),
+            'properties' => Property::with(['user', 'district.region'])->get(),
         ]);
     }
 
@@ -24,7 +24,10 @@ class PropertyController extends Controller
         return Inertia::render('properties/properties-create', [
             'typeOptions' => [
                 'casa' => 'Casa',
+                'casa (condom.)' => 'Casa (Condom.)',
+                'sobrado' => 'Sobrado',
                 'apartamento' => 'Apartamento',
+                'apart. c/ elevad.' => 'Apart. c/ Elevad.',
                 'terreno' => 'Terreno',
                 'loja' => 'Loja',
                 'garagem' => 'Garagem',
@@ -41,17 +44,18 @@ class PropertyController extends Controller
                 'false' => 'Não',
             ],
             'districtOptions' => District::orderBy('name')->get()->pluck('name', 'id'),
-            'userOptions' => User::orderBy('name')->get()->pluck('name', 'id'),
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'user_id' => 'required|integer|exists:users,id',
+            'user_id' => Auth::user()->id,
+            'contact_name' => 'nullable|string',
+            'contact_phone' => 'nullable|string',
             'district_id' => 'required|integer|exists:districts,id',
-            'type' => 'nullable|in:casa,apartamento,terreno,loja,garagem,sala,outros',
-            'iptu' => 'nullable|string',
+            'type' => 'nullable|in:casa,casa (condom.),sobrado,apartamento,apart. c/ elevad.,terreno,loja,garagem,sala,outros',
+            'iptu' => 'nullable|numeric|min:0',
             'description' => 'nullable|string',
             'price' => 'required|integer|min:0',
             'land_area' => 'nullable|numeric|min:0',
@@ -95,7 +99,10 @@ class PropertyController extends Controller
             'property' => $property->load(['user', 'district']),
             'typeOptions' => [
                 'casa' => 'Casa',
+                'casa (condom.)' => 'Casa (Condom.)',
+                'sobrado' => 'Sobrado',
                 'apartamento' => 'Apartamento',
+                'apart. c/ elevad.' => 'Apart. c/ Elevad.',
                 'terreno' => 'Terreno',
                 'loja' => 'Loja',
                 'garagem' => 'Garagem',
@@ -120,7 +127,10 @@ class PropertyController extends Controller
             'property' => $property,
             'typeOptions' => [
                 'casa' => 'Casa',
+                'casa (condom.)' => 'Casa (Cond.)',
+                'sobrado' => 'Sobrado',
                 'apartamento' => 'Apartamento',
+                'apart. c/ elevad.' => 'Apart. c/ Elevad.',
                 'terreno' => 'Terreno',
                 'loja' => 'Loja',
                 'garagem' => 'Garagem',
@@ -144,10 +154,12 @@ class PropertyController extends Controller
     public function update(Request $request, Property $property): RedirectResponse
     {
         $validated = $request->validate([
-            'user_id' => 'required|integer|exists:users,id',
+            'user_id' => Auth::user()->id,
             'district_id' => 'required|integer|exists:districts,id',
-            'type' => 'nullable|in:casa,apartamento,terreno,loja,garagem,sala,outros',
-            'iptu' => 'nullable|string',
+            'contact_name' => 'nullable|string',
+            'contact_phone' => 'nullable|string',
+            'type' => 'nullable|in:casa,casa (condom.),sobrado,apartamento,apart. c/ elevad.,terreno,loja,garagem,sala,outros',
+            'iptu' => 'nullable|numeric|min:0',
             'description' => 'nullable|string',
             'price' => 'required|integer|min:0',
             'land_area' => 'nullable|numeric|min:0',

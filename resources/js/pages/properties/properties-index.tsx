@@ -1,23 +1,20 @@
 import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-
 import { Delete, Edit, Expand } from 'lucide-react';
-
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Propriedades',
-        href: '/properties',
-    },
-];
+interface Region {
+    id: number;
+    name: string;
+}
 
 interface District {
     id: number;
     name: string;
+    region_id: number;
+    region: Region;
 }
 
 interface User {
@@ -27,9 +24,8 @@ interface User {
 
 interface Property {
     id: number;
-    user_id: number;
     district_id: number;
-    type: 'casa' | 'apartamento' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
+    type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
     iptu: string | null;
     description: string | null;
     price: number;
@@ -63,7 +59,7 @@ interface Property {
 
 export default function Properties({ properties }: { properties: Property[] }) {
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <Head title="Propriedades" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="flex items-center justify-between">
@@ -82,19 +78,22 @@ export default function Properties({ properties }: { properties: Property[] }) {
                         <thead className="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-800 dark:text-gray-400">
                             <tr>
                                 <th scope="col" className="px-6 py-3">
-                                    Endereço
+                                    Descrição
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Tipo
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Preço (R$)
+                                    Preço
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Proprietário
+                                    Quartos
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Bairro
+                                    Bairro 
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Região
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     <span>Ações</span>
@@ -105,7 +104,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
                             {properties.map((property) => (
                                 <tr key={property.id} className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
                                     <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-gray-900 dark:text-white">
-                                        {property.address || 'Sem endereço'}
+                                        {property.description || 'Sem descrição'}
                                     </th>
                                     <td className="px-6 py-4">
                                         {property.type ? 
@@ -118,8 +117,9 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                             currency: 'BRL'
                                         }).format(property.price)}
                                     </td>
-                                    <td className="px-6 py-4">{property.user.name}</td>
+                                    <td className="px-6 py-4">{property.rooms}</td>
                                     <td className="px-6 py-4">{property.district.name}</td>
+                                    <td className="px-6 py-4">{property.district.region.name}</td>
 
                                     <td className="flex gap-2 px-6 py-4">
                                         <a
