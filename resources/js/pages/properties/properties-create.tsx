@@ -1,6 +1,5 @@
 import { FormInput } from '@/components/form-input';
 import { FormSelect } from '@/components/form-select';
-import { FormTextarea } from '@/components/form-textarea';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { Transition } from '@headlessui/react';
@@ -9,13 +8,12 @@ import { Loader2 } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 type PropertyCreateForm = {
-    user_id: number;
+    description: string | null;
     contact_name: string | null;
     contact_phone: string | null;
     district_id?: number;
     type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
     iptu: number;
-    description: string | null;
     price: number;
     land_area: number;
     building_area: number;
@@ -58,19 +56,18 @@ const booleanFeatureLabels = {
     acept_pets: 'Aceita Pets',
     acessibility: 'Acessibilidade',
     installment_payment: 'Entrada Parcelada',
-    incc_financing: 'Financiamento INCC',
-    documents: 'Documentação OK',
+    incc_financing: 'INCC/Financ.',
+    documents: 'Documentação inclusa',
 };
 
 export default function CreateProperty({ typeOptions, airConditioningOptions, booleanOptions, districtOptions }: CreatePropertyProps) {
     const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm<PropertyCreateForm>({
-        user_id: 0,
+        description: null,
         contact_name: null,
         contact_phone: null,
         district_id: undefined,
         type: null,
         iptu: 0,
-        description: null,
         price: 0,
         land_area: 0,
         building_area: 0,
@@ -96,6 +93,38 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
         acept_pets: null,
         acessibility: null,
         obs: null,
+
+        // description: 'Description test',
+        // contact_name: 'Contact Name test',
+        // contact_phone: 'Contact Phone test',
+        // district_id: 1,
+        // type: 'casa',
+        // iptu: 12000,
+        // price: 500000,
+        // land_area: 250,
+        // building_area: 50,
+        // image: null,
+        // address: 'Rua Latanjeira, 123',
+        // rooms: 4,
+        // bathrooms: 2,
+        // suites: 1,
+        // garages: 2,
+        // floor: 2,
+        // building_floors: 12,
+        // property_floors: 2,
+        // delivery_key: '2023-01-01',
+        // min_act: 10000,
+        // installment_payment: false,
+        // incc_financing: true,
+        // documents: true,
+        // finsh_type: 'Cerâmica',
+        // air_conditioning: 'não incluso',
+        // garden: true,
+        // pool: true,
+        // balcony: true,
+        // acept_pets: true,
+        // acessibility: true,
+        // obs: 'Empreendimento alto padrão e bem localizado',
     });
 
     const handleSetData = (field: keyof PropertyCreateForm, value: string | number | boolean | null) => {
@@ -116,27 +145,47 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                 <h1 className="mb-6 text-2xl font-bold">Cadastro de Imóvel</h1>
 
                 <form onSubmit={submit} className="space-y-6">
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 mb-3">
                         <FormInput
                             label="Descrição"
                             placeholder="Ex: Troplical Park (duplex)"
-                            value={data.address || ''}
+                            value={data.description || ''}
                             onChange={(value) => handleSetData('description', value)}
+                            error={errors.description}
+                        />
+
+                        <FormInput
+                            label="Endereço"
+                            placeholder="Ex: Rua das Laranjeiras, 087 - Centro"
+                            value={data.address || ''}
+                            onChange={(value) => handleSetData('address', value)}
                             error={errors.address}
                         />
+
+                        <FormInput
+                            label="Site/Link para informações"
+                            placeholder="Ex: https://www.meusempreendimento.com.br"
+                            value={data.link || ''}
+                            onChange={(value) => handleSetData('link', value)}
+                            error={errors.link}
+                        />
+
                         <FormInput
                             label="Nome do Contato"
                             placeholder="Ex: João da Silva (Construtora Planeta)"
-                            value={data.address || ''}
+                            value={data.contact_name || ''}
                             onChange={(value) => handleSetData('contact_name', value)}
-                            error={errors.address}
+                            error={errors.contact_name}
                         />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 md:grid-cols-4 mb-3">
                         <FormInput
                             label="Telefone do Contato"
-                            value={data.address || ''}
+                            value={data.contact_phone || ''}
                             placeholder="Ex: (99) 99999-9999"
                             onChange={(value) => handleSetData('contact_phone', value)}
-                            error={errors.address}
+                            error={errors.contact_phone}
                         />
 
                         <FormSelect
@@ -169,14 +218,6 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                         />
 
                         <FormInput
-                            label="Endereço"
-                            placeholder="Ex: Rua das Laranjeiras, 087 - Centro"
-                            value={data.address || ''}
-                            onChange={(value) => handleSetData('address', value)}
-                            error={errors.address}
-                        />
-
-                        <FormInput
                             label="IPTU (R$)"
                             type="number"
                             min={0}
@@ -185,9 +226,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             error={errors.iptu}
                             required
                         />
-                    </div>
 
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <FormInput
                             label="Área do Terreno (m²)"
                             type="number"
@@ -207,9 +246,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             onChange={(value) => handleSetData('building_area', value ? value : null)}
                             error={errors.building_area}
                         />
-                    </div>
 
-                    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                         <FormInput
                             label="Quartos"
                             type="number"
@@ -265,16 +302,14 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                         />
 
                         <FormInput
-                            label="Andares da Propriedade"
+                            label="Andares do Imóvel"
                             type="number"
                             min={0}
                             value={data.property_floors ?? 0}
                             onChange={(value) => handleSetData('property_floors', value)}
                             error={errors.property_floors}
                         />
-                    </div>
 
-                    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                         <FormInput
                             label="Data de Entrega"
                             type="date"
@@ -292,22 +327,6 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             error={errors.min_act}
                         />
 
-                        <FormSelect
-                            label="Ar Condicionado"
-                            value={data.air_conditioning}
-                            onValueChange={(value) => handleSetData('air_conditioning', value as PropertyCreateForm['air_conditioning'])}
-                            options={airConditioningOptions}
-                            error={errors.air_conditioning}
-                        />
-
-                        <FormInput
-                            label="Tipo de Acabamento"
-                            placeholder='Ex: Cerâmica, Porcelanato, etc.'
-                            value={data.finsh_type || ''}
-                            onChange={(value) => handleSetData('finsh_type', value)}
-                            error={errors.finsh_type}
-                        />
-
                         {/* Boolean Features */}
                         {Object.entries(booleanFeatureLabels).map(([field, label]) => (
                             <FormSelect
@@ -321,14 +340,35 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                         ))}
                     </div>
 
-                    {/* Description Section */}
-                    <div>
-                        <FormTextarea
-                            label="Observações"
-                            value={data.obs || ''}
-                            onChange={(value) => handleSetData('obs', value)}
-                            error={errors.obs}
-                        />
+                    <div className="grid grid-cols-4 gap-4">
+                        <div className="col-span-2 md:col-span-1">
+                            <FormSelect
+                                label="Ar Condicionado"
+                                value={data.air_conditioning}
+                                onValueChange={(value) => handleSetData('air_conditioning', value as PropertyCreateForm['air_conditioning'])}
+                                options={airConditioningOptions}
+                                error={errors.air_conditioning}
+                            />
+                        </div>
+
+                        <div className="col-span-2 md:col-span-1">
+                            <FormInput
+                                label="Tipo de Acabamento"
+                                placeholder="Ex: Cerâmica, Porcelanato, etc."
+                                value={data.finsh_type || ''}
+                                onChange={(value) => handleSetData('finsh_type', value)}
+                                error={errors.finsh_type}
+                            />
+                        </div>
+
+                        <div className="col-span-4 md:col-span-2">
+                            <FormInput
+                                label="Observações"
+                                value={data.obs || ''}
+                                onChange={(value) => handleSetData('obs', value)}
+                                error={errors.obs}
+                            />
+                        </div>
                     </div>
 
                     <div className="flex items-center gap-4">

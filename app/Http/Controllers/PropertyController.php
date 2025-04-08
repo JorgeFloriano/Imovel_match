@@ -50,7 +50,6 @@ class PropertyController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'user_id' => Auth::user()->id,
             'contact_name' => 'nullable|string',
             'contact_phone' => 'nullable|string',
             'district_id' => 'required|integer|exists:districts,id',
@@ -83,6 +82,8 @@ class PropertyController extends Controller
             'acessibility' => 'nullable|boolean',
             'obs' => 'nullable|string',
         ]);
+
+        $validated['user_id'] =  Auth::user()->id;
 
         $property = Property::create($validated);
 
