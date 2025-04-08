@@ -75,7 +75,7 @@ const booleanFeatureLabels = {
     documents: 'Documentação OK',
 };
 
-export default function ShowProperty({ property, typeOptions, airConditioningOptions, booleanOptions }: PropertyShowProps) {
+export default function ShowProperty({ property, booleanOptions }: PropertyShowProps) {
     const { delete: destroy } = useForm();
 
     const handleDelete = () => {
@@ -108,7 +108,7 @@ export default function ShowProperty({ property, typeOptions, airConditioningOpt
             <Head title={`Propriedade - ${property.address || 'Sem endereço'}`} />
             <div className="h-full gap-4 space-y-6 rounded-xl p-4">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Detalhes da Propriedade</h1>
+                    <h1 className="text-2xl font-bold">Informações do Imóvel</h1>
                     <div className="flex gap-2">
                         <Button asChild variant="outline">
                             <Link href={route('properties.index')}>Voltar</Link>
@@ -207,7 +207,7 @@ export default function ShowProperty({ property, typeOptions, airConditioningOpt
                         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                             <div>
                                 <h3 className="text-sm font-medium text-neutral-500">Data de Entrega</h3>
-                                <p className="text-sm">{formatDate(property.delivery_key)}</p>
+                                <p className="text-sm">{formatDate(property.delivery_key || '-')}</p>
                             </div>
                             <div>
                                 <h3 className="text-sm font-medium text-neutral-500">Ato Mínimo</h3>

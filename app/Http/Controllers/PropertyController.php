@@ -52,6 +52,7 @@ class PropertyController extends Controller
         $validated = $request->validate([
             'contact_name' => 'nullable|string',
             'contact_phone' => 'nullable|string',
+            'contact_link' => 'nullable|string',
             'district_id' => 'required|integer|exists:districts,id',
             'type' => 'nullable|in:casa,casa (condom.),sobrado,apartamento,apart. c/ elevad.,terreno,loja,garagem,sala,outros',
             'iptu' => 'nullable|numeric|min:0',
@@ -159,6 +160,7 @@ class PropertyController extends Controller
             'district_id' => 'required|integer|exists:districts,id',
             'contact_name' => 'nullable|string',
             'contact_phone' => 'nullable|string',
+            'contact_link' => 'nullable|string',
             'type' => 'nullable|in:casa,casa (condom.),sobrado,apartamento,apart. c/ elevad.,terreno,loja,garagem,sala,outros',
             'iptu' => 'nullable|numeric|min:0',
             'description' => 'nullable|string',

@@ -1,9 +1,9 @@
 import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { Delete, Edit, Expand } from 'lucide-react';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 interface Region {
     id: number;
@@ -26,7 +26,10 @@ interface Property {
     id: number;
     district_id: number;
     type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
-    iptu: string | null;
+    iptu: number;
+    contact_name: string | null;
+    contact_phone: string | null;
+    contact_link: string | null;
     description: string | null;
     price: number;
     land_area: number | null;
@@ -78,7 +81,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
                         <thead className="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-800 dark:text-gray-400">
                             <tr>
                                 <th scope="col" className="px-6 py-3">
-                                    Descrição
+                                    Descrição/Link
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Tipo
@@ -90,7 +93,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                     Quartos
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Bairro 
+                                    Bairro
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Região
@@ -104,17 +107,22 @@ export default function Properties({ properties }: { properties: Property[] }) {
                             {properties.map((property) => (
                                 <tr key={property.id} className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
                                     <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-gray-900 dark:text-white">
-                                        {property.description || 'Sem descrição'}
+                                        <a
+                                            href={property.contact_link || '#'}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center space-x-2 font-medium"
+                                        >
+                                            {property.description || 'Sem descrição'}
+                                        </a>
                                     </th>
                                     <td className="px-6 py-4">
-                                        {property.type ? 
-                                            property.type.charAt(0).toUpperCase() + property.type.slice(1) : 
-                                            'Não especificado'}
+                                        {property.type ? property.type.charAt(0).toUpperCase() + property.type.slice(1) : 'Não especificado'}
                                     </td>
                                     <td className="px-6 py-4">
                                         {new Intl.NumberFormat('pt-BR', {
                                             style: 'currency',
-                                            currency: 'BRL'
+                                            currency: 'BRL',
                                         }).format(property.price)}
                                     </td>
                                     <td className="px-6 py-4">{property.rooms}</td>
@@ -129,7 +137,10 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                             {Edit && <Icon iconNode={Edit} />}
                                         </a>
 
-                                        <a href={route('properties.show', property.id)} className="font-medium text-red-600 hover:underline dark:text-red-500">
+                                        <a
+                                            href={route('properties.show', property.id)}
+                                            className="font-medium text-red-600 hover:underline dark:text-red-500"
+                                        >
                                             {Delete && <Icon iconNode={Delete} />}
                                         </a>
 
@@ -138,26 +149,19 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                                 <button>{Expand && <Icon iconNode={Expand} />}</button>
                                             </DialogTrigger>
                                             <DialogContent>
-                                                <DialogTitle>{property.address || 'Propriedade sem endereço'}</DialogTitle>
+                                                <DialogTitle>{property.description || 'Imóvel sem descrição'}</DialogTitle>
                                                 <p>
-                                                    <strong>Tipo: </strong> {property.type || 'Não especificado'}
-                                                    <br />
-                                                    <strong>Proprietário: </strong> {property.user.name}
-                                                    <br />
-                                                    <strong>Bairro: </strong> {property.district.name}
-                                                    <br />
-                                                    <strong>Preço: </strong> {new Intl.NumberFormat('pt-BR', {
+                                                    <strong>Nome do Contato: </strong> {property.contact_name || 'Sem contato'} <br />
+                                                    <strong>Tel./Whatsapp: </strong> {property.contact_phone || 'Sem contato'} <br />
+                                                    <strong>IPTU: </strong>
+                                                    {new Intl.NumberFormat('pt-BR', {
                                                         style: 'currency',
-                                                        currency: 'BRL'
-                                                    }).format(property.price)}
-                                                    <br />
-                                                    <strong>IPTU: </strong> {property.iptu || 'Não informado'}
+                                                        currency: 'BRL',
+                                                    }).format(property.iptu)}
                                                     <br />
                                                     <strong>Área do Terreno (m²): </strong> {property.land_area || 'Não informado'}
                                                     <br />
                                                     <strong>Área Construída (m²): </strong> {property.building_area || 'Não informado'}
-                                                    <br />
-                                                    <strong>Quartos: </strong> {property.rooms || 'Não informado'}
                                                     <br />
                                                     <strong>Banheiros: </strong> {property.bathrooms || 'Não informado'}
                                                     <br />
@@ -171,18 +175,18 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                                     <br />
                                                     <strong>Andares da Propriedade: </strong> {property.property_floors || 'Não informado'}
                                                     <br />
-                                                    <strong>Data de Entrega: </strong> 
-                                                    {property.delivery_key 
-                                                        ? new Date(property.delivery_key).toLocaleDateString('pt-BR') 
+                                                    <strong>Data de Entrega: </strong>
+                                                    {property.delivery_key
+                                                        ? new Date(property.delivery_key).toLocaleDateString('pt-BR')
                                                         : 'Não informada'}
                                                     <br />
                                                     <strong>Ato Mínimo: </strong> {property.min_act || 'Não informado'}
                                                     <br />
                                                     <strong>Entrada Parcelada: </strong> {property.installment_payment ? 'Sim' : 'Não'}
                                                     <br />
-                                                    <strong>Financiamento INCC: </strong> {property.incc_financing ? 'Sim' : 'Não'}
+                                                    <strong>INCC/Financ.: </strong> {property.incc_financing ? 'Sim' : 'Não'}
                                                     <br />
-                                                    <strong>Documentação OK: </strong> {property.documents ? 'Sim' : 'Não'}
+                                                    <strong>Documentação Inclusa: </strong> {property.documents ? 'Sim' : 'Não'}
                                                     <br />
                                                     <strong>Tipo de Acabamento: </strong> {property.finsh_type || 'Não informado'}
                                                     <br />

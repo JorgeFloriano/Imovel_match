@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->string('contact_name')->nullable();
             $table->string('contact_phone')->nullable();
+            $table->string('contact_link')->nullable();
             $table->foreignId('district_id')->constrained();
             $table->enum('type', [
                 'casa',
@@ -60,7 +61,7 @@ return new class extends Migration
             $table->boolean('balcony')->nullable(); // varanda
             $table->boolean('acept_pets')->nullable();
             $table->boolean('acessibility')->nullable();
-            $table->text('obs')->nullable();
+            $table->string('obs')->nullable();
             $table->timestamps();
         });
     }

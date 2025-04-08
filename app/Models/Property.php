@@ -26,6 +26,7 @@ class Property extends Model
         'district_id',
         'contact_name',
         'contact_phone',
+        'contact_link',
         'type',
         'iptu',
         'description',

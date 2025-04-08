@@ -11,6 +11,7 @@ type PropertyCreateForm = {
     description: string | null;
     contact_name: string | null;
     contact_phone: string | null;
+    contact_link: string | null;
     district_id?: number;
     type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
     iptu: number;
@@ -57,74 +58,76 @@ const booleanFeatureLabels = {
     acessibility: 'Acessibilidade',
     installment_payment: 'Entrada Parcelada',
     incc_financing: 'INCC/Financ.',
-    documents: 'Documentação inclusa',
+    documents: 'Documentação Inclusa',
 };
 
 export default function CreateProperty({ typeOptions, airConditioningOptions, booleanOptions, districtOptions }: CreatePropertyProps) {
     const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm<PropertyCreateForm>({
-        description: null,
-        contact_name: null,
-        contact_phone: null,
-        district_id: undefined,
-        type: null,
-        iptu: 0,
-        price: 0,
-        land_area: 0,
-        building_area: 0,
-        image: null,
-        address: '',
-        rooms: 0,
-        bathrooms: 0,
-        suites: 0,
-        garages: 0,
-        floor: 0,
-        building_floors: 0,
-        property_floors: 0,
-        delivery_key: '',
-        min_act: null,
-        installment_payment: false,
-        incc_financing: null,
-        documents: null,
-        finsh_type: null,
-        air_conditioning: 'não incluso',
-        garden: null,
-        pool: null,
-        balcony: null,
-        acept_pets: null,
-        acessibility: null,
-        obs: null,
-
-        // description: 'Description test',
-        // contact_name: 'Contact Name test',
-        // contact_phone: 'Contact Phone test',
-        // district_id: 1,
-        // type: 'casa',
-        // iptu: 12000,
-        // price: 500000,
-        // land_area: 250,
-        // building_area: 50,
+        // description: null,
+        // contact_name: null,
+        // contact_phone: null,
+        // contact_link: null,
+        // district_id: undefined,
+        // type: null,
+        // iptu: 0,
+        // price: 0,
+        // land_area: 0,
+        // building_area: 0,
         // image: null,
-        // address: 'Rua Latanjeira, 123',
-        // rooms: 4,
-        // bathrooms: 2,
-        // suites: 1,
-        // garages: 2,
-        // floor: 2,
-        // building_floors: 12,
-        // property_floors: 2,
-        // delivery_key: '2023-01-01',
-        // min_act: 10000,
+        // address: '',
+        // rooms: 0,
+        // bathrooms: 0,
+        // suites: 0,
+        // garages: 0,
+        // floor: 0,
+        // building_floors: 0,
+        // property_floors: 0,
+        // delivery_key: '',
+        // min_act: null,
         // installment_payment: false,
-        // incc_financing: true,
-        // documents: true,
-        // finsh_type: 'Cerâmica',
+        // incc_financing: null,
+        // documents: null,
+        // finsh_type: null,
         // air_conditioning: 'não incluso',
-        // garden: true,
-        // pool: true,
-        // balcony: true,
-        // acept_pets: true,
-        // acessibility: true,
-        // obs: 'Empreendimento alto padrão e bem localizado',
+        // garden: null,
+        // pool: null,
+        // balcony: null,
+        // acept_pets: null,
+        // acessibility: null,
+        // obs: null,
+
+        description: 'Troplical Park (duplex) test',
+        contact_name: 'John Doe test',
+        contact_phone: '(11) 99999-9999',
+        contact_link: 'https://www.mylink.com.br',
+        district_id: 1,
+        type: 'casa',
+        iptu: 12000,
+        price: 500000,
+        land_area: 250,
+        building_area: 50,
+        image: null,
+        address: 'Rua Latanjeira, 123',
+        rooms: 4,
+        bathrooms: 2,
+        suites: 1,
+        garages: 2,
+        floor: 2,
+        building_floors: 12,
+        property_floors: 2,
+        delivery_key: '2023-01-01',
+        min_act: 10000,
+        installment_payment: false,
+        incc_financing: true,
+        documents: true,
+        finsh_type: 'Cerâmica',
+        air_conditioning: 'não incluso',
+        garden: true,
+        pool: true,
+        balcony: true,
+        acept_pets: true,
+        acessibility: true,
+        obs: 'Empreendimento alto padrão e bem localizado',
     });
 
     const handleSetData = (field: keyof PropertyCreateForm, value: string | number | boolean | null) => {
@@ -145,7 +148,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                 <h1 className="mb-6 text-2xl font-bold">Cadastro de Imóvel</h1>
 
                 <form onSubmit={submit} className="space-y-6">
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 mb-3">
+                    <div className="mb-3 grid grid-cols-1 gap-4 md:grid-cols-2">
                         <FormInput
                             label="Descrição"
                             placeholder="Ex: Troplical Park (duplex)"
@@ -165,9 +168,9 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                         <FormInput
                             label="Site/Link para informações"
                             placeholder="Ex: https://www.meusempreendimento.com.br"
-                            value={data.link || ''}
-                            onChange={(value) => handleSetData('link', value)}
-                            error={errors.link}
+                            value={data.contact_link || ''}
+                            onChange={(value) => handleSetData('contact_link', value)}
+                            error={errors.contact_link}
                         />
 
                         <FormInput
@@ -179,9 +182,9 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                         />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 md:grid-cols-4 mb-3">
+                    <div className="mb-3 grid grid-cols-2 gap-4 md:grid-cols-4">
                         <FormInput
-                            label="Telefone do Contato"
+                            label="Tel./WhatsApp"
                             value={data.contact_phone || ''}
                             placeholder="Ex: (99) 99999-9999"
                             onChange={(value) => handleSetData('contact_phone', value)}

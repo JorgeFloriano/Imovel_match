@@ -80,7 +80,7 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                     Renda
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Telefone
+                                    Tel./Whatsapp
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     <span>Ações</span>

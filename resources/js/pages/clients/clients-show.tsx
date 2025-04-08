@@ -99,7 +99,7 @@ export default function ShowClient({ client, maritalStatusOptions, booleanOption
             <Head title={`Cliente - ${client.name}`} />
             <div className="h-full gap-4 space-y-6 rounded-xl p-4">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Detalhes do Cliente</h1>
+                    <h1 className="text-2xl font-bold">Informações do Cliente</h1>
                     <div className="flex gap-2">
                         <Button asChild variant="outline">
                             <Link href={route('clients.index')}>Voltar</Link>
