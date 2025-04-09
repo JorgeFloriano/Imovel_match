@@ -83,7 +83,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
         delivery_key: '',
         min_act: 0,
         installment_payment: undefined,
-        air_conditioning: undefined,
+        air_conditioning: '',
         garden: undefined,
         pool: undefined,
         balcony: undefined,
@@ -162,7 +162,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <FormInput
                                 label="Nome Completo"
-                                placeholder="Nome Completo"
+                                placeholder="Ex.: João Paulo Pereira Mendonsa"
                                 value={data.name}
                                 onChange={(value) => handleSetData('name', value)}
                                 error={errors.name}
@@ -172,6 +172,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                             <div className="grid grid-cols-2 gap-4">
                                 <FormInput
                                     label="Telefone"
+                                    placeholder='(99) 99999-9999'
                                     type="tel"
                                     value={data.phone}
                                     onChange={(value) => handleSetData('phone', value)}
@@ -191,6 +192,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                             <FormInput
                                 label="E-mail"
                                 type="email"
+                                placeholder='Ex.: joaomendonsa@gmail.com'
                                 value={data.email}
                                 onChange={(value) => handleSetData('email', value)}
                                 error={errors.email}
@@ -198,6 +200,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
 
                             <FormInput
                                 label="Endereço"
+                                placeholder='Ex.: Rua dos Aquidaban, 430'
                                 value={data.address}
                                 onChange={(value) => handleSetData('address', value)}
                                 error={errors.address}
@@ -205,6 +208,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
 
                             <FormInput
                                 label="Profissão"
+                                placeholder='Ex.: Advogado'
                                 value={data.profession}
                                 onChange={(value) => handleSetData('profession', value)}
                                 error={errors.profession}
@@ -395,6 +399,8 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
 
                             <FormTextarea
                                 label="Observações"
+                                rows={1}
+                                placeholder="Ex.: Cliente quer uma casa com vista para o mar..."
                                 value={data.obs || ''}
                                 onChange={(value) => handleSetData('obs', value)}
                                 error={errors.obs}

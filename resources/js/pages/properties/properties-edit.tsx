@@ -1,6 +1,5 @@
 import { FormInput } from '@/components/form-input';
 import { FormSelect } from '@/components/form-select';
-import { FormTextarea } from '@/components/form-textarea';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { Transition } from '@headlessui/react';
@@ -9,17 +8,20 @@ import { Loader2 } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 type PropertyEditForm = {
-    user_id: number;
-    district_id: number;
-    type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
-    iptu: string | null;
+    id: number;
     description: string | null;
+    contact_name: string | null;
+    contact_phone: string | null;
+    contact_link: string | null;
+    district_id?: number;
+    type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
+    iptu: number;
     price: number;
-    land_area: number | null;
-    building_area: number | null;
+    land_area: number;
+    building_area: number;
     image: string | null;
     address: string | null;
-    rooms: number | null;
+    rooms?: number;
     bathrooms: number | null;
     suites: number | null;
     garages: number | null;
@@ -42,7 +44,7 @@ type PropertyEditForm = {
 };
 
 interface EditPropertyProps {
-    property: PropertyEditForm & { id: number };
+    property: PropertyEditForm;
     typeOptions: Record<string, string>;
     airConditioningOptions: Record<string, string>;
     booleanOptions: Record<string, string>;
@@ -57,8 +59,8 @@ const booleanFeatureLabels = {
     acept_pets: 'Aceita Pets',
     acessibility: 'Acessibilidade',
     installment_payment: 'Entrada Parcelada',
-    incc_financing: 'Financiamento INCC',
-    documents: 'Documentação OK',
+    incc_financing: 'INCC/Financ.',
+    documents: 'Documentação Inclusa',
 };
 
 export default function EditProperty({ 
@@ -66,11 +68,42 @@ export default function EditProperty({
     typeOptions, 
     airConditioningOptions, 
     booleanOptions, 
-    districtOptions, 
-    userOptions 
+    districtOptions 
 }: EditPropertyProps) {
-    const { data, setData, put, processing, errors, recentlySuccessful } = useForm<PropertyEditForm>({
-        ...property,
+    const { data, setData, put, processing, errors, recentlySuccessful, reset } = useForm<PropertyEditForm>({
+        id: property.id,
+        description: property.description,
+        contact_name: property.contact_name,
+        contact_phone: property.contact_phone,
+        contact_link: property.contact_link,
+        district_id: property.district_id,
+        type: property.type,
+        iptu: property.iptu,
+        price: property.price,
+        land_area: property.land_area,
+        building_area: property.building_area,
+        image: property.image,
+        address: property.address,
+        rooms: property.rooms,
+        bathrooms: property.bathrooms,
+        suites: property.suites,
+        garages: property.garages,
+        floor: property.floor,
+        building_floors: property.building_floors,
+        property_floors: property.property_floors,
+        delivery_key: property.delivery_key,
+        min_act: property.min_act,
+        installment_payment: property.installment_payment,
+        incc_financing: property.incc_financing,
+        documents: property.documents,
+        finsh_type: property.finsh_type,
+        air_conditioning: property.air_conditioning,
+        garden: property.garden,
+        pool: property.pool,
+        balcony: property.balcony,
+        acept_pets: property.acept_pets,
+        acessibility: property.acessibility,
+        obs: property.obs,
     });
 
     const handleSetData = (field: keyof PropertyEditForm, value: string | number | boolean | null) => {
@@ -82,28 +115,64 @@ export default function EditProperty({
         put(route('properties.update', property.id));
     };
 
+    // Converting delivery_key to date
+    if (data.delivery_key !== null && typeof data.delivery_key === 'string' && data.delivery_key !== '') 
+        data.delivery_key = new Date(data.delivery_key ?? '').toISOString().split('T')[0];
+
     return (
         <AppLayout>
-            <Head title="Editar Propriedade" />
+            <Head title="Edição de Propriedade" />
             <div className="h-full gap-4 space-y-6 rounded-xl p-4">
-                <h1 className="mb-6 text-2xl font-bold">Editar Propriedade</h1>
+                <h1 className="mb-6 text-2xl font-bold">Edição de Imóvel</h1>
 
                 <form onSubmit={submit} className="space-y-6">
-                    {/* Basic Information Section */}
-                    <h2 className="text-lg font-semibold">Informações Básicas</h2>
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <FormSelect
-                            label="Proprietário"
-                            value={data.user_id.toString()}
-                            onValueChange={(value) => handleSetData('user_id', parseInt(value))}
-                            options={userOptions}
-                            error={errors.user_id}
-                            required
+                    <div className="mb-3 grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <FormInput
+                            label="Descrição"
+                            placeholder="Ex: Troplical Park (duplex)"
+                            value={data.description || ''}
+                            onChange={(value) => handleSetData('description', value)}
+                            error={errors.description}
+                        />
+
+                        <FormInput
+                            label="Endereço"
+                            placeholder="Ex: Rua das Laranjeiras, 087 - Centro"
+                            value={data.address || ''}
+                            onChange={(value) => handleSetData('address', value)}
+                            error={errors.address}
+                        />
+
+                        <FormInput
+                            label="Site/Link para informações"
+                            placeholder="Ex: https://www.meuempreendimento.com.br"
+                            value={data.contact_link || ''}
+                            onChange={(value) => handleSetData('contact_link', value)}
+                            error={errors.contact_link}
+                        />
+
+                        <FormInput
+                            label="Nome do Contato"
+                            placeholder="Ex: João da Silva (Construtora Planeta)"
+                            value={data.contact_name || ''}
+                            onChange={(value) => handleSetData('contact_name', value)}
+                            error={errors.contact_name}
+                        />
+                    </div>
+
+                    <div className="mb-3 grid grid-cols-2 gap-4 md:grid-cols-4">
+                        <FormInput
+                            label="Tel./WhatsApp"
+                            value={data.contact_phone || ''}
+                            placeholder="Ex: (99) 99999-9999"
+                            onChange={(value) => handleSetData('contact_phone', value)}
+                            error={errors.contact_phone}
                         />
 
                         <FormSelect
                             label="Bairro"
-                            value={data.district_id.toString()}
+                            placeholder="Selecione um bairro"
+                            value={(data.district_id || '').toString()}
                             onValueChange={(value) => handleSetData('district_id', parseInt(value))}
                             options={districtOptions}
                             error={errors.district_id}
@@ -124,36 +193,28 @@ export default function EditProperty({
                             min={0}
                             step={0.01}
                             value={data.price}
-                            onChange={(value) => handleSetData('price', parseFloat(value))}
+                            onChange={(value) => handleSetData('price', value)}
                             error={errors.price}
                             required
                         />
 
                         <FormInput
-                            label="Endereço"
-                            value={data.address || ''}
-                            onChange={(value) => handleSetData('address', value)}
-                            error={errors.address}
-                        />
-
-                        <FormInput
-                            label="IPTU"
-                            value={data.iptu || ''}
+                            label="IPTU (R$)"
+                            type="number"
+                            min={0}
+                            value={data.iptu}
                             onChange={(value) => handleSetData('iptu', value)}
                             error={errors.iptu}
+                            required
                         />
-                    </div>
 
-                    {/* Area Information Section */}
-                    <h2 className="text-lg font-semibold">Áreas</h2>
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <FormInput
                             label="Área do Terreno (m²)"
                             type="number"
                             min={0}
                             step={0.01}
-                            value={data.land_area || ''}
-                            onChange={(value) => handleSetData('land_area', value ? parseFloat(value) : null)}
+                            value={data.land_area}
+                            onChange={(value) => handleSetData('land_area', value)}
                             error={errors.land_area}
                         />
 
@@ -162,21 +223,17 @@ export default function EditProperty({
                             type="number"
                             min={0}
                             step={0.01}
-                            value={data.building_area || ''}
-                            onChange={(value) => handleSetData('building_area', value ? parseFloat(value) : null)}
+                            value={data.building_area}
+                            onChange={(value) => handleSetData('building_area', value)}
                             error={errors.building_area}
                         />
-                    </div>
 
-                    {/* Rooms and Floors Section */}
-                    <h2 className="text-lg font-semibold">Composição</h2>
-                    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                         <FormInput
                             label="Quartos"
                             type="number"
                             min={0}
-                            value={data.rooms || ''}
-                            onChange={(value) => handleSetData('rooms', value ? parseInt(value) : null)}
+                            value={data.rooms ?? 0}
+                            onChange={(value) => handleSetData('rooms', value)}
                             error={errors.rooms}
                         />
 
@@ -184,8 +241,8 @@ export default function EditProperty({
                             label="Banheiros"
                             type="number"
                             min={0}
-                            value={data.bathrooms || ''}
-                            onChange={(value) => handleSetData('bathrooms', value ? parseInt(value) : null)}
+                            value={data.bathrooms ?? 0}
+                            onChange={(value) => handleSetData('bathrooms', value)}
                             error={errors.bathrooms}
                         />
 
@@ -193,8 +250,8 @@ export default function EditProperty({
                             label="Suítes"
                             type="number"
                             min={0}
-                            value={data.suites || ''}
-                            onChange={(value) => handleSetData('suites', value ? parseInt(value) : null)}
+                            value={data.suites ?? 0}
+                            onChange={(value) => handleSetData('suites', value)}
                             error={errors.suites}
                         />
 
@@ -202,8 +259,8 @@ export default function EditProperty({
                             label="Vagas de Garagem"
                             type="number"
                             min={0}
-                            value={data.garages || ''}
-                            onChange={(value) => handleSetData('garages', value ? parseInt(value) : null)}
+                            value={data.garages ?? 0}
+                            onChange={(value) => handleSetData('garages', value)}
                             error={errors.garages}
                         />
 
@@ -211,8 +268,8 @@ export default function EditProperty({
                             label="Andar"
                             type="number"
                             min={0}
-                            value={data.floor || ''}
-                            onChange={(value) => handleSetData('floor', value ? parseInt(value) : null)}
+                            value={data.floor ?? 0}
+                            onChange={(value) => handleSetData('floor', value)}
                             error={errors.floor}
                         />
 
@@ -220,24 +277,20 @@ export default function EditProperty({
                             label="Andares do Prédio"
                             type="number"
                             min={0}
-                            value={data.building_floors || ''}
-                            onChange={(value) => handleSetData('building_floors', value ? parseInt(value) : null)}
+                            value={data.building_floors ?? 0}
+                            onChange={(value) => handleSetData('building_floors', value)}
                             error={errors.building_floors}
                         />
 
                         <FormInput
-                            label="Andares da Propriedade"
+                            label="Andares do Imóvel"
                             type="number"
                             min={0}
-                            value={data.property_floors || ''}
-                            onChange={(value) => handleSetData('property_floors', value ? parseInt(value) : null)}
+                            value={data.property_floors ?? 0}
+                            onChange={(value) => handleSetData('property_floors', value)}
                             error={errors.property_floors}
                         />
-                    </div>
 
-                    {/* Features Section */}
-                    <h2 className="text-lg font-semibold">Características</h2>
-                    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                         <FormInput
                             label="Data de Entrega"
                             type="date"
@@ -250,24 +303,9 @@ export default function EditProperty({
                             label="Ato Mínimo"
                             type="number"
                             min={0}
-                            value={data.min_act || ''}
-                            onChange={(value) => handleSetData('min_act', value ? parseInt(value) : null)}
+                            value={data.min_act ?? 0}
+                            onChange={(value) => handleSetData('min_act', value)}
                             error={errors.min_act}
-                        />
-
-                        <FormSelect
-                            label="Ar Condicionado"
-                            value={data.air_conditioning}
-                            onValueChange={(value) => handleSetData('air_conditioning', value as PropertyEditForm['air_conditioning'])}
-                            options={airConditioningOptions}
-                            error={errors.air_conditioning}
-                        />
-
-                        <FormInput
-                            label="Tipo de Acabamento"
-                            value={data.finsh_type || ''}
-                            onChange={(value) => handleSetData('finsh_type', value)}
-                            error={errors.finsh_type}
                         />
 
                         {/* Boolean Features */}
@@ -283,21 +321,35 @@ export default function EditProperty({
                         ))}
                     </div>
 
-                    {/* Description Section */}
-                    <div>
-                        <FormTextarea
-                            label="Descrição"
-                            value={data.description || ''}
-                            onChange={(value) => handleSetData('description', value)}
-                            error={errors.description}
-                        />
+                    <div className="grid grid-cols-4 gap-4">
+                        <div className="col-span-2 md:col-span-1">
+                            <FormSelect
+                                label="Ar Condicionado"
+                                value={data.air_conditioning}
+                                onValueChange={(value) => handleSetData('air_conditioning', value as PropertyEditForm['air_conditioning'])}
+                                options={airConditioningOptions}
+                                error={errors.air_conditioning}
+                            />
+                        </div>
 
-                        <FormTextarea
-                            label="Observações"
-                            value={data.obs || ''}
-                            onChange={(value) => handleSetData('obs', value)}
-                            error={errors.obs}
-                        />
+                        <div className="col-span-2 md:col-span-1">
+                            <FormInput
+                                label="Tipo de Acabamento"
+                                placeholder="Ex: Cerâmica, Porcelanato, etc."
+                                value={data.finsh_type || ''}
+                                onChange={(value) => handleSetData('finsh_type', value)}
+                                error={errors.finsh_type}
+                            />
+                        </div>
+
+                        <div className="col-span-4 md:col-span-2">
+                            <FormInput
+                                label="Observações"
+                                value={data.obs || ''}
+                                onChange={(value) => handleSetData('obs', value)}
+                                error={errors.obs}
+                            />
+                        </div>
                     </div>
 
                     <div className="flex items-center gap-4">
@@ -313,7 +365,7 @@ export default function EditProperty({
                             leave="transition ease-in-out"
                             leaveTo="opacity-0"
                         >
-                            <p className="text-sm text-neutral-600">Propriedade atualizada</p>
+                            <p className="text-sm text-neutral-600">Propriedade Atualizada</p>
                         </Transition>
                     </div>
                 </form>

@@ -156,11 +156,10 @@ class PropertyController extends Controller
     public function update(Request $request, Property $property): RedirectResponse
     {
         $validated = $request->validate([
-            'user_id' => Auth::user()->id,
-            'district_id' => 'required|integer|exists:districts,id',
             'contact_name' => 'nullable|string',
             'contact_phone' => 'nullable|string',
             'contact_link' => 'nullable|string',
+            'district_id' => 'required|integer|exists:districts,id',
             'type' => 'nullable|in:casa,casa (condom.),sobrado,apartamento,apart. c/ elevad.,terreno,loja,garagem,sala,outros',
             'iptu' => 'nullable|numeric|min:0',
             'description' => 'nullable|string',
@@ -190,6 +189,8 @@ class PropertyController extends Controller
             'acessibility' => 'nullable|boolean',
             'obs' => 'nullable|string',
         ]);
+
+        $validated['user_id'] =  Auth::user()->id;
 
         $property->update($validated);
 

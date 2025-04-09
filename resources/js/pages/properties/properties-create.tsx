@@ -63,71 +63,71 @@ const booleanFeatureLabels = {
 
 export default function CreateProperty({ typeOptions, airConditioningOptions, booleanOptions, districtOptions }: CreatePropertyProps) {
     const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm<PropertyCreateForm>({
-        // description: null,
-        // contact_name: null,
-        // contact_phone: null,
-        // contact_link: null,
-        // district_id: undefined,
-        // type: null,
-        // iptu: 0,
-        // price: 0,
-        // land_area: 0,
-        // building_area: 0,
-        // image: null,
-        // address: '',
-        // rooms: 0,
-        // bathrooms: 0,
-        // suites: 0,
-        // garages: 0,
-        // floor: 0,
-        // building_floors: 0,
-        // property_floors: 0,
-        // delivery_key: '',
-        // min_act: null,
-        // installment_payment: false,
-        // incc_financing: null,
-        // documents: null,
-        // finsh_type: null,
-        // air_conditioning: 'não incluso',
-        // garden: null,
-        // pool: null,
-        // balcony: null,
-        // acept_pets: null,
-        // acessibility: null,
-        // obs: null,
-
-        description: 'Troplical Park (duplex) test',
-        contact_name: 'John Doe test',
-        contact_phone: '(11) 99999-9999',
-        contact_link: 'https://www.mylink.com.br',
-        district_id: 1,
-        type: 'casa',
-        iptu: 12000,
-        price: 500000,
-        land_area: 250,
-        building_area: 50,
+        description: null,
+        contact_name: null,
+        contact_phone: null,
+        contact_link: null,
+        district_id: undefined,
+        type: null,
+        iptu: 0,
+        price: 0,
+        land_area: 0,
+        building_area: 0,
         image: null,
-        address: 'Rua Latanjeira, 123',
-        rooms: 4,
-        bathrooms: 2,
-        suites: 1,
-        garages: 2,
-        floor: 2,
-        building_floors: 12,
-        property_floors: 2,
-        delivery_key: '2023-01-01',
-        min_act: 10000,
+        address: '',
+        rooms: 0,
+        bathrooms: 0,
+        suites: 0,
+        garages: 0,
+        floor: 0,
+        building_floors: 0,
+        property_floors: 0,
+        delivery_key: '',
+        min_act: null,
         installment_payment: false,
-        incc_financing: true,
-        documents: true,
-        finsh_type: 'Cerâmica',
+        incc_financing: null,
+        documents: null,
+        finsh_type: null,
         air_conditioning: 'não incluso',
-        garden: true,
-        pool: true,
-        balcony: true,
-        acept_pets: true,
-        acessibility: true,
-        obs: 'Empreendimento alto padrão e bem localizado',
+        garden: null,
+        pool: null,
+        balcony: null,
+        acept_pets: null,
+        acessibility: null,
+        obs: null,
+
+        // description: 'Troplical Park (duplex) test',
+        // contact_name: 'John Doe test',
+        // contact_phone: '(11) 99999-9999',
+        // contact_link: 'https://www.mylink.com.br',
+        // district_id: 1,
+        // type: 'casa',
+        // iptu: 12000,
+        // price: 500000,
+        // land_area: 250,
+        // building_area: 50,
+        // image: null,
+        // address: 'Rua Latanjeira, 123',
+        // rooms: 4,
+        // bathrooms: 2,
+        // suites: 1,
+        // garages: 2,
+        // floor: 2,
+        // building_floors: 12,
+        // property_floors: 2,
+        // delivery_key: '2023-01-01',
+        // min_act: 10000,
+        // installment_payment: false,
+        // incc_financing: true,
+        // documents: true,
+        // finsh_type: 'Cerâmica',
+        // air_conditioning: 'não incluso',
+        // garden: true,
+        // pool: true,
+        // balcony: true,
+        // acept_pets: true,
+        // acessibility: true,
+        // obs: 'Empreendimento alto padrão e bem localizado',
     });
 
     const handleSetData = (field: keyof PropertyCreateForm, value: string | number | boolean | null) => {
@@ -167,7 +167,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
 
                         <FormInput
                             label="Site/Link para informações"
-                            placeholder="Ex: https://www.meusempreendimento.com.br"
+                            placeholder="Ex: https://www.meuempreendimento.com.br"
                             value={data.contact_link || ''}
                             onChange={(value) => handleSetData('contact_link', value)}
                             error={errors.contact_link}
@@ -236,7 +236,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             min={0}
                             step={0.01}
                             value={data.land_area}
-                            onChange={(value) => handleSetData('land_area', value ? value : null)}
+                            onChange={(value) => handleSetData('land_area', value)}
                             error={errors.land_area}
                         />
 
@@ -246,7 +246,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             min={0}
                             step={0.01}
                             value={data.building_area}
-                            onChange={(value) => handleSetData('building_area', value ? value : null)}
+                            onChange={(value) => handleSetData('building_area', value)}
                             error={errors.building_area}
                         />
 
