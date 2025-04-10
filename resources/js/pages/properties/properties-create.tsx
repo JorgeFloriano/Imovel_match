@@ -160,6 +160,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                         <FormInput
                             label="Endereço"
                             placeholder="Ex: Rua das Laranjeiras, 087 - Centro"
+                            maxLength={100}
                             value={data.address || ''}
                             onChange={(value) => handleSetData('address', value)}
                             error={errors.address}

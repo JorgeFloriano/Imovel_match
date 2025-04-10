@@ -11,6 +11,7 @@ interface FormInputProps {
   className?: string;
   min?: number;
   max?: number;
+  maxLength?: number;
   step?: number;
   required?: boolean;
   placeholder?: string;
@@ -25,6 +26,7 @@ export function FormInput({
   className,
   min,
   max,
+  maxLength,
   step,
   required = false,
   placeholder,
@@ -47,6 +49,7 @@ export function FormInput({
         onChange={handleChange}
         min={min}
         max={max}
+        maxLength={maxLength}
         step={step}
         required={required}
         placeholder={placeholder}

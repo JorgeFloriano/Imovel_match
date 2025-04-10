@@ -10,6 +10,7 @@ interface FormTextareaProps {
   className?: string;
   rows?: number;
   placeholder?: string;
+  maxLength?: number;
 }
 
 export function FormTextarea({
@@ -20,6 +21,7 @@ export function FormTextarea({
   className,
   rows = 3,
   placeholder,
+  maxLength,
 }: FormTextareaProps) {
   return (
     <div className={className}>
@@ -34,6 +36,7 @@ export function FormTextarea({
               )}
         rows={rows}
         value={value}
+        maxLength={maxLength}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
       />

@@ -70,7 +70,7 @@ export default function EditProperty({
     booleanOptions, 
     districtOptions 
 }: EditPropertyProps) {
-    const { data, setData, put, processing, errors, recentlySuccessful, reset } = useForm<PropertyEditForm>({
+    const { data, setData, put, processing, errors, recentlySuccessful} = useForm<PropertyEditForm>({
         id: property.id,
         description: property.description,
         contact_name: property.contact_name,
@@ -138,6 +138,7 @@ export default function EditProperty({
                         <FormInput
                             label="Endereço"
                             placeholder="Ex: Rua das Laranjeiras, 087 - Centro"
+                            maxLength={100}
                             value={data.address || ''}
                             onChange={(value) => handleSetData('address', value)}
                             error={errors.address}

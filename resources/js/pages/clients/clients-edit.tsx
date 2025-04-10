@@ -77,7 +77,7 @@ const booleanFeatureLabels = {
 export default function EditClient({ client, maritalStatusOptions, booleanOptions, regionOptions }: EditClientProps) {
     const { data, setData, put, processing, errors, recentlySuccessful } = useForm<ClientEditForm>({
         ...client,
-        ...client.wishe ?? {},
+        ...(client.wishe ?? {}),
         need_financing: client.need_financing ?? true,
         has_property: client.has_property ?? false,
     });
@@ -92,8 +92,8 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
     };
 
     // Converting delivery_key to date
-    if (data.delivery_key !== null && typeof data.delivery_key === 'string' && data.delivery_key !== '') 
-    data.delivery_key = new Date(data.delivery_key ?? '').toISOString().split('T')[0];
+    if (data.delivery_key !== null && typeof data.delivery_key === 'string' && data.delivery_key !== '')
+        data.delivery_key = new Date(data.delivery_key ?? '').toISOString().split('T')[0];
 
     return (
         <AppLayout>
@@ -108,7 +108,8 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <FormInput
                                 label="Nome Completo"
-                                placeholder="Nome Completo"
+                                placeholder="Ex.: João Paulo Pereira Mendonsa"
+                                maxLength={60}
                                 value={data.name}
                                 onChange={(value) => handleSetData('name', value)}
                                 error={errors.name}
@@ -118,6 +119,8 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                             <div className="grid grid-cols-2 gap-4">
                                 <FormInput
                                     label="Telefone"
+                                    placeholder="(99) 99999-9999"
+                                    maxLength={20}
                                     type="tel"
                                     value={data.phone}
                                     onChange={(value) => handleSetData('phone', value)}
@@ -137,6 +140,8 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                             <FormInput
                                 label="E-mail"
                                 type="email"
+                                placeholder='Ex.: joaomendonsa@gmail.com'
+                                maxLength={60}
                                 value={data.email || ''}
                                 onChange={(value) => handleSetData('email', value)}
                                 error={errors.email}
@@ -144,6 +149,8 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
 
                             <FormInput
                                 label="Endereço"
+                                placeholder="Ex.: Rua João Paulo, 123"
+                                maxLength={100}
                                 value={data.address || ''}
                                 onChange={(value) => handleSetData('address', value)}
                                 error={errors.address}
@@ -151,6 +158,8 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
 
                             <FormInput
                                 label="Profissão"
+                                placeholder="Ex.: Desenvolvedor"
+                                maxLength={60}
                                 value={data.profession}
                                 onChange={(value) => handleSetData('profession', value)}
                                 error={errors.profession}
@@ -163,6 +172,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                     type="number"
                                     min={0}
                                     step={0.01}
+                                    max={9999999999}
                                     value={data.revenue}
                                     onChange={(value) => handleSetData('revenue', value)}
                                     error={errors.revenue}
@@ -174,6 +184,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                     type="number"
                                     min={0}
                                     step={0.01}
+                                    max={9999999999}
                                     value={data.fgts || ''}
                                     onChange={(value) => handleSetData('fgts', value)}
                                     error={errors.fgts}
@@ -190,6 +201,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                     label="Nº de Dependentes"
                                     type="number"
                                     min={0}
+                                    max={99}
                                     value={data.dependents}
                                     onChange={(value) => handleSetData('dependents', value)}
                                     error={errors.dependents}
@@ -213,6 +225,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                     type="number"
                                     min={0}
                                     step={0.01}
+                                    max={9999999999}
                                     value={data.capital}
                                     onChange={(value) => handleSetData('capital', value)}
                                     error={errors.capital}
@@ -254,6 +267,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                 label="Quartos"
                                 type="number"
                                 min={0}
+                                max={99}
                                 value={data.rooms || ''}
                                 onChange={(value) => handleSetData('rooms', value ? value : undefined)}
                                 error={errors.rooms}
@@ -263,6 +277,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                 label="Banheiros"
                                 type="number"
                                 min={0}
+                                max={99}
                                 value={data.bathrooms || ''}
                                 onChange={(value) => handleSetData('bathrooms', value ? value : undefined)}
                                 error={errors.bathrooms}
@@ -272,6 +287,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                 label="Suítes"
                                 type="number"
                                 min={0}
+                                max={99}
                                 value={data.suites || ''}
                                 onChange={(value) => handleSetData('suites', value ? value : undefined)}
                                 error={errors.suites}
@@ -281,6 +297,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                 label="Vagas na Garagem"
                                 type="number"
                                 min={0}
+                                max={99}
                                 value={data.garages || ''}
                                 onChange={(value) => handleSetData('garages', value ? value : undefined)}
                                 error={errors.garages}
@@ -298,6 +315,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                 label="Área Útil (m2)"
                                 type="number"
                                 min={0}
+                                max={9999999999}
                                 value={data.min_act || ''}
                                 onChange={(value) => handleSetData('min_act', value ? value : undefined)}
                                 error={errors.min_act}
@@ -341,7 +359,10 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
 
                             <FormTextarea
                                 label="Observações"
+                                rows={1}
                                 value={data.obs || ''}
+                                maxLength={300}
+                                placeholder='Ex.: Cliente quer casa com vista para o por do sol.'
                                 onChange={(value) => handleSetData('obs', value)}
                                 error={errors.obs}
                                 className="col-span-full"

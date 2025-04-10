@@ -163,6 +163,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                             <FormInput
                                 label="Nome Completo"
                                 placeholder="Ex.: João Paulo Pereira Mendonsa"
+                                maxLength={60}
                                 value={data.name}
                                 onChange={(value) => handleSetData('name', value)}
                                 error={errors.name}
@@ -173,6 +174,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 <FormInput
                                     label="Telefone"
                                     placeholder='(99) 99999-9999'
+                                    maxLength={20}
                                     type="tel"
                                     value={data.phone}
                                     onChange={(value) => handleSetData('phone', value)}
@@ -193,6 +195,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 label="E-mail"
                                 type="email"
                                 placeholder='Ex.: joaomendonsa@gmail.com'
+                                maxLength={60}
                                 value={data.email}
                                 onChange={(value) => handleSetData('email', value)}
                                 error={errors.email}
@@ -201,6 +204,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                             <FormInput
                                 label="Endereço"
                                 placeholder='Ex.: Rua dos Aquidaban, 430'
+                                maxLength={100}
                                 value={data.address}
                                 onChange={(value) => handleSetData('address', value)}
                                 error={errors.address}
@@ -209,6 +213,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                             <FormInput
                                 label="Profissão"
                                 placeholder='Ex.: Advogado'
+                                maxLength={60}
                                 value={data.profession}
                                 onChange={(value) => handleSetData('profession', value)}
                                 error={errors.profession}
@@ -221,6 +226,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                     type="number"
                                     min={0}
                                     step={0.01}
+                                    max={9999999999}
                                     value={data.revenue}
                                     onChange={(value) => handleSetData('revenue', value)}
                                     error={errors.revenue}
@@ -232,6 +238,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                     type="number"
                                     min={0}
                                     step={0.01}
+                                    max={9999999999}
                                     value={data.fgts}
                                     onChange={(value) => handleSetData('fgts', value)}
                                     error={errors.fgts}
@@ -248,6 +255,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                     label="Nº de Dependentes"
                                     type="number"
                                     min={0}
+                                    max={99}
                                     value={data.dependents}
                                     onChange={(value) => handleSetData('dependents', value)}
                                     error={errors.dependents}
@@ -271,6 +279,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                     type="number"
                                     min={0}
                                     step={0.01}
+                                    max={9999999999}
                                     value={data.capital}
                                     onChange={(value) => handleSetData('capital', value)}
                                     error={errors.capital}
@@ -312,6 +321,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 label="Quartos"
                                 type="number"
                                 min={0}
+                                max={99}
                                 value={data.rooms ?? 0}
                                 onChange={(value) => handleSetData('rooms', value)}
                                 error={errors.rooms}
@@ -321,6 +331,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 label="Banheiros"
                                 type="number"
                                 min={0}
+                                max={99}
                                 value={data.bathrooms ?? 0}
                                 onChange={(value) => handleSetData('bathrooms', value)}
                                 error={errors.bathrooms}
@@ -330,6 +341,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 label="Suítes"
                                 type="number"
                                 min={0}
+                                max={99}
                                 value={data.suites ?? 0}
                                 onChange={(value) => handleSetData('suites', value)}
                                 error={errors.suites}
@@ -339,6 +351,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 label="Vagas na Garagem"
                                 type="number"
                                 min={0}
+                                max={99}
                                 value={data.garages ?? 0}
                                 onChange={(value) => handleSetData('garages', value)}
                                 error={errors.garages}
@@ -356,6 +369,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 label="Área Útil (m2)"
                                 type="number"
                                 min={0}
+                                max={9999999999}
                                 value={data.min_act ?? 0}
                                 onChange={(value) => handleSetData('min_act', value)}
                                 error={errors.min_act}
@@ -400,6 +414,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                             <FormTextarea
                                 label="Observações"
                                 rows={1}
+                                maxLength={300}
                                 placeholder="Ex.: Cliente quer uma casa com vista para o mar..."
                                 value={data.obs || ''}
                                 onChange={(value) => handleSetData('obs', value)}

@@ -40,17 +40,17 @@ class ClientController extends Controller
     {
         $validated = $request->validate([
             // Client validation rules
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:60',
             'phone' => 'required|string|max:20',
-            'email' => 'nullable|email|max:255|unique:clients,email',
-            'address' => 'nullable|string',
+            'email' => 'nullable|email|max:60|unique:clients,email',
+            'address' => 'nullable|string|max:100',
             'marital_status' => 'required|string',
             'need_financing' => 'required|boolean',
             'dependents' => 'required|integer|min:0',
-            'profession' => 'required|string',
-            'revenue' => 'required|numeric|min:0',
-            'capital' => 'required|numeric|min:0',
-            'fgts' => 'nullable|numeric|min:0',
+            'profession' => 'required|string|max:60',
+            'revenue' => 'required|numeric|min:0|max:9999999999',
+            'capital' => 'required|numeric|min:0|max:9999999999',
+            'fgts' => 'nullable|numeric|min:0|max:9999999999',
             'has_property' => 'required|boolean',
             'compromised_income' => 'required|numeric|min:0|max:100',
 
@@ -58,12 +58,12 @@ class ClientController extends Controller
             'region_id' => 'nullable|integer|exists:regions,id',
             'district_id' => 'nullable|integer|exists:districts,id',
             'type' => 'nullable|in:casa,casa (condom.),sobrado,apartamento,apart. c/ elevad.,terreno,loja,garagem,sala,outros',
-            'rooms' => 'nullable|integer|min:0',
-            'bathrooms' => 'nullable|integer|min:0',
-            'suites' => 'nullable|integer|min:0',
-            'garages' => 'nullable|integer|min:0',
+            'rooms' => 'nullable|integer|min:0|max:99',
+            'bathrooms' => 'nullable|integer|min:0|max:99',
+            'suites' => 'nullable|integer|min:0|max:99',
+            'garages' => 'nullable|integer|min:0|max:99',
             'delivery_key' => 'nullable|date',
-            'min_act' => 'nullable|integer|min:0',
+            'min_act' => 'nullable|integer|min:0|max:9999999999',
             'installment_payment' => 'nullable|boolean',
             'air_conditioning' => 'nullable|in:incluso,somente infra,não incluso',
             'garden' => 'nullable|boolean',
@@ -71,7 +71,7 @@ class ClientController extends Controller
             'balcony' => 'nullable|boolean',
             'acept_pets' => 'nullable|boolean',
             'acessibility' => 'nullable|boolean',
-            'obs' => 'nullable|string',
+            'obs' => 'nullable|string|max:300',
         ]);
 
         // Create the client
@@ -162,17 +162,17 @@ class ClientController extends Controller
     {
         $validated = $request->validate([
             // Client validation rules
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:60',
             'phone' => 'required|string|max:20',
-            'email' => 'nullable|email|max:255|unique:clients,email,' . $client->id,
-            'address' => 'nullable|string',
+            'email' => 'nullable|email|max:60|unique:clients,email',
+            'address' => 'nullable|string|max:100',
             'marital_status' => 'required|string',
             'need_financing' => 'required|boolean',
             'dependents' => 'required|integer|min:0',
-            'profession' => 'required|string',
-            'revenue' => 'required|numeric|min:0',
-            'capital' => 'required|numeric|min:0',
-            'fgts' => 'nullable|numeric|min:0',
+            'profession' => 'required|string|max:60',
+            'revenue' => 'required|numeric|min:0|max:9999999999',
+            'capital' => 'required|numeric|min:0|max:9999999999',
+            'fgts' => 'nullable|numeric|min:0|max:9999999999',
             'has_property' => 'required|boolean',
             'compromised_income' => 'required|numeric|min:0|max:100',
 
@@ -180,12 +180,12 @@ class ClientController extends Controller
             'region_id' => 'nullable|integer|exists:regions,id',
             'district_id' => 'nullable|integer|exists:districts,id',
             'type' => 'nullable|in:casa,casa (condom.),sobrado,apartamento,apart. c/ elevad.,terreno,loja,garagem,sala,outros',
-            'rooms' => 'nullable|integer|min:0',
-            'bathrooms' => 'nullable|integer|min:0',
-            'suites' => 'nullable|integer|min:0',
-            'garages' => 'nullable|integer|min:0',
+            'rooms' => 'nullable|integer|min:0|max:99',
+            'bathrooms' => 'nullable|integer|min:0|max:99',
+            'suites' => 'nullable|integer|min:0|max:99',
+            'garages' => 'nullable|integer|min:0|max:99',
             'delivery_key' => 'nullable|date',
-            'min_act' => 'nullable|integer|min:0',
+            'min_act' => 'nullable|integer|min:0|max:9999999999',
             'installment_payment' => 'nullable|boolean',
             'air_conditioning' => 'nullable|in:incluso,somente infra,não incluso',
             'garden' => 'nullable|boolean',
@@ -193,7 +193,7 @@ class ClientController extends Controller
             'balcony' => 'nullable|boolean',
             'acept_pets' => 'nullable|boolean',
             'acessibility' => 'nullable|boolean',
-            'obs' => 'nullable|string',
+            'obs' => 'nullable|string|max:300',
         ]);
 
         // Update the client
