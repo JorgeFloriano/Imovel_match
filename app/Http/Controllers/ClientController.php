@@ -43,7 +43,7 @@ class ClientController extends Controller
             // Client validation rules
             'name' => 'required|string|max:60',
             'phone' => 'required|string|max:20',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.Client::class,
+            'email' => 'nullable|string|lowercase|email|max:255|unique:'.Client::class,
             'address' => 'nullable|string|max:100',
             'marital_status' => 'required|string',
             'need_financing' => 'required|boolean',
@@ -166,7 +166,7 @@ class ClientController extends Controller
             'name' => 'required|string|max:60',
             'phone' => 'required|string|max:20',
             'email' => [
-                'required',
+                'nullable',
                 'string',
                 'lowercase',
                 'email',
