@@ -1,25 +1,31 @@
-import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
-import laravel from 'laravel-vite-plugin';
-import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-    plugins: [
-        laravel({
-            input: ['resources/css/app.css', 'resources/js/app.tsx'],
-            ssr: 'resources/js/ssr.tsx',
-            refresh: true,
-        }),
-        react(),
-        tailwindcss(),
-    ],
-    esbuild: {
-        jsx: 'automatic',
+  plugins: [
+    laravel({
+      input: 'resources/js/app.tsx',
+      refresh: true,
+    }),
+    react(),
+    tailwindcss(),
+  ],
+  build: {
+    manifest: true,
+    outDir: 'public/build',
+    rollupOptions: {
+      output: {
+        // Disable code splitting completely
+        inlineDynamicImports: true,
+        // Consistent naming pattern
+        entryFileNames: 'assets/app.[hash].js',
+        assetFileNames: 'assets/[name].[hash][extname]'
+      }
     },
-    resolve: {
-        alias: {
-            'ziggy-js': resolve(__dirname, 'vendor/tightenco/ziggy'),
-        },
-    },
+    // Ensure all assets are properly included
+    assetsInlineLimit: 0
+  },
+  base: '/build/',
 });
