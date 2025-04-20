@@ -150,10 +150,12 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                     <div className="mb-3 grid grid-cols-1 gap-4 md:grid-cols-2">
                         <FormInput
                             label="Descrição"
+                            maxLength={100}
                             placeholder="Ex: Troplical Park (duplex)"
                             value={data.description || ''}
                             onChange={(value) => handleSetData('description', value)}
                             error={errors.description}
+                            required
                         />
 
                         <FormInput
@@ -168,6 +170,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                         <FormInput
                             label="Site/Link para informações"
                             placeholder="Ex: https://www.meuempreendimento.com.br"
+                            maxLength={100}
                             value={data.contact_link || ''}
                             onChange={(value) => handleSetData('contact_link', value)}
                             error={errors.contact_link}
@@ -176,6 +179,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                         <FormInput
                             label="Nome do Contato"
                             placeholder="Ex: João da Silva (Construtora Planeta)"
+                            maxLength={100}
                             value={data.contact_name || ''}
                             onChange={(value) => handleSetData('contact_name', value)}
                             error={errors.contact_name}
@@ -187,6 +191,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             label="Tel./WhatsApp"
                             value={data.contact_phone || ''}
                             placeholder="Ex: (99) 99999-9999"
+                            maxLength={20}
                             onChange={(value) => handleSetData('contact_phone', value)}
                             error={errors.contact_phone}
                         />
@@ -213,6 +218,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             label="Preço (R$)"
                             type="number"
                             min={0}
+                            max={9999999999}
                             step={0.01}
                             value={data.price}
                             onChange={(value) => handleSetData('price', value)}
@@ -224,6 +230,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             label="IPTU (R$)"
                             type="number"
                             min={0}
+                            max={9999999999}
                             value={data.iptu}
                             onChange={(value) => handleSetData('iptu', value)}
                             error={errors.iptu}
@@ -234,6 +241,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             label="Área do Terreno (m²)"
                             type="number"
                             min={0}
+                            max={9999999999}
                             step={0.01}
                             value={data.land_area}
                             onChange={(value) => handleSetData('land_area', value)}
@@ -244,6 +252,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             label="Área Construída (m²)"
                             type="number"
                             min={0}
+                            max={99999}
                             step={0.01}
                             value={data.building_area}
                             onChange={(value) => handleSetData('building_area', value)}
@@ -254,6 +263,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             label="Quartos"
                             type="number"
                             min={0}
+                            max={99}
                             value={data.rooms ?? 0}
                             onChange={(value) => handleSetData('rooms', value)}
                             error={errors.rooms}
@@ -263,6 +273,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             label="Banheiros"
                             type="number"
                             min={0}
+                            max={99}
                             value={data.bathrooms ?? 0}
                             onChange={(value) => handleSetData('bathrooms', value)}
                             error={errors.bathrooms}
@@ -272,6 +283,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             label="Suítes"
                             type="number"
                             min={0}
+                            max={99}
                             value={data.suites ?? 0}
                             onChange={(value) => handleSetData('suites', value)}
                             error={errors.suites}
@@ -281,6 +293,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             label="Vagas de Garagem"
                             type="number"
                             min={0}
+                            max={99}
                             value={data.garages ?? 0}
                             onChange={(value) => handleSetData('garages', value)}
                             error={errors.garages}
@@ -290,6 +303,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             label="Andar"
                             type="number"
                             min={0}
+                            max={99}
                             value={data.floor ?? 0}
                             onChange={(value) => handleSetData('floor', value)}
                             error={errors.floor}
@@ -299,6 +313,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             label="Andares do Prédio"
                             type="number"
                             min={0}
+                            max={99}
                             value={data.building_floors ?? 0}
                             onChange={(value) => handleSetData('building_floors', value)}
                             error={errors.building_floors}
@@ -308,6 +323,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             label="Andares do Imóvel"
                             type="number"
                             min={0}
+                            max={99}
                             value={data.property_floors ?? 0}
                             onChange={(value) => handleSetData('property_floors', value)}
                             error={errors.property_floors}
@@ -325,6 +341,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             label="Ato Mínimo"
                             type="number"
                             min={0}
+                            max={9999999999}
                             value={data.min_act ?? 0}
                             onChange={(value) => handleSetData('min_act', value)}
                             error={errors.min_act}
@@ -358,6 +375,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             <FormInput
                                 label="Tipo de Acabamento"
                                 placeholder="Ex: Cerâmica, Porcelanato, etc."
+                                maxLength={60}
                                 value={data.finsh_type || ''}
                                 onChange={(value) => handleSetData('finsh_type', value)}
                                 error={errors.finsh_type}
@@ -367,6 +385,8 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                         <div className="col-span-4 md:col-span-2">
                             <FormInput
                                 label="Observações"
+                                placeholder="Ex: Casa com 2 quartos, 1 suite, etc."
+                                maxLength={255}
                                 value={data.obs || ''}
                                 onChange={(value) => handleSetData('obs', value)}
                                 error={errors.obs}

@@ -11,6 +11,11 @@ use Inertia\Inertia;
 
 class ClientController extends Controller
 {
+    public $client;
+    public function __construct()
+    {
+        $this->client = new Client();
+    }
     public function index()
     {
         return Inertia::render('clients/clients-index', [
@@ -21,16 +26,8 @@ class ClientController extends Controller
     public function create()
     {
         return Inertia::render('clients/clients-create', [
-            'maritalStatusOptions' => [
-                'solteiro' => 'Solteiro(a)',
-                'casado' => 'Casado(a)',
-                'divorciado' => 'Divorciado(a)',
-                'viúvo' => 'Viúvo(a)',
-            ],
-            'booleanOptions' => [
-                'true' => 'Sim',
-                'false' => 'Não',
-            ],
+            'maritalStatusOptions' => $this->client->maritalStatOpt(),
+            'booleanOptions' => $this->client->boolOpt(),
             'regionOptions' => Region::orderBy('name')->get()->pluck('name', 'id'),
         ]);
     }
@@ -92,16 +89,8 @@ class ClientController extends Controller
     {
         return Inertia::render('clients/clients-show', [
             'client' => $client->load('wishe.region'),
-            'maritalStatusOptions' => [
-                'solteiro' => 'Solteiro(a)',
-                'casado' => 'Casado(a)',
-                'divorciado' => 'Divorciado(a)',
-                'viúvo' => 'Viúvo(a)',
-            ],
-            'booleanOptions' => [
-                'true' => 'Sim',
-                'false' => 'Não',
-            ],
+            'maritalStatusOptions' => $this->client->maritalStatOpt(),
+            'booleanOptions' => $this->client->boolOpt(),
         ]);
     }
 
@@ -109,16 +98,8 @@ class ClientController extends Controller
     {
         return Inertia::render('clients/clients-edit', [
             'client' => $client->load('wishe'),
-            'maritalStatusOptions' => [
-                'solteiro' => 'Solteiro(a)',
-                'casado' => 'Casado(a)',
-                'divorciado' => 'Divorciado(a)',
-                'viúvo' => 'Viúvo(a)',
-            ],
-            'booleanOptions' => [
-                'true' => 'Sim',
-                'false' => 'Não',
-            ],
+            'maritalStatusOptions' => $this->client->maritalStatOpt(),
+            'booleanOptions' => $this->client->boolOpt(),
             'regionOptions' => Region::orderBy('name')->get()->pluck('name', 'id'),
         ]);
     }

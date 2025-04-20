@@ -66,4 +66,19 @@ class Client extends Model
     {
         return $this->hasOne(Wishe::class, 'client_id');
     }
+    public function maritalStatOpt() {
+        return [
+            'solteiro' => 'Solteiro',
+            'casado' => 'Casado',
+            'separado' => 'Separado',
+            'divorciado' => 'Divorciado',
+            'viuvo' => 'Viuvo',
+        ];
+    }
+    public function boolOpt() {
+        return [
+            'true' => 'Sim',
+            'false' => 'Não',
+        ];
+    }
 }
