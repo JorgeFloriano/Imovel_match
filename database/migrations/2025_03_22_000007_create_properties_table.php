@@ -32,7 +32,7 @@ return new class extends Migration
             ])->nullable();
             $table->integer('iptu')->nullable();
             $table->string('description')->nullable();
-            $table->integer('price');
+            $table->integer('price')->nullable();
             $table->float('land_area')->nullable();
             $table->float('building_area')->nullable();
             $table->string('image')->nullable();
@@ -47,7 +47,7 @@ return new class extends Migration
             $table->date('delivery_key')->nullable();
             $table->integer('min_act')->nullable();
             // entrada parcelada
-            $table->boolean('installment_payment')->default(false);
+            $table->boolean('installment_payment')->nullable();
             $table->boolean('incc_financing')->nullable();
             $table->boolean('documents')->nullable();
             $table->string('finsh_type')->nullable();
@@ -55,7 +55,7 @@ return new class extends Migration
                 'incluso',
                 'somente infra',
                 'não incluso',
-            ])->default('não incluso');
+            ])->nullable();
             $table->boolean('garden')->nullable();
             $table->boolean('pool')->nullable();
             $table->boolean('balcony')->nullable(); // varanda

@@ -13,7 +13,7 @@ type PropertyEditForm = {
     contact_name: string | null;
     contact_phone: string | null;
     contact_link: string | null;
-    district_id?: number;
+    district_id?: string;
     type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
     iptu: number;
     price: number;
@@ -30,7 +30,7 @@ type PropertyEditForm = {
     property_floors: number | null;
     delivery_key: string | null;
     min_act: number | null;
-    installment_payment: boolean;
+    installment_payment: boolean | null;
     incc_financing: boolean | null;
     documents: boolean | null;
     finsh_type: string | null;
@@ -48,8 +48,7 @@ interface EditPropertyProps {
     typeOptions: Record<string, string>;
     airConditioningOptions: Record<string, string>;
     booleanOptions: Record<string, string>;
-    districtOptions: Record<string, string>;
-    userOptions: Record<string, string>;
+    districtOptions: Array<{ value: string; label: string }>;
 }
 
 const booleanFeatureLabels = {
@@ -63,47 +62,41 @@ const booleanFeatureLabels = {
     documents: 'Documentação Inclusa',
 };
 
-export default function EditProperty({ 
-    property, 
-    typeOptions, 
-    airConditioningOptions, 
-    booleanOptions, 
-    districtOptions 
-}: EditPropertyProps) {
-    const { data, setData, put, processing, errors, recentlySuccessful} = useForm<PropertyEditForm>({
+export default function EditProperty({ property, typeOptions, airConditioningOptions, booleanOptions, districtOptions }: EditPropertyProps) {
+    const { data, setData, put, processing, errors, recentlySuccessful } = useForm<PropertyEditForm>({
         id: property.id,
-        description: property.description,
-        contact_name: property.contact_name,
-        contact_phone: property.contact_phone,
-        contact_link: property.contact_link,
-        district_id: property.district_id,
-        type: property.type,
-        iptu: property.iptu,
-        price: property.price,
-        land_area: property.land_area,
-        building_area: property.building_area,
-        image: property.image,
-        address: property.address,
-        rooms: property.rooms,
-        bathrooms: property.bathrooms,
-        suites: property.suites,
-        garages: property.garages,
-        floor: property.floor,
-        building_floors: property.building_floors,
-        property_floors: property.property_floors,
-        delivery_key: property.delivery_key,
-        min_act: property.min_act,
-        installment_payment: property.installment_payment,
-        incc_financing: property.incc_financing,
-        documents: property.documents,
-        finsh_type: property.finsh_type,
-        air_conditioning: property.air_conditioning,
-        garden: property.garden,
-        pool: property.pool,
-        balcony: property.balcony,
-        acept_pets: property.acept_pets,
-        acessibility: property.acessibility,
-        obs: property.obs,
+        description: property.description || null,
+        contact_name: property.contact_name || null,
+        contact_phone: property.contact_phone || null,
+        contact_link: property.contact_link || null,
+        district_id: property.district_id || undefined,
+        type: property.type || null,
+        iptu: property.iptu || 0,
+        price: property.price || 0,
+        land_area: property.land_area || 0,
+        building_area: property.building_area || 0,
+        image: property.image || null,
+        address: property.address || '',
+        rooms: property.rooms || 0,
+        bathrooms: property.bathrooms || 0,
+        suites: property.suites || 0,
+        garages: property.garages || 0,
+        floor: property.floor || 0,
+        building_floors: property.building_floors || 0,
+        property_floors: property.property_floors || 0,
+        delivery_key: property.delivery_key || null,
+        min_act: property.min_act || 0,
+        installment_payment: property.installment_payment || null,
+        incc_financing: property.incc_financing || null,
+        documents: property.documents || null,
+        finsh_type: property.finsh_type || '',
+        air_conditioning: property.air_conditioning || undefined,
+        garden: property.garden || null,
+        pool: property.pool || null,
+        balcony: property.balcony || null,
+        acept_pets: property.acept_pets || null,
+        acessibility: property.acessibility || null,
+        obs: property.obs || '',
     });
 
     const handleSetData = (field: keyof PropertyEditForm, value: string | number | boolean | null) => {
@@ -116,7 +109,7 @@ export default function EditProperty({
     };
 
     // Converting delivery_key to date
-    if (data.delivery_key !== null && typeof data.delivery_key === 'string' && data.delivery_key !== '') 
+    if (data.delivery_key !== null && typeof data.delivery_key === 'string' && data.delivery_key !== '')
         data.delivery_key = new Date(data.delivery_key ?? '').toISOString().split('T')[0];
 
     return (
@@ -173,9 +166,9 @@ export default function EditProperty({
                         <FormSelect
                             label="Bairro"
                             placeholder="Selecione um bairro"
-                            value={(data.district_id || '').toString()}
+                            value={data.district_id || ''}
                             onValueChange={(value) => handleSetData('district_id', parseInt(value))}
-                            options={districtOptions}
+                            customOptions={districtOptions}
                             error={errors.district_id}
                             required
                         />

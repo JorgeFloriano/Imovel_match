@@ -12,7 +12,7 @@ type PropertyCreateForm = {
     contact_name: string | null;
     contact_phone: string | null;
     contact_link: string | null;
-    district_id?: number;
+    district_id?: string;
     type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
     iptu: number;
     price: number;
@@ -29,11 +29,11 @@ type PropertyCreateForm = {
     property_floors: number | null;
     delivery_key: string | null;
     min_act: number | null;
-    installment_payment: boolean;
+    installment_payment: boolean | null;
     incc_financing: boolean | null;
     documents: boolean | null;
     finsh_type: string | null;
-    air_conditioning: 'incluso' | 'somente infra' | 'não incluso';
+    air_conditioning: 'incluso' | 'somente infra' | 'não incluso' | '';
     garden: boolean | null;
     pool: boolean | null;
     balcony: boolean | null;
@@ -46,8 +46,7 @@ interface CreatePropertyProps {
     typeOptions: Record<string, string>;
     airConditioningOptions: Record<string, string>;
     booleanOptions: Record<string, string>;
-    districtOptions: Record<string, string>;
-    userOptions: Record<string, string>;
+    districtOptions: Array<{ value: string; label: string }>;
 }
 
 const booleanFeatureLabels = {
@@ -84,11 +83,11 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
         property_floors: 0,
         delivery_key: '',
         min_act: null,
-        installment_payment: false,
+        installment_payment: null,
         incc_financing: null,
         documents: null,
         finsh_type: null,
-        air_conditioning: 'não incluso',
+        air_conditioning: '',
         garden: null,
         pool: null,
         balcony: null,
@@ -195,9 +194,9 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                         <FormSelect
                             label="Bairro"
                             placeholder="Selecione um bairro"
-                            value={(data.district_id || '').toString()}
+                            value={(data.district_id || '')}
                             onValueChange={(value) => handleSetData('district_id', parseInt(value))}
-                            options={districtOptions}
+                            customOptions={districtOptions}
                             error={errors.district_id}
                             required
                         />

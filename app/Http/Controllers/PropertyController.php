@@ -43,7 +43,10 @@ class PropertyController extends Controller
                 'true' => 'Sim',
                 'false' => 'Não',
             ],
-            'districtOptions' => District::orderBy('name')->get()->pluck('name', 'id'),
+            'districtOptions' => District::orderBy('name')->get()->map(fn ($district) => [
+                'value' => $district->id,
+                'label' => $district->name,
+            ])->all(),
         ]);
     }
 
@@ -148,8 +151,10 @@ class PropertyController extends Controller
                 'true' => 'Sim',
                 'false' => 'Não',
             ],
-            'districtOptions' => District::orderBy('name')->get()->pluck('name', 'id'),
-            'userOptions' => User::orderBy('name')->get()->pluck('name', 'id'),
+            'districtOptions' => District::orderBy('name')->get()->map(fn ($district) => [
+                'value' => $district->id,
+                'label' => $district->name,
+            ])->all(),
         ]);
     }
 
