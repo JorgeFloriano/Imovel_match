@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ClientRequest;
 use App\Models\Client;
 use App\Models\Region;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class ClientController extends Controller
@@ -18,7 +17,6 @@ class ClientController extends Controller
             'clients' => Client::with(['wishe.region'])->get(),
         ]);
     }
-
 
     public function create()
     {
@@ -37,43 +35,9 @@ class ClientController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(ClientRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            // Client validation rules
-            'name' => 'required|string|max:60',
-            'phone' => 'required|string|max:20',
-            'email' => 'nullable|string|lowercase|email|max:255|unique:'.Client::class,
-            'address' => 'nullable|string|max:100',
-            'marital_status' => 'required|string',
-            'need_financing' => 'required|boolean',
-            'dependents' => 'required|integer|min:0',
-            'profession' => 'required|string|max:60',
-            'revenue' => 'required|numeric|min:0|max:9999999999',
-            'capital' => 'required|numeric|min:0|max:9999999999',
-            'fgts' => 'nullable|numeric|min:0|max:9999999999',
-            'has_property' => 'required|boolean',
-            'compromised_income' => 'required|numeric|min:0|max:100',
-
-            // Wishes validation rules
-            'region_id' => 'nullable|integer|exists:regions,id',
-            'district_id' => 'nullable|integer|exists:districts,id',
-            'type' => 'nullable|in:casa,casa (condom.),sobrado,apartamento,apart. c/ elevad.,terreno,loja,garagem,sala,outros',
-            'rooms' => 'nullable|integer|min:0|max:99',
-            'bathrooms' => 'nullable|integer|min:0|max:99',
-            'suites' => 'nullable|integer|min:0|max:99',
-            'garages' => 'nullable|integer|min:0|max:99',
-            'delivery_key' => 'nullable|date',
-            'min_act' => 'nullable|integer|min:0|max:9999999999',
-            'installment_payment' => 'nullable|boolean',
-            'air_conditioning' => 'nullable|in:incluso,somente infra,não incluso',
-            'garden' => 'nullable|boolean',
-            'pool' => 'nullable|boolean',
-            'balcony' => 'nullable|boolean',
-            'acept_pets' => 'nullable|boolean',
-            'acessibility' => 'nullable|boolean',
-            'obs' => 'nullable|string|max:300',
-        ]);
+        $validated = $request->validated();
 
         // Create the client
         $client = Client::create([
@@ -159,50 +123,9 @@ class ClientController extends Controller
         ]);
     }
 
-    public function update(Request $request, Client $client): RedirectResponse
+    public function update(ClientRequest $request, Client $client): RedirectResponse
     {
-        $validated = $request->validate([
-            // Client validation rules
-            'name' => 'required|string|max:60',
-            'phone' => 'required|string|max:20',
-            'email' => [
-                'nullable',
-                'string',
-                'lowercase',
-                'email',
-                'max:255',
-                Rule::unique(Client::class)->ignore($client->id),
-            ],
-            'address' => 'nullable|string|max:100',
-            'marital_status' => 'required|string',
-            'need_financing' => 'required|boolean',
-            'dependents' => 'required|integer|min:0',
-            'profession' => 'required|string|max:60',
-            'revenue' => 'required|numeric|min:0|max:9999999999',
-            'capital' => 'required|numeric|min:0|max:9999999999',
-            'fgts' => 'nullable|numeric|min:0|max:9999999999',
-            'has_property' => 'required|boolean',
-            'compromised_income' => 'required|numeric|min:0|max:100',
-
-            // Wishes validation rules
-            'region_id' => 'nullable|integer|exists:regions,id',
-            'district_id' => 'nullable|integer|exists:districts,id',
-            'type' => 'nullable|in:casa,casa (condom.),sobrado,apartamento,apart. c/ elevad.,terreno,loja,garagem,sala,outros',
-            'rooms' => 'nullable|integer|min:0|max:99',
-            'bathrooms' => 'nullable|integer|min:0|max:99',
-            'suites' => 'nullable|integer|min:0|max:99',
-            'garages' => 'nullable|integer|min:0|max:99',
-            'delivery_key' => 'nullable|date',
-            'min_act' => 'nullable|integer|min:0|max:9999999999',
-            'installment_payment' => 'nullable|boolean',
-            'air_conditioning' => 'nullable|in:incluso,somente infra,não incluso',
-            'garden' => 'nullable|boolean',
-            'pool' => 'nullable|boolean',
-            'balcony' => 'nullable|boolean',
-            'acept_pets' => 'nullable|boolean',
-            'acessibility' => 'nullable|boolean',
-            'obs' => 'nullable|string|max:300',
-        ]);
+        $validated = $request->validated();
 
         // Update the client
         $client->update([
