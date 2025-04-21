@@ -1,13 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Http\Requests\ClientRequest;
 use App\Models\Client;
 use App\Models\Region;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Class\Compatible;
+use App\Models\Property;
 
 class ClientController extends Controller
 {
@@ -18,6 +19,11 @@ class ClientController extends Controller
     }
     public function index()
     {
+        $client = Client::find(9); // client with id = 9 has a property wishe that has 2 rooms
+        $property = Property::find(1); // property with id = 1 has 2 rooms
+        $compatible = new Compatible(); // calss to compare client and property
+        dd($compatible->number($client->wishe->rooms, $property->rooms)); // compare numbers of rooms
+
         return Inertia::render('clients/clients-index', [
             'clients' => Client::with(['wishe.region'])->get(),
         ]);
