@@ -5,7 +5,10 @@ namespace App\Class;
 class Compatible {
     public function color($bool) {
         if ($bool) {
-            return 'green-500';
+            return [
+                'text' => 'text-green-800',
+                'bg' => 'bg-green-200',
+            ];
         }
         return 'red-500';
     }
