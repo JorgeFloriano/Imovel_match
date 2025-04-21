@@ -10,10 +10,13 @@ class Compatible {
                 'bg' => 'bg-green-200',
             ];
         }
-        return 'red-500';
+        return [
+            'text' => '',
+            'bg' => '',
+        ];
     }
     public function number($client_wishe, $property) {
-        $return['color'] = $this->color($client_wishe == $property);
+        $return['color'] = $this->color($client_wishe == $property && $client_wishe != null);
         $return['result'] = $client_wishe == $property;
         return $return;
     }
