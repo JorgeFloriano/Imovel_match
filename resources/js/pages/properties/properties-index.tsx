@@ -106,7 +106,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
                         <tbody>
                             {properties.map((property) => (
                                 <tr key={property.id} className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
-                                    <th scope="row" className="px-2 py-2 font-medium whitespace-nowrap text-gray-900 dark:text-white">
+                                    <th scope="row" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                         <a
                                             href={property.contact_link || '#'}
                                             target="_blank"
@@ -116,22 +116,22 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                             {property.description || 'Sem descrição'}
                                         </a>
                                     </th>
-                                    <td className="px-2 py-2">
+                                    <td className="px-6 py-3">
                                         {property.type ? property.type.charAt(0).toUpperCase() + property.type.slice(1) : 'Não especificado'}
                                     </td>
-                                    <td className="px-6 py-2">
+                                    <td className="px-6 py-3">
                                         {new Intl.NumberFormat('pt-BR', {
                                             style: 'currency',
                                             currency: 'BRL',
                                         }).format(property.price)}
                                     </td>
-                                    <td className="px-6 py-2 font-bold">
-                                        <div className="rounded-md bg-green-200 p-1.5 text-center text-green-800">{property.rooms}</div>
+                                    <td className="px-6 py-3 font-bold">
+                                        {property.rooms}
                                     </td>
-                                    <td className="px-6 py-2">{property.district.name}</td>
-                                    <td className="px-6 py-2">{property.district.region.name}</td>
+                                    <td className="px-6 py-3">{property.district.name}</td>
+                                    <td className="px-6 py-3">{property.district.region.name}</td>
 
-                                    <td className="flex gap-2 px-6 py-4">
+                                    <td className="flex gap-2 px-6 py-3">
                                         <a
                                             href={route('properties.edit', property.id)}
                                             className="font-medium text-blue-600 hover:underline dark:text-blue-500"

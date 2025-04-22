@@ -90,17 +90,17 @@ export default function Clients({ clients }: { clients: Client[] }) {
                         <tbody>
                             {clients.map((client) => (
                                 <tr key={client.id} className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
-                                    <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-gray-900 dark:text-white">
+                                    <th scope="row" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                         {client.name}
                                     </th>
-                                    <td className="px-6 py-4">{client.profession}</td>
-                                    <td className="px-6 py-4">{new Intl.NumberFormat('pt-BR', {
+                                    <td className="px-6 py-3">{client.profession}</td>
+                                    <td className="px-6 py-3">{new Intl.NumberFormat('pt-BR', {
                                             style: 'currency',
                                             currency: 'BRL'
                                         }).format(client.revenue)}</td>
-                                    <td className="px-6 py-4">{client.phone}</td>
+                                    <td className="px-6 py-3">{client.phone}</td>
 
-                                    <td className="flex gap-2 px-6 py-4">
+                                    <td className="flex gap-2 px-6 py-3">
                                         <a
                                             href={route('clients.edit', client.id)}
                                             className="font-medium text-blue-600 hover:underline dark:text-blue-500"

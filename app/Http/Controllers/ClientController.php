@@ -119,4 +119,9 @@ class ClientController extends Controller
 
         return to_route('clients.index')->with('success', 'Client deleted successfully');
     }
+
+    public function properties(Client $client): RedirectResponse
+    {
+        
+    }
 }
