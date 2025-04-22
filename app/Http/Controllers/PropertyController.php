@@ -11,6 +11,11 @@ use Inertia\Inertia;
 
 class PropertyController extends Controller
 {
+    public $property;
+    public function __construct()
+    {
+        $this->property = new Property();
+    }
     public function index()
     {
         return Inertia::render('properties/properties-index', [
@@ -21,27 +26,9 @@ class PropertyController extends Controller
     public function create()
     {
         return Inertia::render('properties/properties-create', [
-            'typeOptions' => [
-                'casa' => 'Casa',
-                'casa (condom.)' => 'Casa (Condom.)',
-                'sobrado' => 'Sobrado',
-                'apartamento' => 'Apartamento',
-                'apart. c/ elevad.' => 'Apart. c/ Elevad.',
-                'terreno' => 'Terreno',
-                'loja' => 'Loja',
-                'garagem' => 'Garagem',
-                'sala' => 'Sala',
-                'outros' => 'Outros',
-            ],
-            'airConditioningOptions' => [
-                'incluso' => 'Incluso',
-                'somente infra' => 'Somente Infraestrutura',
-                'não incluso' => 'Não Incluso',
-            ],
-            'booleanOptions' => [
-                'true' => 'Sim',
-                'false' => 'Não',
-            ],
+            'typeOptions' => $this->property->typeOpt(),
+            'airConditioningOptions' => $this->property->airConOpt(),
+            'booleanOptions' => $this->property->boolOpt(),
             'districtOptions' => District::orderBy('name')->get()->map(fn($district) => [
                 'value' => $district->id,
                 'label' => $district->name,
@@ -67,27 +54,9 @@ class PropertyController extends Controller
     {
         return Inertia::render('properties/properties-show', [
             'property' => $property->load(['user', 'district']),
-            'typeOptions' => [
-                'casa' => 'Casa',
-                'casa (condom.)' => 'Casa (Condom.)',
-                'sobrado' => 'Sobrado',
-                'apartamento' => 'Apartamento',
-                'apart. c/ elevad.' => 'Apart. c/ Elevad.',
-                'terreno' => 'Terreno',
-                'loja' => 'Loja',
-                'garagem' => 'Garagem',
-                'sala' => 'Sala',
-                'outros' => 'Outros',
-            ],
-            'airConditioningOptions' => [
-                'incluso' => 'Incluso',
-                'somente infra' => 'Somente Infraestrutura',
-                'não incluso' => 'Não Incluso',
-            ],
-            'booleanOptions' => [
-                'true' => 'Sim',
-                'false' => 'Não',
-            ],
+            'typeOptions' => $this->property->typeOpt(),
+            'airConditioningOptions' => $this->property->airConOpt(),
+            'booleanOptions' => $this->property->boolOpt(),
         ]);
     }
 
@@ -95,27 +64,9 @@ class PropertyController extends Controller
     {
         return Inertia::render('properties/properties-edit', [
             'property' => $property,
-            'typeOptions' => [
-                'casa' => 'Casa',
-                'casa (condom.)' => 'Casa (Condom.)',
-                'sobrado' => 'Sobrado',
-                'apartamento' => 'Apartamento',
-                'apart. c/ elevad.' => 'Apart. c/ Elevad.',
-                'terreno' => 'Terreno',
-                'loja' => 'Loja',
-                'garagem' => 'Garagem',
-                'sala' => 'Sala',
-                'outros' => 'Outros',
-            ],
-            'airConditioningOptions' => [
-                'incluso' => 'Incluso',
-                'somente infra' => 'Somente Infraestrutura',
-                'não incluso' => 'Não Incluso',
-            ],
-            'booleanOptions' => [
-                'true' => 'Sim',
-                'false' => 'Não',
-            ],
+            'typeOptions' => $this->property->typeOpt(),
+            'airConditioningOptions' => $this->property->airConOpt(),
+            'booleanOptions' => $this->property->boolOpt(),
             'districtOptions' => District::orderBy('name')->get()->map(fn($district) => [
                 'value' => $district->id,
                 'label' => $district->name,

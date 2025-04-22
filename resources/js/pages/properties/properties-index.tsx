@@ -117,9 +117,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                         </a>
                                     </th>
                                     <td className="px-2 py-2">
-                                        <div className="rounded-md bg-blue-200 p-1.5 text-center text-blue-800">
-                                            {property.type ? property.type.charAt(0).toUpperCase() + property.type.slice(1) : 'Não especificado'}
-                                        </div>
+                                        {property.type ? property.type.charAt(0).toUpperCase() + property.type.slice(1) : 'Não especificado'}
                                     </td>
                                     <td className="px-6 py-2">
                                         {new Intl.NumberFormat('pt-BR', {
@@ -127,7 +125,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                             currency: 'BRL',
                                         }).format(property.price)}
                                     </td>
-                                    <td className="px-6 py-2">
+                                    <td className="px-6 py-2 font-bold">
                                         <div className="rounded-md bg-green-200 p-1.5 text-center text-green-800">{property.rooms}</div>
                                     </td>
                                     <td className="px-6 py-2">{property.district.name}</td>

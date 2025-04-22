@@ -94,4 +94,37 @@ class Property extends Model
     {
         return $this->belongsTo(District::class);
     }
+
+    public function typeOpt()
+    {
+        return [
+            'casa' => 'Casa',
+            'casa (condom.)' => 'Casa (Condom.)',
+            'sobrado' => 'Sobrado',
+            'apartamento' => 'Apartamento',
+            'apart. c/ elevad.' => 'Apart. c/ Elevad.',
+            'terreno' => 'Terreno',
+            'loja' => 'Loja',
+            'garagem' => 'Garagem',
+            'sala' => 'Sala',
+            'outros' => 'Outros',
+        ];
+    }
+
+    public function boolOpt()
+    {
+        return [
+            'true' => 'Sim',
+            'false' => 'Não',
+        ];
+    }
+
+    public function airConOpt()
+    {
+        return [
+            'incluso' => 'Incluso',
+            'somente infra' => 'Somente Infra',
+            'não incluso' => 'Não incluso',
+        ];
+    }
 }

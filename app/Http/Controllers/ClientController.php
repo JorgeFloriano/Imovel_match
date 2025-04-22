@@ -19,10 +19,10 @@ class ClientController extends Controller
     }
     public function index()
     {
-        $client = Client::find(9); // client with id = 9 has a property wishe that has 2 rooms
-        $property = Property::find(1); // property with id = 1 has 2 rooms
-        $compatible = new Compatible(); // calss to compare client and property
-        dd($compatible->number($client->wishe->rooms, $property->rooms)); // compare numbers of rooms
+        // $cl = Client::find(9); // client with id = 9 has a property wishe that has 2 rooms
+        // $p = Property::find(1); // property with id = 1 has 2 rooms
+        // $c = new Compatible(); // calss to compare client and property
+        // dd($c->number($cl->wishe->rooms, $p->rooms)['color']['bg']); // compare numbers of rooms
 
         return Inertia::render('clients/clients-index', [
             'clients' => Client::with(['wishe.region'])->get(),
@@ -39,57 +39,30 @@ class ClientController extends Controller
     }
 
     public function store(ClientRequest $request): RedirectResponse
-    {
-        $validated = $request->validated();
+{
+    $validated = $request->validated();
+    $validated['user_id'] = Auth::user()->id;
+    
+    // Create client with user_id and all validated client data
+    $client = Client::create($validated);
 
-        // Create the client
-        $client = Client::create([
-            'user_id' => Auth::user()->id,
-            'name' => $validated['name'],
-            'phone' => $validated['phone'],
-            'email' => $validated['email'],
-            'address' => $validated['address'],
-            'marital_status' => $validated['marital_status'],
-            'need_financing' => $validated['need_financing'],
-            'dependents' => $validated['dependents'],
-            'profession' => $validated['profession'],
-            'revenue' => $validated['revenue'],
-            'capital' => $validated['capital'],
-            'fgts' => $validated['fgts'],
-            'has_property' => $validated['has_property'],
-            'compromised_income' => $validated['compromised_income'],
-        ]);
+    // Extract wish data from validated input (excluding client-specific fields)
+    $wishFields = [
+        'region_id', 'district_id', 'type', 'rooms', 'bathrooms', 'suites', 
+        'garages', 'delivery_key', 'min_act', 'installment_payment',
+        'air_conditioning', 'garden', 'pool', 'balcony', 'acept_pets',
+        'acessibility', 'obs', 'air_conditioning',
+    ];
+    
+    $wishData = array_merge(
+        array_intersect_key($validated, array_flip($wishFields)),
+    );
 
-        // Create the wish if client was created successfully
-        if ($client) {
-            $wishData = [
-                'region_id' => $validated['region_id'] ?? null,
-                'district_id' => $validated['district_id'] ?? null,
-                'type' => $validated['type'] ?? null,
-                'rooms' => $validated['rooms'] ?? null,
-                'bathrooms' => $validated['bathrooms'] ?? null,
-                'suites' => $validated['suites'] ?? null,
-                'garages' => $validated['garages'] ?? null,
-                'delivery_key' => $validated['delivery_key'] ?? null,
-                'min_act' => $validated['min_act'] ?? null,
-                'installment_payment' => $validated['installment_payment'] ?? false,
-                'air_conditioning' => $validated['air_conditioning'] ?? 'não incluso',
-                'garden' => $validated['garden'] ?? null,
-                'pool' => $validated['pool'] ?? null,
-                'balcony' => $validated['balcony'] ?? null,
-                'acept_pets' => $validated['acept_pets'] ?? null,
-                'acessibility' => $validated['acessibility'] ?? null,
-                'obs' => $validated['obs'] ?? null,
-            ];
+    // Create associated wish
+    $client->wishe()->create($wishData);
 
-            // Create the wish associated with the client
-            $client->wishe()->create($wishData);
-
-            return to_route('clients.create')->with('success', 'Client created successfully');
-        }
-
-        return back()->with('error', 'Failed to create client');
-    }
+    return to_route('clients.create')->with('success', 'Client created successfully');
+}
 
     public function show(Client $client)
     {
@@ -111,56 +84,29 @@ class ClientController extends Controller
     }
 
     public function update(ClientRequest $request, Client $client): RedirectResponse
-    {
-        $validated = $request->validated();
+{
+    $validated = $request->validated();
+    $validated['user_id'] = Auth::user()->id;
+    
+    // Update client with validated data
+    $client->update($validated);
 
-        // Update the client
-        $client->update([
-            'name' => $validated['name'],
-            'phone' => $validated['phone'],
-            'email' => $validated['email'],
-            'address' => $validated['address'],
-            'marital_status' => $validated['marital_status'],
-            'need_financing' => $validated['need_financing'],
-            'dependents' => $validated['dependents'],
-            'profession' => $validated['profession'],
-            'revenue' => $validated['revenue'],
-            'capital' => $validated['capital'],
-            'fgts' => $validated['fgts'],
-            'has_property' => $validated['has_property'],
-            'compromised_income' => $validated['compromised_income'],
-        ]);
+    // Define wish fields and update/create
+    $wishFields = [
+        'region_id', 'district_id', 'type', 'rooms', 'bathrooms', 'suites',
+        'garages', 'delivery_key', 'min_act', 'installment_payment',
+        'air_conditioning', 'garden', 'pool', 'balcony', 'acept_pets',
+        'acessibility', 'obs', 'air_conditioning',
+    ];
+    
+    $wishData = array_merge(
+        array_intersect_key($validated, array_flip($wishFields)),
+    );
 
-        // Update or create the wish
-        $wishData = [
-            'region_id' => $validated['region_id'] ?? null,
-            'district_id' => $validated['district_id'] ?? null,
-            'type' => $validated['type'] ?? null,
-            'rooms' => $validated['rooms'] ?? null,
-            'bathrooms' => $validated['bathrooms'] ?? null,
-            'suites' => $validated['suites'] ?? null,
-            'garages' => $validated['garages'] ?? null,
-            'delivery_key' => $validated['delivery_key'] ?? null,
-            'min_act' => $validated['min_act'] ?? null,
-            'installment_payment' => $validated['installment_payment'] ?? false,
-            'air_conditioning' => $validated['air_conditioning'] ?? 'não incluso',
-            'garden' => $validated['garden'] ?? null,
-            'pool' => $validated['pool'] ?? null,
-            'balcony' => $validated['balcony'] ?? null,
-            'acept_pets' => $validated['acept_pets'] ?? null,
-            'acessibility' => $validated['acessibility'] ?? null,
-            'obs' => $validated['obs'] ?? null,
-        ];
+    $client->wishe()->updateOrCreate([], $wishData);
 
-        if ($client->wishe) {
-            $client->wishe()->update($wishData);
-        } else {
-            $client->wishe()->create($wishData);
-        }
-
-        return back()->with('success', 'Client updated successfully');
-    }
-
+    return back()->with('success', 'Client updated successfully');
+}
     public function destroy(Client $client): RedirectResponse
     {
         // Delete the associated wish first

@@ -83,7 +83,7 @@ export default function ShowProperty({ property, booleanOptions }: PropertyShowP
             destroy(route('properties.destroy', property.id));
         }
     };
-    
+
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
     };
@@ -123,14 +123,14 @@ export default function ShowProperty({ property, booleanOptions }: PropertyShowP
                     {/* Basic Information Section */}
                     <div className="rounded-lg border p-6">
                         <h2 className="mb-4 text-lg font-semibold">Informações Básicas</h2>
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <div>
-                                <h3 className="text-sm font-medium text-neutral-500">Endereço</h3>
-                                <p className="text-sm">{property.address || '-'}</p>
-                            </div>
-                            <div>
-                                <h3 className="text-sm font-medium text-neutral-500">Proprietário</h3>
-                                <p className="text-sm">{property.user.name}</p>
+                        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                            <div className="space-y-4">
+                                {property.description && (
+                                    <div>
+                                        <h3 className="text-sm font-medium text-neutral-500">Descrição</h3>
+                                        <p className="text-sm whitespace-pre-line">{property.description}</p>
+                                    </div>
+                                )}
                             </div>
                             <div>
                                 <h3 className="text-sm font-medium text-neutral-500">Bairro</h3>
@@ -144,25 +144,6 @@ export default function ShowProperty({ property, booleanOptions }: PropertyShowP
                                 <h3 className="text-sm font-medium text-neutral-500">Preço</h3>
                                 <p className="text-sm">{formatCurrency(property.price)}</p>
                             </div>
-                            <div>
-                                <h3 className="text-sm font-medium text-neutral-500">IPTU</h3>
-                                <p className="text-sm">{property.iptu || '-'}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Area Information Section */}
-                    <div className="rounded-lg border p-6">
-                        <h2 className="mb-4 text-lg font-semibold">Áreas</h2>
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                            <div>
-                                <h3 className="text-sm font-medium text-neutral-500">Área do Terreno</h3>
-                                <p className="text-sm">{formatArea(property.land_area)}</p>
-                            </div>
-                            <div>
-                                <h3 className="text-sm font-medium text-neutral-500">Área Construída</h3>
-                                <p className="text-sm">{formatArea(property.building_area)}</p>
-                            </div>
                         </div>
                     </div>
 
@@ -170,6 +151,10 @@ export default function ShowProperty({ property, booleanOptions }: PropertyShowP
                     <div className="rounded-lg border p-6">
                         <h2 className="mb-4 text-lg font-semibold">Composição</h2>
                         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                            <div>
+                                <h3 className="text-sm font-medium text-neutral-500">Área Construída</h3>
+                                <p className="text-sm">{formatArea(property.building_area)}</p>
+                            </div>
                             <div>
                                 <h3 className="text-sm font-medium text-neutral-500">Quartos</h3>
                                 <p className="text-sm">{property.rooms || '-'}</p>
@@ -215,9 +200,7 @@ export default function ShowProperty({ property, booleanOptions }: PropertyShowP
                             </div>
                             <div>
                                 <h3 className="text-sm font-medium text-neutral-500">Ar Condicionado</h3>
-                                <p className="text-sm">
-                                    {property.air_conditioning ? airConditioningLabels[property.air_conditioning] : '-'}
-                                </p>
+                                <p className="text-sm">{property.air_conditioning ? airConditioningLabels[property.air_conditioning] : '-'}</p>
                             </div>
                             <div>
                                 <h3 className="text-sm font-medium text-neutral-500">Tipo de Acabamento</h3>
@@ -233,27 +216,6 @@ export default function ShowProperty({ property, booleanOptions }: PropertyShowP
                             ))}
                         </div>
                     </div>
-
-                    {/* Description Section */}
-                    {(property.description || property.obs) && (
-                        <div className="rounded-lg border p-6">
-                            <h2 className="mb-4 text-lg font-semibold">Descrições</h2>
-                            <div className="space-y-4">
-                                {property.description && (
-                                    <div>
-                                        <h3 className="text-sm font-medium text-neutral-500">Descrição</h3>
-                                        <p className="text-sm whitespace-pre-line">{property.description}</p>
-                                    </div>
-                                )}
-                                {property.obs && (
-                                    <div>
-                                        <h3 className="text-sm font-medium text-neutral-500">Observações</h3>
-                                        <p className="text-sm whitespace-pre-line">{property.obs}</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
                 </div>
             </div>
         </AppLayout>

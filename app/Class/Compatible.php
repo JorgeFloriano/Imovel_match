@@ -8,11 +8,13 @@ class Compatible {
             return [
                 'text' => 'text-green-800',
                 'bg' => 'bg-green-200',
+                'class' => 'rounded-md bg-green-200 p-1.5 text-center text-green-800'
             ];
         }
         return [
             'text' => '',
             'bg' => '',
+            'class' => ''
         ];
     }
     public function number($client_wishe, $property) {
