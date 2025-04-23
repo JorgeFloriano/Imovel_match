@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
-import { Delete, Edit, Expand } from 'lucide-react';
+import { Delete, Edit, Expand, HeartHandshake, House, User } from 'lucide-react';
 
 interface Region {
     id: number;
@@ -70,8 +70,12 @@ export default function Clients({ clients }: { clients: Client[] }) {
                     <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
                         <thead className="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-800 dark:text-gray-400">
                             <tr>
-                                <th scope="col" className="px-6 py-3">
-                                    Nome
+                                <th className="px-6 py-3 align-middle">
+                                    <div className="inline-flex items-center gap-2">
+                                        {User && <Icon iconNode={User} />}
+                                        {HeartHandshake && <Icon iconNode={HeartHandshake} />}
+                                        {House && <Icon iconNode={House} />}
+                                    </div>
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Profissão
@@ -91,7 +95,12 @@ export default function Clients({ clients }: { clients: Client[] }) {
                             {clients.map((client) => (
                                 <tr key={client.id} className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
                                     <th scope="row" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
-                                        {client.name}
+                                        <a
+                                            href={route('clients.properties', client.id)}
+                                            className="font-medium  hover:underline"
+                                        >
+                                            {client.name}
+                                        </a>
                                     </th>
                                     <td className="px-6 py-3">{client.profession}</td>
                                     <td className="px-6 py-3">
@@ -102,7 +111,7 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                     </td>
                                     <td className="px-6 py-3">{client.phone}</td>
 
-                                    <td className="text-center align-middle">
+                                    <td className="px-6 py-3 align-middle">
                                         <div className="inline-flex items-center gap-2">
                                             <a
                                                 href={route('clients.edit', client.id)}

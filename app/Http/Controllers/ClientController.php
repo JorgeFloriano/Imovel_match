@@ -120,8 +120,13 @@ class ClientController extends Controller
         return to_route('clients.index')->with('success', 'Client deleted successfully');
     }
 
-    public function properties(Client $client): RedirectResponse
+    public function properties(Client $client)
     {
-        
+        $properties = Property::with(['user', 'district.region'])->get();
+
+        return Inertia::render('clients/client-properties', [
+            'properties' => $properties,
+            'client' => $client
+        ]);
     }
 }

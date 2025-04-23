@@ -5,6 +5,85 @@ import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { Bed, Delete, Edit, Expand } from 'lucide-react';
 
+interface ClientPropertiesProps {
+    client: {
+        id: number;
+        name: string;
+        phone: string;
+        email?: string;
+        address?: string;
+        marital_status: string;
+        need_financing: boolean;
+        dependents: number;
+        profession: string;
+        revenue: number;
+        capital: number;
+        fgts?: number;
+        has_property: boolean;
+        compromised_income: number;
+        wishe?: {
+            region?: {
+                name: string;
+            };
+            type?: string;
+            rooms?: number;
+            bathrooms?: number;
+            suites?: number;
+            garages?: number;
+            delivery_key?: string;
+            min_act?: number;
+            installment_payment?: boolean;
+            air_conditioning?: string;
+            garden?: boolean;
+            pool?: boolean;
+            balcony?: boolean;
+            acept_pets?: boolean;
+            acessibility?: boolean;
+            obs?: string;
+        };
+    };
+    properties: {
+        id: number;
+        district_id: number;
+        type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
+        typ: string | null;
+        iptu: number;
+        contact_name: string | null;
+        contact_phone: string | null;
+        contact_link: string | null;
+        description: string | null;
+        price: number;
+        land_area: number | null;
+        building_area: number | null;
+        image: string | null;
+        address: string | null;
+        rooms: number | null;
+        bathrooms: number | null;
+        suites: number | null;
+        garages: number | null;
+        floor: number | null;
+        building_floors: number | null;
+        property_floors: number | null;
+        delivery_key: string | null;
+        min_act: number | null;
+        installment_payment: boolean;
+        incc_financing: boolean | null;
+        documents: boolean | null;
+        finsh_type: string | null;
+        air_conditioning: 'incluso' | 'somente infra' | 'não incluso';
+        garden: boolean | null;
+        pool: boolean | null;
+        balcony: boolean | null;
+        acept_pets: boolean | null;
+        acessibility: boolean | null;
+        obs: string | null;
+        user: User;
+        district: District;
+    };
+    maritalStatusOptions: Record<string, string>;
+    booleanOptions: Record<string, string>;
+}
+
 interface Region {
     id: number;
     name: string;
@@ -22,46 +101,7 @@ interface User {
     name: string;
 }
 
-interface Property {
-    id: number;
-    district_id: number;
-    type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
-    typ: string | null;
-    iptu: number;
-    contact_name: string | null;
-    contact_phone: string | null;
-    contact_link: string | null;
-    description: string | null;
-    price: number;
-    land_area: number | null;
-    building_area: number | null;
-    image: string | null;
-    address: string | null;
-    rooms: number | null;
-    bathrooms: number | null;
-    suites: number | null;
-    garages: number | null;
-    floor: number | null;
-    building_floors: number | null;
-    property_floors: number | null;
-    delivery_key: string | null;
-    min_act: number | null;
-    installment_payment: boolean;
-    incc_financing: boolean | null;
-    documents: boolean | null;
-    finsh_type: string | null;
-    air_conditioning: 'incluso' | 'somente infra' | 'não incluso';
-    garden: boolean | null;
-    pool: boolean | null;
-    balcony: boolean | null;
-    acept_pets: boolean | null;
-    acessibility: boolean | null;
-    obs: string | null;
-    user: User;
-    district: District;
-}
-
-export default function Properties({ properties }: { properties: Property[] }) {
+export default function Properties({ properties, maritalStatusOptions, booleanOptions, client }: ClientPropertiesProps) {
     return (
         <AppLayout>
             <Head title="Propriedades" />
@@ -102,7 +142,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {properties.map((property) => (
+                            {properties.map((properties) => (
                                 <tr key={property.id} className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
                                     <th scope="row" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                         <a
@@ -114,9 +154,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                             {property.description || 'Sem descrição'}
                                         </a>
                                     </th>
-                                    <td className="px-6 py-3">
-                                        {property.typ ? property.typ.charAt(0).toUpperCase() + property.typ.slice(1) : ' '}
-                                    </td>
+                                    <td className="px-6 py-3">{property.typ ? property.typ.charAt(0).toUpperCase() + property.typ.slice(1) : ' '}</td>
                                     <td className="px-6 py-3">
                                         {new Intl.NumberFormat('pt-BR', {
                                             minimumFractionDigits: 0,

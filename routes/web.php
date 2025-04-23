@@ -14,6 +14,7 @@ Route::middleware(['web', 'verified'])->group(function () {
         return Inertia::render('dashboard');})->name('dashboard');
 
     Route::resource('/clients', ClientController::class);
+    Route::get('/clients/{client}/properties', [ClientController::class, 'properties'])->name('clients.properties');
 
     Route::resource('/properties', PropertyController::class);
 
