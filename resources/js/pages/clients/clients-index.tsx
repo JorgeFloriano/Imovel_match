@@ -1,9 +1,9 @@
 import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { Delete, Edit, Expand } from 'lucide-react';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 interface Region {
     id: number;
@@ -94,99 +94,107 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                         {client.name}
                                     </th>
                                     <td className="px-6 py-3">{client.profession}</td>
-                                    <td className="px-6 py-3">{new Intl.NumberFormat('pt-BR', {
+                                    <td className="px-6 py-3">
+                                        {new Intl.NumberFormat('pt-BR', {
                                             style: 'currency',
-                                            currency: 'BRL'
-                                        }).format(client.revenue)}</td>
+                                            currency: 'BRL',
+                                        }).format(client.revenue)}
+                                    </td>
                                     <td className="px-6 py-3">{client.phone}</td>
 
-                                    <td className="flex gap-2 px-6 py-3">
-                                        <a
-                                            href={route('clients.edit', client.id)}
-                                            className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                                        >
-                                            {Edit && <Icon iconNode={Edit} />}
-                                        </a>
+                                    <td className="text-center align-middle">
+                                        <div className="inline-flex items-center gap-2">
+                                            <a
+                                                href={route('clients.edit', client.id)}
+                                                className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                                            >
+                                                {Edit && <Icon iconNode={Edit} />}
+                                            </a>
 
-                                        <a href={route('clients.show', client.id)} className="font-medium text-red-600 hover:underline dark:text-red-500">
-                                            {Delete && <Icon iconNode={Delete} />}
-                                        </a>
+                                            <a
+                                                href={route('clients.show', client.id)}
+                                                className="font-medium text-red-600 hover:underline dark:text-red-500"
+                                            >
+                                                {Delete && <Icon iconNode={Delete} />}
+                                            </a>
 
-                                        <Dialog>
-                                            <DialogTrigger asChild>
-                                                <button>{Expand && <Icon iconNode={Expand} />}</button>
-                                            </DialogTrigger>
-                                            <DialogContent>
-                                                <DialogTitle>{client.name}</DialogTitle>
-                                                <p>
-                                                    <strong>Telefone: </strong> {client.phone}
-                                                    <br />
-                                                    <strong>Email: </strong> {client.email}
-                                                    <br />
-                                                    <strong>Endereço: </strong> {client.address}
-                                                    <br />
-                                                    <strong>Estado Civil: </strong> {client.marital_status}
-                                                    <br />
-                                                    <strong>Precisa de Financiamento: </strong> {client.need_financing ? 'Sim' : 'Não'}
-                                                    <br />
-                                                    <strong>Número de Dependentes: </strong> {client.dependents}
-                                                    <br />
-                                                    <strong>Profissão: </strong> {client.profession}
-                                                    <br />
-                                                    <strong>Renda (R$): </strong> {client.revenue}
-                                                    <br />
-                                                    <strong>Capital Disponível(R$): </strong> {client.capital}
-                                                    <br />
-                                                    <strong>FGTS (R$): </strong> {client.fgts}
-                                                    <br />
-                                                    <strong>Possúi Propriedade: </strong> {client.has_property ? 'Sim' : 'Não'}
-                                                    <br />
-                                                    <strong>Renda Comprometida (%): </strong> {client.compromised_income}
-                                                    <br />
-                                                </p>
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <button>{Expand && <Icon iconNode={Expand} />}</button>
+                                                </DialogTrigger>
+                                                <DialogContent>
+                                                    <DialogTitle>{client.name}</DialogTitle>
+                                                    <p>
+                                                        <strong>Telefone: </strong> {client.phone}
+                                                        <br />
+                                                        <strong>Email: </strong> {client.email}
+                                                        <br />
+                                                        <strong>Endereço: </strong> {client.address}
+                                                        <br />
+                                                        <strong>Estado Civil: </strong> {client.marital_status}
+                                                        <br />
+                                                        <strong>Precisa de Financiamento: </strong> {client.need_financing ? 'Sim' : 'Não'}
+                                                        <br />
+                                                        <strong>Número de Dependentes: </strong> {client.dependents}
+                                                        <br />
+                                                        <strong>Profissão: </strong> {client.profession}
+                                                        <br />
+                                                        <strong>Renda (R$): </strong> {client.revenue}
+                                                        <br />
+                                                        <strong>Capital Disponível(R$): </strong> {client.capital}
+                                                        <br />
+                                                        <strong>FGTS (R$): </strong> {client.fgts}
+                                                        <br />
+                                                        <strong>Possúi Propriedade: </strong> {client.has_property ? 'Sim' : 'Não'}
+                                                        <br />
+                                                        <strong>Renda Comprometida (%): </strong> {client.compromised_income}
+                                                        <br />
+                                                    </p>
 
-                                                {client.wishe && (
-                                                    <div className="mt-4">
-                                                        <h2 className="pb-3 text-lg font-semibold">Caracteristicas do imóvel desejado:</h2>
-                                                        <p>
-                                                            <strong>Localização:</strong> {client.wishe?.region?.name || 'Não especificado'}
-                                                            <br />
-                                                            <strong>Número de Quartos: </strong> {client.wishe.rooms || 'Não especificado'}
-                                                            <br />
-                                                            <strong>Banheiros: </strong> {client.wishe.bathrooms || 'Não especificado'}
-                                                            <br />
-                                                            <strong>Suítes: </strong> {client.wishe.suites || 'Não especificado'}
-                                                            <br />
-                                                            <strong>Vagas de Garagem: </strong> {client.wishe.garages || 'Não especificado'}
-                                                            <br />
-                                                            <strong>Data prevista de Entrega: </strong>
-                                                            {client.wishe?.delivery_key
-                                                                ? new Date(client.wishe.delivery_key).toLocaleDateString('pt-BR')
-                                                                : 'Não especificada'}
-                                                            <br />
-                                                            <strong>Ato Mínimo: </strong> {client.wishe.min_act || 'Não especificado'}
-                                                            <br />
-                                                            <strong>Entrada Parcelada: </strong> {client.wishe.installment_payment ? 'Sim' : 'Não'}
-                                                            <br />
-                                                            <strong>Ar Condicionado: </strong> {client.wishe.air_conditioning}
-                                                            <br />
-                                                            <strong>Jardim: </strong> {client.wishe.garden ? 'Sim' : 'Não'}
-                                                            <br />
-                                                            <strong>Piscina: </strong> {client.wishe.pool ? 'Sim' : 'Não'}
-                                                            <br />
-                                                            <strong>Varanda: </strong> {client.wishe.balcony ? 'Sim' : 'Não'}
-                                                            <br />
-                                                            <strong>Aceita Pets: </strong> {client.wishe.acept_pets ? 'Sim' : 'Não'}
-                                                            <br />
-                                                            <strong>Acessibilidade: </strong> {client.wishe.acessibility ? 'Sim' : 'Não'}
-                                                            <br />
-                                                            <strong>Observações: </strong> {client.wishe.obs || 'Nenhuma'}
-                                                            <br />
-                                                        </p>
-                                                    </div>
-                                                )}
-                                            </DialogContent>
-                                        </Dialog>
+                                                    {client.wishe && (
+                                                        <div className="mt-4">
+                                                            <h2 className="pb-3 text-lg font-semibold">Caracteristicas do imóvel desejado:</h2>
+                                                            <p>
+                                                                <strong>Localização:</strong> {client.wishe?.region?.name || 'Não especificado'}
+                                                                <br />
+                                                                <strong>Número de Quartos: </strong> {client.wishe.rooms || 'Não especificado'}
+                                                                <br />
+                                                                <strong>Banheiros: </strong> {client.wishe.bathrooms || 'Não especificado'}
+                                                                <br />
+                                                                <strong>Suítes: </strong> {client.wishe.suites || 'Não especificado'}
+                                                                <br />
+                                                                <strong>Vagas de Garagem: </strong> {client.wishe.garages || 'Não especificado'}
+                                                                <br />
+                                                                <strong>Data prevista de Entrega: </strong>
+                                                                {client.wishe?.delivery_key
+                                                                    ? new Date(client.wishe.delivery_key).toLocaleDateString('pt-BR')
+                                                                    : 'Não especificada'}
+                                                                <br />
+                                                                <strong>Ato Mínimo: </strong> {client.wishe.min_act || 'Não especificado'}
+                                                                <br />
+                                                                <strong>Entrada Parcelada: </strong>{' '}
+                                                                {client.wishe.installment_payment ? 'Sim' : 'Não'}
+                                                                <br />
+                                                                <strong>Ar Condicionado: </strong> {client.wishe.air_conditioning}
+                                                                <br />
+                                                                <strong>Jardim: </strong> {client.wishe.garden ? 'Sim' : 'Não'}
+                                                                <br />
+                                                                <strong>Piscina: </strong> {client.wishe.pool ? 'Sim' : 'Não'}
+                                                                <br />
+                                                                <strong>Varanda: </strong> {client.wishe.balcony ? 'Sim' : 'Não'}
+                                                                <br />
+                                                                <strong>Aceita Pets: </strong> {client.wishe.acept_pets ? 'Sim' : 'Não'}
+                                                                <br />
+                                                                <strong>Acessibilidade: </strong> {client.wishe.acessibility ? 'Sim' : 'Não'}
+                                                                <br />
+                                                                <strong>Observações: </strong> {client.wishe.obs || 'Nenhuma'}
+                                                                <br />
+                                                            </p>
+                                                        </div>
+                                                    )}
+                                                </DialogContent>
+                                            </Dialog>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
-import { Delete, Edit, Expand } from 'lucide-react';
+import { Bed, Delete, Edit, Expand } from 'lucide-react';
 
 interface Region {
     id: number;
@@ -26,6 +26,7 @@ interface Property {
     id: number;
     district_id: number;
     type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
+    typ: string | null;
     iptu: number;
     contact_name: string | null;
     contact_phone: string | null;
@@ -87,13 +88,10 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                     Tipo
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Preço
+                                    Preço(R$)
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Quartos
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Bairro
+                                    {Bed && <Icon iconNode={Bed} />}
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Região
@@ -117,97 +115,96 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                         </a>
                                     </th>
                                     <td className="px-6 py-3">
-                                        {property.type ? property.type.charAt(0).toUpperCase() + property.type.slice(1) : 'Não especificado'}
+                                        {property.typ ? property.typ.charAt(0).toUpperCase() + property.typ.slice(1) : ' '}
                                     </td>
                                     <td className="px-6 py-3">
                                         {new Intl.NumberFormat('pt-BR', {
-                                            style: 'currency',
-                                            currency: 'BRL',
+                                            minimumFractionDigits: 0,
+                                            maximumFractionDigits: 0,
                                         }).format(property.price)}
                                     </td>
-                                    <td className="px-6 py-3 font-bold">
-                                        {property.rooms}
-                                    </td>
-                                    <td className="px-6 py-3">{property.district.name}</td>
+                                    <td className="px-6 py-3 font-bold">{property.rooms}</td>
                                     <td className="px-6 py-3">{property.district.region.name}</td>
 
-                                    <td className="flex gap-2 px-6 py-3">
-                                        <a
-                                            href={route('properties.edit', property.id)}
-                                            className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                                        >
-                                            {Edit && <Icon iconNode={Edit} />}
-                                        </a>
+                                    <td className="px-6 py-3 text-center align-middle">
+                                        <div className="inline-flex items-center gap-2">
+                                            <a
+                                                href={route('properties.edit', property.id)}
+                                                className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                                            >
+                                                {Edit && <Icon iconNode={Edit} />}
+                                            </a>
 
-                                        <a
-                                            href={route('properties.show', property.id)}
-                                            className="font-medium text-red-600 hover:underline dark:text-red-500"
-                                        >
-                                            {Delete && <Icon iconNode={Delete} />}
-                                        </a>
+                                            <a
+                                                href={route('properties.show', property.id)}
+                                                className="font-medium text-red-600 hover:underline dark:text-red-500"
+                                            >
+                                                {Delete && <Icon iconNode={Delete} />}
+                                            </a>
 
-                                        <Dialog>
-                                            <DialogTrigger asChild>
-                                                <button>{Expand && <Icon iconNode={Expand} />}</button>
-                                            </DialogTrigger>
-                                            <DialogContent>
-                                                <DialogTitle>{property.description || 'Imóvel sem descrição'}</DialogTitle>
-                                                <p>
-                                                    <strong>Nome do Contato: </strong> {property.contact_name || 'Sem contato'} <br />
-                                                    <strong>Tel./Whatsapp: </strong> {property.contact_phone || 'Sem contato'} <br />
-                                                    <strong>IPTU: </strong>
-                                                    {new Intl.NumberFormat('pt-BR', {
-                                                        style: 'currency',
-                                                        currency: 'BRL',
-                                                    }).format(property.iptu)}
-                                                    <br />
-                                                    <strong>Área do Terreno (m²): </strong> {property.land_area || 'Não informado'}
-                                                    <br />
-                                                    <strong>Área Construída (m²): </strong> {property.building_area || 'Não informado'}
-                                                    <br />
-                                                    <strong>Banheiros: </strong> {property.bathrooms || 'Não informado'}
-                                                    <br />
-                                                    <strong>Suítes: </strong> {property.suites || 'Não informado'}
-                                                    <br />
-                                                    <strong>Vagas de Garagem: </strong> {property.garages || 'Não informado'}
-                                                    <br />
-                                                    <strong>Andar: </strong> {property.floor || 'Não informado'}
-                                                    <br />
-                                                    <strong>Andares do Prédio: </strong> {property.building_floors || 'Não informado'}
-                                                    <br />
-                                                    <strong>Andares da Propriedade: </strong> {property.property_floors || 'Não informado'}
-                                                    <br />
-                                                    <strong>Data de Entrega: </strong>
-                                                    {property.delivery_key
-                                                        ? new Date(property.delivery_key).toLocaleDateString('pt-BR')
-                                                        : 'Não informada'}
-                                                    <br />
-                                                    <strong>Ato Mínimo: </strong> {property.min_act || 'Não informado'}
-                                                    <br />
-                                                    <strong>Entrada Parcelada: </strong> {property.installment_payment ? 'Sim' : 'Não'}
-                                                    <br />
-                                                    <strong>INCC/Financ.: </strong> {property.incc_financing ? 'Sim' : 'Não'}
-                                                    <br />
-                                                    <strong>Documentação Inclusa: </strong> {property.documents ? 'Sim' : 'Não'}
-                                                    <br />
-                                                    <strong>Tipo de Acabamento: </strong> {property.finsh_type || 'Não informado'}
-                                                    <br />
-                                                    <strong>Ar Condicionado: </strong> {property.air_conditioning}
-                                                    <br />
-                                                    <strong>Jardim: </strong> {property.garden ? 'Sim' : 'Não'}
-                                                    <br />
-                                                    <strong>Piscina: </strong> {property.pool ? 'Sim' : 'Não'}
-                                                    <br />
-                                                    <strong>Varanda: </strong> {property.balcony ? 'Sim' : 'Não'}
-                                                    <br />
-                                                    <strong>Aceita Pets: </strong> {property.acept_pets ? 'Sim' : 'Não'}
-                                                    <br />
-                                                    <strong>Acessibilidade: </strong> {property.acessibility ? 'Sim' : 'Não'}
-                                                    <br />
-                                                    <strong>Observações: </strong> {property.obs || 'Nenhuma'}
-                                                </p>
-                                            </DialogContent>
-                                        </Dialog>
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <button>{Expand && <Icon iconNode={Expand} />}</button>
+                                                </DialogTrigger>
+                                                <DialogContent>
+                                                    <DialogTitle>{property.description || 'Imóvel sem descrição'}</DialogTitle>
+                                                    <p>
+                                                        <strong>Nome do Contato: </strong> {property.contact_name || 'Sem contato'} <br />
+                                                        <strong>Tel./Whatsapp: </strong> {property.contact_phone || 'Sem contato'} <br />
+                                                        <strong>IPTU: </strong>
+                                                        {new Intl.NumberFormat('pt-BR', {
+                                                            style: 'currency',
+                                                            currency: 'BRL',
+                                                        }).format(property.iptu)}
+                                                        <br />
+                                                        <strong>Área do Terreno (m²): </strong> {property.land_area || 'Não informado'}
+                                                        <br />
+                                                        <strong>Área Construída (m²): </strong> {property.building_area || 'Não informado'}
+                                                        <br />
+                                                        <strong>Banheiros: </strong> {property.bathrooms || 'Não informado'}
+                                                        <br />
+                                                        <strong>Suítes: </strong> {property.suites || 'Não informado'}
+                                                        <br />
+                                                        <strong>Vagas de Garagem: </strong> {property.garages || 'Não informado'}
+                                                        <br />
+                                                        <strong>Andar: </strong> {property.floor || 'Não informado'}
+                                                        <br />
+                                                        <strong>Andares do Prédio: </strong> {property.building_floors || 'Não informado'}
+                                                        <br />
+                                                        <strong>Andares da Propriedade: </strong> {property.property_floors || 'Não informado'}
+                                                        <br />
+                                                        <strong>Data de Entrega: </strong>
+                                                        {property.delivery_key
+                                                            ? new Date(property.delivery_key).toLocaleDateString('pt-BR')
+                                                            : 'Não informada'}
+                                                        <br />
+                                                        <strong>Ato Mínimo: </strong> {property.min_act || 'Não informado'}
+                                                        <br />
+                                                        <strong>Entrada Parcelada: </strong> {property.installment_payment ? 'Sim' : 'Não'}
+                                                        <br />
+                                                        <strong>INCC/Financ.: </strong> {property.incc_financing ? 'Sim' : 'Não'}
+                                                        <br />
+                                                        <strong>Documentação Inclusa: </strong> {property.documents ? 'Sim' : 'Não'}
+                                                        <br />
+                                                        <strong>Tipo de Acabamento: </strong> {property.finsh_type || 'Não informado'}
+                                                        <br />
+                                                        <strong>Ar Condicionado: </strong> {property.air_conditioning}
+                                                        <br />
+                                                        <strong>Jardim: </strong> {property.garden ? 'Sim' : 'Não'}
+                                                        <br />
+                                                        <strong>Piscina: </strong> {property.pool ? 'Sim' : 'Não'}
+                                                        <br />
+                                                        <strong>Varanda: </strong> {property.balcony ? 'Sim' : 'Não'}
+                                                        <br />
+                                                        <strong>Aceita Pets: </strong> {property.acept_pets ? 'Sim' : 'Não'}
+                                                        <br />
+                                                        <strong>Acessibilidade: </strong> {property.acessibility ? 'Sim' : 'Não'}
+                                                        <br />
+                                                        <strong>Observações: </strong> {property.obs || 'Nenhuma'}
+                                                    </p>
+                                                </DialogContent>
+                                            </Dialog>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

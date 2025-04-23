@@ -127,4 +127,29 @@ class Property extends Model
             'não incluso' => 'Não incluso',
         ];
     }
+
+    public function typ() {
+        switch ($this->type) {
+            case 'casa':
+                return 'Casa';
+            case 'casa (condom.)':
+                return 'Casa';
+            case 'apart. c/ elevad.':
+                return 'AP.';
+            case 'apartamento':
+                return 'AP.';
+            case 'sobrado':
+                return 'Sobr.';
+            case 'loja':
+                return 'Loja';
+            case 'garagem':
+                return 'Gar.';
+            case 'sala':
+                return 'Sala';
+            case 'outros':
+                return 'Outr.';
+            case 'terreno':
+                return 'Terr.';
+        }
+    }
 }
