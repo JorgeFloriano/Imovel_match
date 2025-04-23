@@ -3,9 +3,13 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
-import { Bed, Delete, Edit, Expand } from 'lucide-react';
+import { Bed, Delete, Edit, Expand, HeartHandshake } from 'lucide-react';
 
 interface ClientPropertiesProps {
+    regionOptions: string[];
+    typeOptions: string[];
+    airConditioningOptions: string[];
+    districtOptions: { value: string; label: string }[];
     client: {
         id: number;
         name: string;
@@ -101,18 +105,18 @@ interface User {
     name: string;
 }
 
-export default function Properties({ properties, maritalStatusOptions, booleanOptions, client }: ClientPropertiesProps) {
+export default function ClientProperties({ properties, maritalStatusOptions, booleanOptions, client }: ClientPropertiesProps) {
     return (
         <AppLayout>
             <Head title="Propriedades" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-xl font-semibold">Imóveis</h1>
+                    <h1 className="flex text-xl font-semibold">Cliente {HeartHandshake && <Icon iconNode={HeartHandshake} />} Imóveis</h1>
 
                     <Button asChild>
                         <a href={route('properties.create')}>
                             <span className="flex items-center gap-2">
-                                <span>Cadastrar</span>
+                                <span>Cliente Imóveis</span>
                             </span>
                         </a>
                     </Button>
@@ -122,7 +126,7 @@ export default function Properties({ properties, maritalStatusOptions, booleanOp
                         <thead className="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-800 dark:text-gray-400">
                             <tr>
                                 <th scope="col" className="px-6 py-3">
-                                    Descrição/Link
+                                    Nome do Cliente
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Tipo
@@ -142,110 +146,155 @@ export default function Properties({ properties, maritalStatusOptions, booleanOp
                             </tr>
                         </thead>
                         <tbody>
-                            {properties.map((properties) => (
-                                <tr key={property.id} className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
-                                    <th scope="row" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
-                                        <a
-                                            href={property.contact_link || '#'}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex items-center space-x-2 font-medium"
-                                        >
-                                            {property.description || 'Sem descrição'}
-                                        </a>
-                                    </th>
-                                    <td className="px-6 py-3">{property.typ ? property.typ.charAt(0).toUpperCase() + property.typ.slice(1) : ' '}</td>
-                                    <td className="px-6 py-3">
-                                        {new Intl.NumberFormat('pt-BR', {
-                                            minimumFractionDigits: 0,
-                                            maximumFractionDigits: 0,
-                                        }).format(property.price)}
-                                    </td>
-                                    <td className="px-6 py-3 font-bold">{property.rooms}</td>
-                                    <td className="px-6 py-3">{property.district.region.name}</td>
+                            <tr className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
+                                <th scope="row" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
+                                    {client.name}
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    {client.wishe?.type}
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Condição
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    {client.wishe?.rooms}
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    {client.wishe?.region?.name}
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    <span>Ações</span>
+                                </th>
+                            </tr>
 
-                                    <td className="px-6 py-3 align-middle">
-                                        <div className="inline-flex items-center gap-2">
+                            <tr className="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-800 dark:text-gray-400">
+                                <th scope="col" className="px-6 py-3">
+                                    Descrição do Imóvel
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Tipo
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Preço(R$)
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    {Bed && <Icon iconNode={Bed} />}
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Região
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    <span>Ações</span>
+                                </th>
+                            </tr>
+
+                            {Array.isArray(properties) &&
+                                properties.map((property) => (
+                                    <tr key={property.id} className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
+                                        <th scope="row" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                             <a
-                                                href={route('properties.edit', property.id)}
-                                                className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                                                href={property.contact_link || '#'}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex items-center space-x-2 font-medium"
                                             >
-                                                {Edit && <Icon iconNode={Edit} />}
+                                                {property.description || 'Sem descrição'}
                                             </a>
+                                        </th>
+                                        <td className="px-6 py-3">
+                                            {property.typ ? property.typ.charAt(0).toUpperCase() + property.typ.slice(1) : ' '}
+                                        </td>
+                                        <td className="px-6 py-3">
+                                            {new Intl.NumberFormat('pt-BR', {
+                                                minimumFractionDigits: 0,
+                                                maximumFractionDigits: 0,
+                                            }).format(property.price)}
+                                        </td>
+                                        <td className="px-6 py-3 font-bold">{property.rooms}</td>
+                                        <td className="px-6 py-3">{property.district.region.name}</td>
 
-                                            <a
-                                                href={route('properties.show', property.id)}
-                                                className="font-medium text-red-600 hover:underline dark:text-red-500"
-                                            >
-                                                {Delete && <Icon iconNode={Delete} />}
-                                            </a>
+                                        <td className="px-6 py-3 align-middle">
+                                            <div className="inline-flex items-center gap-2">
+                                                <a
+                                                    href={route('properties.edit', property.id)}
+                                                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                                                >
+                                                    {Edit && <Icon iconNode={Edit} />}
+                                                </a>
 
-                                            <Dialog>
-                                                <DialogTrigger asChild>
-                                                    <button>{Expand && <Icon iconNode={Expand} />}</button>
-                                                </DialogTrigger>
-                                                <DialogContent>
-                                                    <DialogTitle>{property.description || 'Imóvel sem descrição'}</DialogTitle>
-                                                    <p>
-                                                        <strong>Nome do Contato: </strong> {property.contact_name || 'Sem contato'} <br />
-                                                        <strong>Tel./Whatsapp: </strong> {property.contact_phone || 'Sem contato'} <br />
-                                                        <strong>IPTU: </strong>
-                                                        {new Intl.NumberFormat('pt-BR', {
-                                                            style: 'currency',
-                                                            currency: 'BRL',
-                                                        }).format(property.iptu)}
-                                                        <br />
-                                                        <strong>Área do Terreno (m²): </strong> {property.land_area || 'Não informado'}
-                                                        <br />
-                                                        <strong>Área Construída (m²): </strong> {property.building_area || 'Não informado'}
-                                                        <br />
-                                                        <strong>Banheiros: </strong> {property.bathrooms || 'Não informado'}
-                                                        <br />
-                                                        <strong>Suítes: </strong> {property.suites || 'Não informado'}
-                                                        <br />
-                                                        <strong>Vagas de Garagem: </strong> {property.garages || 'Não informado'}
-                                                        <br />
-                                                        <strong>Andar: </strong> {property.floor || 'Não informado'}
-                                                        <br />
-                                                        <strong>Andares do Prédio: </strong> {property.building_floors || 'Não informado'}
-                                                        <br />
-                                                        <strong>Andares da Propriedade: </strong> {property.property_floors || 'Não informado'}
-                                                        <br />
-                                                        <strong>Data de Entrega: </strong>
-                                                        {property.delivery_key
-                                                            ? new Date(property.delivery_key).toLocaleDateString('pt-BR')
-                                                            : 'Não informada'}
-                                                        <br />
-                                                        <strong>Ato Mínimo: </strong> {property.min_act || 'Não informado'}
-                                                        <br />
-                                                        <strong>Entrada Parcelada: </strong> {property.installment_payment ? 'Sim' : 'Não'}
-                                                        <br />
-                                                        <strong>INCC/Financ.: </strong> {property.incc_financing ? 'Sim' : 'Não'}
-                                                        <br />
-                                                        <strong>Documentação Inclusa: </strong> {property.documents ? 'Sim' : 'Não'}
-                                                        <br />
-                                                        <strong>Tipo de Acabamento: </strong> {property.finsh_type || 'Não informado'}
-                                                        <br />
-                                                        <strong>Ar Condicionado: </strong> {property.air_conditioning}
-                                                        <br />
-                                                        <strong>Jardim: </strong> {property.garden ? 'Sim' : 'Não'}
-                                                        <br />
-                                                        <strong>Piscina: </strong> {property.pool ? 'Sim' : 'Não'}
-                                                        <br />
-                                                        <strong>Varanda: </strong> {property.balcony ? 'Sim' : 'Não'}
-                                                        <br />
-                                                        <strong>Aceita Pets: </strong> {property.acept_pets ? 'Sim' : 'Não'}
-                                                        <br />
-                                                        <strong>Acessibilidade: </strong> {property.acessibility ? 'Sim' : 'Não'}
-                                                        <br />
-                                                        <strong>Observações: </strong> {property.obs || 'Nenhuma'}
-                                                    </p>
-                                                </DialogContent>
-                                            </Dialog>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+                                                <a
+                                                    href={route('properties.show', property.id)}
+                                                    className="font-medium text-red-600 hover:underline dark:text-red-500"
+                                                >
+                                                    {Delete && <Icon iconNode={Delete} />}
+                                                </a>
+
+                                                <Dialog>
+                                                    <DialogTrigger asChild>
+                                                        <button>{Expand && <Icon iconNode={Expand} />}</button>
+                                                    </DialogTrigger>
+                                                    <DialogContent>
+                                                        <DialogTitle>{property.description || 'Imóvel sem descrição'}</DialogTitle>
+                                                        <p>
+                                                            <strong>Nome do Contato: </strong> {property.contact_name || 'Sem contato'} <br />
+                                                            <strong>Tel./Whatsapp: </strong> {property.contact_phone || 'Sem contato'} <br />
+                                                            <strong>IPTU: </strong>
+                                                            {new Intl.NumberFormat('pt-BR', {
+                                                                style: 'currency',
+                                                                currency: 'BRL',
+                                                            }).format(property.iptu)}
+                                                            <br />
+                                                            <strong>Área do Terreno (m²): </strong> {property.land_area || 'Não informado'}
+                                                            <br />
+                                                            <strong>Área Construída (m²): </strong> {property.building_area || 'Não informado'}
+                                                            <br />
+                                                            <strong>Banheiros: </strong> {property.bathrooms || 'Não informado'}
+                                                            <br />
+                                                            <strong>Suítes: </strong> {property.suites || 'Não informado'}
+                                                            <br />
+                                                            <strong>Vagas de Garagem: </strong> {property.garages || 'Não informado'}
+                                                            <br />
+                                                            <strong>Andar: </strong> {property.floor || 'Não informado'}
+                                                            <br />
+                                                            <strong>Andares do Prédio: </strong> {property.building_floors || 'Não informado'}
+                                                            <br />
+                                                            <strong>Andares da Propriedade: </strong> {property.property_floors || 'Não informado'}
+                                                            <br />
+                                                            <strong>Data de Entrega: </strong>
+                                                            {property.delivery_key
+                                                                ? new Date(property.delivery_key).toLocaleDateString('pt-BR')
+                                                                : 'Não informada'}
+                                                            <br />
+                                                            <strong>Ato Mínimo: </strong> {property.min_act || 'Não informado'}
+                                                            <br />
+                                                            <strong>Entrada Parcelada: </strong> {property.installment_payment ? 'Sim' : 'Não'}
+                                                            <br />
+                                                            <strong>INCC/Financ.: </strong> {property.incc_financing ? 'Sim' : 'Não'}
+                                                            <br />
+                                                            <strong>Documentação Inclusa: </strong> {property.documents ? 'Sim' : 'Não'}
+                                                            <br />
+                                                            <strong>Tipo de Acabamento: </strong> {property.finsh_type || 'Não informado'}
+                                                            <br />
+                                                            <strong>Ar Condicionado: </strong> {property.air_conditioning}
+                                                            <br />
+                                                            <strong>Jardim: </strong> {property.garden ? 'Sim' : 'Não'}
+                                                            <br />
+                                                            <strong>Piscina: </strong> {property.pool ? 'Sim' : 'Não'}
+                                                            <br />
+                                                            <strong>Varanda: </strong> {property.balcony ? 'Sim' : 'Não'}
+                                                            <br />
+                                                            <strong>Aceita Pets: </strong> {property.acept_pets ? 'Sim' : 'Não'}
+                                                            <br />
+                                                            <strong>Acessibilidade: </strong> {property.acessibility ? 'Sim' : 'Não'}
+                                                            <br />
+                                                            <strong>Observações: </strong> {property.obs || 'Nenhuma'}
+                                                        </p>
+                                                    </DialogContent>
+                                                </Dialog>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
                         </tbody>
                     </table>
                 </div>

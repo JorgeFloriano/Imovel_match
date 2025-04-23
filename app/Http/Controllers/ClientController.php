@@ -120,9 +120,17 @@ class ClientController extends Controller
         return to_route('clients.index')->with('success', 'Client deleted successfully');
     }
 
-    public function properties(Client $client)
+    public function properties($client_id)
     {
+
+        $client = Client::find($client_id)->load('wishe.region');
         $properties = Property::with(['user', 'district.region'])->get();
+
+        $c = new Compatible(); // calss to compare client and property
+        foreach ($properties as $property) {
+            $property->rooms_c = $c->number($client->wishe->rooms, $property->rooms)['class'];
+        }
+        dd($properties); // compare numbers of rooms
 
         return Inertia::render('clients/client-properties', [
             'properties' => $properties,
