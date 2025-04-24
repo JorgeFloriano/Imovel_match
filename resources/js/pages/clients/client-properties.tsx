@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
-import { Bed, Delete, Edit, Expand, HeartHandshake } from 'lucide-react';
+import { BedDouble, BedSingle, Car, Delete, Edit, Expand, HeartHandshake, ShowerHead } from 'lucide-react';
 
 interface ClientPropertiesProps {
     regionOptions: string[];
@@ -62,9 +62,13 @@ interface ClientPropertiesProps {
         image: string | null;
         address: string | null;
         rooms: number | null;
+        rooms_c: string;
         bathrooms: number | null;
+        bathrooms_c: string;
         suites: number | null;
+        suites_c: string;
         garages: number | null;
+        garages_c: string;
         floor: number | null;
         building_floors: number | null;
         property_floors: number | null;
@@ -135,7 +139,16 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                     Preço(R$)
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    {Bed && <Icon iconNode={Bed} />}
+                                    <div className="p-1 text-center">{BedSingle && <Icon className="inline" iconNode={BedSingle} />}</div>
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    <div className="p-1 text-center">{ShowerHead && <Icon className="inline" iconNode={ShowerHead} />}</div>
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    <div className="p-1 text-center">{BedDouble && <Icon className="inline" iconNode={BedDouble} />}</div>
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    <div className="p-1 text-center">{Car && <Icon className="inline" iconNode={Car} />}</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Região
@@ -146,23 +159,32 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                             </tr>
                         </thead>
                         <tbody>
-                            <tr className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
+                            <tr className="border-b border-gray-200 dark:border-gray-700 dark:bg-gray-950 bg-blue-100 m-1">
                                 <th scope="row" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                     {client.name}
                                 </th>
-                                <th scope="col" className="px-6 py-3">
+                                <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                     {client.wishe?.type}
                                 </th>
-                                <th scope="col" className="px-6 py-3">
+                                <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                     Condição
                                 </th>
-                                <th scope="col" className="px-6 py-3">
-                                    {client.wishe?.rooms}
+                                <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
+                                    <div className="p-1 text-center">{client.wishe?.rooms}</div>
                                 </th>
-                                <th scope="col" className="px-6 py-3">
+                                <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
+                                    <div className="p-1 text-center">{client.wishe?.bathrooms}</div>
+                                </th>
+                                <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
+                                    <div className="p-1 text-center">{client.wishe?.suites}</div>
+                                </th>
+                                <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
+                                    <div className="p-1 text-center">{client.wishe?.garages}</div>
+                                </th>
+                                <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                     {client.wishe?.region?.name}
                                 </th>
-                                <th scope="col" className="px-6 py-3">
+                                <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                     <span>Ações</span>
                                 </th>
                             </tr>
@@ -178,7 +200,16 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                     Preço(R$)
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    {Bed && <Icon iconNode={Bed} />}
+                                    <div className="p-1 text-center">{BedSingle && <Icon className="inline" iconNode={BedSingle} />}</div>
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    <div className="p-1 text-center">{ShowerHead && <Icon className="inline" iconNode={ShowerHead} />}</div>
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    <div className="p-1 text-center">{BedDouble && <Icon className="inline" iconNode={BedDouble} />}</div>
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    <div className="p-1 text-center">{Car && <Icon className="inline" iconNode={Car} />}</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Região
@@ -210,7 +241,18 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                                 maximumFractionDigits: 0,
                                             }).format(property.price)}
                                         </td>
-                                        <td className="px-6 py-3 font-bold">{property.rooms}</td>
+                                        <td className="px-6 py-3 font-bold">
+                                            <div className={property.rooms_c}>{property.rooms}</div>
+                                        </td>
+                                        <td className="px-6 py-3 font-bold">
+                                            <div className={property.bathrooms_c}>{property.bathrooms}</div>
+                                        </td>
+                                        <td className="px-6 py-3 font-bold">
+                                            <div className={property.suites_c}>{property.suites}</div>
+                                        </td>
+                                        <td className="px-6 py-3 font-bold">
+                                            <div className={property.garages_c}>{property.garages}</div>
+                                        </td>
                                         <td className="px-6 py-3">{property.district.region.name}</td>
 
                                         <td className="px-6 py-3 align-middle">

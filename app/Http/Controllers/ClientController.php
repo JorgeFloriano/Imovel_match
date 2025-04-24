@@ -129,8 +129,10 @@ class ClientController extends Controller
         $c = new Compatible(); // calss to compare client and property
         foreach ($properties as $property) {
             $property->rooms_c = $c->number($client->wishe->rooms, $property->rooms)['class'];
+            $property->bathrooms_c = $c->number($client->wishe->bathrooms, $property->bathrooms)['class'];
+            $property->suites_c = $c->number($client->wishe->suites, $property->suites)['class'];
+            $property->garages_c = $c->number($client->wishe->garages, $property->garages)['class'];
         }
-        dd($properties); // compare numbers of rooms
 
         return Inertia::render('clients/client-properties', [
             'properties' => $properties,
