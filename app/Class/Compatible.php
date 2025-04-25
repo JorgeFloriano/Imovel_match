@@ -2,26 +2,38 @@
 
 namespace App\Class;
 
-class Compatible {
-    public function color($bool) {
-        if ($bool) {
-            return [
-                'text' => 'text-green-800',
-                'bg' => 'bg-green-200',
-            ];
-        }
-        return [
-            'text' => '',
-            'bg' => '',
-        ];
-    }
-    public function number($client_wishe, $property) {
-        $return['color'] = $this->color($client_wishe == $property && $client_wishe != null);
-        $return['result'] = $client_wishe == $property;
-        $return['class'] = 'p-1 text-center';
-        if ($client_wishe == $property && $client_wishe != null) {
-            $return['class'] = 'rounded-md bg-green-200 p-1 text-center text-green-800';
-        }
+class Compatible
+{
+
+    public $ok = [
+        'text' => 'text-green-800',
+        'bg' => 'bg-green-200',
+        'class' => 'rounded-md bg-green-200 p-1 text-center text-green-800',
+    ];
+
+    public $no = [
+        'text' => 'text-red-800',
+        'bg' => 'bg-red-200',
+        'class' => 'rounded-md bg-red-200 p-1 text-center text-red-800',
+    ];
+
+    public $undef = [
+        'text' => '',
+        'bg' => '',
+        'class' => '',
+    ];
+
+   
+    public function number($client_wishe = null, $property = null)
+    {
+        $return['class'] = $this->undef['class'];
+        
+
         return $return;
+    }
+
+    public function bool($client_wishe = null, $property = null)
+    {
+       
     }
 }
