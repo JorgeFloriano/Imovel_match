@@ -20,15 +20,27 @@ class Compatible
     public $undef = [
         'text' => '',
         'bg' => '',
-        'class' => '',
+        'class' => 'p-1 text-center',
     ];
 
    
     public function number($client_wishe = null, $property = null)
     {
-        $return['class'] = $this->undef['class'];
-        
+        if ($client_wishe == $property) {
+            $return['class'] = $this->ok['class'];
+            $return['count'] = 2;
+        }
 
+        if ($client_wishe != $property) {
+            $return['class'] = $this->no['class'];
+            $return['count'] = 0;
+        }
+
+        if ( in_array($client_wishe, [null, '']) || in_array($property, [null, '']) ) {
+            $return['class'] = $this->undef['class'];
+            $return['count'] = 1;
+        }
+        
         return $return;
     }
 

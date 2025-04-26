@@ -129,13 +129,20 @@ class ClientController extends Controller
         $c = new Compatible(); // calss to compare client and property
         foreach ($properties as $property) {
             $property->rooms_c = $c->number($client->wishe->rooms ?? 0, $property->rooms ?? 0)['class'];
+            $property->ok_count = $c->number($client->wishe->rooms ?? 0, $property->rooms ?? 0)['count'];
             $property->bathrooms_c = $c->number($client->wishe->bathrooms ?? 0, $property->bathrooms ?? 0)['class'];
+            $property->ok_count += $c->number($client->wishe->bathrooms ?? 0, $property->bathrooms ?? 0)['count'];
             $property->suites_c = $c->number($client->wishe->suites ?? 0, $property->suites ?? 0)['class'];
+            $property->ok_count += $c->number($client->wishe->suites ?? 0, $property->suites ?? 0)['count'];
             $property->garages_c = $c->number($client->wishe->garages ?? 0, $property->garages ?? 0)['class'];
+            $property->ok_count += $c->number($client->wishe->garages ?? 0, $property->garages ?? 0)['count'];
         }
 
+        // Convert to array after sorting
+        $sortedProperties = $properties->sortByDesc('ok_count')->values()->all();
+
         return Inertia::render('clients/client-properties', [
-            'properties' => $properties,
+            'properties' => $sortedProperties,
             'client' => $client
         ]);
     }
