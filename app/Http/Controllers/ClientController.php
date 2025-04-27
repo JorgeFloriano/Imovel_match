@@ -20,11 +20,6 @@ class ClientController extends Controller
     }
     public function index()
     {
-        // $cl = Client::find(9); // client with id = 9 has a property wishe that has 2 rooms
-        // $p = Property::find(1); // property with id = 1 has 2 rooms
-        // $c = new Compatible(); // calss to compare client and property
-        // dd($c->number($cl->wishe->rooms, $p->rooms)['color']['bg']); // compare numbers of rooms
-
         return Inertia::render('clients/clients-index', [
             'clients' => Client::with(['wishe.region'])->get(),
         ]);

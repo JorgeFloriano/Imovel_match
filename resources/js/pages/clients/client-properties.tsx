@@ -135,7 +135,7 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                     Nome do Cliente
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Tipo
+                                    <div className='px-2 py-1'>Tipo</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Preço(R$)
@@ -150,7 +150,7 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                     <div className="p-1 text-center">{Car && <Icon className="inline" iconNode={Car} />}</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Região
+                                <div className='px-2 py-1'>Região</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     <span>Ações</span>
@@ -163,7 +163,7 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                     {client.name}
                                 </th>
                                 <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
-                                    {client.wishe?.typ}
+                                    <div className='px-2 py-1'>{client.wishe?.typ}</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                     Condição
@@ -178,7 +178,7 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                     <div className="p-1 text-center">{client.wishe?.garages}</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
-                                    {client.wishe?.region?.name}
+                                    <div className='px-2 py-1'>{client.wishe?.region?.name}</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                     <span>Ações</span>
@@ -190,7 +190,7 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                     Descr. Imóvel
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Tipo
+                                    <div className='px-2 py-1'>Tipo</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Preço(R$)
@@ -205,7 +205,7 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                     <div className="p-1 text-center">{Car && <Icon className="inline" iconNode={Car} />}</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Região
+                                    <div className='px-2 py-1'>Região</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     <span>Ações</span>
