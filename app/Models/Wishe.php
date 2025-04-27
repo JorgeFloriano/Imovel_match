@@ -69,4 +69,29 @@ class Wishe extends Model
     public function region() {
         return $this->belongsTo(Region::class);
     }
+
+    public function typ() {
+        switch ($this->type) {
+            case 'casa':
+                return 'Casa';
+            case 'casa (condom.)':
+                return 'Casa (Con.)';
+            case 'apart. c/ elevad.':
+                return 'AP c/e';
+            case 'apartamento':
+                return 'AP.';
+            case 'sobrado':
+                return 'Sobrado';
+            case 'loja':
+                return 'Loja';
+            case 'garagem':
+                return 'Garagem';
+            case 'sala':
+                return 'Sala';
+            case 'outros':
+                return 'Outro';
+            case 'terreno':
+                return 'Terreno';
+        }
+    }
 }

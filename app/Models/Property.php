@@ -135,7 +135,7 @@ class Property extends Model
             case 'casa (condom.)':
                 return 'Casa';
             case 'apart. c/ elevad.':
-                return 'AP.';
+                return 'AP c/e';
             case 'apartamento':
                 return 'AP.';
             case 'sobrado':
@@ -147,7 +147,7 @@ class Property extends Model
             case 'sala':
                 return 'Sala';
             case 'outros':
-                return 'Outr.';
+                return 'Outro';
             case 'terreno':
                 return 'Terr.';
         }

@@ -30,7 +30,7 @@ interface ClientPropertiesProps {
             region?: {
                 name: string;
             };
-            type?: string;
+            typ?: string;
             rooms?: number;
             bathrooms?: number;
             suites?: number;
@@ -52,6 +52,7 @@ interface ClientPropertiesProps {
         district_id: number;
         type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
         typ: string | null;
+        typ_c: string | null;
         iptu: number;
         contact_name: string | null;
         contact_phone: string | null;
@@ -162,7 +163,7 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                     {client.name}
                                 </th>
                                 <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
-                                    {client.wishe?.type}
+                                    {client.wishe?.typ}
                                 </th>
                                 <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                     Condição
@@ -225,7 +226,9 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                             </a>
                                         </th>
                                         <td className="px-6 py-3">
-                                            {property.typ ? property.typ.charAt(0).toUpperCase() + property.typ.slice(1) : ' '}
+                                            <div className={property.typ_c}>
+                                                {property.typ ? property.typ.charAt(0).toUpperCase() + property.typ.slice(1) : ' '}
+                                            </div>
                                         </td>
                                         <td className="px-6 py-3">
                                             {new Intl.NumberFormat('pt-BR', {
@@ -242,26 +245,18 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                         <td className="px-6 py-3">
                                             <div className={property.garages_c}>{property.garages}</div>
                                         </td>
-                                        <td className="px-6 py-3">{property.district.region.name}</td>
+                                        <td className="px-6 py-3">
+                                            <div className={property.region_c}>{property.district.region.name}</div>
+                                        </td>
 
                                         <td className="px-6 py-3 align-middle">
                                             <div className="inline-flex items-center gap-2">
                                                 <a href={route('properties.edit', property.id)}>
-                                                    {Edit && (
-                                                        <Icon
-                                                            className=" text-blue-600 hover:underline dark:text-blue-500"
-                                                            iconNode={Edit}
-                                                        />
-                                                    )}
+                                                    {Edit && <Icon className="text-blue-600 hover:underline dark:text-blue-500" iconNode={Edit} />}
                                                 </a>
 
                                                 <a href={route('properties.show', property.id)}>
-                                                    {Delete && (
-                                                        <Icon
-                                                            className=" text-red-600 hover:underline dark:text-red-500"
-                                                            iconNode={Delete}
-                                                        />
-                                                    )}
+                                                    {Delete && <Icon className="text-red-600 hover:underline dark:text-red-500" iconNode={Delete} />}
                                                 </a>
 
                                                 <Dialog>

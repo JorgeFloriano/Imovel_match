@@ -26,26 +26,43 @@ class Compatible
    
     public function number($client_wishe = null, $property = null)
     {
-        if ($client_wishe == $property) {
-            $return['class'] = $this->ok['class'];
-            $return['count'] = 2;
-        }
-
-        if ($client_wishe != $property) {
-            $return['class'] = $this->no['class'];
-            $return['count'] = 0;
-        }
-
         if ( in_array($client_wishe, [null, '']) || in_array($property, [null, '']) ) {
-            $return['class'] = $this->undef['class'];
-            $return['count'] = 1;
+            return [
+                'class' => $this->undef['class'],
+                'count' => 1,
+            ];
+        }
+
+        if ($client_wishe > $property) {
+            return [
+                'class' => $this->no['class'],
+                'count' => 0,
+            ];
         }
         
-        return $return;
+        return [
+            'class' => $this->ok['class'],
+            'count' => 2,
+        ];
     }
 
     public function bool($client_wishe = null, $property = null)
     {
        
+    }
+
+    public function string($client_wishe = null, $property = null)
+    {
+       if ($client_wishe == $property) {
+            return [
+                'class' => $this->ok['class'],
+                'count' => 2,
+            ];
+        }
+        
+        return [
+            'class' => $this->undef['class'],
+            'count' => 1,
+        ];
     }
 }

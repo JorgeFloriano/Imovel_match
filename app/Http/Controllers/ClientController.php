@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Requests\ClientRequest;
 use App\Models\Client;
 use App\Models\Region;
@@ -39,30 +40,44 @@ class ClientController extends Controller
     }
 
     public function store(ClientRequest $request): RedirectResponse
-{
-    $validated = $request->validated();
-    $validated['user_id'] = Auth::user()->id;
-    
-    // Create client with user_id and all validated client data
-    $client = Client::create($validated);
+    {
+        $validated = $request->validated();
+        $validated['user_id'] = Auth::user()->id;
 
-    // Extract wish data from validated input (excluding client-specific fields)
-    $wishFields = [
-        'region_id', 'district_id', 'type', 'rooms', 'bathrooms', 'suites', 
-        'garages', 'delivery_key', 'min_act', 'installment_payment',
-        'air_conditioning', 'garden', 'pool', 'balcony', 'acept_pets',
-        'acessibility', 'obs', 'air_conditioning',
-    ];
-    
-    $wishData = array_merge(
-        array_intersect_key($validated, array_flip($wishFields)),
-    );
+        // Create client with user_id and all validated client data
+        $client = Client::create($validated);
 
-    // Create associated wish
-    $client->wishe()->create($wishData);
+        // Extract wish data from validated input (excluding client-specific fields)
+        $wishFields = [
+            'region_id',
+            'district_id',
+            'type',
+            'rooms',
+            'bathrooms',
+            'suites',
+            'garages',
+            'delivery_key',
+            'min_act',
+            'installment_payment',
+            'air_conditioning',
+            'garden',
+            'pool',
+            'balcony',
+            'acept_pets',
+            'acessibility',
+            'obs',
+            'air_conditioning',
+        ];
 
-    return to_route('clients.create')->with('success', 'Client created successfully');
-}
+        $wishData = array_merge(
+            array_intersect_key($validated, array_flip($wishFields)),
+        );
+
+        // Create associated wish
+        $client->wishe()->create($wishData);
+
+        return to_route('clients.create')->with('success', 'Client created successfully');
+    }
 
     public function show(Client $client)
     {
@@ -84,29 +99,43 @@ class ClientController extends Controller
     }
 
     public function update(ClientRequest $request, Client $client): RedirectResponse
-{
-    $validated = $request->validated();
-    $validated['user_id'] = Auth::user()->id;
-    
-    // Update client with validated data
-    $client->update($validated);
+    {
+        $validated = $request->validated();
+        $validated['user_id'] = Auth::user()->id;
 
-    // Define wish fields and update/create
-    $wishFields = [
-        'region_id', 'district_id', 'type', 'rooms', 'bathrooms', 'suites',
-        'garages', 'delivery_key', 'min_act', 'installment_payment',
-        'air_conditioning', 'garden', 'pool', 'balcony', 'acept_pets',
-        'acessibility', 'obs', 'air_conditioning',
-    ];
-    
-    $wishData = array_merge(
-        array_intersect_key($validated, array_flip($wishFields)),
-    );
+        // Update client with validated data
+        $client->update($validated);
 
-    $client->wishe()->updateOrCreate([], $wishData);
+        // Define wish fields and update/create
+        $wishFields = [
+            'region_id',
+            'district_id',
+            'type',
+            'rooms',
+            'bathrooms',
+            'suites',
+            'garages',
+            'delivery_key',
+            'min_act',
+            'installment_payment',
+            'air_conditioning',
+            'garden',
+            'pool',
+            'balcony',
+            'acept_pets',
+            'acessibility',
+            'obs',
+            'air_conditioning',
+        ];
 
-    return back()->with('success', 'Client updated successfully');
-}
+        $wishData = array_merge(
+            array_intersect_key($validated, array_flip($wishFields)),
+        );
+
+        $client->wishe()->updateOrCreate([], $wishData);
+
+        return back()->with('success', 'Client updated successfully');
+    }
     public function destroy(Client $client): RedirectResponse
     {
         // Delete the associated wish first
@@ -124,18 +153,22 @@ class ClientController extends Controller
     {
 
         $client = Client::find($client_id)->load('wishe.region');
+        $client->wishe->typ = $client->wishe->typ();
         $properties = Property::with(['user', 'district.region'])->get();
 
         $c = new Compatible(); // calss to compare client and property
         foreach ($properties as $property) {
             $property->rooms_c = $c->number($client->wishe->rooms ?? 0, $property->rooms ?? 0)['class'];
             $property->ok_count = $c->number($client->wishe->rooms ?? 0, $property->rooms ?? 0)['count'];
-            $property->bathrooms_c = $c->number($client->wishe->bathrooms ?? 0, $property->bathrooms ?? 0)['class'];
-            $property->ok_count += $c->number($client->wishe->bathrooms ?? 0, $property->bathrooms ?? 0)['count'];
             $property->suites_c = $c->number($client->wishe->suites ?? 0, $property->suites ?? 0)['class'];
             $property->ok_count += $c->number($client->wishe->suites ?? 0, $property->suites ?? 0)['count'];
             $property->garages_c = $c->number($client->wishe->garages ?? 0, $property->garages ?? 0)['class'];
             $property->ok_count += $c->number($client->wishe->garages ?? 0, $property->garages ?? 0)['count'];
+            $property->typ = $property->typ();
+            $property->typ_c = $c->string($client->wishe->type ?? '', $property->type ?? '')['class'];
+            $property->ok_count += $c->string($client->wishe->type ?? '', $property->type ?? '')['count'];
+            $property->region_c = $c->string($client->wishe->region->id ?? '', $property->district->region->id ?? '')['class'];
+            $property->ok_count += $c->string($client->wishe->region->id ?? '', $property->district->region->id ?? '')['count'];
         }
 
         // Convert to array after sorting
