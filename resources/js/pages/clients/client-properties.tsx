@@ -2,9 +2,10 @@ import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import IconTooltip from '@/components/ui/icon-tooltip';
+import { StatusIcon } from '@/components/ui/status-icon';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
-import { Bath, Bed, Car, Delete, Edit, Expand, HeartHandshake } from 'lucide-react';
+import { Bath, Bed, Car, Delete, Edit, Expand, HeartHandshake, Check, X } from 'lucide-react';
 
 interface ClientPropertiesProps {
     regionOptions: string[];
@@ -135,22 +136,22 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                     Nome do Cliente
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    <div className='px-2 py-1'>Tipo</div>
+                                    <div className="px-2 py-1">Tipo</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Preço(R$)
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    <div className="p-1 text-center">{Bed && <Icon className="inline" iconNode={Bed} />}</div>
+                                    <IconTooltip iconNode={Bed && <Icon className="inline" iconNode={Bed} />} tooltipText="Quartos" />
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    <div className="p-1 text-center">{Bath && <Icon className="inline" iconNode={Bath} />}</div>
+                                    <IconTooltip iconNode={Bath && <Icon className="inline" iconNode={Bath} />} tooltipText="Suítes" />
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    <div className="p-1 text-center">{Car && <Icon className="inline" iconNode={Car} />}</div>
+                                    <IconTooltip iconNode={Car && <Icon className="inline" iconNode={Car} />} tooltipText="Vagas" />
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                <div className='px-2 py-1'>Região</div>
+                                    <div className="px-2 py-1">Região</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     <span>Ações</span>
@@ -163,7 +164,7 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                     {client.name}
                                 </th>
                                 <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
-                                    <div className='px-2 py-1'>{client.wishe?.typ}</div>
+                                    <div className="px-2 py-1">{client.wishe?.typ}</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                     Condição
@@ -178,7 +179,7 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                     <div className="p-1 text-center">{client.wishe?.garages}</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
-                                    <div className='px-2 py-1'>{client.wishe?.region?.name}</div>
+                                    <div className="px-2 py-1">{client.wishe?.region?.name}</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                     <span>Ações</span>
@@ -190,7 +191,7 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                     Descr. Imóvel
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    <div className='px-2 py-1'>Tipo</div>
+                                    <div className="px-2 py-1">Tipo</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Preço(R$)
@@ -199,13 +200,13 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                     <IconTooltip iconNode={Bed && <Icon className="inline" iconNode={Bed} />} tooltipText="Quartos" />
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    <div className="p-1 text-center">{Bath && <Icon className="inline" iconNode={Bath} />}</div>
+                                    <IconTooltip iconNode={Bath && <Icon className="inline" iconNode={Bath} />} tooltipText="Suítes" />
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    <div className="p-1 text-center">{Car && <Icon className="inline" iconNode={Car} />}</div>
+                                    <IconTooltip iconNode={Car && <Icon className="inline" iconNode={Car} />} tooltipText="Vagas" />
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    <div className='px-2 py-1'>Região</div>
+                                    <div className="px-2 py-1">Região</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     <span>Ações</span>
@@ -248,6 +249,9 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                         <td className="px-6 py-3">
                                             <div className={property.region_c}>{property.district.region.name}</div>
                                         </td>
+                                        <td className="px-6 py-3">
+                                            <div className={property.rooms_c}><StatusIcon value={property.balcony}/></div>
+                                        </td>
 
                                         <td className="px-6 py-3 align-middle">
                                             <div className="inline-flex items-center gap-2">
@@ -258,7 +262,6 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                                 <a href={route('properties.show', property.id)}>
                                                     {Delete && <Icon className="text-red-600 hover:underline dark:text-red-500" iconNode={Delete} />}
                                                 </a>
-
                                                 <Dialog>
                                                     <DialogTrigger asChild>
                                                         <button>{Expand && <Icon iconNode={Expand} />}</button>
