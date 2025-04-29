@@ -5,7 +5,7 @@ import IconTooltip from '@/components/ui/icon-tooltip';
 import { StatusIcon } from '@/components/ui/status-icon';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
-import { Bath, Bed, Car, Delete, Edit, Expand, HeartHandshake, Check, X } from 'lucide-react';
+import { Bath, Bed, Car, Delete, Edit, Expand, HeartHandshake } from 'lucide-react';
 
 interface ClientPropertiesProps {
     regionOptions: string[];
@@ -151,6 +151,12 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                     <IconTooltip iconNode={Car && <Icon className="inline" iconNode={Car} />} tooltipText="Vagas" />
                                 </th>
                                 <th scope="col" className="px-6 py-3">
+                                    <IconTooltip
+                                        iconNode={<img src="/balcony.png" className="inline" width={16} alt="Varanda" />}
+                                        tooltipText="Varanda"
+                                    />
+                                </th>
+                                <th scope="col" className="px-6 py-3">
                                     <div className="px-2 py-1">Região</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3">
@@ -178,6 +184,9 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                 <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                     <div className="p-1 text-center">{client.wishe?.garages}</div>
                                 </th>
+                                <th scope="col" className="px-6 py-3 text-center font-medium whitespace-nowrap text-gray-900 dark:text-white">
+                                    <StatusIcon value={client.wishe?.balcony} />
+                                </th>
                                 <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                     <div className="px-2 py-1">{client.wishe?.region?.name}</div>
                                 </th>
@@ -204,6 +213,12 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     <IconTooltip iconNode={Car && <Icon className="inline" iconNode={Car} />} tooltipText="Vagas" />
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    <IconTooltip
+                                        iconNode={<img src="/balcony.png" className="inline" width={16} alt="Varanda" />}
+                                        tooltipText="Varanda"
+                                    />
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     <div className="px-2 py-1">Região</div>
@@ -247,12 +262,13 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                             <div className={property.garages_c}>{property.garages}</div>
                                         </td>
                                         <td className="px-6 py-3">
-                                            <div className={property.region_c}>{property.district.region.name}</div>
+                                            <div className={property.rooms_c}>
+                                                <StatusIcon value={property.balcony} />
+                                            </div>
                                         </td>
                                         <td className="px-6 py-3">
-                                            <div className={property.rooms_c}><StatusIcon value={property.balcony}/></div>
+                                            <div className={property.region_c}>{property.district.region.name}</div>
                                         </td>
-
                                         <td className="px-6 py-3 align-middle">
                                             <div className="inline-flex items-center gap-2">
                                                 <a href={route('properties.edit', property.id)}>
