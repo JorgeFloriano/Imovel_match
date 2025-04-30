@@ -5,47 +5,25 @@ import IconTooltip from '@/components/ui/icon-tooltip';
 import { StatusIcon } from '@/components/ui/status-icon';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
-import { Bath, Bed, Car, Delete, Edit, Expand, HeartHandshake } from 'lucide-react';
+import { Bath, Bed, Car, HeartHandshake } from 'lucide-react';
 
 interface ClientPropertiesProps {
     regionOptions: string[];
     typeOptions: string[];
-    airConditioningOptions: string[];
     districtOptions: { value: string; label: string }[];
     client: {
         id: number;
         name: string;
-        phone: string;
-        email?: string;
-        address?: string;
-        marital_status: string;
-        need_financing: boolean;
-        dependents: number;
-        profession: string;
         revenue: number;
-        capital: number;
-        fgts?: number;
-        has_property: boolean;
-        compromised_income: number;
         wishe?: {
             region?: {
                 name: string;
             };
             typ?: string;
             rooms?: number;
-            bathrooms?: number;
             suites?: number;
             garages?: number;
-            delivery_key?: string;
-            min_act?: number;
-            installment_payment?: boolean;
-            air_conditioning?: string;
-            garden?: boolean;
-            pool?: boolean;
             balcony?: boolean;
-            acept_pets?: boolean;
-            acessibility?: boolean;
-            obs?: string;
         };
     };
     properties: {
@@ -60,6 +38,7 @@ interface ClientPropertiesProps {
         contact_link: string | null;
         description: string | null;
         price: number;
+        range_c: string;
         land_area: number | null;
         building_area: number | null;
         image: string | null;
@@ -85,14 +64,13 @@ interface ClientPropertiesProps {
         garden: boolean | null;
         pool: boolean | null;
         balcony: boolean | null;
+        balcony_c: string;
         acept_pets: boolean | null;
         acessibility: boolean | null;
         obs: string | null;
         user: User;
         district: District;
     };
-    maritalStatusOptions: Record<string, string>;
-    booleanOptions: Record<string, string>;
 }
 
 interface Region {
@@ -112,7 +90,7 @@ interface User {
     name: string;
 }
 
-export default function ClientProperties({ properties, maritalStatusOptions, booleanOptions, client }: ClientPropertiesProps) {
+export default function ClientProperties({ properties, client }: ClientPropertiesProps) {
     return (
         <AppLayout>
             <Head title="Propriedades" />
@@ -139,7 +117,7 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                     <div className="px-2 py-1">Tipo</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Preço(R$)
+                                    Renda(R$)
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     <IconTooltip iconNode={Bed && <Icon className="inline" iconNode={Bed} />} tooltipText="Quartos" />
@@ -159,9 +137,6 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                 <th scope="col" className="px-6 py-3">
                                     <div className="px-2 py-1">Região</div>
                                 </th>
-                                <th scope="col" className="px-6 py-3">
-                                    <span>Ações</span>
-                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -173,7 +148,7 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                     <div className="px-2 py-1">{client.wishe?.typ}</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
-                                    Condição
+                                    <div className="px-2 py-1">{client.revenue}</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                     <div className="p-1 text-center">{client.wishe?.rooms}</div>
@@ -189,9 +164,6 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                 </th>
                                 <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                     <div className="px-2 py-1">{client.wishe?.region?.name}</div>
-                                </th>
-                                <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
-                                    <span>Ações</span>
                                 </th>
                             </tr>
 
@@ -223,64 +195,16 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                 <th scope="col" className="px-6 py-3">
                                     <div className="px-2 py-1">Região</div>
                                 </th>
-                                <th scope="col" className="px-6 py-3">
-                                    <span>Ações</span>
-                                </th>
                             </tr>
 
                             {Array.isArray(properties) &&
                                 properties.map((property) => (
                                     <tr key={property.id} className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
                                         <th scope="row" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
-                                            <a
-                                                href={property.contact_link || '#'}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="flex items-center space-x-2 font-medium"
-                                            >
-                                                {property.description || 'Sem descrição'}
-                                            </a>
-                                        </th>
-                                        <td className="px-6 py-3">
-                                            <div className={property.typ_c}>
-                                                {property.typ ? property.typ.charAt(0).toUpperCase() + property.typ.slice(1) : ' '}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-3">
-                                            {new Intl.NumberFormat('pt-BR', {
-                                                minimumFractionDigits: 0,
-                                                maximumFractionDigits: 0,
-                                            }).format(property.price)}
-                                        </td>
-                                        <td className="px-6 py-3">
-                                            <div className={property.rooms_c}>{property.rooms}</div>
-                                        </td>
-                                        <td className="px-6 py-3">
-                                            <div className={property.suites_c}>{property.suites}</div>
-                                        </td>
-                                        <td className="px-6 py-3">
-                                            <div className={property.garages_c}>{property.garages}</div>
-                                        </td>
-                                        <td className="px-6 py-3">
-                                            <div className={property.rooms_c}>
-                                                <StatusIcon value={property.balcony} />
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-3">
-                                            <div className={property.region_c}>{property.district.region.name}</div>
-                                        </td>
-                                        <td className="px-6 py-3 align-middle">
                                             <div className="inline-flex items-center gap-2">
-                                                <a href={route('properties.edit', property.id)}>
-                                                    {Edit && <Icon className="text-blue-600 hover:underline dark:text-blue-500" iconNode={Edit} />}
-                                                </a>
-
-                                                <a href={route('properties.show', property.id)}>
-                                                    {Delete && <Icon className="text-red-600 hover:underline dark:text-red-500" iconNode={Delete} />}
-                                                </a>
                                                 <Dialog>
                                                     <DialogTrigger asChild>
-                                                        <button>{Expand && <Icon iconNode={Expand} />}</button>
+                                                        <button>{property.description || 'Sem descrição'}</button>
                                                     </DialogTrigger>
                                                     <DialogContent>
                                                         <DialogTitle>{property.description || 'Imóvel sem descrição'}</DialogTitle>
@@ -341,6 +265,36 @@ export default function ClientProperties({ properties, maritalStatusOptions, boo
                                                     </DialogContent>
                                                 </Dialog>
                                             </div>
+                                        </th>
+                                        <td className="px-6 py-3">
+                                            <div className={property.typ_c}>
+                                                {property.typ ? property.typ.charAt(0).toUpperCase() + property.typ.slice(1) : ' '}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-3">
+                                            <div className={property.range_c}>
+                                                {new Intl.NumberFormat('pt-BR', {
+                                                    minimumFractionDigits: 0,
+                                                    maximumFractionDigits: 0,
+                                                }).format(property.price)}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-3">
+                                            <div className={property.rooms_c}>{property.rooms}</div>
+                                        </td>
+                                        <td className="px-6 py-3">
+                                            <div className={property.suites_c}>{property.suites}</div>
+                                        </td>
+                                        <td className="px-6 py-3">
+                                            <div className={property.garages_c}>{property.garages}</div>
+                                        </td>
+                                        <td className="px-6 py-3">
+                                            <div className={property.balcony_c}>
+                                                <StatusIcon value={property.balcony} />
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-3">
+                                            <div className={property.region_c}>{property.district.region.name}</div>
                                         </td>
                                     </tr>
                                 ))}

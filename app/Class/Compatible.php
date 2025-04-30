@@ -2,6 +2,11 @@
 
 namespace App\Class;
 
+use Hamcrest\Type\IsBoolean;
+
+use function PHPUnit\Framework\isBool;
+use function PHPUnit\Framework\isNumeric;
+
 class Compatible
 {
 
@@ -32,6 +37,7 @@ class Compatible
         if ( in_array($client_wishe, [null, '']) || in_array($property, [null, '']) ) {
             return [
                 'class' => $this->undef['class'],
+                'class2' => $this->undef['class2'],
                 'count' => 1,
             ];
         }
@@ -39,19 +45,40 @@ class Compatible
         if ($client_wishe > $property) {
             return [
                 'class' => $this->no['class'],
+                'class2' => $this->no['class2'],
                 'count' => 0,
             ];
         }
         
         return [
             'class' => $this->ok['class'],
+            'class2' => $this->ok['class2'],
             'count' => 2,
         ];
     }
 
-    public function bool($client_wishe = null, $property = null)
+    public function bool($client_wishe, $property)
     {
-       
+        if (($property === false || $property === true) && 
+        ($client_wishe === true || $client_wishe === false) && 
+        $client_wishe != $property) {
+            return [
+                'class' => $this->no['class'],
+                'count' => 0,
+            ];
+        }
+
+        if ($client_wishe === $property && $client_wishe !== null) {
+            return [
+                'class' => $this->ok['class'],
+                'count' => 2,
+            ];
+        }
+
+        return [
+            'class' => $this->undef['class'],
+            'count' => 1,
+        ];
     }
 
     public function string($client_wishe = null, $property = null)

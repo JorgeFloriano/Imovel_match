@@ -147,7 +147,7 @@ class ClientController extends Controller
     public function properties($client_id)
     {
 
-        $client = Client::find($client_id)->load('wishe.region');
+        $client = Client::find($client_id)->load('wishe.region');  
         $client->wishe->typ = $client->wishe->typ();
         $properties = Property::with(['user', 'district.region'])->get();
 
@@ -155,19 +155,30 @@ class ClientController extends Controller
         foreach ($properties as $property) {
             $property->rooms_c = $c->number($client->wishe->rooms ?? 0, $property->rooms ?? 0)['class'];
             $property->ok_count = $c->number($client->wishe->rooms ?? 0, $property->rooms ?? 0)['count'];
+
             $property->suites_c = $c->number($client->wishe->suites ?? 0, $property->suites ?? 0)['class'];
             $property->ok_count += $c->number($client->wishe->suites ?? 0, $property->suites ?? 0)['count'];
+
             $property->garages_c = $c->number($client->wishe->garages ?? 0, $property->garages ?? 0)['class'];
             $property->ok_count += $c->number($client->wishe->garages ?? 0, $property->garages ?? 0)['count'];
+
             $property->typ = $property->typ();
             $property->typ_c = $c->string($client->wishe->type ?? '', $property->type ?? '')['class'];
             $property->ok_count += $c->string($client->wishe->type ?? '', $property->type ?? '')['count'];
+
             $property->region_c = $c->string($client->wishe->region->id ?? '', $property->district->region->id ?? '')['class'];
             $property->ok_count += $c->string($client->wishe->region->id ?? '', $property->district->region->id ?? '')['count'];
+
+            $property->balcony_c = $c->bool($client->wishe->balcony, $property->balcony)['class'];
+            $property->ok_count += $c->bool($client->wishe->balcony ?? '', $property->balcony ?? '')['count'];
+
+            $property->range_c = $c->number($property->range() ?? 0, $client->range() ?? 0)['class2'];
+            $property->ok_count += $c->number($property->range() ?? 0, $client->range() ?? 0)['count'];
         }
 
         // Convert to array after sorting
         $sortedProperties = $properties->sortByDesc('ok_count')->values()->all();
+
 
         return Inertia::render('clients/client-properties', [
             'properties' => $sortedProperties,

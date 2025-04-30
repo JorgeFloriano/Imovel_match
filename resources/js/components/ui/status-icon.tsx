@@ -21,13 +21,13 @@ export const StatusIcon = ({
 
   return value ? (
     <Check
-      className={cn("text-green-500 inline", className)}
+      className={cn("inline", className)}
       size={size}
       strokeWidth={strokeWidth}
     />
   ) : (
     <X
-      className={cn("text-red-500 inline", className)}
+      className={cn("inline", className)}
       size={size}
       strokeWidth={strokeWidth}
     />
