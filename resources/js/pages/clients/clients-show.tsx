@@ -28,7 +28,7 @@ interface ClientShowProps {
             suites?: number;
             garages?: number;
             delivery_key?: string;
-            min_act?: number;
+            building_area?: number;
             installment_payment?: boolean;
             air_conditioning?: string;
             garden?: boolean;
@@ -208,7 +208,7 @@ export default function ShowClient({ client, maritalStatusOptions, booleanOption
                                 </div>
                                 <div>
                                     <h3 className="text-sm font-medium text-neutral-500">Área Útil (m²)</h3>
-                                    <p className="text-sm">{client.wishe.min_act || '-'}</p>
+                                    <p className="text-sm">{client.wishe.building_area || '-'}</p>
                                 </div>
                                 <div>
                                     <h3 className="text-sm font-medium text-neutral-500">Previsão de Entrega</h3>

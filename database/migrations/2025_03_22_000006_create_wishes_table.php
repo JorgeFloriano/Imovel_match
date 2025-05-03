@@ -23,6 +23,7 @@ return new class extends Migration
             $table->tinyInteger('garages')->nullable();
             $table->date('delivery_key')->nullable();
             $table->integer('min_act')->nullable();
+            $table->integer('building_area')->nullable();
             $table->boolean('installment_payment')->nullable(); // entrada parcelada
             $table->enum('air_conditioning', [
                 'incluso',

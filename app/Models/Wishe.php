@@ -30,7 +30,7 @@ class Wishe extends Model
         'suites',
         'garages',
         'delivery_key',
-        'min_act',
+        'building_area',
         'installment_payment',
         'air_conditioning',
         'garden',

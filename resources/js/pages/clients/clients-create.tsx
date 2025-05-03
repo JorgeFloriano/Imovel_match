@@ -29,7 +29,7 @@ type ClientCreateForm = {
     suites?: number;
     garages?: number;
     delivery_key?: string;
-    min_act?: number;
+    building_area?: number;
     installment_payment?: boolean;
     air_conditioning?: string;
     garden?: boolean;
@@ -81,7 +81,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
         // suites: 0,
         // garages: 1,
         // delivery_key: '',
-        // min_act: 0,
+        // building_area: 0,
         // installment_payment: undefined,
         // air_conditioning: '',
         // garden: undefined,
@@ -111,7 +111,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
         suites: 0,
         garages: 1,
         delivery_key:'2026-01-01',
-        min_act: 2345,
+        building_area: 2345,
         installment_payment: true,
         air_conditioning: '',
         garden: undefined,
@@ -166,7 +166,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                     'suites',
                     'garages',
                     'delivery_key',
-                    'min_act',
+                    'building_area',
                     'installment_payment',
                     'air_conditioning',
                     'garden',
@@ -400,9 +400,9 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 type="number"
                                 min={0}
                                 max={9999999999}
-                                value={data.min_act ?? 0}
-                                onChange={(value) => handleSetData('min_act', value)}
-                                error={errors.min_act}
+                                value={data.building_area ?? 0}
+                                onChange={(value) => handleSetData('building_area', value)}
+                                error={errors.building_area}
                             />
 
                             <FormSelect

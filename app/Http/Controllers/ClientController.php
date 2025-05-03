@@ -52,7 +52,7 @@ class ClientController extends Controller
             'suites',
             'garages',
             'delivery_key',
-            'min_act',
+            'building_area',
             'installment_payment',
             'air_conditioning',
             'garden',
@@ -111,7 +111,7 @@ class ClientController extends Controller
             'suites',
             'garages',
             'delivery_key',
-            'min_act',
+            'building_area',
             'installment_payment',
             'air_conditioning',
             'garden',
@@ -146,21 +146,23 @@ class ClientController extends Controller
 
     public function properties($client_id)
     {
-
-        $client = Client::find($client_id)->load('wishe.region');  
+        $client = Client::find($client_id)->load('wishe.region');
         $client->wishe->typ = $client->wishe->typ();
         $properties = Property::with(['user', 'district.region'])->get();
 
         $c = new Compatible(); // calss to compare client and property
         foreach ($properties as $property) {
-            $property->rooms_c = $c->number($client->wishe->rooms ?? 0, $property->rooms ?? 0)['class'];
-            $property->ok_count = $c->number($client->wishe->rooms ?? 0, $property->rooms ?? 0)['count'];
+            $property->rooms_c = $c->number($client->wishe->rooms, $property->rooms)['class'];
+            $property->ok_count = $c->number($client->wishe->rooms, $property->rooms)['count'];
 
-            $property->suites_c = $c->number($client->wishe->suites ?? 0, $property->suites ?? 0)['class'];
-            $property->ok_count += $c->number($client->wishe->suites ?? 0, $property->suites ?? 0)['count'];
+            $property->suites_c = $c->number($client->wishe->suites, $property->suites)['class'];
+            $property->ok_count += $c->number($client->wishe->suites, $property->suites)['count'];
 
-            $property->garages_c = $c->number($client->wishe->garages ?? 0, $property->garages ?? 0)['class'];
-            $property->ok_count += $c->number($client->wishe->garages ?? 0, $property->garages ?? 0)['count'];
+            $property->garages_c = $c->number($client->wishe->garages, $property->garages)['class'];
+            $property->ok_count += $c->number($client->wishe->garages, $property->garages)['count'];
+
+            $property->delivery_key_c = $c->date($client->wishe->delivery_key, $property->delivery_key)['class'];
+            $property->ok_count += $c->date($client->wishe->delivery_key, $property->delivery_key)['count'];
 
             $property->typ = $property->typ();
             $property->typ_c = $c->string($client->wishe->type ?? '', $property->type ?? '')['class'];
@@ -172,13 +174,17 @@ class ClientController extends Controller
             $property->balcony_c = $c->bool($client->wishe->balcony, $property->balcony)['class'];
             $property->ok_count += $c->bool($client->wishe->balcony ?? '', $property->balcony ?? '')['count'];
 
-            $property->range_c = $c->number($property->range() ?? 0, $client->range() ?? 0)['class2'];
-            $property->ok_count += $c->number($property->range() ?? 0, $client->range() ?? 0)['count'];
+            $property->range_c = $c->number($property->range(), $client->range())['class2'];
+            $property->ok_count += $c->number($property->range(), $client->range())['count'];
+
+            $property->building_area_c = $c->number($client->wishe->building_area, $property->building_area)['class'];
+            $property->ok_count += $c->number($client->wishe->building_area, $property->building_area)['count'];
         }
 
         // Convert to array after sorting
         $sortedProperties = $properties->sortByDesc('ok_count')->values()->all();
 
+        //dd($sortedProperties);
 
         return Inertia::render('clients/client-properties', [
             'properties' => $sortedProperties,

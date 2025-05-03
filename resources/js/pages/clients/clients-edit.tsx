@@ -29,7 +29,7 @@ type ClientEditForm = {
     suites?: number;
     garages?: number;
     delivery_key?: string;
-    min_act?: number;
+    building_area?: number;
     installment_payment?: boolean;
     air_conditioning?: string;
     garden?: boolean;
@@ -316,9 +316,9 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                 type="number"
                                 min={0}
                                 max={9999999999}
-                                value={data.min_act || ''}
-                                onChange={(value) => handleSetData('min_act', value ? value : undefined)}
-                                error={errors.min_act}
+                                value={data.building_area || ''}
+                                onChange={(value) => handleSetData('building_area', value ? value : undefined)}
+                                error={errors.building_area}
                             />
 
                             <FormSelect

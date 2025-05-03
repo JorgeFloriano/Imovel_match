@@ -20,7 +20,7 @@ interface Wishe {
     suites: number | null;
     garages: number | null;
     delivery_key: string | null;
-    min_act: number | null;
+    building_area: number | null;
     installment_payment: boolean;
     air_conditioning: 'incluso' | 'somente infra' | 'não incluso';
     garden: boolean | null;
@@ -179,7 +179,7 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                                                     ? new Date(client.wishe.delivery_key).toLocaleDateString('pt-BR')
                                                                     : 'Não especificada'}
                                                                 <br />
-                                                                <strong>Ato Mínimo: </strong> {client.wishe.min_act || 'Não especificado'}
+                                                                <strong>Área construída: </strong> {client.wishe.building_area || 'Não especificado'}
                                                                 <br />
                                                                 <strong>Entrada Parcelada: </strong>{' '}
                                                                 {client.wishe.installment_payment ? 'Sim' : 'Não'}

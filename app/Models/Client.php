@@ -83,7 +83,9 @@ class Client extends Model
     }
     public function range()
     {
-        if ($this->revenue <= 2800) {
+        if ($this->revenue <= 1518) {
+            return 0;
+        } elseif ($this->revenue <= 2800) {
             return 1;
         } elseif ($this->revenue <= 4600) {
             return 2;

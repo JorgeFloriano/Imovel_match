@@ -5,7 +5,7 @@ import IconTooltip from '@/components/ui/icon-tooltip';
 import { StatusIcon } from '@/components/ui/status-icon';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
-import { Bath, Bed, Car, HeartHandshake } from 'lucide-react';
+import { ArrowRight, Bath, Bed, Calendar, Car, HeartHandshake, KeyRound } from 'lucide-react';
 
 interface ClientPropertiesProps {
     regionOptions: string[];
@@ -24,6 +24,8 @@ interface ClientPropertiesProps {
             suites?: number;
             garages?: number;
             balcony?: boolean;
+            building_area?: number;
+            delivery_key?: string;
         };
     };
     properties: {
@@ -32,21 +34,15 @@ interface ClientPropertiesProps {
         type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
         typ: string | null;
         typ_c: string | null;
-        iptu: number;
-        contact_name: string | null;
-        contact_phone: string | null;
-        contact_link: string | null;
         description: string | null;
         price: number;
         range_c: string;
         land_area: number | null;
         building_area: number | null;
+        building_area_c: string;
         image: string | null;
-        address: string | null;
         rooms: number | null;
         rooms_c: string;
-        bathrooms: number | null;
-        bathrooms_c: string;
         suites: number | null;
         suites_c: string;
         garages: number | null;
@@ -55,6 +51,7 @@ interface ClientPropertiesProps {
         building_floors: number | null;
         property_floors: number | null;
         delivery_key: string | null;
+        delivery_key_c: string | null;
         min_act: number | null;
         installment_payment: boolean;
         incc_financing: boolean | null;
@@ -119,6 +116,21 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                 <th scope="col" className="px-6 py-3">
                                     Renda(R$)
                                 </th>
+                                <th className="px-6 py-3">
+                                    <IconTooltip
+                                        iconNode={
+                                            <div className="inline-flex gap-2">
+                                                {Calendar && <Icon iconNode={Calendar} />}
+                                                {ArrowRight && <Icon iconNode={ArrowRight} />}
+                                                {KeyRound && <Icon iconNode={KeyRound} />}
+                                            </div>
+                                        }
+                                        tooltipText="Previsão de entrega das chaves"
+                                    />
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-center">
+                                    <IconTooltip iconNode="M²" tooltipText="Área construída" />
+                                </th>
                                 <th scope="col" className="px-6 py-3">
                                     <IconTooltip iconNode={Bed && <Icon className="inline" iconNode={Bed} />} tooltipText="Quartos" />
                                 </th>
@@ -151,6 +163,12 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                     <div className="px-2 py-1">{client.revenue}</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
+                                    <div className="py-1 text-center">{new Date(client.wishe?.delivery_key as string).toLocaleDateString('pt-BR')}</div>
+                                </th>
+                                <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
+                                    <div className="py-1 text-center">{client.wishe?.building_area}</div>
+                                </th>
+                                <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                     <div className="p-1 text-center">{client.wishe?.rooms}</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
@@ -176,6 +194,21 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Preço(R$)
+                                </th>
+                                <th className="px-6 py-3">
+                                    <IconTooltip
+                                        iconNode={
+                                            <div className="inline-flex gap-2">
+                                                {Calendar && <Icon iconNode={Calendar} />}
+                                                {ArrowRight && <Icon iconNode={ArrowRight} />}
+                                                {KeyRound && <Icon iconNode={KeyRound} />}
+                                            </div>
+                                        }
+                                        tooltipText="Previsão de entrega das chaves"
+                                    />
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-center">
+                                    <IconTooltip iconNode="M²" tooltipText="Área construída" />
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     <IconTooltip iconNode={Bed && <Icon className="inline" iconNode={Bed} />} tooltipText="Quartos" />
@@ -278,6 +311,14 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                                     maximumFractionDigits: 0,
                                                 }).format(property.price)}
                                             </div>
+                                        </td>
+                                        <td className="px-6 py-3">
+                                            <div className={property.delivery_key_c}>
+                                                {new Date(property.delivery_key as string).toLocaleDateString('pt-BR')}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-3">
+                                            <div className={property.building_area_c}>{property.building_area}</div>
                                         </td>
                                         <td className="px-6 py-3">
                                             <div className={property.rooms_c}>{property.rooms}</div>

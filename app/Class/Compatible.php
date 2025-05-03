@@ -2,9 +2,12 @@
 
 namespace App\Class;
 
+use DateTime;
 use Hamcrest\Type\IsBoolean;
+use Mockery\Undefined;
 
 use function PHPUnit\Framework\isBool;
+use function PHPUnit\Framework\isNull;
 use function PHPUnit\Framework\isNumeric;
 
 class Compatible
@@ -32,9 +35,9 @@ class Compatible
     ];
 
    
-    public function number($client_wishe = null, $property = null)
+    public function number($client_wishe, $property)
     {
-        if ( in_array($client_wishe, [null, '']) || in_array($property, [null, '']) ) {
+        if ($property === null || $client_wishe === null) {
             return [
                 'class' => $this->undef['class'],
                 'class2' => $this->undef['class2'],
@@ -42,7 +45,7 @@ class Compatible
             ];
         }
 
-        if ($client_wishe > $property) {
+        elseif ($client_wishe > $property) {
             return [
                 'class' => $this->no['class'],
                 'class2' => $this->no['class2'],
@@ -93,6 +96,33 @@ class Compatible
         return [
             'class' => $this->undef['class2'],
             'count' => 1,
+        ];
+    }
+    public function date($client_wishe, $property)
+    {
+        $client_wishe = new DateTime($client_wishe);
+        $property = new DateTime($property);
+
+        if ($property === null || $client_wishe === null) {
+            return [
+                'class' => $this->undef['class'],
+                'class2' => $this->undef['class2'],
+                'count' => 1,
+            ];
+        }
+
+        if ($client_wishe >= $property) {
+            return [
+                'class' => $this->ok['class'],
+                'class2' => $this->ok['class2'],
+                'count' => 2,
+            ];
+        }
+        
+        return [
+            'class' => $this->no['class'],
+            'class2' => $this->no['class2'],
+            'count' => 0,
         ];
     }
 }
