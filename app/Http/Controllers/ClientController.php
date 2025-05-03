@@ -175,7 +175,7 @@ class ClientController extends Controller
             $property->ok_count += $c->bool($client->wishe->balcony ?? '', $property->balcony ?? '')['count'];
 
             $property->range_c = $c->number($property->range(), $client->range())['class2'];
-            $property->ok_count += $c->number($property->range(), $client->range())['count'];
+            $property->ok_count += ($c->number($property->range(), $client->range())['count'] * 3);
 
             $property->building_area_c = $c->number($client->wishe->building_area, $property->building_area)['class'];
             $property->ok_count += $c->number($client->wishe->building_area, $property->building_area)['count'];
