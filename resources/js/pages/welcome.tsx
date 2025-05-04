@@ -40,7 +40,7 @@ export default function Welcome() {
                 </header>
                 <div className="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
                     <main className="max-w-[335px] lg:max-w-4xl lg:flex-row">
-                        <div className="rounded-lg p-5 text-center leading-[20px] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:bg-[#161615] dark:text-[#EDEDEC] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]">
+                        <div className="rounded-lg p-5 text-center leading-[20px] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] bg-[#123251] dark:text-[#EDEDEC] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] border-[1px] border-[#B8B8B8]">
                             <img src="/logo_complete.png" className="inline rounded-lg" width="100%" alt="Varanda" />
                         </div>
                     </main>
