@@ -78,8 +78,8 @@ export default function Properties({ properties }: { properties: Property[] }) {
                     </Button>
                 </div>
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-                        <thead className="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-800 dark:text-gray-400">
+                    <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-[#B8B8B8]">
+                        <thead className="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-[#123251] dark:text-gray-400">
                             <tr>
                                 <th scope="col" className="px-6 py-3">
                                     Descrição/Link

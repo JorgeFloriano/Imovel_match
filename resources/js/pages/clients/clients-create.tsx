@@ -4,7 +4,7 @@ import { FormTextarea } from '@/components/form-textarea';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { Transition } from '@headlessui/react';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -110,7 +110,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
         bathrooms: 1,
         suites: 0,
         garages: 1,
-        delivery_key:'2026-01-01',
+        delivery_key: '2026-01-01',
         building_area: 2345,
         installment_payment: true,
         air_conditioning: '',
@@ -183,7 +183,14 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
         <AppLayout>
             <Head title="Cadastro de Cliente" />
             <div className="h-full gap-4 space-y-6 rounded-xl p-4">
-                <h1 className="mb-6 text-2xl font-bold">Cadastro de Cliente</h1>
+                <div className="flex items-center justify-between">
+                    <h1 className="text-2xl font-bold">Cadastro do Cliente</h1>
+                    <div className="flex gap-2">
+                        <Button asChild variant="outline">
+                            <Link href={route('clients.index')}>Voltar</Link>
+                        </Button>
+                    </div>
+                </div>
 
                 <form onSubmit={submit} className="space-y-6">
                     {/* Personal Information Section */}
@@ -203,7 +210,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                             <div className="grid grid-cols-2 gap-4">
                                 <FormInput
                                     label="Telefone"
-                                    placeholder='(99) 99999-9999'
+                                    placeholder="(99) 99999-9999"
                                     maxLength={20}
                                     type="tel"
                                     value={data.phone}
@@ -224,7 +231,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                             <FormInput
                                 label="E-mail"
                                 type="email"
-                                placeholder='Ex.: joaomendonsa@gmail.com'
+                                placeholder="Ex.: joaomendonsa@gmail.com"
                                 maxLength={60}
                                 value={data.email}
                                 onChange={(value) => handleSetData('email', value)}
@@ -233,7 +240,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
 
                             <FormInput
                                 label="Endereço"
-                                placeholder='Ex.: Rua dos Aquidaban, 430'
+                                placeholder="Ex.: Rua dos Aquidaban, 430"
                                 maxLength={100}
                                 value={data.address}
                                 onChange={(value) => handleSetData('address', value)}
@@ -242,7 +249,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
 
                             <FormInput
                                 label="Profissão"
-                                placeholder='Ex.: Advogado'
+                                placeholder="Ex.: Advogado"
                                 maxLength={60}
                                 value={data.profession}
                                 onChange={(value) => handleSetData('profession', value)}

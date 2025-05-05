@@ -111,6 +111,58 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.87 0 0);
+    --pc-blue: #123251;
+    --pc-gold: #BF9447;
+    --pc-gray: #B8B8B8;
+    --pc-white: #EFEEEC;
+}
+
+.bg-pc-blue {
+    background-color: var(--pc-blue);
+}   
+
+.bg-pc-gold {
+    background-color: var(--pc-gold);
+}
+
+.bg-pc-gray {
+    background-color: var(--pc-gray);
+}
+
+.bg-pc-white {
+    background-color: var(--pc-white);
+}
+
+.tx-pc-blue {
+    color: var(--pc-blue);
+}
+
+.tx-pc-gold {
+    color: var(--pc-gold);
+}
+
+.tx-pc-gray {
+    color: var(--pc-gray);
+}
+
+.tx-pc-white {
+    color: var(--pc-white);
+}
+
+.bc-pc-blue {
+    border-color: var(--pc-blue);
+}
+
+.bc-pc-gold {
+    border-color: var(--pc-gold);
+}
+
+.bc-pc-gray {
+    border-color: var(--pc-gray);
+}
+
+.bc-pc-white {
+    border-color: var(--pc-white);
 }
 
 .dark {
@@ -146,6 +198,10 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(0.269 0 0);
     --sidebar-ring: oklch(0.439 0 0);
+    --pc-blue: #123251;
+    --pc-gold: #BF9447;
+    --pc-gray: #B8B8B8;
+    --pc-white: #EFEEEC;
 }
 
 /* For WebKit browsers */

@@ -22,7 +22,7 @@ const IconTooltip: React.FC<IconTooltipProps> = ({
       </div>
 
       <span
-        className={`invisible z-50 absolute mb-2 rounded bg-white px-2 py-1 text-xs text-gray-900 border-1 border-gray-900 group-hover:visible ${tooltipClassName}`}
+        className={`invisible absolute mb-2 whitespace-nowrap rounded bg-white px-2 py-1 text-gray-900 border-1 border-gray-900 group-hover:visible ${tooltipClassName}`}
       >
         {tooltipText}
       </span>

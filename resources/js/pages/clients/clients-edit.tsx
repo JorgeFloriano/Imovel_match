@@ -4,7 +4,7 @@ import { FormTextarea } from '@/components/form-textarea';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { Transition } from '@headlessui/react';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -99,7 +99,14 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
         <AppLayout>
             <Head title="Editar Cliente" />
             <div className="h-full gap-4 space-y-6 rounded-xl p-4">
-                <h1 className="mb-6 text-2xl font-bold">Editar Cliente</h1>
+                <div className="flex items-center justify-between">
+                    <h1 className="text-2xl font-bold">Editar do Cliente</h1>
+                    <div className="flex gap-2">
+                        <Button asChild variant="outline">
+                            <Link href={route('clients.index')}>Voltar</Link>
+                        </Button>
+                    </div>
+                </div>
 
                 <form onSubmit={submit} className="space-y-6">
                     {/* Personal Information Section */}
@@ -140,7 +147,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                             <FormInput
                                 label="E-mail"
                                 type="email"
-                                placeholder='Ex.: joaomendonsa@gmail.com'
+                                placeholder="Ex.: joaomendonsa@gmail.com"
                                 maxLength={60}
                                 value={data.email || ''}
                                 onChange={(value) => handleSetData('email', value)}
@@ -362,7 +369,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                 rows={1}
                                 value={data.obs || ''}
                                 maxLength={300}
-                                placeholder='Ex.: Cliente quer casa com vista para o por do sol.'
+                                placeholder="Ex.: Cliente quer casa com vista para o por do sol."
                                 onChange={(value) => handleSetData('obs', value)}
                                 error={errors.obs}
                                 className="col-span-full"

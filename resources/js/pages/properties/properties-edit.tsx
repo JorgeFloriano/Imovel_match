@@ -3,7 +3,7 @@ import { FormSelect } from '@/components/form-select';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { Transition } from '@headlessui/react';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -116,7 +116,14 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
         <AppLayout>
             <Head title="Edição de Propriedade" />
             <div className="h-full gap-4 space-y-6 rounded-xl p-4">
-                <h1 className="mb-6 text-2xl font-bold">Edição de Imóvel</h1>
+                <div className="flex items-center justify-between">
+                    <h1 className="text-2xl font-bold">Edição de Imóvel</h1>
+                    <div className="flex gap-2">
+                        <Button asChild variant="outline">
+                            <Link href={route('properties.index')}>Voltar</Link>
+                        </Button>
+                    </div>
+                </div>
 
                 <form onSubmit={submit} className="space-y-6">
                     <div className="mb-3 grid grid-cols-1 gap-4 md:grid-cols-2">
