@@ -1,9 +1,11 @@
 import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import IconTooltip from '@/components/ui/icon-tooltip';
+import { StatusIcon } from '@/components/ui/status-icon';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
-import { Bed, Delete, Edit, Expand } from 'lucide-react';
+import { ArrowRight, Bath, Bed, Calendar, Car, Delete, Edit, Expand, KeyRound } from 'lucide-react';
 
 interface Region {
     id: number;
@@ -78,23 +80,53 @@ export default function Properties({ properties }: { properties: Property[] }) {
                     </Button>
                 </div>
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-[#B8B8B8]">
-                        <thead className="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-[#123251] dark:text-gray-400">
+                    <table className="w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
+                        <thead className="bg-[#D8D8D8] text-xs text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
                                 <th scope="col" className="px-6 py-3">
                                     Descrição/Link
                                 </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Tipo
+                                <th>
+                                    <div className="px-6">Tipo</div>
                                 </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Preço(R$)
+                                <th className="px-6">Preço(R$)</th>
+                                <th className="px-6">
+                                    <IconTooltip
+                                        iconNode={
+                                            <div className="inline-flex gap-2">
+                                                {Calendar && <Icon className="inline h-4 w-4" iconNode={Calendar} />}
+                                                {ArrowRight && <Icon className="inline h-4 w-4" iconNode={ArrowRight} />}
+                                                {KeyRound && <Icon className="inline h-4 w-4" iconNode={KeyRound} />}
+                                            </div>
+                                        }
+                                        tooltipText="Previsão de entrega das chaves"
+                                    />
                                 </th>
-                                <th scope="col" className="px-6 py-3">
-                                    {Bed && <Icon iconNode={Bed} />}
+                                <th className="text-center">
+                                    <IconTooltip iconNode="M²" tooltipText="Área construída" />
                                 </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Região
+                                <th>
+                                    <IconTooltip iconNode={Bed && <Icon className="inline h-4 w-4" iconNode={Bed} />} tooltipText="Quartos" />
+                                </th>
+                                <th>
+                                    <IconTooltip iconNode={Bath && <Icon className="inline h-4 w-4" iconNode={Bath} />} tooltipText="Suítes" />
+                                </th>
+                                <th>
+                                    <IconTooltip iconNode={Car && <Icon className="inline h-4 w-4" iconNode={Car} />} tooltipText="Vagas" />
+                                </th>
+                                <th>
+                                    <IconTooltip
+                                        iconNode={
+                                            <>
+                                                <img src="/balcony.png" className="inline dark:hidden" width={16} alt="Varanda" />
+                                                <img src="/balcony_dark.png" className="hidden dark:inline" width={16} alt="Varanda" />
+                                            </>
+                                        }
+                                        tooltipText="Varanda"
+                                    />
+                                </th>
+                                <th>
+                                    <div className="px-6">Região</div>
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     <span>Ações</span>
@@ -114,17 +146,33 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                             {property.description || 'Sem descrição'}
                                         </a>
                                     </th>
-                                    <td className="px-6 py-3">
-                                        {property.typ ? property.typ.charAt(0).toUpperCase() + property.typ.slice(1) : ' '}
-                                    </td>
-                                    <td className="px-6 py-3">
+                                    <td className="px-6">{property.typ ? property.typ.charAt(0).toUpperCase() + property.typ.slice(1) : ' '}</td>
+                                    <td className="px-6">
                                         {new Intl.NumberFormat('pt-BR', {
                                             minimumFractionDigits: 0,
                                             maximumFractionDigits: 0,
                                         }).format(property.price)}
                                     </td>
-                                    <td className="px-6 py-3 font-bold">{property.rooms}</td>
-                                    <td className="px-6 py-3">{property.district.region.name}</td>
+                                    <td className="px-6 text-center">{new Date(property.delivery_key as string).toLocaleDateString('pt-BR')}</td>
+                                    <td className="px-6 text-center">{property.building_area}</td>
+                                    <td className="px-6 text-center">{property.rooms}</td>
+                                    <td className="px-6 text-center">{property.suites}</td>
+                                    <td className="px-6 text-center">{property.garages}</td>
+                                    <td className="px-6 text-center">
+                                        <StatusIcon value={property.balcony} />
+                                    </td>
+                                    <td className="px-6">
+                                        {property.address ? (
+                                            <IconTooltip
+                                                tooltipClassName="right-full"
+                                                iconClassName="inline"
+                                                iconNode={property.district.region?.name}
+                                                tooltipText={property.address}
+                                            />
+                                        ) : (
+                                            property.district.region?.name
+                                        )}
+                                    </td>
 
                                     <td className="px-6 py-3 align-middle">
                                         <div className="inline-flex items-center gap-2">

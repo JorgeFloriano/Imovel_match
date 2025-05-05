@@ -67,8 +67,8 @@ export default function Clients({ clients }: { clients: Client[] }) {
                     </Button>
                 </div>
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-[#B8B8B8]">
-                        <thead className="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
+                    <table className="w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
+                        <thead className="bg-[#D8D8D8] text-xs text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
                                 <th className="px-6 py-3 align-middle text-[#BF9447]">
                                     <div className="inline-flex items-center gap-2">

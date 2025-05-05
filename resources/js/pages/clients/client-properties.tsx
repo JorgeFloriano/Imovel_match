@@ -39,7 +39,7 @@ export default function ClientProperties({ properties, client }: ClientPropertie
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="flex items-center justify-between">
                     <h1 className="flex gap-3 p-2 text-xl font-semibold">
-                        Cliente {HeartHandshake && <Icon className="text-[#BF9447]" iconNode={HeartHandshake} />} Imóveis
+                        Cliente {HeartHandshake && <Icon className="text-[#BF9447] h-4 w-4" iconNode={HeartHandshake} />} Imóveis
                     </h1>
                     <div className="flex gap-2">
                         <Button asChild variant="outline">
@@ -53,8 +53,8 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                 </p>
 
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-[#B8B8B8]">
-                        <thead className="m-1 bg-blue-50 text-gray-700 uppercase dark:bg-[#123251] dark:text-gray-400">
+                    <table className="w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
+                        <thead className="m-1 bg-[#D8D8D8] text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
                                 <th className="px-6 py-3">Nome do Cliente</th>
                                 <th>
@@ -65,9 +65,9 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                     <IconTooltip
                                         iconNode={
                                             <div className="inline-flex gap-2">
-                                                {Calendar && <Icon iconNode={Calendar} />}
-                                                {ArrowRight && <Icon iconNode={ArrowRight} />}
-                                                {KeyRound && <Icon iconNode={KeyRound} />}
+                                                {Calendar && <Icon className="inline h-4 w-4" iconNode={Calendar} />}
+                                                {ArrowRight && <Icon className="inline h-4 w-4" iconNode={ArrowRight} />}
+                                                {KeyRound && <Icon className="inline h-4 w-4" iconNode={KeyRound} />}
                                             </div>
                                         }
                                         tooltipText="Previsão de entrega das chaves"
@@ -77,13 +77,13 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                     <IconTooltip iconNode="M²" tooltipText="Área construída" />
                                 </th>
                                 <th>
-                                    <IconTooltip iconNode={Bed && <Icon className="inline" iconNode={Bed} />} tooltipText="Quartos" />
+                                    <IconTooltip iconNode={Bed && <Icon className="inline h-4 w-4" iconNode={Bed} />} tooltipText="Quartos" />
                                 </th>
                                 <th>
-                                    <IconTooltip iconNode={Bath && <Icon className="inline" iconNode={Bath} />} tooltipText="Suítes" />
+                                    <IconTooltip iconNode={Bath && <Icon className="inline h-4 w-4" iconNode={Bath} />} tooltipText="Suítes" />
                                 </th>
                                 <th>
-                                    <IconTooltip iconNode={Car && <Icon className="inline" iconNode={Car} />} tooltipText="Vagas" />
+                                    <IconTooltip iconNode={Car && <Icon className="inline h-4 w-4" iconNode={Car} />} tooltipText="Vagas" />
                                 </th>
                                 <th>
                                     <IconTooltip
@@ -140,7 +140,7 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                 </th>
                             </tr>
 
-                            <tr className="m-1 bg-blue-50 text-gray-700 uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
+                            <tr className="m-1 bg-[#D8D8D8] text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                                 <th className="px-6 py-3">Descr. do imóvel</th>
                                 <th>
                                     <div className="px-6">Tipo</div>
@@ -150,9 +150,9 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                     <IconTooltip
                                         iconNode={
                                             <div className="inline-flex gap-2">
-                                                {Calendar && <Icon iconNode={Calendar} />}
-                                                {ArrowRight && <Icon iconNode={ArrowRight} />}
-                                                {KeyRound && <Icon iconNode={KeyRound} />}
+                                                {Calendar && <Icon className="inline h-4 w-4" iconNode={Calendar} />}
+                                                {ArrowRight && <Icon className="inline h-4 w-4" iconNode={ArrowRight} />}
+                                                {KeyRound && <Icon className="inline h-4 w-4" iconNode={KeyRound} />}
                                             </div>
                                         }
                                         tooltipText="Previsão de entrega das chaves"
@@ -162,13 +162,13 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                     <IconTooltip iconNode="M²" tooltipText="Área construída" />
                                 </th>
                                 <th>
-                                    <IconTooltip iconNode={Bed && <Icon className="inline" iconNode={Bed} />} tooltipText="Quartos" />
+                                    <IconTooltip iconNode={Bed && <Icon className="inline h-4 w-4" iconNode={Bed} />} tooltipText="Quartos" />
                                 </th>
                                 <th>
-                                    <IconTooltip iconNode={Bath && <Icon className="inline" iconNode={Bath} />} tooltipText="Suítes" />
+                                    <IconTooltip iconNode={Bath && <Icon className="inline h-4 w-4" iconNode={Bath} />} tooltipText="Suítes" />
                                 </th>
                                 <th>
-                                    <IconTooltip iconNode={Car && <Icon className="inline" iconNode={Car} />} tooltipText="Vagas" />
+                                    <IconTooltip iconNode={Car && <Icon className="inline h-4 w-4" iconNode={Car} />} tooltipText="Vagas" />
                                 </th>
                                 <th>
                                     <IconTooltip

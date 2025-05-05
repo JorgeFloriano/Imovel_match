@@ -17,12 +17,12 @@ const IconTooltip: React.FC<IconTooltipProps> = ({
 }) => {
   return (
     <div className={`group relative ${containerClassName}`}>
-      <div className={`p-1 text-center ${iconClassName}`}>
+      <div className={`text-center ${iconClassName}`}>
         {iconNode && <span className="inline">{iconNode}</span>}
       </div>
 
       <span
-        className={`invisible absolute mb-2 whitespace-nowrap rounded bg-white px-2 py-1 text-gray-900 border-1 border-gray-900 group-hover:visible ${tooltipClassName}`}
+        className={`invisible absolute mb-2 whitespace-nowrap rounded bg-white mx-2 px-2 py-1 text-gray-900 border-1 border-gray-900 group-hover:visible ${tooltipClassName}`}
       >
         {tooltipText}
       </span>
