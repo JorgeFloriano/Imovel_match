@@ -191,4 +191,12 @@ class ClientController extends Controller
             'client' => $client
         ]);
     }
+
+    public function property($client_id, $property_id)
+    {
+        return Inertia::render('clients/client-property', [
+            'client' => Client::find($client_id)->load('wishe.region'),
+            'property' => Property::find($property_id)->load('user', 'district.region'),
+        ]);
+    }
 }

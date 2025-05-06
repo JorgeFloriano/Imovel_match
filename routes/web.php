@@ -15,6 +15,7 @@ Route::middleware(['web', 'verified'])->group(function () {
 
     Route::resource('/clients', ClientController::class);
     Route::get('/clients/{client}/properties', [ClientController::class, 'properties'])->name('clients.properties');
+    Route::get('/clients/{client}/{property}/property', [ClientController::class, 'property'])->name('clients.property');
 
     Route::resource('/properties', PropertyController::class);
 

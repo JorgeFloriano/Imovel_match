@@ -6,7 +6,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowRight, Bath, Bed, Calendar, Car, HeartHandshake, KeyRound } from 'lucide-react';
 
-interface ClientPropertiesProps {
+interface ClientPropertyProps {
     client: {
         id: number;
         name: string;
@@ -24,26 +24,67 @@ interface ClientPropertiesProps {
             delivery_key?: string;
         };
     };
-    properties: {
+    property: {
         id: number;
+        description: string | null;
+        contact_name: string | null;
+        contact_phone: string | null;
+        contact_link: string | null;
+        district_id?: string;
+        type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
+        typ: string | null;
+        typ_c: string;
+        iptu: number;
+        price: number;
+        range_c: string;
+        land_area: number | null;
+        building_area: number | null;
+        building_area_c: string;
+        image: string | null;
+        address: string | null;
+        rooms: number | null;
+        rooms_c: string;
+        bathrooms: number | null;
+        suites: number | null;
+        suites_c: string;
+        garages: number | null;
+        garages_c: string;
+        floor: number | null;
+        building_floors: number | null;
+        property_floors: number | null;
+        delivery_key: string | null;
+        delivery_key_c: string;
+        district: {
+            region: {
+                name: string;
+            };
+        }
+        region_c: string;
+        min_act: number | null;
+        installment_payment: boolean;
+        incc_financing: boolean | null;
+        documents: boolean | null;
+        finsh_type: string | null;
+        air_conditioning: 'incluso' | 'somente infra' | 'não incluso' | '';
+        garden: boolean | null;
+        pool: boolean | null;
         balcony: boolean | null;
         balcony_c: string;
-        address: string;
     };
 }
 
-export default function ClientProperties({ properties, client }: ClientPropertiesProps) {
+export default function ClientProperties({ property, client }: ClientPropertyProps) {
     return (
         <AppLayout>
-            <Head title="Cliente / Imóveis" />
+            <Head title="Cliente / Imóvel" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="flex items-center justify-between">
                     <h1 className="flex gap-3 p-2 text-xl font-semibold">
-                        Cliente {HeartHandshake && <Icon className="text-[#BF9447] h-4 w-4" iconNode={HeartHandshake} />} Imóveis
+                        Cliente {HeartHandshake && <Icon className="h-4 w-4 text-[#BF9447]" iconNode={HeartHandshake} />} Imóvel
                     </h1>
                     <div className="flex gap-2">
                         <Button asChild variant="outline">
-                            <Link href={route('clients.index')}>Voltar</Link>
+                            <Link href={route('clients.properties', client.id)}>Voltar</Link>
                         </Button>
                     </div>
                 </div>
@@ -186,68 +227,60 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                 </th>
                             </tr>
 
-                            {Array.isArray(properties) &&
-                                properties.map((property) => (
-                                    <tr key={property.id} className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
-                                        <th scope="row" className="px-6 py-3 font-medium text-gray-900 dark:text-white">
-                                            <a
-                                            href={route('clients.property', [client.id, property.id])}
-                                            className="font-medium  hover:underline"
-                                        >
-                                            <div className="inline-flex items-center gap-2">{property.description}</div>
-                                        </a>
-                                        </th>
-                                        <td className="px-6 py-3">
-                                            <div className={property.typ_c}>
-                                                {property.typ ? property.typ.charAt(0).toUpperCase() + property.typ.slice(1) : ' '}
-                                            </div>
-                                        </td>
-                                        <td className="px-6">
-                                            <div className={property.range_c}>
-                                                {new Intl.NumberFormat('pt-BR', {
-                                                    minimumFractionDigits: 0,
-                                                    maximumFractionDigits: 0,
-                                                }).format(property.price)}
-                                            </div>
-                                        </td>
-                                        <td className="px-6">
-                                            <div className={property.delivery_key_c}>
-                                                {new Date(property.delivery_key as string).toLocaleDateString('pt-BR')}
-                                            </div>
-                                        </td>
-                                        <td className="px-6">
-                                            <div className={property.building_area_c}>{property.building_area}</div>
-                                        </td>
-                                        <td className="px-6">
-                                            <div className={property.rooms_c}>{property.rooms}</div>
-                                        </td>
-                                        <td className="px-6">
-                                            <div className={property.suites_c}>{property.suites}</div>
-                                        </td>
-                                        <td className="px-6">
-                                            <div className={property.garages_c}>{property.garages}</div>
-                                        </td>
-                                        <td className="px-6">
-                                            <div className={property.balcony_c}>
-                                                <StatusIcon value={property.balcony} />
-                                            </div>
-                                        </td>
-                                        <td className="px-6">
-                                            <div className={property.region_c}>
-                                                {property.address ? (
-                                                    <IconTooltip
-                                                        tooltipClassName="right-full"
-                                                        iconClassName="inline"
-                                                        iconNode={property.district.region?.name}
-                                                        tooltipText={property.address}
-                                                    />
-                                                ) : (
-                                                    property.district.region?.name
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
+                            <tr className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
+                                <th scope="row" className="px-6 py-3 font-medium text-gray-900 dark:text-white">
+                                    <div className="inline-flex items-center gap-2">{property.description}</div>
+                                </th>
+                                <td className="px-6 py-3">
+                                    <div className={property.typ_c}>
+                                        {property.typ ? property.typ.charAt(0).toUpperCase() + property.typ.slice(1) : ' '}
+                                    </div>
+                                </td>
+                                <td className="px-6">
+                                    <div className={property.range_c}>
+                                        {new Intl.NumberFormat('pt-BR', {
+                                            minimumFractionDigits: 0,
+                                            maximumFractionDigits: 0,
+                                        }).format(property.price)}
+                                    </div>
+                                </td>
+                                <td className="px-6">
+                                    <div className={property.delivery_key_c}>
+                                        {new Date(property.delivery_key as string).toLocaleDateString('pt-BR')}
+                                    </div>
+                                </td>
+                                <td className="px-6">
+                                    <div className={property.building_area_c}>{property.building_area}</div>
+                                </td>
+                                <td className="px-6">
+                                    <div className={property.rooms_c}>{property.rooms}</div>
+                                </td>
+                                <td className="px-6">
+                                    <div className={property.suites_c}>{property.suites}</div>
+                                </td>
+                                <td className="px-6">
+                                    <div className={property.garages_c}>{property.garages}</div>
+                                </td>
+                                <td className="px-6">
+                                    <div className={property.balcony_c}>
+                                        <StatusIcon value={property.balcony} />
+                                    </div>
+                                </td>
+                                <td className="px-6">
+                                    <div className={property.region_c}>
+                                        {property.address ? (
+                                            <IconTooltip
+                                                tooltipClassName="right-full"
+                                                iconClassName="inline"
+                                                iconNode={property.district.region?.name}
+                                                tooltipText={property.address}
+                                            />
+                                        ) : (
+                                            property.district.region?.name
+                                        )}
+                                    </div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
