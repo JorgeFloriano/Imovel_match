@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PropertyRequest;
 use App\Models\Property;
-use App\Models\District;
+use App\Models\Region;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -18,7 +18,7 @@ class PropertyController extends Controller
     }
     public function index()
     {
-        $properties = Property::with(['user', 'district.region'])->orderBy('description')->get();
+        $properties = Property::with(['user', 'region'])->orderBy('description')->get();
 
         foreach ($properties as $property) {
             $property->typ = $property->typ();
@@ -35,9 +35,9 @@ class PropertyController extends Controller
             'typeOptions' => $this->property->typeOpt(),
             'airConditioningOptions' => $this->property->airConOpt(),
             'booleanOptions' => $this->property->boolOpt(),
-            'districtOptions' => District::orderBy('name')->get()->map(fn($district) => [
-                'value' => $district->id,
-                'label' => $district->name,
+            'regionOptions' => Region::orderBy('name')->get()->map(fn($region) => [
+                'value' => $region->id,
+                'label' => $region->name,
             ])->all(),
         ]);
     }
@@ -59,7 +59,7 @@ class PropertyController extends Controller
     public function show(Property $property)
     {
         return Inertia::render('properties/properties-show', [
-            'property' => $property->load(['user', 'district']),
+            'property' => $property->load(['user', 'region']),
             'typeOptions' => $this->property->typeOpt(),
             'airConditioningOptions' => $this->property->airConOpt(),
             'booleanOptions' => $this->property->boolOpt(),
@@ -73,9 +73,9 @@ class PropertyController extends Controller
             'typeOptions' => $this->property->typeOpt(),
             'airConditioningOptions' => $this->property->airConOpt(),
             'booleanOptions' => $this->property->boolOpt(),
-            'districtOptions' => District::orderBy('name')->get()->map(fn($district) => [
-                'value' => $district->id,
-                'label' => $district->name,
+            'regionOptions' => Region::orderBy('name')->get()->map(fn($region) => [
+                'value' => $region->id,
+                'label' => $region->name,
             ])->all(),
         ]);
     }

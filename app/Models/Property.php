@@ -24,6 +24,7 @@ class Property extends Model
     protected $fillable = [
         'user_id',
         'district_id',
+        'region_id',
         'contact_name',
         'contact_phone',
         'contact_link',
@@ -93,6 +94,14 @@ class Property extends Model
     public function district()
     {
         return $this->belongsTo(District::class);
+    }
+
+    /**
+     * Get the region that owns the property.
+     */
+    public function region()
+    {
+        return $this->belongsTo(Region::class);
     }
 
     public function typeOpt()

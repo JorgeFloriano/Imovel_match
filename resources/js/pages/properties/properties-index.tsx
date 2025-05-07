@@ -12,13 +12,6 @@ interface Region {
     name: string;
 }
 
-interface District {
-    id: number;
-    name: string;
-    region_id: number;
-    region: Region;
-}
-
 interface User {
     id: number;
     name: string;
@@ -26,7 +19,7 @@ interface User {
 
 interface Property {
     id: number;
-    district_id: number;
+    region_id: number;
     type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
     typ: string | null;
     iptu: number;
@@ -60,7 +53,7 @@ interface Property {
     acessibility: boolean | null;
     obs: string | null;
     user: User;
-    district: District;
+    region: Region;
 }
 
 export default function Properties({ properties }: { properties: Property[] }) {
@@ -166,11 +159,11 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                             <IconTooltip
                                                 tooltipClassName="right-full"
                                                 iconClassName="inline"
-                                                iconNode={property.district.region?.name}
+                                                iconNode={property.region?.name}
                                                 tooltipText={property.address}
                                             />
                                         ) : (
-                                            property.district.region?.name
+                                            property.region?.name
                                         )}
                                     </td>
 

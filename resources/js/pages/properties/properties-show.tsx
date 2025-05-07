@@ -8,7 +8,7 @@ interface PropertyShowProps {
         user: {
             name: string;
         };
-        district: {
+        region: {
             name: string;
         };
         type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
@@ -133,8 +133,8 @@ export default function ShowProperty({ property, booleanOptions }: PropertyShowP
                                 )}
                             </div>
                             <div>
-                                <h3 className="text-sm font-medium text-neutral-500">Bairro</h3>
-                                <p className="text-sm">{property.district.name}</p>
+                                <h3 className="text-sm font-medium text-neutral-500">Região</h3>
+                                <p className="text-sm">{property.region.name}</p>
                             </div>
                             <div>
                                 <h3 className="text-sm font-medium text-neutral-500">Tipo</h3>

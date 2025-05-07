@@ -30,7 +30,10 @@ class ClientController extends Controller
         return Inertia::render('clients/clients-create', [
             'maritalStatusOptions' => $this->client->maritalStatOpt(),
             'booleanOptions' => $this->client->boolOpt(),
-            'regionOptions' => Region::orderBy('name')->get()->pluck('name', 'id'),
+            'regionOptions' => Region::orderBy('name')->get()->map(fn($region) => [
+                'value' => $region->id,
+                'label' => $region->name,
+            ])->all(),
         ]);
     }
 
@@ -45,7 +48,6 @@ class ClientController extends Controller
         // Extract wish data from validated input (excluding client-specific fields)
         $wishFields = [
             'region_id',
-            'district_id',
             'type',
             'rooms',
             'bathrooms',
@@ -71,7 +73,7 @@ class ClientController extends Controller
         // Create associated wish
         $client->wishe()->create($wishData);
 
-        return to_route('clients.create')->with('success', 'Client created successfully');
+        return to_route('clients.index')->with('success', 'Client created successfully');
     }
 
     public function show(Client $client)
@@ -89,7 +91,10 @@ class ClientController extends Controller
             'client' => $client->load('wishe'),
             'maritalStatusOptions' => $this->client->maritalStatOpt(),
             'booleanOptions' => $this->client->boolOpt(),
-            'regionOptions' => Region::orderBy('name')->get()->pluck('name', 'id'),
+            'regionOptions' => Region::orderBy('name')->get()->map(fn($region) => [
+                'value' => $region->id,
+                'label' => $region->name,
+            ])->all(),
         ]);
     }
 
@@ -104,7 +109,6 @@ class ClientController extends Controller
         // Define wish fields and update/create
         $wishFields = [
             'region_id',
-            'district_id',
             'type',
             'rooms',
             'bathrooms',
@@ -148,7 +152,7 @@ class ClientController extends Controller
     {
         $client = Client::find($client_id)->load('wishe.region');
         $client->wishe->typ = $client->wishe->typ();
-        $properties = Property::with(['user', 'district.region'])->get();
+        $properties = Property::with(['user', 'region'])->get();
 
         $c = new Compatible(); // calss to compare client and property
         foreach ($properties as $property) {
@@ -168,8 +172,8 @@ class ClientController extends Controller
             $property->typ_c = $c->string($client->wishe->type ?? '', $property->type ?? '')['class'];
             $property->ok_count += $c->string($client->wishe->type ?? '', $property->type ?? '')['count'];
 
-            $property->region_c = $c->string($client->wishe->region->id ?? '', $property->district->region->id ?? '')['class'];
-            $property->ok_count += $c->string($client->wishe->region->id ?? '', $property->district->region->id ?? '')['count'];
+            $property->region_c = $c->string($client->wishe->region->id ?? '', $property->region->id ?? '')['class'];
+            $property->ok_count += $c->string($client->wishe->region->id ?? '', $property->region->id ?? '')['count'];
 
             $property->balcony_c = $c->bool($client->wishe->balcony, $property->balcony)['class'];
             $property->ok_count += $c->bool($client->wishe->balcony ?? '', $property->balcony ?? '')['count'];
@@ -196,7 +200,7 @@ class ClientController extends Controller
     {
         return Inertia::render('clients/client-property', [
             'client' => Client::find($client_id)->load('wishe.region'),
-            'property' => Property::find($property_id)->load('user', 'district.region'),
+            'property' => Property::find($property_id)->load('user', 'region'),
         ]);
     }
 }

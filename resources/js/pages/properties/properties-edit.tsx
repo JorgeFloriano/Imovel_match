@@ -13,7 +13,7 @@ type PropertyEditForm = {
     contact_name: string | null;
     contact_phone: string | null;
     contact_link: string | null;
-    district_id?: string;
+    region_id?: string;
     type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
     iptu: number;
     price: number;
@@ -48,7 +48,7 @@ interface EditPropertyProps {
     typeOptions: Record<string, string>;
     airConditioningOptions: Record<string, string>;
     booleanOptions: Record<string, string>;
-    districtOptions: Array<{ value: string; label: string }>;
+    regionOptions: Array<{ value: string; label: string }>;
 }
 
 const booleanFeatureLabels = {
@@ -62,14 +62,14 @@ const booleanFeatureLabels = {
     documents: 'Documentação Inclusa',
 };
 
-export default function EditProperty({ property, typeOptions, airConditioningOptions, booleanOptions, districtOptions }: EditPropertyProps) {
+export default function EditProperty({ property, typeOptions, airConditioningOptions, booleanOptions, regionOptions }: EditPropertyProps) {
     const { data, setData, put, processing, errors, recentlySuccessful } = useForm<PropertyEditForm>({
         id: property.id,
         description: property.description || null,
         contact_name: property.contact_name || null,
         contact_phone: property.contact_phone || null,
         contact_link: property.contact_link || null,
-        district_id: property.district_id || undefined,
+        region_id: property.region_id || undefined,
         type: property.type || null,
         iptu: property.iptu || 0,
         price: property.price || 0,
@@ -171,12 +171,12 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
                         />
 
                         <FormSelect
-                            label="Bairro"
-                            placeholder="Selecione um bairro"
-                            value={data.district_id || ''}
-                            onValueChange={(value) => handleSetData('district_id', parseInt(value))}
-                            customOptions={districtOptions}
-                            error={errors.district_id}
+                            label="Região"
+                            placeholder="Selecione uma região"
+                            value={data.region_id || ''}
+                            onValueChange={(value) => handleSetData('region_id', parseInt(value))}
+                            customOptions={regionOptions}
+                            error={errors.region_id}
                             required
                         />
 

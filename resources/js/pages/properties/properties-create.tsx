@@ -12,7 +12,7 @@ type PropertyCreateForm = {
     contact_name: string | null;
     contact_phone: string | null;
     contact_link: string | null;
-    district_id?: string;
+    region_id?: string;
     type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
     iptu: number;
     price: number;
@@ -46,7 +46,7 @@ interface CreatePropertyProps {
     typeOptions: Record<string, string>;
     airConditioningOptions: Record<string, string>;
     booleanOptions: Record<string, string>;
-    districtOptions: Array<{ value: string; label: string }>;
+    regionOptions: Array<{ value: string; label: string }>;
 }
 
 const booleanFeatureLabels = {
@@ -60,13 +60,13 @@ const booleanFeatureLabels = {
     documents: 'Documentação Inclusa',
 };
 
-export default function CreateProperty({ typeOptions, airConditioningOptions, booleanOptions, districtOptions }: CreatePropertyProps) {
+export default function CreateProperty({ typeOptions, airConditioningOptions, booleanOptions, regionOptions }: CreatePropertyProps) {
     const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm<PropertyCreateForm>({
         description: null,
         contact_name: null,
         contact_phone: null,
         contact_link: null,
-        district_id: undefined,
+        region_id: undefined,
         type: null,
         iptu: 0,
         price: 0,
@@ -99,7 +99,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
         // contact_name: 'John Doe test',
         // contact_phone: '(11) 99999-9999',
         // contact_link: 'https://www.mylink.com.br',
-        // district_id: 1,
+        // region_id: 1,
         // type: 'casa',
         // iptu: 12000,
         // price: 500000,
@@ -204,12 +204,12 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                         />
 
                         <FormSelect
-                            label="Bairro"
-                            placeholder="Selecione um bairro"
-                            value={(data.district_id || '')}
-                            onValueChange={(value) => handleSetData('district_id', parseInt(value))}
-                            customOptions={districtOptions}
-                            error={errors.district_id}
+                            label="Região"
+                            placeholder="Selecione uma região"
+                            value={(data.region_id || '')}
+                            onValueChange={(value) => handleSetData('region_id', parseInt(value))}
+                            customOptions={regionOptions}
+                            error={errors.region_id}
                             required
                         />
 

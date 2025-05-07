@@ -164,7 +164,7 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                                         <div className="mt-4">
                                                             <h2 className="pb-3 text-lg font-semibold">Caracteristicas do imóvel desejado:</h2>
                                                             <p>
-                                                                <strong>Localização:</strong> {client.wishe?.region?.name || 'Não especificado'}
+                                                                <strong>Região:</strong> {client.wishe?.region?.name || 'Não especificado'}
                                                                 <br />
                                                                 <strong>Número de Quartos: </strong> {client.wishe.rooms || 'Não especificado'}
                                                                 <br />

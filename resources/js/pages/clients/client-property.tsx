@@ -30,7 +30,7 @@ interface ClientPropertyProps {
         contact_name: string | null;
         contact_phone: string | null;
         contact_link: string | null;
-        district_id?: string;
+        region_id?: string;
         type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
         typ: string | null;
         typ_c: string;
@@ -54,11 +54,10 @@ interface ClientPropertyProps {
         property_floors: number | null;
         delivery_key: string | null;
         delivery_key_c: string;
-        district: {
-            region: {
-                name: string;
-            };
-        }
+        region: {
+            id: number;
+            name: string;
+        };
         region_c: string;
         min_act: number | null;
         installment_payment: boolean;
@@ -272,11 +271,11 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                                             <IconTooltip
                                                 tooltipClassName="right-full"
                                                 iconClassName="inline"
-                                                iconNode={property.district.region?.name}
+                                                iconNode={property.region?.name}
                                                 tooltipText={property.address}
                                             />
                                         ) : (
-                                            property.district.region?.name
+                                            property.region?.name
                                         )}
                                     </div>
                                 </td>

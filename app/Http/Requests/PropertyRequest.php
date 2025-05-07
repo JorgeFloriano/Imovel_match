@@ -25,7 +25,7 @@ class PropertyRequest extends FormRequest
             'contact_name' => 'nullable|string|max:100',
             'contact_phone' => 'nullable|string|max:20',
             'contact_link' => 'nullable|string|max:100',
-            'district_id' => 'required|integer|exists:districts,id',
+            'region_id' => 'required|integer|exists:regions,id',
             'type' => 'nullable|in:casa,casa (condom.),sobrado,apartamento,apart. c/ elevad.,terreno,loja,garagem,sala,outros',
             'iptu' => 'nullable|numeric|min:0|max:9999999999',
             'description' => 'required|string|max:100',

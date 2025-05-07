@@ -50,7 +50,6 @@ class ClientRequest extends FormRequest
 
             // Wishes validation rules
             'region_id' => 'nullable|integer|exists:regions,id',
-            'district_id' => 'nullable|integer|exists:districts,id',
             'type' => 'nullable|in:casa,casa (condom.),sobrado,apartamento,apart. c/ elevad.,terreno,loja,garagem,sala,outros',
             'rooms' => 'nullable|integer|min:0|max:99',
             'bathrooms' => 'nullable|integer|min:0|max:99',

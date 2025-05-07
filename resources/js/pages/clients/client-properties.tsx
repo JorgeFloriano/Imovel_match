@@ -39,7 +39,7 @@ export default function ClientProperties({ properties, client }: ClientPropertie
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="flex items-center justify-between">
                     <h1 className="flex gap-3 p-2 text-xl font-semibold">
-                        Cliente {HeartHandshake && <Icon className="text-[#BF9447] h-4 w-4" iconNode={HeartHandshake} />} Imóveis
+                        Cliente {HeartHandshake && <Icon className="h-4 w-4 text-[#BF9447]" iconNode={HeartHandshake} />} Imóveis
                     </h1>
                     <div className="flex gap-2">
                         <Button asChild variant="outline">
@@ -190,12 +190,9 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                 properties.map((property) => (
                                     <tr key={property.id} className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
                                         <th scope="row" className="px-6 py-3 font-medium text-gray-900 dark:text-white">
-                                            <a
-                                            href={route('clients.property', [client.id, property.id])}
-                                            className="font-medium  hover:underline"
-                                        >
-                                            <div className="inline-flex items-center gap-2">{property.description}</div>
-                                        </a>
+                                            <a href={route('clients.property', [client.id, property.id])} className="font-medium hover:underline">
+                                                <div className="inline-flex items-center gap-2">{property.description}</div>
+                                            </a>
                                         </th>
                                         <td className="px-6 py-3">
                                             <div className={property.typ_c}>
@@ -238,11 +235,11 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                                     <IconTooltip
                                                         tooltipClassName="right-full"
                                                         iconClassName="inline"
-                                                        iconNode={property.district.region?.name}
+                                                        iconNode={property.region?.name}
                                                         tooltipText={property.address}
                                                     />
                                                 ) : (
-                                                    property.district.region?.name
+                                                    property.region?.name
                                                 )}
                                             </div>
                                         </td>

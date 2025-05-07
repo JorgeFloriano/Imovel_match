@@ -22,7 +22,7 @@ type ClientEditForm = {
     fgts?: number;
     has_property: boolean;
     compromised_income: number;
-    region_id?: number;
+    region_id?: string;
     type?: string;
     rooms?: number;
     bathrooms?: number;
@@ -44,7 +44,7 @@ interface EditClientProps {
     client: ClientEditForm & { id: number; wishe: undefined };
     maritalStatusOptions: Record<string, string>;
     booleanOptions: Record<string, string>;
-    regionOptions: Record<string, string>;
+    regionOptions: Array<{ value: string; label: string }>;
 }
 
 const typeOptions = [
@@ -255,11 +255,13 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                         <h2 className="text-lg font-semibold">Informações do Imóvel Desejado</h2>
                         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                             <FormSelect
-                                label="Selecione a Região"
-                                value={data.region_id?.toString() || ''}
-                                onValueChange={(value) => handleSetData('region_id', value ? value : undefined)}
-                                options={regionOptions}
+                                label="Região"
+                                placeholder="Selecione uma região"
+                                value={data.region_id || ''}
+                                onValueChange={(value) => handleSetData('region_id', parseInt(value))}
+                                customOptions={regionOptions}
                                 error={errors.region_id}
+                                required
                             />
 
                             <FormSelect
