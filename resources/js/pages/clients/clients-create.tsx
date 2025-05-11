@@ -66,11 +66,12 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
     const [selectedRegions, setSelectedRegions] = useState<Record<string, boolean>>(() => {
         const initialState: Record<string, boolean> = {};
         regionOptions.forEach((option) => {
-            initialState[option.value] = false; // Default all to unchecked
+            initialState[option.value] = false;
         });
         return initialState;
     });
-    const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm<ClientCreateForm>({
+
+    const { data, setData, post, processing, errors, transform, recentlySuccessful, reset } = useForm<ClientCreateForm>({
         // name: '',
         // phone: '',
         // email: '',
@@ -115,7 +116,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
         fgts: 20987,
         has_property: false,
         compromised_income: 23,
-        region_id: undefined,
+        selected_regions: [],
         type: 'apartamento',
         rooms: 2,
         bathrooms: 1,
@@ -151,19 +152,17 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
         acessibility: 'Acessibilidade',
     };
 
+    // Transform the data before submission
+    transform((data) => ({
+        ...data,
+        selected_regions: Object.entries(selectedRegions)
+            .filter(([_, isSelected]) => isSelected)
+            .map(([regionId]) => regionId),
+    }));
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
-        // Convert selectedRegions to an array of selected region IDs
-        const selectedRegionIds = Object.entries(selectedRegions)
-            .filter(([_, isSelected]) => isSelected)
-            .map(([regionId]) => regionId);
-
         post(route('clients.store'), {
-            // Spread all existing form data
-            ...data,
-            // Add the selected regions
-            selected_regions: selectedRegionIds,
             onSuccess: () => {
                 reset(
                     'name',
@@ -196,12 +195,6 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                     'acessibility',
                     'obs',
                 );
-                // Also reset the regions selection
-                const resetRegions: Record<string, boolean> = {};
-                regionOptions.forEach((option) => {
-                    resetRegions[option.value] = false;
-                });
-                setSelectedRegions(resetRegions);
             },
         });
     };
@@ -369,8 +362,8 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 label="Possíveis regiões"
                                 placeholder="Selecione as regiões"
                                 customOptions={regionOptions}
-                                value={selectedRegions} // Controlled from parent
-                                onChange={(newSelections) => setSelectedRegions(newSelections)} // Update parent state
+                                value={selectedRegions}
+                                onChange={(newSelections) => setSelectedRegions(newSelections)}
                             />
 
                             <FormSelect

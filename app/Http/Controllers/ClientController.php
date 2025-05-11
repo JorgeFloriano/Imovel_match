@@ -82,7 +82,10 @@ class ClientController extends Controller
 
     public function show(Client $client)
     {
-        //dd($client->wishe->regions()->get()[0]->name);
+        // foreach ($client->wishe->regions()->get() as $key => $region) {
+        //     echo $region->name . '<br>';   
+        // }
+        
         //dd($client->wishe->regions()->get()[1]->id);
         //dd($client->wishe->regions()->get());
 
