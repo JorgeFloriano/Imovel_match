@@ -21,7 +21,7 @@ class ClientController extends Controller
     public function index()
     {
         return Inertia::render('clients/clients-index', [
-            'clients' => Client::with(['wishe.region'])->get(),
+            'clients' => Client::with(['wishe.regions'])->get(),
         ]);
     }
 
@@ -45,7 +45,7 @@ class ClientController extends Controller
         // Create client with user_id and all validated client data
         $client = Client::create($validated);
 
-        // Extract wish data from validated input (excluding client-specific fields)
+        // Extract wish data from validated input
         $wishFields = [
             'region_id',
             'type',
@@ -63,7 +63,6 @@ class ClientController extends Controller
             'acept_pets',
             'acessibility',
             'obs',
-            'air_conditioning',
         ];
 
         $wishData = array_merge(
@@ -71,15 +70,24 @@ class ClientController extends Controller
         );
 
         // Create associated wish
-        $client->wishe()->create($wishData);
+        $wish = $client->wishe()->create($wishData);
+
+        // Attach selected regions if they exist
+        if ($request->has('selected_regions')) {
+            $wish->regions()->attach($request->input('selected_regions'));
+        }
 
         return to_route('clients.index')->with('success', 'Client created successfully');
     }
 
     public function show(Client $client)
     {
+        //dd($client->wishe->regions()->get()[0]->name);
+        //dd($client->wishe->regions()->get()[1]->id);
+        //dd($client->wishe->regions()->get());
+
         return Inertia::render('clients/clients-show', [
-            'client' => $client->load('wishe.region'),
+            'client' => $client->load('wishe.regions'),
             'maritalStatusOptions' => $this->client->maritalStatOpt(),
             'booleanOptions' => $this->client->boolOpt(),
         ]);

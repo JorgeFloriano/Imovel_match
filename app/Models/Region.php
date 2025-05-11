@@ -35,7 +35,9 @@ class Region extends Model
         'updated_at' => 'datetime',
     ];
 
-    public function districts() {
-         return $this->hasMany(District::class); 
-    } //hasMany()
+    // App/Models/Region.php
+    public function wishes()
+    {
+        return $this->belongsToMany(Wishe::class, 'region_wishe', 'region_id', 'wishe_id');
+    }
 }

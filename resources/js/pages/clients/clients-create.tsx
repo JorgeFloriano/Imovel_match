@@ -2,11 +2,12 @@ import { FormInput } from '@/components/form-input';
 import { FormSelect } from '@/components/form-select';
 import { FormTextarea } from '@/components/form-textarea';
 import { Button } from '@/components/ui/button';
+import ChecksDropdown from '@/components/ui/checks-dropdown';
 import AppLayout from '@/layouts/app-layout';
 import { Transition } from '@headlessui/react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useState } from 'react';
 
 type ClientCreateForm = {
     name: string;
@@ -23,6 +24,7 @@ type ClientCreateForm = {
     has_property: boolean;
     compromised_income: number;
     region_id?: string;
+    selected_regions?: string[];
     type: string;
     rooms?: number;
     bathrooms?: number;
@@ -60,66 +62,75 @@ const typeOptions = [
 ];
 
 export default function CreateClient({ maritalStatusOptions, booleanOptions, regionOptions }: CreateClientProps) {
+    // Initialize state for selected regions
+    const [selectedRegions, setSelectedRegions] = useState<Record<string, boolean>>(() => {
+        const initialState: Record<string, boolean> = {};
+        regionOptions.forEach((option) => {
+            initialState[option.value] = false; // Default all to unchecked
+        });
+        return initialState;
+    });
     const { data, setData, post, processing, errors, recentlySuccessful, reset } = useForm<ClientCreateForm>({
-        name: '',
-        phone: '',
-        email: '',
-        address: '',
-        marital_status: '',
+        // name: '',
+        // phone: '',
+        // email: '',
+        // address: '',
+        // marital_status: '',
+        // need_financing: true,
+        // dependents: 0,
+        // profession: '',
+        // revenue: 0,
+        // capital: 0,
+        // fgts: 0,
+        // has_property: false,
+        // compromised_income: 0,
+        // region_id: undefined,
+        // selected_regions: [],
+        // type: 'apartamento',
+        // rooms: 2,
+        // bathrooms: 1,
+        // suites: 0,
+        // garages: 1,
+        // delivery_key: '',
+        // building_area: 0,
+        // installment_payment: undefined,
+        // air_conditioning: '',
+        // garden: undefined,
+        // pool: undefined,
+        // balcony: undefined,
+        // acept_pets: undefined,
+        // acessibility: undefined,
+        // obs: '',
+
+        name: 'Client teste',
+        phone: '(23) 32323-2323',
+        email: 'test@example.com',
+        address: 'Rua Teste, 123',
+        marital_status: 'solteiro',
         need_financing: true,
-        dependents: 0,
-        profession: '',
-        revenue: 0,
-        capital: 0,
-        fgts: 0,
+        dependents: 2,
+        profession: 'Técnico',
+        revenue: 15000,
+        capital: 23000,
+        fgts: 20987,
         has_property: false,
-        compromised_income: 0,
+        compromised_income: 23,
         region_id: undefined,
         type: 'apartamento',
         rooms: 2,
         bathrooms: 1,
         suites: 0,
         garages: 1,
-        delivery_key: '',
-        building_area: 0,
-        installment_payment: undefined,
+        delivery_key: '2026-01-01',
+        building_area: 2345,
+        installment_payment: true,
         air_conditioning: '',
         garden: undefined,
-        pool: undefined,
+        pool: false,
         balcony: undefined,
         acept_pets: undefined,
         acessibility: undefined,
-        obs: '',
-
-        // name: 'Client teste',
-        // phone: '(23) 32323-2323',
-        // email: 'test@example.com',
-        // address: 'Rua Teste, 123',
-        // marital_status: 'solteiro',
-        // need_financing: true,
-        // dependents: 2,
-        // profession: 'Técnico',
-        // revenue: 15000,
-        // capital: 23000,
-        // fgts: 20987,
-        // has_property: false,
-        // compromised_income: 23,
-        // region_id: undefined,
-        // type: 'apartamento',
-        // rooms: 2,
-        // bathrooms: 1,
-        // suites: 0,
-        // garages: 1,
-        // delivery_key: '2026-01-01',
-        // building_area: 2345,
-        // installment_payment: true,
-        // air_conditioning: '',
-        // garden: undefined,
-        // pool: false,
-        // balcony: undefined,
-        // acept_pets: undefined,
-        // acessibility: undefined,
-        // obs: 'Observação teste',
+        obs: 'Observação teste',
     });
 
     const handleSetData = (field: keyof ClientCreateForm, value: string | number | undefined | boolean) => {
@@ -143,8 +154,17 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
+        // Convert selectedRegions to an array of selected region IDs
+        const selectedRegionIds = Object.entries(selectedRegions)
+            .filter(([_, isSelected]) => isSelected)
+            .map(([regionId]) => regionId);
+
         post(route('clients.store'), {
-            onSuccess: () =>
+            // Spread all existing form data
+            ...data,
+            // Add the selected regions
+            selected_regions: selectedRegionIds,
+            onSuccess: () => {
                 reset(
                     'name',
                     'phone',
@@ -175,7 +195,14 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                     'acept_pets',
                     'acessibility',
                     'obs',
-                ),
+                );
+                // Also reset the regions selection
+                const resetRegions: Record<string, boolean> = {};
+                regionOptions.forEach((option) => {
+                    resetRegions[option.value] = false;
+                });
+                setSelectedRegions(resetRegions);
+            },
         });
     };
 
@@ -338,14 +365,12 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                     <div className="space-y-4">
                         <h2 className="text-lg font-semibold">Informações do Imóvel Desejado</h2>
                         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                            <FormSelect
-                                label="Região"
-                                placeholder="Selecione uma região"
-                                value={data.region_id || ''}
-                                onValueChange={(value) => handleSetData('region_id', parseInt(value))}
+                            <ChecksDropdown
+                                label="Possíveis regiões"
+                                placeholder="Selecione as regiões"
                                 customOptions={regionOptions}
-                                error={errors.region_id}
-                                required
+                                value={selectedRegions} // Controlled from parent
+                                onChange={(newSelections) => setSelectedRegions(newSelections)} // Update parent state
                             />
 
                             <FormSelect

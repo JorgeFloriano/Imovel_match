@@ -65,6 +65,8 @@ class ClientRequest extends FormRequest
             'acept_pets' => 'nullable|boolean',
             'acessibility' => 'nullable|boolean',
             'obs' => 'nullable|string|max:300',
+            'selected_regions' => ['sometimes', 'array'],
+            'selected_regions.*' => ['exists:regions,id'],
         ];
     }
 }

@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('wishes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('client_id')->constrained();
-            $table->foreignId('district_id')->constrained()->nullable();
             $table->foreignId('region_id')->constrained()->nullable();
             $table->enum('type', ['casa', 'casa (condom.)', 'sobrado', 'apartamento', 'apart. c/ elevad.', 'terreno', 'loja', 'garagem', 'sala', 'outros'])->nullable();
             $table->tinyInteger('rooms')->nullable();
