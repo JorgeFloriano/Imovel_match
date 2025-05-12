@@ -85,7 +85,7 @@ class ClientController extends Controller
         // foreach ($client->wishe->regions()->get() as $key => $region) {
         //     echo $region->name . '<br>';   
         // }
-        
+
         //dd($client->wishe->regions()->get()[1]->id);
         //dd($client->wishe->regions()->get());
 
@@ -161,11 +161,17 @@ class ClientController extends Controller
 
     public function properties($client_id)
     {
-        $client = Client::find($client_id)->load('wishe.region');
+        $client = Client::find($client_id)->load('wishe.regions');
         $client->wishe->typ = $client->wishe->typ();
+
+        $client->wishe->regions_msg = $client->wishe->regionsMsg();
+
+        $client->wishe->regions_descr = $client->wishe->regionsDescr();
+
         $properties = Property::with(['user', 'region'])->get();
 
         $c = new Compatible(); // calss to compare client and property
+        $cli_reg_ids = $client->wishe->regions()->get()->pluck('id')->toArray();
         foreach ($properties as $property) {
             $property->rooms_c = $c->number($client->wishe->rooms, $property->rooms)['class'];
             $property->ok_count = $c->number($client->wishe->rooms, $property->rooms)['count'];
@@ -183,8 +189,8 @@ class ClientController extends Controller
             $property->typ_c = $c->string($client->wishe->type ?? '', $property->type ?? '')['class'];
             $property->ok_count += $c->string($client->wishe->type ?? '', $property->type ?? '')['count'];
 
-            $property->region_c = $c->string($client->wishe->region->id ?? '', $property->region->id ?? '')['class'];
-            $property->ok_count += $c->string($client->wishe->region->id ?? '', $property->region->id ?? '')['count'];
+            $property->region_c = $c->inArray($property->region->id ?? '', $cli_reg_ids ?? '')['class'];
+            $property->ok_count += $c->inArray($property->region->id ?? '', $cli_reg_ids ?? '')['count'];
 
             $property->balcony_c = $c->bool($client->wishe->balcony, $property->balcony)['class'];
             $property->ok_count += $c->bool($client->wishe->balcony ?? '', $property->balcony ?? '')['count'];

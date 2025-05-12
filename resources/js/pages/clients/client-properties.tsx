@@ -12,9 +12,9 @@ interface ClientPropertiesProps {
         name: string;
         revenue: number;
         wishe?: {
-            region?: {
-                name: string;
-            };
+            regions?: [];
+            regions_msg?: string;
+            regions_descr?: string;
             typ?: string;
             rooms?: number;
             suites?: number;
@@ -97,7 +97,7 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                     />
                                 </th>
                                 <th>
-                                    <div className="px-6">Região</div>
+                                    <div className="px-6">Regiões</div>
                                 </th>
                             </tr>
                         </thead>
@@ -136,7 +136,16 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                     <StatusIcon value={client.wishe?.balcony} />
                                 </th>
                                 <th className="px-6">
-                                    <div className="px-2 py-1">{client.wishe?.region?.name}</div>
+                                    {client.wishe?.regions_descr ? (
+                                        <IconTooltip
+                                            iconNode={client.wishe?.regions_msg}
+                                            tooltipClassName="right-full"
+                                            iconClassName="inline"
+                                            tooltipText={client.wishe?.regions_descr as string}
+                                        />
+                                    ) : (
+                                        client.wishe?.regions_msg
+                                    )}
                                 </th>
                             </tr>
 

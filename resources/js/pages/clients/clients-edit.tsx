@@ -2,6 +2,7 @@ import { FormInput } from '@/components/form-input';
 import { FormSelect } from '@/components/form-select';
 import { FormTextarea } from '@/components/form-textarea';
 import { Button } from '@/components/ui/button';
+import ChecksDropdown from '@/components/ui/checks-dropdown';
 import AppLayout from '@/layouts/app-layout';
 import { Transition } from '@headlessui/react';
 import { Head, Link, useForm } from '@inertiajs/react';
@@ -23,6 +24,7 @@ type ClientEditForm = {
     has_property: boolean;
     compromised_income: number;
     region_id?: string;
+    selected_regions?: string[];
     type?: string;
     rooms?: number;
     bathrooms?: number;

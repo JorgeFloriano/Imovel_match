@@ -125,4 +125,18 @@ class Compatible
             'count' => 0,
         ];
     }
+    public function inArray($client_wishe, $property = null)
+    {
+       if (in_array($client_wishe, $property)) {
+            return [
+                'class' => $this->ok['class2'],
+                'count' => 2,
+            ];
+        }
+        
+        return [
+            'class' => $this->undef['class2'],
+            'count' => 1,
+        ];
+    }
 }

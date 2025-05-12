@@ -102,4 +102,28 @@ class Wishe extends Model
         }
         return '';
     }
+
+    public function regionsMsg()
+    {
+        $reg_num = count($this->regions()->get());
+        if ($reg_num == 0) {
+            return 'Não espec.';
+        } elseif ($reg_num == 1) {
+            return $this->regions()->get()[0]->name;
+        } else {
+            return $reg_num . ' opções';
+        };
+    }
+
+    public function regionsDescr()
+    {
+        $regions = $this->regions()->get()->pluck('name')->toArray();
+        if (count($regions) > 1) {
+            $last = array_pop($regions);
+            return implode(', ', $regions) . ' ou ' . $last;
+        } else {
+            // Handle cases with 0 or 1 region
+            return implode('', $regions);
+        }
+    }
 }
