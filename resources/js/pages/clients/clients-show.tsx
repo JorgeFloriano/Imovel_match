@@ -19,9 +19,7 @@ interface ClientShowProps {
         has_property: boolean;
         compromised_income: number;
         wishe?: {
-            region?: {
-                name: string;
-            };
+            regions_descr?: string;
             type?: string;
             rooms?: number;
             bathrooms?: number;
@@ -183,8 +181,8 @@ export default function ShowClient({ client, maritalStatusOptions, booleanOption
                             <h2 className="mb-4 text-lg font-semibold">Imóvel Desejado</h2>
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                                 <div>
-                                    <h3 className="text-sm font-medium text-neutral-500">Região</h3>
-                                    <p className="text-sm">{client.wishe.region?.name || '-'}</p>
+                                    <h3 className="text-sm font-medium text-neutral-500">Regiões preferidas</h3>
+                                    <p className="text-sm">{client.wishe.regions_descr || '-'}</p>
                                 </div>
                                 <div>
                                     <h3 className="text-sm font-medium text-neutral-500">Tipo de Imóvel</h3>

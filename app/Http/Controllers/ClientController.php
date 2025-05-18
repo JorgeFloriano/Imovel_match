@@ -20,8 +20,14 @@ class ClientController extends Controller
     }
     public function index()
     {
+        $clients = Client::with('wishe.regions')->get();
+
+        foreach ($clients as $client) {
+            $client->wishe->regions_descr = $client->wishe->regionsDescr();
+        }
+
         return Inertia::render('clients/clients-index', [
-            'clients' => Client::with(['wishe.regions'])->get(),
+            'clients' => $clients
         ]);
     }
 
@@ -89,8 +95,11 @@ class ClientController extends Controller
         //dd($client->wishe->regions()->get()[1]->id);
         //dd($client->wishe->regions()->get());
 
+        $client->load('wishe.regions');
+        $client->wishe->regions_descr = $client->wishe->regionsDescr();
+
         return Inertia::render('clients/clients-show', [
-            'client' => $client->load('wishe.regions'),
+            'client' => $client,
             'maritalStatusOptions' => $this->client->maritalStatOpt(),
             'booleanOptions' => $this->client->boolOpt(),
         ]);
@@ -99,7 +108,7 @@ class ClientController extends Controller
     public function edit(Client $client)
     {
         return Inertia::render('clients/clients-edit', [
-            'client' => $client->load('wishe'),
+            'client' => $client->load('wishe.regions'),
             'maritalStatusOptions' => $this->client->maritalStatOpt(),
             'booleanOptions' => $this->client->boolOpt(),
             'regionOptions' => Region::orderBy('name')->get()->map(fn($region) => [

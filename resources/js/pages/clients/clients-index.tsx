@@ -5,16 +5,10 @@ import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { Delete, Edit, Expand, HeartHandshake, House, User } from 'lucide-react';
 
-interface Region {
-    id: number;
-    name: string;
-}
-
 interface Wishe {
     id: number;
     client_id: number;
-    region_id: number | null;
-    region: Region | null;
+    regions_descr: string;
     rooms: number | null;
     bathrooms: number | null;
     suites: number | null;
@@ -164,7 +158,7 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                                         <div className="mt-4">
                                                             <h2 className="pb-3 text-lg font-semibold">Caracteristicas do imóvel desejado:</h2>
                                                             <p>
-                                                                <strong>Região:</strong> {client.wishe?.region?.name || 'Não especificado'}
+                                                                <strong>Regiões preferidas:</strong> {client.wishe?.regions_descr || 'Não especificadas'}
                                                                 <br />
                                                                 <strong>Número de Quartos: </strong> {client.wishe.rooms || 'Não especificado'}
                                                                 <br />

@@ -7,7 +7,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Transition } from '@headlessui/react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useState } from 'react';
 
 type ClientEditForm = {
     name: string;
@@ -77,7 +77,16 @@ const booleanFeatureLabels = {
 };
 
 export default function EditClient({ client, maritalStatusOptions, booleanOptions, regionOptions }: EditClientProps) {
-    const { data, setData, put, processing, errors, recentlySuccessful } = useForm<ClientEditForm>({
+    // Initialize state for selected regions
+    const [selectedRegions, setSelectedRegions] = useState<Record<string, boolean>>(() => {
+        const initialState: Record<string, boolean> = {};
+        regionOptions.forEach((option) => {
+            initialState[option.value] = client.selected_regions?.includes(option.value) ?? false;
+        });
+        return initialState;
+    });
+
+    const { data, setData, put, processing, errors, transform, recentlySuccessful } = useForm<ClientEditForm>({
         ...client,
         ...(client.wishe ?? {}),
         need_financing: client.need_financing ?? true,
@@ -87,6 +96,14 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
     const handleSetData = (field: keyof ClientEditForm, value: string | number | undefined | boolean) => {
         setData(field, value);
     };
+
+    // Transform the data before submission
+    transform((data) => ({
+        ...data,
+        selected_regions: Object.entries(selectedRegions)
+            .filter(([_, isSelected]) => isSelected)
+            .map(([regionId]) => regionId),
+    }));
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -256,14 +273,12 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                     <div className="space-y-4">
                         <h2 className="text-lg font-semibold">Informações do Imóvel Desejado</h2>
                         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                            <FormSelect
-                                label="Região"
-                                placeholder="Selecione uma região"
-                                value={data.region_id || ''}
-                                onValueChange={(value) => handleSetData('region_id', parseInt(value))}
+                            <ChecksDropdown
+                                label="Possíveis regiões"
+                                placeholder="Selecione as regiões"
                                 customOptions={regionOptions}
-                                error={errors.region_id}
-                                required
+                                value={selectedRegions}
+                                onChange={(newSelections) => setSelectedRegions(newSelections)}
                             />
 
                             <FormSelect
