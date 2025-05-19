@@ -151,7 +151,18 @@ class ClientController extends Controller
             array_intersect_key($validated, array_flip($wishFields)),
         );
 
-        $client->wishe()->updateOrCreate([], $wishData);
+        // Update or create the associated wish
+        $wish = $client->wishe()->updateOrCreate([], $wishData);
+
+        // Sync selected regions if they exist
+        if ($request->has('selected_regions')) {
+            // Alternative region sync handling
+            $selectedRegions = $request->input('selected_regions', []);
+            $wish->regions()->sync($selectedRegions);
+        } else {
+            // If no regions are selected, detach all
+            $wish->regions()->detach();
+        }
 
         return back()->with('success', 'Client updated successfully');
     }

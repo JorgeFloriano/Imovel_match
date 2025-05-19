@@ -43,7 +43,7 @@ type ClientEditForm = {
 };
 
 interface EditClientProps {
-    client: ClientEditForm & { id: number; wishe: undefined };
+    client: ClientEditForm & { id: number; wishe: { regions?: { id: number }[] } };
     maritalStatusOptions: Record<string, string>;
     booleanOptions: Record<string, string>;
     regionOptions: Array<{ value: string; label: string }>;
@@ -77,21 +77,32 @@ const booleanFeatureLabels = {
 };
 
 export default function EditClient({ client, maritalStatusOptions, booleanOptions, regionOptions }: EditClientProps) {
-    // Initialize state for selected regions
-    const [selectedRegions, setSelectedRegions] = useState<Record<string, boolean>>(() => {
-        const initialState: Record<string, boolean> = {};
-        regionOptions.forEach((option) => {
-            initialState[option.value] = client.selected_regions?.includes(option.value) ?? false;
-        });
-        return initialState;
-    });
-
     const { data, setData, put, processing, errors, transform, recentlySuccessful } = useForm<ClientEditForm>({
         ...client,
         ...(client.wishe ?? {}),
         need_financing: client.need_financing ?? true,
         has_property: client.has_property ?? false,
     });
+
+    // In your EditClient component, modify the selectedRegions initialization:
+const [selectedRegions, setSelectedRegions] = useState<Record<string, boolean>>(() => {
+    const initialState: Record<string, boolean> = {};
+    
+    // Initialize all regions as false first
+    regionOptions.forEach((option) => {
+        initialState[option.value] = false;
+    });
+    
+    // Mark the initially selected regions as true
+    client.wishe?.regions?.forEach((region: { id: number }) => {
+        const regionId = region.id.toString();
+        if (regionId in initialState) {
+            initialState[regionId] = true;
+        }
+    });
+    
+    return initialState;
+});
 
     const handleSetData = (field: keyof ClientEditForm, value: string | number | undefined | boolean) => {
         setData(field, value);

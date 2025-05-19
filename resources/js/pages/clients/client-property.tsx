@@ -89,8 +89,8 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                 </div>
 
                 <p className="text-sm">
-                    Informações do cliente e características do imóvel solicitado / Imóveis disponíveis ordenados por compatibilidade
-                </p>
+                    Informações do cliente e características do imóvel solicitado / Imóveis disponíveis ordenados por compatibilidade com o cliente
+                </p> 
 
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <table className="w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
