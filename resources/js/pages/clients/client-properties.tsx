@@ -53,7 +53,7 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                 </p>
 
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table className="w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
+                    <table className="w-full h-fulltext-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
                         <thead className="m-1 bg-[#D8D8D8] text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
                                 <th className="px-6 py-3">Nome do Cliente</th>
@@ -196,8 +196,13 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                             </tr>
 
                             {Array.isArray(properties) &&
-                                properties.map((property) => (
-                                    <tr key={property.id} className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
+                                properties.map((property, index) => (
+                                    <tr
+                                        key={property.id}
+                                        className={`border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950 ${
+                                            index !== properties.length - 1 ? 'border-b' : ''
+                                        }`}
+                                    >
                                         <th scope="row" className="px-6 py-3 font-medium text-gray-900 dark:text-white">
                                             <a href={route('clients.property', [client.id, property.id])} className="font-medium hover:underline">
                                                 <div className="inline-flex items-center gap-2">{property.description}</div>

@@ -114,7 +114,7 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                                     />
                                 </th>
                                 <th className="text-center">
-                                    <IconTooltip iconNode="M²" tooltipText="Área construída" />
+                                    <IconTooltip iconNode="M²" tooltipText="Área construída"/>
                                 </th>
                                 <th>
                                     <IconTooltip iconNode={Bed && <Icon className="inline h-4 w-4" iconNode={Bed} />} tooltipText="Quartos" />

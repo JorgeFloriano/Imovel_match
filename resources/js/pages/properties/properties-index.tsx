@@ -73,7 +73,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
                     </Button>
                 </div>
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table className="w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
+                    <table className="h-full w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
                         <thead className="bg-[#D8D8D8] text-xs text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
                                 <th scope="col" className="px-6 py-3">
@@ -127,8 +127,13 @@ export default function Properties({ properties }: { properties: Property[] }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {properties.map((property) => (
-                                <tr key={property.id} className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
+                            {properties.map((property, index) => (
+                                <tr
+                                    key={property.id}
+                                    className={`border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950 ${
+                                        index !== properties.length - 1 ? 'border-b' : ''
+                                    }`}
+                                >
                                     <th scope="row" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                         <a
                                             href={property.contact_link || '#'}

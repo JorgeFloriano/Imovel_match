@@ -61,7 +61,7 @@ export default function Clients({ clients }: { clients: Client[] }) {
                     </Button>
                 </div>
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table className="w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
+                    <table className="w-full h-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
                         <thead className="bg-[#D8D8D8] text-xs text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
                                 <th className="px-6 py-3 align-middle text-[#BF9447]">
@@ -86,8 +86,13 @@ export default function Clients({ clients }: { clients: Client[] }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {clients.map((client) => (
-                                <tr key={client.id} className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
+                            {clients.map((client, index) => (
+                                <tr
+                                    key={client.id}
+                                    className={`border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950 ${
+                                        index !== clients.length - 1 ? 'border-b' : ''
+                                    }`}
+                                >
                                     <th scope="row" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                         <a
                                             href={route('clients.properties', client.id)}
