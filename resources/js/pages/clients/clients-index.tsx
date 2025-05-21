@@ -60,7 +60,7 @@ export default function Clients({ clients }: { clients: Client[] }) {
                         </a>
                     </Button>
                 </div>
-                <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <div className="relative overflow-y-hidden overflow-x-auto shadow-md sm:rounded-lg">
                     <table className="w-full h-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
                         <thead className="bg-[#D8D8D8] text-xs text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>

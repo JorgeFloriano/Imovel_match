@@ -52,7 +52,7 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                     Informações do cliente e características do imóvel solicitado / Imóveis disponíveis ordenados por compatibilidade com o cliente
                 </p>
 
-                <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <div className="relative overflow-y-hidden overflow-x-auto shadow-md sm:rounded-lg">
                     <table className="w-full h-fulltext-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
                         <thead className="m-1 bg-[#D8D8D8] text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>

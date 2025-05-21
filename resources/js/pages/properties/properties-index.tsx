@@ -60,7 +60,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
     return (
         <AppLayout>
             <Head title="Propriedades" />
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+            <div className="flex h-full min-h-0 flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="flex items-center justify-between">
                     <h1 className="text-xl font-semibold">Imóveis</h1>
 
@@ -72,8 +72,8 @@ export default function Properties({ properties }: { properties: Property[] }) {
                         </a>
                     </Button>
                 </div>
-                <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table className="h-full w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
+                <div className="relative overflow-y-hidden overflow-x-auto shadow-md sm:rounded-lg">
+                    <table className="w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
                         <thead className="bg-[#D8D8D8] text-xs text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
                                 <th scope="col" className="px-6 py-3">
