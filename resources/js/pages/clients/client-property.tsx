@@ -1,10 +1,8 @@
 import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
-import IconTooltip from '@/components/ui/icon-tooltip';
-import { StatusIcon } from '@/components/ui/status-icon';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, Bath, Bed, Calendar, Car, HeartHandshake, KeyRound } from 'lucide-react';
+import { HeartHandshake } from 'lucide-react';
 
 interface ClientPropertyProps {
     client: {
@@ -15,7 +13,7 @@ interface ClientPropertyProps {
             region?: {
                 name: string;
             };
-            typ?: string;
+            type?: string;
             rooms?: number;
             suites?: number;
             garages?: number;
@@ -90,143 +88,65 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
 
                 <p className="text-sm">
                     Informações do cliente e características do imóvel solicitado / Imóveis disponíveis ordenados por compatibilidade com o cliente
-                </p> 
+                </p>
 
-                <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <div className="relative overflow-x-auto overflow-y-hidden shadow-md sm:rounded-lg">
                     <table className="w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
                         <thead className="m-1 bg-[#D8D8D8] text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
-                                <th className="px-6 py-3">Nome do Cliente</th>
-                                <th>
-                                    <div className="px-6">Tipo</div>
-                                </th>
-                                <th className="px-6">Renda(R$)</th>
-                                <th>
-                                    <IconTooltip
-                                        iconNode={
-                                            <div className="inline-flex gap-2">
-                                                {Calendar && <Icon className="inline h-4 w-4" iconNode={Calendar} />}
-                                                {ArrowRight && <Icon className="inline h-4 w-4" iconNode={ArrowRight} />}
-                                                {KeyRound && <Icon className="inline h-4 w-4" iconNode={KeyRound} />}
-                                            </div>
-                                        }
-                                        tooltipText="Previsão de entrega das chaves"
-                                    />
-                                </th>
-                                <th className="text-center">
-                                    <IconTooltip iconNode="M²" tooltipText="Área construída"/>
-                                </th>
-                                <th>
-                                    <IconTooltip iconNode={Bed && <Icon className="inline h-4 w-4" iconNode={Bed} />} tooltipText="Quartos" />
-                                </th>
-                                <th>
-                                    <IconTooltip iconNode={Bath && <Icon className="inline h-4 w-4" iconNode={Bath} />} tooltipText="Suítes" />
-                                </th>
-                                <th>
-                                    <IconTooltip iconNode={Car && <Icon className="inline h-4 w-4" iconNode={Car} />} tooltipText="Vagas" />
-                                </th>
-                                <th>
-                                    <IconTooltip
-                                        iconNode={
-                                            <>
-                                                <img src="/balcony.png" className="inline dark:hidden" width={16} alt="Varanda" />
-                                                <img src="/balcony_dark.png" className="hidden dark:inline" width={16} alt="Varanda" />
-                                            </>
-                                        }
-                                        tooltipText="Varanda"
-                                    />
-                                </th>
-                                <th>
-                                    <div className="px-6">Região</div>
-                                </th>
+                                <th className="px-6 py-3">Referência</th>
+                                <th className="px-6 py-3">Sonho (Cliente)</th>
+                                <th className="px-6 py-3">Realidade (Imóvel)</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr className="border-b border-gray-200 font-medium text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-white">
+                        <tbody className="border-gray-200 text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-white">
+                            <tr className="border-b">
+                                <th className="px-6 py-3">Nome / Descr.</th>
                                 <th className="px-6 py-3">{client.name}</th>
-                                <th className="px-6">
-                                    <div className="px-2 py-1">{client.wishe?.typ}</div>
+                                <th className="px-6 py-3">{property.description}</th>
+                            </tr>
+
+                            <tr className="border-b">
+                                <th className="px-6 py-3">Tipo</th>
+                                <th className="px-6 py-3">{client.wishe?.type}</th>
+                                <th className="px-6 py-3">{property.type}</th>
+                            </tr>
+
+                            <tr className="border-b">
+                                <th className="px-6 py-3">Renda / Preço</th>
+                                <th className="px-6 py-3">
+                                    {new Intl.NumberFormat('pt-BR', {
+                                        style: 'currency',
+                                        currency: 'BRL',
+                                    }).format(client.revenue)}
                                 </th>
-                                <th className="px-6">
-                                    <div className="px-2">
-                                        {new Intl.NumberFormat('pt-BR', {
-                                            minimumFractionDigits: 0,
-                                            maximumFractionDigits: 0,
-                                        }).format(client.revenue)}
-                                    </div>
-                                </th>
-                                <th className="px-6">
-                                    <div className="py-1 text-center">
-                                        {new Date(client.wishe?.delivery_key as string).toLocaleDateString('pt-BR')}
-                                    </div>
-                                </th>
-                                <th className="px-6">
-                                    <div className="p-1 text-center">{client.wishe?.building_area}</div>
-                                </th>
-                                <th className="px-6">
-                                    <div className="p-1 text-center">{client.wishe?.rooms}</div>
-                                </th>
-                                <th className="px-6">
-                                    <div className="p-1 text-center">{client.wishe?.suites}</div>
-                                </th>
-                                <th className="px-6">
-                                    <div className="p-1 text-center">{client.wishe?.garages}</div>
-                                </th>
-                                <th className="px-6 text-center">
-                                    <StatusIcon value={client.wishe?.balcony} />
-                                </th>
-                                <th className="px-6">
-                                    <div className="px-2 py-1">{client.wishe?.region?.name}</div>
+                                <th className="px-6 py-3">
+                                    {new Intl.NumberFormat('pt-BR', {
+                                        style: 'currency',
+                                        currency: 'BRL',
+                                    }).format(property.price)}
                                 </th>
                             </tr>
 
-                            <tr className="m-1 bg-[#D8D8D8] text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
-                                <th className="px-6 py-3">Descr. do imóvel</th>
-                                <th>
-                                    <div className="px-6">Tipo</div>
-                                </th>
-                                <th className="px-6">Preço(R$)</th>
-                                <th>
-                                    <IconTooltip
-                                        iconNode={
-                                            <div className="inline-flex gap-2">
-                                                {Calendar && <Icon className="inline h-4 w-4" iconNode={Calendar} />}
-                                                {ArrowRight && <Icon className="inline h-4 w-4" iconNode={ArrowRight} />}
-                                                {KeyRound && <Icon className="inline h-4 w-4" iconNode={KeyRound} />}
-                                            </div>
-                                        }
-                                        tooltipText="Previsão de entrega das chaves"
-                                    />
-                                </th>
-                                <th className="text-center">
-                                    <IconTooltip iconNode="M²" tooltipText="Área construída" />
-                                </th>
-                                <th>
-                                    <IconTooltip iconNode={Bed && <Icon className="inline h-4 w-4" iconNode={Bed} />} tooltipText="Quartos" />
-                                </th>
-                                <th>
-                                    <IconTooltip iconNode={Bath && <Icon className="inline h-4 w-4" iconNode={Bath} />} tooltipText="Suítes" />
-                                </th>
-                                <th>
-                                    <IconTooltip iconNode={Car && <Icon className="inline h-4 w-4" iconNode={Car} />} tooltipText="Vagas" />
-                                </th>
-                                <th>
-                                    <IconTooltip
-                                        iconNode={
-                                            <>
-                                                <img src="/balcony.png" className="inline dark:hidden" width={16} alt="Varanda" />
-                                                <img src="/balcony_dark.png" className="hidden dark:inline" width={16} alt="Varanda" />
-                                            </>
-                                        }
-                                        tooltipText="Varanda"
-                                    />
-                                </th>
-                                <th>
-                                    <div className="px-6">Região</div>
-                                </th>
+                            <tr className="border-b">
+                                <th className="px-6 py-3">Entrega das chaves</th>
+                                <th className="px-6 py-3">{new Date(client.wishe?.delivery_key as string).toLocaleDateString('pt-BR')}</th>
+                                <th className="px-6 py-3">{new Date(property.delivery_key as string).toLocaleDateString('pt-BR')}</th>
                             </tr>
 
-                            <tr className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950">
+                            <tr className="border-b">
+                                <th className="px-6 py-3">Área construída</th>
+                                <th className="px-6 py-3">{client.wishe?.building_area ? client.wishe?.building_area + ' m²' : ' '}</th>
+                                <th className="px-6 py-3">{property.building_area ? property.building_area + ' m²' : ' '}</th>
+                            </tr>
+
+                            <tr className="border-b">
+                                <th className="px-6 py-3">Número de quartos</th>
+                                <th className="px-6 py-3">{client.wishe?.rooms ? client.wishe?.rooms : ' '}</th>
+                                <th className="px-6 py-3">{property.rooms ? property.rooms : ' '}</th>
+                            </tr>
+
+                            {/* <tr className="border-b">
                                 <th scope="row" className="px-6 py-3 font-medium text-gray-900 dark:text-white">
                                     <div className="inline-flex items-center gap-2">{property.description}</div>
                                 </th>
@@ -279,7 +199,7 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                                         )}
                                     </div>
                                 </td>
-                            </tr>
+                            </tr> */}
                         </tbody>
                     </table>
                 </div>
