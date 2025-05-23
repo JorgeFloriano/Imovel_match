@@ -6,6 +6,22 @@ import AppLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
 import { HeartHandshake } from 'lucide-react';
 
+interface TableRoleProps {
+  label: string;
+  clientValue?: React.ReactNode;
+  propertyValue?: React.ReactNode;
+}
+
+const TableRole = ({ label, clientValue, propertyValue }: TableRoleProps) => {
+  return (
+    <tr className="border-b">
+      <th className="px-3 py-3">{label}</th>
+      <th className="px-3 py-3">{clientValue || ' '}</th>
+      <th className="px-3 py-3">{propertyValue || ' '}</th>
+    </tr>
+  );
+};
+
 interface ClientPropertyProps {
     client: {
         id: number;
@@ -21,6 +37,15 @@ interface ClientPropertyProps {
             balcony?: boolean;
             building_area?: number;
             delivery_key?: string;
+            bathrooms?: number;
+            installment_payment?: boolean;
+            air_conditioning?: string;
+            garden?: boolean;
+            pool?: boolean;
+            acept_pets?: boolean;
+            acessibility?: boolean;
+            min_act?: number;
+            obs?: string;
         };
     };
     property: {
@@ -68,10 +93,28 @@ interface ClientPropertyProps {
         pool: boolean | null;
         balcony: boolean | null;
         balcony_c: string;
+        acept_pets: boolean | null;
+        acessibility: boolean | null;
+        obs: string | null;
     };
 }
 
 export default function ClientProperties({ property, client }: ClientPropertyProps) {
+    const formatCurrency = (value: number) => {
+        return new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+        }).format(value);
+    };
+
+    const formatDate = (dateString?: string | null) => {
+        return dateString ? new Date(dateString).toLocaleDateString('pt-BR') : ' ';
+    };
+
+    const formatArea = (area?: number | null) => {
+        return area ? `${area} m²` : ' ';
+    };
+
     return (
         <AppLayout>
             <Head title="Cliente / Imóvel" />
@@ -99,72 +142,64 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                             </tr>
                         </thead>
                         <tbody className="border-gray-200 text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-white">
-                            <tr className="border-b">
-                                <th className="px-6 py-3">Nome / Descr.</th>
-                                <th className="px-6 py-3">{client.name}</th>
-                                <th className="px-6 py-3">{property.description}</th>
-                            </tr>
+                            <TableRole 
+                                label="Nome / Descr." 
+                                clientValue={client.name} 
+                                propertyValue={property.description} 
+                            />
 
-                            <tr className="border-b">
-                                <th className="px-6 py-3">Tipo</th>
-                                <th className="px-6 py-3">{client.wishe?.type}</th>
-                                <th className="px-6 py-3">{property.type}</th>
-                            </tr>
+                            <TableRole 
+                                label="Tipo" 
+                                clientValue={client.wishe?.type} 
+                                propertyValue={property.type} 
+                            />
 
-                            <tr className="border-b">
-                                <th className="px-6 py-3">Renda / Preço</th>
-                                <th className="px-6 py-3">
-                                    {new Intl.NumberFormat('pt-BR', {
-                                        style: 'currency',
-                                        currency: 'BRL',
-                                    }).format(client.revenue)}
-                                </th>
-                                <th className="px-6 py-3">
-                                    {new Intl.NumberFormat('pt-BR', {
-                                        style: 'currency',
-                                        currency: 'BRL',
-                                    }).format(property.price)}
-                                </th>
-                            </tr>
+                            <TableRole 
+                                label="Renda / Preço" 
+                                clientValue={formatCurrency(client.revenue)} 
+                                propertyValue={formatCurrency(property.price)} 
+                            />
 
-                            <tr className="border-b">
-                                <th className="px-6 py-3">Entrega das chaves</th>
-                                <th className="px-6 py-3">{new Date(client.wishe?.delivery_key as string).toLocaleDateString('pt-BR')}</th>
-                                <th className="px-6 py-3">{new Date(property.delivery_key as string).toLocaleDateString('pt-BR')}</th>
-                            </tr>
+                            <TableRole 
+                                label="Entrega das chaves" 
+                                clientValue={formatDate(client.wishe?.delivery_key)} 
+                                propertyValue={formatDate(property.delivery_key)} 
+                            />
 
-                            <tr className="border-b">
-                                <th className="px-6 py-3">Área construída</th>
-                                <th className="px-6 py-3">{client.wishe?.building_area ? client.wishe?.building_area + ' m²' : ' '}</th>
-                                <th className="px-6 py-3">{property.building_area ? property.building_area + ' m²' : ' '}</th>
-                            </tr>
+                            <TableRole 
+                                label="Área construída" 
+                                clientValue={formatArea(client.wishe?.building_area)} 
+                                propertyValue={formatArea(property.building_area)} 
+                            />
 
-                            <tr className="border-b">
-                                <th className="px-6 py-3">Número de quartos</th>
-                                <th className="px-6 py-3">{client.wishe?.rooms ? client.wishe?.rooms : ' '}</th>
-                                <th className="px-6 py-3">{property.rooms ? property.rooms : ' '}</th>
-                            </tr>
+                            <TableRole 
+                                label="Número de quartos" 
+                                clientValue={client.wishe?.rooms} 
+                                propertyValue={property.rooms} 
+                            />
 
-                            <tr className="border-b">
-                                <th className="px-6 py-3">Número de suítes</th>
-                                <th className="px-6 py-3">{client.wishe?.suites ? client.wishe?.suites : ' '}</th>
-                                <th className="px-6 py-3">{property.suites ? property.suites : ' '}</th>
-                            </tr>
+                            <TableRole 
+                                label="Número de suítes" 
+                                clientValue={client.wishe?.suites} 
+                                propertyValue={property.suites} 
+                            />
 
-                            <tr className="border-b">
-                                <th className="px-6 py-3">Possúi varanda?</th>
-                                <th className="px-6 py-3">
-                                    <Status value={client.wishe?.balcony} />
-                                </th>
-                                <th className="px-6 py-3">
-                                    <Status value={property.balcony} />
-                                </th>
-                            </tr>
+                            <TableRole 
+                                label="Vagas de garagem" 
+                                clientValue={client.wishe?.garages} 
+                                propertyValue={property.garages} 
+                            />
 
-                            <tr className="border-b">
-                                <th className="px-6 py-3">Região (s)</th>
-                                <th className="px-6 py-3">
-                                    {client.wishe?.regions_descr ? (
+                            <TableRole 
+                                label="Possúi varanda?" 
+                                clientValue={<Status value={client.wishe?.balcony} />} 
+                                propertyValue={<Status value={property.balcony} />} 
+                            />
+
+                            <TableRole 
+                                label="Região (s)" 
+                                clientValue={
+                                    client.wishe?.regions_descr ? (
                                         <IconTooltip
                                             iconNode={client.wishe?.regions_msg}
                                             tooltipClassName="right-full"
@@ -173,10 +208,10 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                                         />
                                     ) : (
                                         client.wishe?.regions_msg
-                                    )}
-                                </th>
-                                <th className="px-6 py-3">
-                                    {property.address ? (
+                                    )
+                                } 
+                                propertyValue={
+                                    property.address ? (
                                         <IconTooltip
                                             tooltipClassName="right-full"
                                             iconClassName="inline"
@@ -185,64 +220,57 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                                         />
                                     ) : (
                                         property.region?.name
-                                    )}
-                                </th>
-                            </tr>
+                                    )
+                                } 
+                            />
 
-                            {/* <tr className="border-b">
-                                <th scope="row" className="px-6 py-3 font-medium text-gray-900 dark:text-white">
-                                    <div className="inline-flex items-center gap-2">{property.description}</div>
-                                </th>
-                                <td className="px-6 py-3">
-                                    <div className={property.typ_c}>
-                                        {property.typ ? property.typ.charAt(0).toUpperCase() + property.typ.slice(1) : ' '}
-                                    </div>
-                                </td>
-                                <td className="px-6">
-                                    <div className={property.range_c}>
-                                        {new Intl.NumberFormat('pt-BR', {
-                                            minimumFractionDigits: 0,
-                                            maximumFractionDigits: 0,
-                                        }).format(property.price)}
-                                    </div>
-                                </td>
-                                <td className="px-6">
-                                    <div className={property.delivery_key_c}>
-                                        {new Date(property.delivery_key as string).toLocaleDateString('pt-BR')}
-                                    </div>
-                                </td>
-                                <td className="px-6">
-                                    <div className={property.building_area_c}>{property.building_area}</div>
-                                </td>
-                                <td className="px-6">
-                                    <div className={property.rooms_c}>{property.rooms}</div>
-                                </td>
-                                <td className="px-6">
-                                    <div className={property.suites_c}>{property.suites}</div>
-                                </td>
-                                <td className="px-6">
-                                    <div className={property.garages_c}>{property.garages}</div>
-                                </td>
-                                <td className="px-6">
-                                    <div className={property.balcony_c}>
-                                        <StatusIcon value={property.balcony} />
-                                    </div>
-                                </td>
-                                <td className="px-6">
-                                    <div className={property.region_c}>
-                                        {property.address ? (
-                                            <IconTooltip
-                                                tooltipClassName="right-full"
-                                                iconClassName="inline"
-                                                iconNode={property.region?.name}
-                                                tooltipText={property.address}
-                                            />
-                                        ) : (
-                                            property.region?.name
-                                        )}
-                                    </div>
-                                </td>
-                            </tr> */}
+                            <TableRole 
+                                label="Número de banheiros" 
+                                clientValue={client.wishe?.bathrooms} 
+                                propertyValue={property.bathrooms} 
+                            />
+
+                            <TableRole 
+                                label="Ar condicionado" 
+                                clientValue={client.wishe?.air_conditioning} 
+                                propertyValue={property.air_conditioning} 
+                            />
+
+                            <TableRole 
+                                label="Possúi quintal?" 
+                                clientValue={<Status value={client.wishe?.garden} />} 
+                                propertyValue={<Status value={property.garden} />} 
+                            />
+
+                            <TableRole 
+                                label="Possúi piscina?" 
+                                clientValue={<Status value={client.wishe?.pool} />} 
+                                propertyValue={<Status value={property.pool} />} 
+                            />
+
+                            <TableRole 
+                                label="Aceita pets?" 
+                                clientValue={<Status value={client.wishe?.acept_pets} />} 
+                                propertyValue={<Status value={property.acept_pets} />} 
+                            />
+
+                            <TableRole 
+                                label="Acessibilidade?" 
+                                clientValue={<Status value={client.wishe?.acessibility} />} 
+                                propertyValue={<Status value={property.acessibility} />} 
+                            />
+
+                            <TableRole 
+                                label="Parcela a entrada?" 
+                                clientValue={<Status value={client.wishe?.installment_payment} />} 
+                                propertyValue={<Status value={property.installment_payment} />} 
+                            />
+
+                            <TableRole 
+                                label="Ato mínimo" 
+                                clientValue={formatCurrency(client.wishe?.min_act as number)} 
+                                propertyValue={formatCurrency(property.min_act as number)} 
+                            />
                         </tbody>
                     </table>
                 </div>
