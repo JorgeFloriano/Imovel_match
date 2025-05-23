@@ -1,5 +1,7 @@
 import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
+import IconTooltip from '@/components/ui/icon-tooltip';
+import { Status } from '@/components/ui/status';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
 import { HeartHandshake } from 'lucide-react';
@@ -10,9 +12,8 @@ interface ClientPropertyProps {
         name: string;
         revenue: number;
         wishe?: {
-            region?: {
-                name: string;
-            };
+            regions_msg?: string;
+            regions_descr?: string;
             type?: string;
             rooms?: number;
             suites?: number;
@@ -86,9 +87,7 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                     </div>
                 </div>
 
-                <p className="text-sm">
-                    Informações do cliente e características do imóvel solicitado / Imóveis disponíveis ordenados por compatibilidade com o cliente
-                </p>
+                <p className="text-sm">Informações do cliente e características do imóvel solicitado / Informaçõe do imóvel selecionado</p>
 
                 <div className="relative overflow-x-auto overflow-y-hidden shadow-md sm:rounded-lg">
                     <table className="w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
@@ -144,6 +143,50 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                                 <th className="px-6 py-3">Número de quartos</th>
                                 <th className="px-6 py-3">{client.wishe?.rooms ? client.wishe?.rooms : ' '}</th>
                                 <th className="px-6 py-3">{property.rooms ? property.rooms : ' '}</th>
+                            </tr>
+
+                            <tr className="border-b">
+                                <th className="px-6 py-3">Número de suítes</th>
+                                <th className="px-6 py-3">{client.wishe?.suites ? client.wishe?.suites : ' '}</th>
+                                <th className="px-6 py-3">{property.suites ? property.suites : ' '}</th>
+                            </tr>
+
+                            <tr className="border-b">
+                                <th className="px-6 py-3">Possúi varanda?</th>
+                                <th className="px-6 py-3">
+                                    <Status value={client.wishe?.balcony} />
+                                </th>
+                                <th className="px-6 py-3">
+                                    <Status value={property.balcony} />
+                                </th>
+                            </tr>
+
+                            <tr className="border-b">
+                                <th className="px-6 py-3">Região (s)</th>
+                                <th className="px-6 py-3">
+                                    {client.wishe?.regions_descr ? (
+                                        <IconTooltip
+                                            iconNode={client.wishe?.regions_msg}
+                                            tooltipClassName="right-full"
+                                            iconClassName="inline"
+                                            tooltipText={client.wishe?.regions_descr as string}
+                                        />
+                                    ) : (
+                                        client.wishe?.regions_msg
+                                    )}
+                                </th>
+                                <th className="px-6 py-3">
+                                    {property.address ? (
+                                        <IconTooltip
+                                            tooltipClassName="right-full"
+                                            iconClassName="inline"
+                                            iconNode={property.region?.name}
+                                            tooltipText={property.address}
+                                        />
+                                    ) : (
+                                        property.region?.name
+                                    )}
+                                </th>
                             </tr>
 
                             {/* <tr className="border-b">

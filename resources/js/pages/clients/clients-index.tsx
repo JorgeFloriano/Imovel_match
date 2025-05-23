@@ -1,6 +1,7 @@
 import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Status } from '@/components/ui/status';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { Delete, Edit, Expand, HeartHandshake, House, User } from 'lucide-react';
@@ -141,7 +142,7 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                                         <br />
                                                         <strong>Estado Civil: </strong> {client.marital_status}
                                                         <br />
-                                                        <strong>Precisa de Financiamento: </strong> {client.need_financing ? 'Sim' : 'Não'}
+                                                        <strong>Precisa de Financiamento: </strong><Status value={client.need_financing} />
                                                         <br />
                                                         <strong>Número de Dependentes: </strong> {client.dependents}
                                                         <br />
@@ -153,7 +154,7 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                                         <br />
                                                         <strong>FGTS (R$): </strong> {client.fgts}
                                                         <br />
-                                                        <strong>Possúi Propriedade: </strong> {client.has_property ? 'Sim' : 'Não'}
+                                                        <strong>Possúi Propriedade: </strong><Status value={client.has_property} />
                                                         <br />
                                                         <strong>Renda Comprometida (%): </strong> {client.compromised_income}
                                                         <br />
@@ -181,19 +182,19 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                                                 <strong>Área construída: </strong> {client.wishe.building_area || 'Não especificado'}
                                                                 <br />
                                                                 <strong>Entrada Parcelada: </strong>{' '}
-                                                                {client.wishe.installment_payment ? 'Sim' : 'Não'}
+                                                                <Status value={client.wishe.installment_payment} />
                                                                 <br />
                                                                 <strong>Ar Condicionado: </strong> {client.wishe.air_conditioning}
                                                                 <br />
-                                                                <strong>Jardim: </strong> {client.wishe.garden ? 'Sim' : 'Não'}
+                                                                <strong>Jardim: </strong><Status value={client.wishe.garden} />
                                                                 <br />
-                                                                <strong>Piscina: </strong> {client.wishe.pool ? 'Sim' : 'Não'}
+                                                                <strong>Piscina: </strong><Status value={client.wishe.pool} />
                                                                 <br />
-                                                                <strong>Varanda: </strong> {client.wishe.balcony ? 'Sim' : 'Não'}
+                                                                <strong>Varanda: </strong><Status value={client.wishe.balcony} />
                                                                 <br />
-                                                                <strong>Aceita Pets: </strong> {client.wishe.acept_pets ? 'Sim' : 'Não'}
+                                                                <strong>Aceita Pets: </strong><Status value={client.wishe.acept_pets} />
                                                                 <br />
-                                                                <strong>Acessibilidade: </strong> {client.wishe.acessibility ? 'Sim' : 'Não'}
+                                                                <strong>Acessibilidade: </strong><Status value={client.wishe.acessibility} />
                                                                 <br />
                                                                 <strong>Observações: </strong> {client.wishe.obs || 'Nenhuma'}
                                                                 <br />

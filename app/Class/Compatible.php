@@ -3,12 +3,6 @@
 namespace App\Class;
 
 use DateTime;
-use Hamcrest\Type\IsBoolean;
-use Mockery\Undefined;
-
-use function PHPUnit\Framework\isBool;
-use function PHPUnit\Framework\isNull;
-use function PHPUnit\Framework\isNumeric;
 
 class Compatible
 {

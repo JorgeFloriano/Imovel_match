@@ -235,8 +235,14 @@ class ClientController extends Controller
 
     public function property($client_id, $property_id)
     {
+        $client = Client::find($client_id)->load('wishe.regions');
+
+        $client->wishe->regions_msg = $client->wishe->regionsMsg();
+
+        $client->wishe->regions_descr = $client->wishe->regionsDescr();
+
         return Inertia::render('clients/client-property', [
-            'client' => Client::find($client_id)->load('wishe.regions'),
+            'client' => $client,
             'property' => Property::find($property_id)->load('user', 'region'),
         ]);
     }

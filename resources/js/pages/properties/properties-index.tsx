@@ -2,6 +2,7 @@ import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import IconTooltip from '@/components/ui/icon-tooltip';
+import { Status } from '@/components/ui/status';
 import { StatusIcon } from '@/components/ui/status-icon';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
@@ -226,25 +227,25 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                                         <br />
                                                         <strong>Ato Mínimo: </strong> {property.min_act || 'Não informado'}
                                                         <br />
-                                                        <strong>Entrada Parcelada: </strong> {property.installment_payment ? 'Sim' : 'Não'}
+                                                        <strong>Entrada Parcelada: </strong><Status value={property.installment_payment} />
                                                         <br />
-                                                        <strong>INCC/Financ.: </strong> {property.incc_financing ? 'Sim' : 'Não'}
+                                                        <strong>INCC/Financ.: </strong><Status value={property.incc_financing} />
                                                         <br />
-                                                        <strong>Documentação Inclusa: </strong> {property.documents ? 'Sim' : 'Não'}
+                                                        <strong>Documentação Inclusa: </strong><Status value={property.documents} />
                                                         <br />
                                                         <strong>Tipo de Acabamento: </strong> {property.finsh_type || 'Não informado'}
                                                         <br />
                                                         <strong>Ar Condicionado: </strong> {property.air_conditioning}
                                                         <br />
-                                                        <strong>Jardim: </strong> {property.garden ? 'Sim' : 'Não'}
+                                                        <strong>Jardim: </strong><Status value={property.garden} />
                                                         <br />
-                                                        <strong>Piscina: </strong> {property.pool ? 'Sim' : 'Não'}
+                                                        <strong>Piscina: </strong><Status value={property.pool} />
                                                         <br />
-                                                        <strong>Varanda: </strong> {property.balcony ? 'Sim' : 'Não'}
+                                                        <strong>Varanda: </strong><Status value={property.balcony} />
                                                         <br />
-                                                        <strong>Aceita Pets: </strong> {property.acept_pets ? 'Sim' : 'Não'}
+                                                        <strong>Aceita Pets: </strong><Status value={property.acept_pets} />
                                                         <br />
-                                                        <strong>Acessibilidade: </strong> {property.acessibility ? 'Sim' : 'Não'}
+                                                        <strong>Acessibilidade: </strong><Status value={property.acessibility} />
                                                         <br />
                                                         <strong>Observações: </strong> {property.obs || 'Nenhuma'}
                                                     </p>
