@@ -2,24 +2,42 @@ import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
 import IconTooltip from '@/components/ui/icon-tooltip';
 import { Status } from '@/components/ui/status';
+import { StatusIcon } from '@/components/ui/status-icon';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
 import { HeartHandshake } from 'lucide-react';
 
 interface TableRoleProps {
-  label: string;
-  clientValue?: React.ReactNode;
-  propertyValue?: React.ReactNode;
+    label: string;
+    clientValue?: React.ReactNode;
+    propertyValue?: React.ReactNode;
+    iconValue?: boolean;
+    iconColor?: string;
 }
 
-const TableRole = ({ label, clientValue, propertyValue }: TableRoleProps) => {
-  return (
-    <tr className="border-b">
-      <th className="px-3 py-3">{label}</th>
-      <th className="px-3 py-3">{clientValue || ' '}</th>
-      <th className="px-3 py-3">{propertyValue || ' '}</th>
-    </tr>
-  );
+const TableRole = ({ label, clientValue, propertyValue, iconValue, iconColor }: TableRoleProps) => {
+    if (iconValue === null || iconValue === undefined || 
+        clientValue === null || clientValue === undefined || 
+        propertyValue === null || propertyValue === undefined) {
+        iconColor = '';
+        iconValue = undefined;
+    } else if (iconValue === false) {
+        iconColor = 'rounded-md bg-red-200 p-1 text-center text-red-800';
+    } else {
+        iconColor = 'rounded-md bg-green-200 p-1 text-center text-green-800';
+    }
+    return (
+        <tr className="border-b">
+            <th className="px-3 py-3">{label}</th>
+            <th className="px-3 py-3">{clientValue || ' '}</th>
+            <th className="px-3 py-3">{propertyValue || ' '}</th>
+            <th className="px-3 py-3">
+                <div className={`flex items-center gap-2 ${iconColor}`}>
+                    <StatusIcon value={iconValue} />
+                </div>
+            </th>
+        </tr>
+    );
 };
 
 interface ClientPropertyProps {
@@ -76,7 +94,7 @@ interface ClientPropertyProps {
         floor: number | null;
         building_floors: number | null;
         property_floors: number | null;
-        delivery_key: string | null;
+        delivery_key?: string | null;
         delivery_key_c: string;
         region: {
             id: number;
@@ -96,16 +114,24 @@ interface ClientPropertyProps {
         acept_pets: boolean | null;
         acessibility: boolean | null;
         obs: string | null;
+        range: boolean | null;
     };
 }
 
 export default function ClientProperties({ property, client }: ClientPropertyProps) {
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
         }).format(value);
     };
+
+    {
+        new Intl.NumberFormat('pt-BR', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+        }).format(client.revenue);
+    }
 
     const formatDate = (dateString?: string | null) => {
         return dateString ? new Date(dateString).toLocaleDateString('pt-BR') : ' ';
@@ -136,68 +162,56 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                     <table className="w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
                         <thead className="m-1 bg-[#D8D8D8] text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
-                                <th className="px-6 py-3">Referência</th>
-                                <th className="px-6 py-3">Sonho (Cliente)</th>
-                                <th className="px-6 py-3">Realidade (Imóvel)</th>
+                                <th className="px-3 py-3">Referência</th>
+                                <th className="px-3 py-3">Sonho (Cliente)</th>
+                                <th className="px-3 py-3">Realidade (Imóvel)</th>
+                                <th className="w-1 px-3 py-3">St.</th>
                             </tr>
                         </thead>
                         <tbody className="border-gray-200 text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-white">
-                            <TableRole 
-                                label="Nome / Descr." 
-                                clientValue={client.name} 
-                                propertyValue={property.description} 
+                            <TableRole label="Nome / Descr." clientValue={client.name} propertyValue={property.description} />
+
+                            <TableRole
+                                label="Tipo"
+                                clientValue={client.wishe?.type}
+                                propertyValue={property.type}
+                                iconValue={client.wishe?.type === property.type}
                             />
 
-                            <TableRole 
-                                label="Tipo" 
-                                clientValue={client.wishe?.type} 
-                                propertyValue={property.type} 
+                            <TableRole
+                                label="Renda / Preço (R$)"
+                                clientValue={formatCurrency(client.revenue)}
+                                propertyValue={formatCurrency(property.price)}
+                                iconValue={property.range ?? undefined}
                             />
 
-                            <TableRole 
-                                label="Renda / Preço" 
-                                clientValue={formatCurrency(client.revenue)} 
-                                propertyValue={formatCurrency(property.price)} 
+                            <TableRole
+                                label="Entrega das chaves"
+                                clientValue={formatDate(client.wishe?.delivery_key ?? '')}
+                                propertyValue={formatDate(property?.delivery_key ?? '')}
+                                iconValue={(client.wishe?.delivery_key ?? '') >= (property?.delivery_key ?? '')}
                             />
 
-                            <TableRole 
-                                label="Entrega das chaves" 
-                                clientValue={formatDate(client.wishe?.delivery_key)} 
-                                propertyValue={formatDate(property.delivery_key)} 
+                            <TableRole
+                                label="Área construída"
+                                clientValue={formatArea(client.wishe?.building_area)}
+                                propertyValue={formatArea(property.building_area)}
                             />
 
-                            <TableRole 
-                                label="Área construída" 
-                                clientValue={formatArea(client.wishe?.building_area)} 
-                                propertyValue={formatArea(property.building_area)} 
+                            <TableRole label="Número de quartos" clientValue={client.wishe?.rooms} propertyValue={property.rooms} />
+
+                            <TableRole label="Número de suítes" clientValue={client.wishe?.suites} propertyValue={property.suites} />
+
+                            <TableRole label="Vagas de garagem" clientValue={client.wishe?.garages} propertyValue={property.garages} />
+
+                            <TableRole
+                                label="Possúi varanda?"
+                                clientValue={<Status value={client.wishe?.balcony} />}
+                                propertyValue={<Status value={property.balcony} />}
                             />
 
-                            <TableRole 
-                                label="Número de quartos" 
-                                clientValue={client.wishe?.rooms} 
-                                propertyValue={property.rooms} 
-                            />
-
-                            <TableRole 
-                                label="Número de suítes" 
-                                clientValue={client.wishe?.suites} 
-                                propertyValue={property.suites} 
-                            />
-
-                            <TableRole 
-                                label="Vagas de garagem" 
-                                clientValue={client.wishe?.garages} 
-                                propertyValue={property.garages} 
-                            />
-
-                            <TableRole 
-                                label="Possúi varanda?" 
-                                clientValue={<Status value={client.wishe?.balcony} />} 
-                                propertyValue={<Status value={property.balcony} />} 
-                            />
-
-                            <TableRole 
-                                label="Região (s)" 
+                            <TableRole
+                                label="Região (s)"
                                 clientValue={
                                     client.wishe?.regions_descr ? (
                                         <IconTooltip
@@ -209,7 +223,7 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                                     ) : (
                                         client.wishe?.regions_msg
                                     )
-                                } 
+                                }
                                 propertyValue={
                                     property.address ? (
                                         <IconTooltip
@@ -221,55 +235,51 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                                     ) : (
                                         property.region?.name
                                     )
-                                } 
+                                }
                             />
 
-                            <TableRole 
-                                label="Número de banheiros" 
-                                clientValue={client.wishe?.bathrooms} 
-                                propertyValue={property.bathrooms} 
+                            <TableRole label="Número de banheiros" clientValue={client.wishe?.bathrooms} propertyValue={property.bathrooms} />
+
+                            <TableRole
+                                label="Ar condicionado"
+                                clientValue={client.wishe?.air_conditioning}
+                                propertyValue={property.air_conditioning}
                             />
 
-                            <TableRole 
-                                label="Ar condicionado" 
-                                clientValue={client.wishe?.air_conditioning} 
-                                propertyValue={property.air_conditioning} 
+                            <TableRole
+                                label="Possúi quintal?"
+                                clientValue={<Status value={client.wishe?.garden} />}
+                                propertyValue={<Status value={property.garden} />}
                             />
 
-                            <TableRole 
-                                label="Possúi quintal?" 
-                                clientValue={<Status value={client.wishe?.garden} />} 
-                                propertyValue={<Status value={property.garden} />} 
+                            <TableRole
+                                label="Possúi piscina?"
+                                clientValue={<Status value={client.wishe?.pool} />}
+                                propertyValue={<Status value={property.pool} />}
                             />
 
-                            <TableRole 
-                                label="Possúi piscina?" 
-                                clientValue={<Status value={client.wishe?.pool} />} 
-                                propertyValue={<Status value={property.pool} />} 
+                            <TableRole
+                                label="Aceita pets?"
+                                clientValue={<Status value={client.wishe?.acept_pets} />}
+                                propertyValue={<Status value={property.acept_pets} />}
                             />
 
-                            <TableRole 
-                                label="Aceita pets?" 
-                                clientValue={<Status value={client.wishe?.acept_pets} />} 
-                                propertyValue={<Status value={property.acept_pets} />} 
+                            <TableRole
+                                label="Acessibilidade?"
+                                clientValue={<Status value={client.wishe?.acessibility} />}
+                                propertyValue={<Status value={property.acessibility} />}
                             />
 
-                            <TableRole 
-                                label="Acessibilidade?" 
-                                clientValue={<Status value={client.wishe?.acessibility} />} 
-                                propertyValue={<Status value={property.acessibility} />} 
+                            <TableRole
+                                label="Parcela a entrada?"
+                                clientValue={<Status value={client.wishe?.installment_payment} />}
+                                propertyValue={<Status value={property.installment_payment} />}
                             />
 
-                            <TableRole 
-                                label="Parcela a entrada?" 
-                                clientValue={<Status value={client.wishe?.installment_payment} />} 
-                                propertyValue={<Status value={property.installment_payment} />} 
-                            />
-
-                            <TableRole 
-                                label="Ato mínimo" 
-                                clientValue={formatCurrency(client.wishe?.min_act as number)} 
-                                propertyValue={formatCurrency(property.min_act as number)} 
+                            <TableRole
+                                label="Ato mínimo (R$)"
+                                clientValue={formatCurrency(client.wishe?.min_act as number)}
+                                propertyValue={formatCurrency(property.min_act as number)}
                             />
                         </tbody>
                     </table>

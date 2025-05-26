@@ -235,15 +235,21 @@ class ClientController extends Controller
 
     public function property($client_id, $property_id)
     {
+        $c = new Compatible(); // calss to compare client and property
+
         $client = Client::find($client_id)->load('wishe.regions');
 
         $client->wishe->regions_msg = $client->wishe->regionsMsg();
 
         $client->wishe->regions_descr = $client->wishe->regionsDescr();
 
+        $property = Property::with(['user', 'region'])->find($property_id);
+
+        $property->range = $c->number($property->range(), $client->range())['result'];
+
         return Inertia::render('clients/client-property', [
             'client' => $client,
-            'property' => Property::find($property_id)->load('user', 'region'),
+            'property' => $property,
         ]);
     }
 }

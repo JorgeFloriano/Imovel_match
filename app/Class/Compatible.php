@@ -36,6 +36,7 @@ class Compatible
                 'class' => $this->undef['class'],
                 'class2' => $this->undef['class2'],
                 'count' => 1,
+                'result' => null
             ];
         }
 
@@ -44,6 +45,7 @@ class Compatible
                 'class' => $this->no['class'],
                 'class2' => $this->no['class2'],
                 'count' => 0,
+                'result' => false
             ];
         }
         
@@ -51,6 +53,7 @@ class Compatible
             'class' => $this->ok['class'],
             'class2' => $this->ok['class2'],
             'count' => 2,
+            'result' => true
         ];
     }
 

@@ -52,19 +52,17 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                     Informações do cliente e características do imóvel solicitado / Imóveis disponíveis ordenados por compatibilidade com o cliente
                 </p>
 
-                <div className="relative overflow-y-hidden overflow-x-auto shadow-md sm:rounded-lg">
-                    <table className="w-full h-fulltext-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
+                <div className="relative overflow-x-auto overflow-y-hidden shadow-md sm:rounded-lg">
+                    <table className="h-fulltext-left w-full text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
                         <thead className="m-1 bg-[#D8D8D8] text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
-                                <th className="px-6 py-3">Nome do Cliente</th>
-                                <th>
-                                    <div className="px-6">Tipo</div>
-                                </th>
-                                <th className="px-6">Renda(R$)</th>
+                                <th className="px-6 py-3 text-left">Nome do Cliente</th>
+                                <th className="px-6 text-left">Tipo</th>
+                                <th className="px-6 text-left">Renda(R$)</th>
                                 <th>
                                     <IconTooltip
                                         iconNode={
-                                            <div className="inline-flex gap-2">
+                                            <div className="inline-flex gap-2 text-left">
                                                 {Calendar && <Icon className="inline h-4 w-4" iconNode={Calendar} />}
                                                 {ArrowRight && <Icon className="inline h-4 w-4" iconNode={ArrowRight} />}
                                                 {KeyRound && <Icon className="inline h-4 w-4" iconNode={KeyRound} />}
@@ -103,11 +101,9 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                         </thead>
                         <tbody>
                             <tr className="border-b border-gray-200 font-medium text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-white">
-                                <th className="px-6 py-3">{client.name}</th>
-                                <th className="px-6">
-                                    <div className="px-2 py-1">{client.wishe?.typ}</div>
-                                </th>
-                                <th className="px-6">
+                                <th className="px-6 py-3 text-left">{client.name}</th>
+                                <th className="px-6 text-left">{client.wishe?.typ}</th>
+                                <th className="px-6 text-left">
                                     <div className="px-2">
                                         {new Intl.NumberFormat('pt-BR', {
                                             minimumFractionDigits: 0,
@@ -116,7 +112,7 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                     </div>
                                 </th>
                                 <th className="px-6">
-                                    <div className="py-1 text-center">
+                                    <div className="py-1">
                                         {new Date(client.wishe?.delivery_key as string).toLocaleDateString('pt-BR')}
                                     </div>
                                 </th>
@@ -150,15 +146,13 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                             </tr>
 
                             <tr className="m-1 bg-[#D8D8D8] text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
-                                <th className="px-6 py-3">Descr. do imóvel</th>
-                                <th>
-                                    <div className="px-6">Tipo</div>
-                                </th>
-                                <th className="px-6">Preço(R$)</th>
-                                <th>
+                                <th className="px-6 py-3 text-left">Descr. do imóvel</th>
+                                <th className="px-6 text-left">Tipo</th>
+                                <th className="px-6 text-left">Preço(R$)</th>
+                                <th className="px-6 text-left">
                                     <IconTooltip
                                         iconNode={
-                                            <div className="inline-flex gap-2">
+                                            <div className="inline-flex gap-2 text-left">
                                                 {Calendar && <Icon className="inline h-4 w-4" iconNode={Calendar} />}
                                                 {ArrowRight && <Icon className="inline h-4 w-4" iconNode={ArrowRight} />}
                                                 {KeyRound && <Icon className="inline h-4 w-4" iconNode={KeyRound} />}
@@ -203,12 +197,12 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                             index !== properties.length - 1 ? 'border-b' : ''
                                         }`}
                                     >
-                                        <th scope="row" className="px-6 py-3 font-medium text-gray-900 dark:text-white">
+                                        <th className="px-6 py-3 font-medium text-gray-900 dark:text-white text-left">
                                             <a href={route('clients.property', [client.id, property.id])} className="font-medium hover:underline">
-                                                <div className="inline-flex items-center gap-2">{property.description}</div>
+                                                <div className="inline-flex gap-2">{property.description}</div>
                                             </a>
                                         </th>
-                                        <td className="px-6 py-3">
+                                        <td className="px-6 py-3 text-left">
                                             <div className={property.typ_c}>
                                                 {property.typ ? property.typ.charAt(0).toUpperCase() + property.typ.slice(1) : ' '}
                                             </div>
