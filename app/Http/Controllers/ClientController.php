@@ -247,6 +247,10 @@ class ClientController extends Controller
 
         $property->range = $c->number($property->range(), $client->range())['result'];
 
+        $property->region_bool = $c->inArray($property->region->id ?? '', $client->wishe->regions()->get()->pluck('id')->toArray())['result'];
+
+        //dd($property->region_bool);
+
         return Inertia::render('clients/client-property', [
             'client' => $client,
             'property' => $property,

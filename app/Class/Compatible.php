@@ -83,6 +83,13 @@ class Compatible
 
     public function string($client_wishe = null, $property = null)
     {
+        if ($property == null || $client_wishe == null) {
+            return [
+                'class' => $this->undef['class2'],
+                'count' => 1,
+            ];
+        }
+        
        if ($client_wishe == $property) {
             return [
                 'class' => $this->ok['class2'],
@@ -128,12 +135,14 @@ class Compatible
             return [
                 'class' => $this->ok['class2'],
                 'count' => 2,
+                'result' => true
             ];
         }
         
         return [
             'class' => $this->undef['class2'],
             'count' => 1,
+            'result' => false
         ];
     }
 }

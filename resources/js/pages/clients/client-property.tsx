@@ -16,21 +16,31 @@ interface TableRoleProps {
 }
 
 const TableRole = ({ label, clientValue, propertyValue, iconValue, iconColor }: TableRoleProps) => {
-    if (iconValue === null || iconValue === undefined || 
-        clientValue === null || clientValue === undefined || 
-        propertyValue === null || propertyValue === undefined) {
+    if (
+        iconValue === null ||
+        iconValue === undefined ||
+        clientValue === null ||
+        clientValue === undefined ||
+        clientValue === '' ||
+        propertyValue === null ||
+        propertyValue === undefined ||
+        propertyValue === ''
+    ) {
         iconColor = '';
         iconValue = undefined;
     } else if (iconValue === false) {
         iconColor = 'rounded-md bg-red-200 p-1 text-center text-red-800';
-    } else {
+    } else if (iconValue === true) {
         iconColor = 'rounded-md bg-green-200 p-1 text-center text-green-800';
+    } else {
+        iconColor = '';
+        iconValue = undefined;
     }
     return (
         <tr className="border-b">
             <th className="px-3 py-3">{label}</th>
-            <th className="px-3 py-3">{clientValue || ' '}</th>
-            <th className="px-3 py-3">{propertyValue || ' '}</th>
+            <th className="px-3 py-3 text-center">{clientValue || null}</th>
+            <th className="px-3 py-3 text-center">{propertyValue || null}</th>
             <th className="px-3 py-3">
                 <div className={`flex items-center gap-2 ${iconColor}`}>
                     <StatusIcon value={iconValue} />
@@ -44,26 +54,26 @@ interface ClientPropertyProps {
     client: {
         id: number;
         name: string;
-        revenue: number;
+        revenue: number | null;
         wishe?: {
-            regions_msg?: string;
-            regions_descr?: string;
-            type?: string;
-            rooms?: number;
-            suites?: number;
-            garages?: number;
-            balcony?: boolean;
-            building_area?: number;
-            delivery_key?: string;
-            bathrooms?: number;
-            installment_payment?: boolean;
+            regions_msg?: string | null;
+            regions_descr?: string | null;
+            type?: string | null;
+            rooms?: number | null;
+            suites?: number | null;
+            garages?: number | null;
+            balcony?: boolean | null;
+            building_area?: number | null;
+            delivery_key?: string | null;
+            bathrooms?: number | null;
+            installment_payment?: boolean | null;
             air_conditioning?: string;
-            garden?: boolean;
-            pool?: boolean;
-            acept_pets?: boolean;
-            acessibility?: boolean;
-            min_act?: number;
-            obs?: string;
+            garden?: boolean | null;
+            pool?: boolean | null;
+            acept_pets?: boolean | null;
+            acessibility?: boolean | null;
+            min_act?: number | null;
+            obs?: string | null;
         };
     };
     property: {
@@ -100,7 +110,6 @@ interface ClientPropertyProps {
             id: number;
             name: string;
         };
-        region_c: string;
         min_act: number | null;
         installment_payment: boolean;
         incc_financing: boolean | null;
@@ -115,6 +124,7 @@ interface ClientPropertyProps {
         acessibility: boolean | null;
         obs: string | null;
         range: boolean | null;
+        region_bool: boolean | null;
     };
 }
 
@@ -130,15 +140,15 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
         new Intl.NumberFormat('pt-BR', {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
-        }).format(client.revenue);
+        }).format(client.revenue || 0);
     }
 
     const formatDate = (dateString?: string | null) => {
-        return dateString ? new Date(dateString).toLocaleDateString('pt-BR') : ' ';
+        return dateString ? new Date(dateString).toLocaleDateString('pt-BR') : null;
     };
 
     const formatArea = (area?: number | null) => {
-        return area ? `${area} m²` : ' ';
+        return area ? `${area} m²` : null;
     };
 
     return (
@@ -163,8 +173,8 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                         <thead className="m-1 bg-[#D8D8D8] text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
                                 <th className="px-3 py-3">Referência</th>
-                                <th className="px-3 py-3">Sonho (Cliente)</th>
-                                <th className="px-3 py-3">Realidade (Imóvel)</th>
+                                <th className="px-3 py-3 text-center">Sonho (Cliente)</th>
+                                <th className="px-3 py-3 text-center">Realidade (Imóvel)</th>
                                 <th className="w-1 px-3 py-3">St.</th>
                             </tr>
                         </thead>
@@ -180,7 +190,7 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
 
                             <TableRole
                                 label="Renda / Preço (R$)"
-                                clientValue={formatCurrency(client.revenue)}
+                                clientValue={formatCurrency(client.revenue ?? 0)}
                                 propertyValue={formatCurrency(property.price)}
                                 iconValue={property.range ?? undefined}
                             />
@@ -196,18 +206,35 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                                 label="Área construída"
                                 clientValue={formatArea(client.wishe?.building_area)}
                                 propertyValue={formatArea(property.building_area)}
+                                iconValue={(client.wishe?.building_area ?? 0) <= (property.building_area ?? 0)}
                             />
 
-                            <TableRole label="Número de quartos" clientValue={client.wishe?.rooms} propertyValue={property.rooms} />
+                            <TableRole
+                                label="Número de quartos"
+                                clientValue={client.wishe?.rooms}
+                                propertyValue={property.rooms}
+                                iconValue={(client.wishe?.rooms ?? 0) <= (property.rooms ?? 0)}
+                            />
 
-                            <TableRole label="Número de suítes" clientValue={client.wishe?.suites} propertyValue={property.suites} />
+                            <TableRole
+                                label="Número de suítes"
+                                clientValue={client.wishe?.suites}
+                                propertyValue={property.suites}
+                                iconValue={(client.wishe?.suites ?? 0) <= (property.suites ?? 0)}
+                            />
 
-                            <TableRole label="Vagas de garagem" clientValue={client.wishe?.garages} propertyValue={property.garages} />
+                            <TableRole
+                                label="Vagas de garagem"
+                                clientValue={client.wishe?.garages}
+                                propertyValue={property.garages}
+                                iconValue={(client.wishe?.garages ?? 0) <= (property.garages ?? 0)}
+                            />
 
                             <TableRole
                                 label="Possúi varanda?"
-                                clientValue={<Status value={client.wishe?.balcony} />}
-                                propertyValue={<Status value={property.balcony} />}
+                                clientValue={Status({ value: client.wishe?.balcony })?.props.children}
+                                propertyValue={Status({ value: property?.balcony })?.props.children}
+                                iconValue={client.wishe?.balcony === property.balcony}
                             />
 
                             <TableRole
@@ -236,50 +263,63 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                                         property.region?.name
                                     )
                                 }
+                                iconValue={property.region_bool ?? undefined}
                             />
 
-                            <TableRole label="Número de banheiros" clientValue={client.wishe?.bathrooms} propertyValue={property.bathrooms} />
+                            <TableRole
+                                label="Número de banheiros"
+                                clientValue={client.wishe?.bathrooms}
+                                propertyValue={property.bathrooms}
+                                iconValue={(client.wishe?.bathrooms ?? 0) <= (property.bathrooms ?? 0)}
+                            />
 
                             <TableRole
                                 label="Ar condicionado"
                                 clientValue={client.wishe?.air_conditioning}
                                 propertyValue={property.air_conditioning}
+                                iconValue={client.wishe?.air_conditioning === property.air_conditioning}
                             />
 
                             <TableRole
                                 label="Possúi quintal?"
-                                clientValue={<Status value={client.wishe?.garden} />}
-                                propertyValue={<Status value={property.garden} />}
+                                clientValue={Status({ value: client.wishe?.garden })?.props.children}
+                                propertyValue={Status({ value: property?.garden })?.props.children}
+                                iconValue={client.wishe?.garden === property.garden}
                             />
 
                             <TableRole
                                 label="Possúi piscina?"
-                                clientValue={<Status value={client.wishe?.pool} />}
-                                propertyValue={<Status value={property.pool} />}
+                                clientValue={Status({ value: client.wishe?.pool })?.props.children}
+                                propertyValue={Status({ value: property?.pool })?.props.children}
+                                iconValue={client.wishe?.pool === property.pool}
                             />
 
                             <TableRole
                                 label="Aceita pets?"
-                                clientValue={<Status value={client.wishe?.acept_pets} />}
-                                propertyValue={<Status value={property.acept_pets} />}
+                                clientValue={Status({ value: client.wishe?.acept_pets })?.props.children}
+                                propertyValue={Status({ value: property?.acept_pets })?.props.children}
+                                iconValue={client.wishe?.acept_pets === property.acept_pets}
                             />
 
                             <TableRole
                                 label="Acessibilidade?"
-                                clientValue={<Status value={client.wishe?.acessibility} />}
-                                propertyValue={<Status value={property.acessibility} />}
+                                clientValue={Status({ value: client.wishe?.acessibility })?.props.children}
+                                propertyValue={Status({ value: property?.acessibility })?.props.children}
+                                iconValue={client.wishe?.acessibility === property.acessibility}
                             />
 
                             <TableRole
                                 label="Parcela a entrada?"
-                                clientValue={<Status value={client.wishe?.installment_payment} />}
-                                propertyValue={<Status value={property.installment_payment} />}
+                                clientValue={Status({ value: client.wishe?.installment_payment })?.props.children}
+                                propertyValue={Status({ value: property?.installment_payment })?.props.children}
+                                iconValue={client.wishe?.installment_payment === property.installment_payment}
                             />
 
                             <TableRole
                                 label="Ato mínimo (R$)"
                                 clientValue={formatCurrency(client.wishe?.min_act as number)}
                                 propertyValue={formatCurrency(property.min_act as number)}
+                                iconValue={(client.wishe?.min_act ?? 0) >= (property.min_act ?? 0)}
                             />
                         </tbody>
                     </table>
