@@ -119,53 +119,56 @@ class ClientController extends Controller
     }
 
     public function update(ClientRequest $request, Client $client): RedirectResponse
-    {
-        $validated = $request->validated();
-        $validated['user_id'] = Auth::user()->id;
+{
+    $validated = $request->validated();
+    $validated['user_id'] = Auth::user()->id;
 
-        // Update client with validated data
-        $client->update($validated);
+    // Update client with validated data
+    $client->update($validated);
 
-        // Define wish fields and update/create
-        $wishFields = [
-            'region_id',
-            'type',
-            'rooms',
-            'bathrooms',
-            'suites',
-            'garages',
-            'delivery_key',
-            'building_area',
-            'installment_payment',
-            'air_conditioning',
-            'garden',
-            'pool',
-            'balcony',
-            'acept_pets',
-            'acessibility',
-            'obs',
-            'air_conditioning',
-        ];
+    // Define wish fields and update/create
+    $wishFields = [
+        'region_id',
+        'type',
+        'rooms',
+        'bathrooms',
+        'suites',
+        'garages',
+        'delivery_key',
+        'building_area',
+        'installment_payment',
+        'air_conditioning',
+        'garden',
+        'pool',
+        'balcony',
+        'acept_pets',
+        'acessibility',
+        'obs',
+        'air_conditioning',
+    ];
 
-        $wishData = array_merge(
-            array_intersect_key($validated, array_flip($wishFields)),
-        );
+    // Initialize all wish fields with null first
+    $wishData = array_fill_keys($wishFields, null);
+    
+    // Then merge with the validated data (this will overwrite the null values with actual values when present)
+    $wishData = array_merge(
+        $wishData,
+        array_intersect_key($validated, array_flip($wishFields))
+    );
 
-        // Update or create the associated wish
-        $wish = $client->wishe()->updateOrCreate([], $wishData);
+    // Update or create the associated wish
+    $wish = $client->wishe()->updateOrCreate([], $wishData);
 
-        // Sync selected regions if they exist
-        if ($request->has('selected_regions')) {
-            // Alternative region sync handling
-            $selectedRegions = $request->input('selected_regions', []);
-            $wish->regions()->sync($selectedRegions);
-        } else {
-            // If no regions are selected, detach all
-            $wish->regions()->detach();
-        }
-
-        return back()->with('success', 'Client updated successfully');
+    // Sync selected regions if they exist
+    if ($request->has('selected_regions')) {
+        $selectedRegions = $request->input('selected_regions', []);
+        $wish->regions()->sync($selectedRegions);
+    } else {
+        $wish->regions()->detach();
     }
+
+    return back()->with('success', 'Client updated successfully');
+}
     public function destroy(Client $client): RedirectResponse
     {
         // Delete the associated wish first
@@ -248,8 +251,6 @@ class ClientController extends Controller
         $property->range = $c->number($property->range(), $client->range())['result'];
 
         $property->region_bool = $c->inArray($property->region->id ?? '', $client->wishe->regions()->get()->pluck('id')->toArray())['result'];
-
-        //dd($property->region_bool);
 
         return Inertia::render('clients/client-property', [
             'client' => $client,

@@ -240,14 +240,14 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                             <TableRole
                                 label="Região (s)"
                                 clientValue={
-                                    client.wishe?.regions_descr ? (
-                                        <IconTooltip
-                                            iconNode={client.wishe?.regions_msg}
-                                            tooltipClassName="right-full"
-                                            iconClassName="inline"
-                                            tooltipText={client.wishe?.regions_descr as string}
-                                        />
-                                    ) : (
+                                    client.wishe?.regions_descr ? 
+                                        IconTooltip({
+                                            iconNode: client.wishe?.regions_msg,
+                                            tooltipClassName: "right-full",
+                                            iconClassName: "inline",
+                                            tooltipText: client.wishe?.regions_descr as string
+                                        })
+                                     : (
                                         client.wishe?.regions_msg
                                     )
                                 }

@@ -70,9 +70,8 @@ class Client extends Model
         return [
             'solteiro' => 'Solteiro',
             'casado' => 'Casado',
-            'separado' => 'Separado',
             'divorciado' => 'Divorciado',
-            'viuvo' => 'Viuvo',
+            'viúvo' => 'Viúvo',
         ];
     }
     public function boolOpt() {
