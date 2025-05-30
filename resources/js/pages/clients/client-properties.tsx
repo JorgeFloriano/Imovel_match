@@ -113,7 +113,7 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                 </th>
                                 <th className="px-6">
                                     <div className="py-1">
-                                        {new Date(client.wishe?.delivery_key as string).toLocaleDateString('pt-BR')}
+                                        {client.wishe?.delivery_key ? new Date(client.wishe.delivery_key).toLocaleDateString('pt-BR') : null}
                                     </div>
                                 </th>
                                 <th className="px-6">
@@ -197,7 +197,7 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                             index !== properties.length - 1 ? 'border-b' : ''
                                         }`}
                                     >
-                                        <th className="px-6 py-3 font-medium text-gray-900 dark:text-white text-left">
+                                        <th className="px-6 py-3 text-left font-medium text-gray-900 dark:text-white">
                                             <a href={route('clients.property', [client.id, property.id])} className="font-medium hover:underline">
                                                 <div className="inline-flex gap-2">{property.description}</div>
                                             </a>
@@ -217,7 +217,9 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                         </td>
                                         <td className="px-6">
                                             <div className={property.delivery_key_c}>
-                                                {new Date(property.delivery_key as string).toLocaleDateString('pt-BR')}
+                                                {property?.delivery_key
+                                                    ? new Date(property.delivery_key).toLocaleDateString('pt-BR')
+                                                    : null}
                                             </div>
                                         </td>
                                         <td className="px-6">

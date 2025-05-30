@@ -16,16 +16,10 @@ interface TableRoleProps {
 }
 
 const TableRole = ({ label, clientValue, propertyValue, iconValue, iconColor }: TableRoleProps) => {
-    if (
-        iconValue === null ||
-        iconValue === undefined ||
-        clientValue === null ||
-        clientValue === undefined ||
-        clientValue === '' ||
-        propertyValue === null ||
-        propertyValue === undefined ||
-        propertyValue === ''
-    ) {
+    if (label === 'Região (s)') {
+        console.log({ iconValue, clientValue, propertyValue });
+    }
+    if ([iconValue, clientValue, propertyValue].some((val) => val == null || val === '')) {
         iconColor = '';
         iconValue = undefined;
     } else if (iconValue === false) {
@@ -125,6 +119,7 @@ interface ClientPropertyProps {
         obs: string | null;
         range: boolean | null;
         region_bool: boolean | null;
+        region_bool_c: string;
     };
 }
 
@@ -237,22 +232,22 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                                 iconValue={client.wishe?.balcony === property.balcony}
                             />
 
-                            <TableRole
-                                label="Região (s)"
-                                clientValue={
-                                    client.wishe?.regions_descr ? 
-                                        IconTooltip({
-                                            iconNode: client.wishe?.regions_msg,
-                                            tooltipClassName: "right-full",
-                                            iconClassName: "inline",
-                                            tooltipText: client.wishe?.regions_descr as string
-                                        })
-                                     : (
+                            <tr className="border-b">
+                                <th className="px-3 py-3">Região (s)</th>
+                                <th className="px-3 py-3 text-center">
+                                    {client.wishe?.regions_descr ? (
+                                        <IconTooltip
+                                            tooltipClassName="right-full"
+                                            iconClassName="inline"
+                                            iconNode={client.wishe?.regions_msg}
+                                            tooltipText={client.wishe?.regions_descr}
+                                        />
+                                    ) : (
                                         client.wishe?.regions_msg
-                                    )
-                                }
-                                propertyValue={
-                                    property.address ? (
+                                    )}
+                                </th>
+                                <th className="px-3 py-3 text-center">
+                                    {property.address ? (
                                         <IconTooltip
                                             tooltipClassName="right-full"
                                             iconClassName="inline"
@@ -261,10 +256,14 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                                         />
                                     ) : (
                                         property.region?.name
-                                    )
-                                }
-                                iconValue={property.region_bool ?? undefined}
-                            />
+                                    )}
+                                </th>
+                                <th className="px-3 py-3">
+                                    <div className={`flex items-center gap-2 ${property.region_bool_c}`}>
+                                        <StatusIcon value={property.region_bool ?? undefined} />
+                                    </div>
+                                </th>
+                            </tr>
 
                             <TableRole
                                 label="Número de banheiros"

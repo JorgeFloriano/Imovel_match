@@ -104,16 +104,16 @@ class Compatible
     }
     public function date($client_wishe, $property)
     {
-        $client_wishe = new DateTime($client_wishe);
-        $property = new DateTime($property);
-
-        if ($property === null || $client_wishe === null) {
+        if ($property == null || $client_wishe == null) {
             return [
                 'class' => $this->undef['class'],
                 'class2' => $this->undef['class2'],
                 'count' => 1,
             ];
         }
+        
+        $client_wishe = new DateTime($client_wishe);
+        $property = new DateTime($property);
 
         if ($client_wishe >= $property) {
             return [
@@ -131,6 +131,14 @@ class Compatible
     }
     public function inArray($client_wishe, $property = null)
     {
+        if ($property == null || $client_wishe == null) {
+            return [
+                'class' => $this->undef['class2'],
+                'count' => 1,
+                'result' => null
+            ];
+        }
+
        if (in_array($client_wishe, $property)) {
             return [
                 'class' => $this->ok['class2'],
@@ -140,8 +148,8 @@ class Compatible
         }
         
         return [
-            'class' => $this->undef['class2'],
-            'count' => 1,
+            'class' => $this->no['class2'],
+            'count' => 0,
             'result' => false
         ];
     }

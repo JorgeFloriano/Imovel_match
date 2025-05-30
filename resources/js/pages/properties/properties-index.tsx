@@ -73,7 +73,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
                         </a>
                     </Button>
                 </div>
-                <div className="relative overflow-y-hidden overflow-x-auto shadow-md sm:rounded-lg">
+                <div className="relative overflow-x-auto overflow-y-hidden shadow-md sm:rounded-lg">
                     <table className="w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
                         <thead className="bg-[#D8D8D8] text-xs text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
@@ -152,7 +152,9 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                             maximumFractionDigits: 0,
                                         }).format(property.price)}
                                     </td>
-                                    <td className="px-6 text-center">{new Date(property.delivery_key as string).toLocaleDateString('pt-BR')}</td>
+                                    <td className="px-6 text-center">
+                                        {property.delivery_key ? new Date(property.delivery_key).toLocaleDateString('pt-BR') : null}
+                                    </td>
                                     <td className="px-6 text-center">{property.building_area}</td>
                                     <td className="px-6 text-center">{property.rooms}</td>
                                     <td className="px-6 text-center">{property.suites}</td>
@@ -227,25 +229,33 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                                         <br />
                                                         <strong>Ato Mínimo: </strong> {property.min_act || 'Não informado'}
                                                         <br />
-                                                        <strong>Entrada Parcelada: </strong><Status value={property.installment_payment} />
+                                                        <strong>Entrada Parcelada: </strong>
+                                                        <Status value={property.installment_payment} />
                                                         <br />
-                                                        <strong>INCC/Financ.: </strong><Status value={property.incc_financing} />
+                                                        <strong>INCC/Financ.: </strong>
+                                                        <Status value={property.incc_financing} />
                                                         <br />
-                                                        <strong>Documentação Inclusa: </strong><Status value={property.documents} />
+                                                        <strong>Documentação Inclusa: </strong>
+                                                        <Status value={property.documents} />
                                                         <br />
                                                         <strong>Tipo de Acabamento: </strong> {property.finsh_type || 'Não informado'}
                                                         <br />
                                                         <strong>Ar Condicionado: </strong> {property.air_conditioning}
                                                         <br />
-                                                        <strong>Jardim: </strong><Status value={property.garden} />
+                                                        <strong>Jardim: </strong>
+                                                        <Status value={property.garden} />
                                                         <br />
-                                                        <strong>Piscina: </strong><Status value={property.pool} />
+                                                        <strong>Piscina: </strong>
+                                                        <Status value={property.pool} />
                                                         <br />
-                                                        <strong>Varanda: </strong><Status value={property.balcony} />
+                                                        <strong>Varanda: </strong>
+                                                        <Status value={property.balcony} />
                                                         <br />
-                                                        <strong>Aceita Pets: </strong><Status value={property.acept_pets} />
+                                                        <strong>Aceita Pets: </strong>
+                                                        <Status value={property.acept_pets} />
                                                         <br />
-                                                        <strong>Acessibilidade: </strong><Status value={property.acessibility} />
+                                                        <strong>Acessibilidade: </strong>
+                                                        <Status value={property.acessibility} />
                                                         <br />
                                                         <strong>Observações: </strong> {property.obs || 'Nenhuma'}
                                                     </p>
