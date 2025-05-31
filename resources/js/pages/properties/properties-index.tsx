@@ -27,6 +27,7 @@ interface Property {
     contact_name: string | null;
     contact_phone: string | null;
     contact_link: string | null;
+    place_link: string | null;
     description: string | null;
     price: number;
     land_area: number | null;
@@ -167,11 +168,27 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                             <IconTooltip
                                                 tooltipClassName="right-full"
                                                 iconClassName="inline"
-                                                iconNode={property.region?.name}
+                                                iconNode={
+                                                    <a
+                                                        href={property.place_link || '#'}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center space-x-2 font-medium"
+                                                    >
+                                                        {property.region?.name}
+                                                    </a>
+                                                }
                                                 tooltipText={property.address}
                                             />
                                         ) : (
-                                            property.region?.name
+                                            <a
+                                                href={property.place_link || '#'}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex items-center space-x-2 font-medium"
+                                            >
+                                                {property.region?.name}
+                                            </a>
                                         )}
                                     </td>
 

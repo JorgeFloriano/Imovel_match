@@ -12,6 +12,7 @@ type PropertyCreateForm = {
     contact_name: string | null;
     contact_phone: string | null;
     contact_link: string | null;
+    place_link: string | null;
     region_id?: string;
     type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
     iptu: number;
@@ -66,6 +67,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
         contact_name: null,
         contact_phone: null,
         contact_link: null,
+        place_link: null,
         region_id: undefined,
         type: null,
         iptu: 0,
@@ -99,6 +101,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
         // contact_name: 'John Doe test',
         // contact_phone: '(11) 99999-9999',
         // contact_link: 'https://www.mylink.com.br',
+        // place_link: 'https://www.mylink.com.br',
         // region_id: 1,
         // type: 'casa',
         // iptu: 12000,
@@ -175,15 +178,6 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                         />
 
                         <FormInput
-                            label="Site/Link para informações"
-                            placeholder="Ex: https://www.meuempreendimento.com.br"
-                            maxLength={100}
-                            value={data.contact_link || ''}
-                            onChange={(value) => handleSetData('contact_link', value)}
-                            error={errors.contact_link}
-                        />
-
-                        <FormInput
                             label="Nome do Contato"
                             placeholder="Ex: João da Silva (Construtora Planeta)"
                             maxLength={100}
@@ -191,6 +185,26 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             onChange={(value) => handleSetData('contact_name', value)}
                             error={errors.contact_name}
                         />
+
+                        <div className="mb-3 grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <FormInput
+                                label="Link para informações"
+                                placeholder="Ex: https://www.meuempreendimento.com.br"
+                                maxLength={500}
+                                value={data.contact_link || ''}
+                                onChange={(value) => handleSetData('contact_link', value)}
+                                error={errors.contact_link}
+                            />
+
+                            <FormInput
+                                label="Link para localização"
+                                placeholder="Ex: https://www.google.com.br/maps/place/"
+                                maxLength={500}
+                                value={data.place_link || ''}
+                                onChange={(value) => handleSetData('place_link', value)}
+                                error={errors.place_link}
+                            />
+                        </div>
                     </div>
 
                     <div className="mb-3 grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -205,8 +219,8 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
 
                         <FormSelect
                             label="Região"
-                            placeholder="Selecione uma região"
-                            value={(data.region_id || '')}
+                            placeholder="Selecionar região"
+                            value={data.region_id || ''}
                             onValueChange={(value) => handleSetData('region_id', parseInt(value))}
                             customOptions={regionOptions}
                             error={errors.region_id}

@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
@@ -9,7 +10,7 @@ interface PropertyShowProps {
             name: string;
         };
         region: {
-            name: string;
+            name: string | null;
         };
         type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
         iptu: string | null;
@@ -76,12 +77,10 @@ const booleanFeatureLabels = {
 };
 
 export default function ShowProperty({ property, booleanOptions }: PropertyShowProps) {
-    const { delete: destroy } = useForm();
+    const { delete: destroy, reset, clearErrors } = useForm();
 
     const handleDelete = () => {
-        if (confirm('Tem certeza que deseja deletar esta propriedade?')) {
-            destroy(route('properties.destroy', property.id));
-        }
+        destroy(route('properties.destroy', property.id));
     };
 
     const formatCurrency = (value: number) => {
@@ -103,6 +102,11 @@ export default function ShowProperty({ property, booleanOptions }: PropertyShowP
         return value ? booleanOptions['true'] : booleanOptions['false'];
     };
 
+    const closeModal = () => {
+        clearErrors();
+        reset();
+    };
+
     return (
         <AppLayout>
             <Head title={`Propriedade - ${property.address || 'Sem endereço'}`} />
@@ -113,9 +117,28 @@ export default function ShowProperty({ property, booleanOptions }: PropertyShowP
                         <Button asChild variant="outline">
                             <Link href={route('properties.index')}>Voltar</Link>
                         </Button>
-                        <Button variant="destructive" onClick={handleDelete}>
-                            Deletar
-                        </Button>
+
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button variant="destructive">Deletar</Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogTitle>Tem certeza que deseja deletar o cadastro desse imóvel ?</DialogTitle>
+                                <DialogDescription>Uma vez deletado, todas as informações relacionadas ao imóvel serão perdidas.</DialogDescription>
+
+                                <DialogFooter className="gap-2">
+                                    <DialogClose asChild>
+                                        <Button variant="secondary" onClick={closeModal}>
+                                            Cancelar
+                                        </Button>
+                                    </DialogClose>
+
+                                    <Button variant="destructive" onClick={handleDelete}>
+                                        Deletar
+                                    </Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
                     </div>
                 </div>
 
@@ -134,7 +157,7 @@ export default function ShowProperty({ property, booleanOptions }: PropertyShowP
                             </div>
                             <div>
                                 <h3 className="text-sm font-medium text-neutral-500">Região</h3>
-                                <p className="text-sm">{property.region.name}</p>
+                                <p className="text-sm">{property.region?.name || '-'}</p>
                             </div>
                             <div>
                                 <h3 className="text-sm font-medium text-neutral-500">Tipo</h3>

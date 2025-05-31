@@ -20,7 +20,7 @@ class ClientController extends Controller
     }
     public function index()
     {
-        $clients = Client::with('wishe.regions')->get();
+        $clients = Client::with('wishe.regions')->where('user_id', Auth::user()->id)->get();
 
         foreach ($clients as $client) {
             $client->wishe->regions_descr = $client->wishe->regionsDescr();

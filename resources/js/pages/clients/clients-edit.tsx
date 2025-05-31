@@ -286,7 +286,7 @@ const [selectedRegions, setSelectedRegions] = useState<Record<string, boolean>>(
                         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                             <ChecksDropdown
                                 label="Possíveis regiões"
-                                placeholder="Selecione as regiões"
+                                placeholder="Selecionar regiões"
                                 customOptions={regionOptions}
                                 value={selectedRegions}
                                 onChange={(newSelections) => setSelectedRegions(newSelections)}

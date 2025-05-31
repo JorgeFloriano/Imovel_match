@@ -28,6 +28,7 @@ class Property extends Model
         'contact_name',
         'contact_phone',
         'contact_link',
+        'place_link',
         'type',
         'iptu',
         'description',

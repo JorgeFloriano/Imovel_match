@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
@@ -69,14 +70,12 @@ const booleanFeatureLabels = {
 };
 
 export default function ShowClient({ client, maritalStatusOptions, booleanOptions }: ClientShowProps) {
-    const { delete: destroy } = useForm(); // Move useForm inside the component
+    const { delete: destroy, clearErrors, reset } = useForm(); // Move useForm inside the component
 
     const handleDelete = () => {
-        if (confirm('Tem certeza que deseja deletar este cliente?')) {
-            destroy(route('clients.destroy', client.id));
-        }
+        destroy(route('clients.destroy', client.id));
     };
-    
+
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
     };
@@ -92,6 +91,11 @@ export default function ShowClient({ client, maritalStatusOptions, booleanOption
         return value ? booleanOptions['true'] : booleanOptions['false'];
     };
 
+    const closeModal = () => {
+        clearErrors();
+        reset();
+    };
+
     return (
         <AppLayout>
             <Head title={`Cliente - ${client.name}`} />
@@ -102,9 +106,28 @@ export default function ShowClient({ client, maritalStatusOptions, booleanOption
                         <Button asChild variant="outline">
                             <Link href={route('clients.index')}>Voltar</Link>
                         </Button>
-                        <Button variant="destructive" onClick={handleDelete}>
-                            Deletar
-                        </Button>
+
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button variant="destructive">Deletar</Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogTitle>Tem certeza que deseja deletar o cadastro desse cliente ?</DialogTitle>
+                                <DialogDescription>Uma vez deletado, todas as informações relacionadas ao cliente serão perdidas.</DialogDescription>
+
+                                <DialogFooter className="gap-2">
+                                    <DialogClose asChild>
+                                        <Button variant="secondary" onClick={closeModal}>
+                                            Cancelar
+                                        </Button>
+                                    </DialogClose>
+
+                                    <Button variant="destructive" onClick={handleDelete}>
+                                        Deletar
+                                    </Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
                     </div>
                 </div>
 

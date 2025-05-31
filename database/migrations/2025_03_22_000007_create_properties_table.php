@@ -16,7 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->string('contact_name')->nullable();
             $table->string('contact_phone')->nullable();
-            $table->string('contact_link')->nullable();
+            $table->text('contact_link')->nullable();
+            $table->text('place_link')->nullable();
             $table->foreignId('region_id')->nullable()->constrained();
             $table->enum('type', [
                 'casa',

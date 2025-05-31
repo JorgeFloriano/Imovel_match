@@ -76,6 +76,7 @@ interface ClientPropertyProps {
         contact_name: string | null;
         contact_phone: string | null;
         contact_link: string | null;
+        place_link: string | null;
         region_id?: string;
         type: 'casa' | 'casa (condom.)' | 'sobrado' | 'apartamento' | 'apart. c/ elevad.' | 'terreno' | 'loja' | 'garagem' | 'sala' | 'outros' | null;
         typ: string | null;
