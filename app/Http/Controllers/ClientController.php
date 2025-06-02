@@ -258,4 +258,26 @@ class ClientController extends Controller
             'property' => $property,
         ]);
     }
+    public function dashboard()
+    {
+        $c = new Compatible(); // calss to compare client and property
+
+        $client = Client::find(1)->load('wishe.regions');
+
+        $client->wishe->regions_msg = $client->wishe->regionsMsg();
+
+        $client->wishe->regions_descr = $client->wishe->regionsDescr();
+
+        $property = Property::with(['user', 'region'])->find(1);
+
+        $property->range = $c->number($property->range(), $client->range())['result'];
+
+        $property->region_bool = $c->inArray($property->region->id ?? '', $client->wishe->regions()->get()->pluck('id')->toArray())['result'];
+        $property->region_bool_c = $c->inArray($property->region->id ?? '', $client->wishe->regions()->get()->pluck('id')->toArray())['class'];
+
+        return Inertia::render('dashboard', [
+            'client' => $client,
+            'property' => $property,
+        ]);
+    }
 }
