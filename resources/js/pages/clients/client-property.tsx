@@ -16,9 +16,6 @@ interface TableRoleProps {
 }
 
 const TableRole = ({ label, clientValue, propertyValue, iconValue, iconColor }: TableRoleProps) => {
-    if (label === 'Região (s)') {
-        console.log({ iconValue, clientValue, propertyValue });
-    }
     if ([iconValue, clientValue, propertyValue].some((val) => val == null || val === '')) {
         iconColor = '';
         iconValue = undefined;

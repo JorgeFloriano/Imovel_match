@@ -6,6 +6,8 @@ use DateTime;
 
 class Compatible
 {
+    public object $client;
+    public object $property;
 
     public $ok = [
         'text' => 'text-green-800',
@@ -27,8 +29,19 @@ class Compatible
         'class' => 'p-1 text-center',
         'class2' => 'px-2 py-1',
     ];
+    public function __construct($client = null, $property = null)
+    {
+        if (!isset($client) || !isset($property)) {
+            return;
+        }
+        $this->client = $client;
+        $this->property = $property;
 
-   
+        if (isset($this->client->id) && isset($this->property->id)) {
+            
+        }
+    }
+
     public function number($client_wishe, $property)
     {
         if ($property === null || $client_wishe === null) {

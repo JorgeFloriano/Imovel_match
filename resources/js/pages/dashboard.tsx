@@ -6,7 +6,8 @@ import { StatusIcon } from '@/components/ui/status-icon';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { HeartHandshake } from 'lucide-react';
+import { Bath, Bed, Car, DollarSign, House, KeyRound, MapPin, Ruler } from 'lucide-react';
+import React from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,34 +17,31 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface TableRoleProps {
-    label?: string;
+    iconLabel?: React.ReactNode;
     clientValue?: React.ReactNode;
     propertyValue?: React.ReactNode;
     iconValue?: boolean;
     iconColor?: string;
 }
 
-const TableRole = ({ label, clientValue, propertyValue, iconValue, iconColor }: TableRoleProps) => {
-    if (label === 'Região (s)') {
-        console.log({ iconValue, clientValue, propertyValue });
-    }
+const TableRole = ({ iconLabel, clientValue, propertyValue, iconValue, iconColor }: TableRoleProps) => {
     if ([iconValue, clientValue, propertyValue].some((val) => val == null || val === '')) {
         iconColor = '';
         iconValue = undefined;
     } else if (iconValue === false) {
-        iconColor = 'rounded-md bg-red-200 p-1 text-center text-red-800';
+        iconColor = 'rounded-md bg-red-200 text-center text-red-800 px-2 py-1';
     } else if (iconValue === true) {
-        iconColor = 'rounded-md bg-green-200 p-1 text-center text-green-800';
+        iconColor = 'rounded-md bg-green-200 text-center text-green-800 px-2 py-1';
     } else {
         iconColor = '';
         iconValue = undefined;
     }
     return (
         <tr className="border-b">
-            <th className="px-3 py-3">{label}</th>
-            <th className="px-3 py-3 text-center">{clientValue || null}</th>
-            <th className="px-3 py-3 text-center">{propertyValue || null}</th>
-            <th className="px-3 py-3">
+            <th className="py-3 pl-3">{iconLabel}</th>
+            <th className="py-3 text-center">{clientValue || null}</th>
+            <th className="py-3 text-center">{propertyValue || null}</th>
+            <th className="w-1 items-center px-3 py-3">
                 <div className={`flex items-center gap-2 ${iconColor}`}>
                     <StatusIcon value={iconValue} />
                 </div>
@@ -160,105 +158,146 @@ export default function Dashboard({ property, client }: ClientPropertyProps) {
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">
                     <div className="relative overflow-hidden rounded-xl border-[1px] border-[#B8B8B8] bg-[#EFEEEC] dark:bg-[#123251]">
-                        <div className='flex justify-between border-b-[1px] border-[#B8B8B8] p-3'>
-                            <div className='text-left'>
-                                {client.name}
+                        <div className="flex justify-evenly border-b-[1px] border-[#B8B8B8] p-3">
+                            <div className="pt-2 text-left">{client.name}</div>
+                            <div className="text-center">
+                                <img src="/logo_build.png" className="" width={30} alt="Varanda" />
                             </div>
-                            <div className='text-center'>
-                                {HeartHandshake && <Icon className="text-[#BF9447]" iconNode={HeartHandshake} />}
-                            </div>
-                            <div className='text-right'>
-                                {property.description}
-                            </div>
+                            <div className="pt-2 text-right">{property.description}</div>
                         </div>
                         <table className="w-full text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
-                            <TableRole clientValue={client.name} propertyValue={property.description} />
+                            <tbody>
+                                <TableRole
+                                    iconLabel={
+                                        <IconTooltip iconNode={House && <Icon className="h-6 w-5" iconNode={House} />} tooltipText="Tipo de imóvel" />
+                                    }
+                                    clientValue={client.wishe?.type}
+                                    propertyValue={property.type}
+                                    iconValue={client.wishe?.type === property.type}
+                                />
 
-                            <TableRole
-                                clientValue={client.wishe?.type}
-                                propertyValue={property.type}
-                                iconValue={client.wishe?.type === property.type}
-                            />
-
-                            <TableRole
-                                clientValue={formatCurrency(client.revenue ?? 0)}
-                                propertyValue={formatCurrency(property.price)}
-                                iconValue={property.range ?? undefined}
-                            />
-
-                            <TableRole
-                                clientValue={formatDate(client.wishe?.delivery_key ?? '')}
-                                propertyValue={formatDate(property?.delivery_key ?? '')}
-                                iconValue={(client.wishe?.delivery_key ?? '') >= (property?.delivery_key ?? '')}
-                            />
-
-                            <TableRole
-                                label="Área construída"
-                                clientValue={formatArea(client.wishe?.building_area)}
-                                propertyValue={formatArea(property.building_area)}
-                                iconValue={(client.wishe?.building_area ?? 0) <= (property.building_area ?? 0)}
-                            />
-
-                            <TableRole
-                                label="Número de quartos"
-                                clientValue={client.wishe?.rooms}
-                                propertyValue={property.rooms}
-                                iconValue={(client.wishe?.rooms ?? 0) <= (property.rooms ?? 0)}
-                            />
-
-                            <TableRole
-                                label="Número de suítes"
-                                clientValue={client.wishe?.suites}
-                                propertyValue={property.suites}
-                                iconValue={(client.wishe?.suites ?? 0) <= (property.suites ?? 0)}
-                            />
-
-                            <TableRole
-                                label="Vagas de garagem"
-                                clientValue={client.wishe?.garages}
-                                propertyValue={property.garages}
-                                iconValue={(client.wishe?.garages ?? 0) <= (property.garages ?? 0)}
-                            />
-
-                            <TableRole
-                                label="Possúi varanda?"
-                                clientValue={Status({ value: client.wishe?.balcony })?.props.children}
-                                propertyValue={Status({ value: property?.balcony })?.props.children}
-                                iconValue={client.wishe?.balcony === property.balcony}
-                            />
-
-                            <tr className="border-b">
-                                <th className="px-3 py-3">Região (s)</th>
-                                <th className="px-3 py-3 text-center">
-                                    {client.wishe?.regions_descr ? (
+                                <TableRole
+                                    iconLabel={
                                         <IconTooltip
-                                            tooltipClassName="right-full"
-                                            iconClassName="inline"
-                                            iconNode={client.wishe?.regions_msg}
-                                            tooltipText={client.wishe?.regions_descr}
+                                            iconNode={DollarSign && <Icon className="h-6 w-5" iconNode={DollarSign} />}
+                                            tooltipText="Renda do cliente / Preço do imóvel"
                                         />
-                                    ) : (
-                                        client.wishe?.regions_msg
-                                    )}
-                                </th>
-                                <th className="px-3 py-3 text-center">
-                                    {property.address ? (
+                                    }
+                                    clientValue={formatCurrency(client.revenue ?? 0)}
+                                    propertyValue={formatCurrency(property.price)}
+                                    iconValue={property.range ?? undefined}
+                                />
+
+                                <TableRole
+                                    iconLabel={
                                         <IconTooltip
-                                            tooltipClassName="right-full"
-                                            iconClassName="inline"
-                                            iconNode={property.region?.name}
-                                            tooltipText={property.address}
+                                            iconNode={KeyRound && <Icon className="h-6 w-5" iconNode={KeyRound} />}
+                                            tooltipText="Provável entrega das chaves"
                                         />
-                                    ) : (
-                                        property.region?.name
-                                    )}
-                                </th>
-                                <th className="px-3 py-3">
-                                    <div className={`flex items-center gap-2 ${property.region_bool_c}`}>
-                                        <StatusIcon value={property.region_bool ?? undefined} />
-                                    </div>
-                                </th>
-                            </tr>
+                                    }
+                                    clientValue={formatDate(client.wishe?.delivery_key ?? '')}
+                                    propertyValue={formatDate(property?.delivery_key ?? '')}
+                                    iconValue={(client.wishe?.delivery_key ?? '') >= (property?.delivery_key ?? '')}
+                                />
+
+                                <TableRole
+                                    iconLabel={
+                                        <IconTooltip
+                                            iconNode={Ruler && <Icon className="h-6 w-5" iconNode={Ruler} />}
+                                            tooltipText="Tamanho interno do imóvel"
+                                        />
+                                    }
+                                    clientValue={formatArea(client.wishe?.building_area)}
+                                    propertyValue={formatArea(property.building_area)}
+                                    iconValue={(client.wishe?.building_area ?? 0) <= (property.building_area ?? 0)}
+                                />
+
+                                <TableRole
+                                    iconLabel={
+                                        <IconTooltip iconNode={Bed && <Icon className="h-6 w-5" iconNode={Bed} />} tooltipText="Número de quartos" />
+                                    }
+                                    clientValue={client.wishe?.rooms}
+                                    propertyValue={property.rooms}
+                                    iconValue={(client.wishe?.rooms ?? 0) <= (property.rooms ?? 0)}
+                                />
+
+                                <TableRole
+                                    iconLabel={
+                                        <IconTooltip iconNode={Bath && <Icon className="h-6 w-5" iconNode={Bath} />} tooltipText="Número de suites" />
+                                    }
+                                    clientValue={client.wishe?.suites}
+                                    propertyValue={property.suites}
+                                    iconValue={(client.wishe?.suites ?? 0) <= (property.suites ?? 0)}
+                                />
+
+                                <TableRole
+                                    iconLabel={
+                                        <IconTooltip iconNode={Car && <Icon className="h-6 w-5" iconNode={Car} />} tooltipText="Vagas de garagem" />
+                                    }
+                                    clientValue={client.wishe?.garages}
+                                    propertyValue={property.garages}
+                                    iconValue={(client.wishe?.garages ?? 0) <= (property.garages ?? 0)}
+                                />
+
+                                <TableRole
+                                    iconLabel={
+                                        <IconTooltip
+                                            iconNode={
+                                                <>
+                                                    <img src="/balcony.png" className="dark:hidden" width={20} alt="Varanda" />
+                                                    <img src="/balcony_dark.png" className="hidden dark:block" width={20} alt="Varanda" />
+                                                </>
+                                            }
+                                            tooltipText="Possúi varanda"
+                                        />
+                                    }
+                                    clientValue={Status({ value: client.wishe?.balcony })?.props.children}
+                                    propertyValue={Status({ value: property?.balcony })?.props.children}
+                                    iconValue={client.wishe?.balcony === property.balcony}
+                                />
+
+                                <tr className="border-b">
+                                    <th className="px-3 py-3">
+                                        {
+                                            <IconTooltip
+                                                iconNode={MapPin && <Icon className="h-6 w-5" iconNode={MapPin} />}
+                                                containerClassName='flex'
+                                                tooltipClassName="left-full"
+                                                iconClassName="inline"
+                                                tooltipText="Região"
+                                            />
+                                        }
+                                    </th>
+                                    <th className="px-3 py-3">
+                                        {client.wishe?.regions_descr ? (
+                                            <IconTooltip
+                                                iconClassName="inline"
+                                                iconNode={client.wishe?.regions_msg}
+                                                tooltipText={client.wishe?.regions_descr}
+                                            />
+                                        ) : (
+                                            client.wishe?.regions_msg
+                                        )}
+                                    </th>
+                                    <th className="px-3 py-3 text-center">
+                                        {property.address ? (
+                                            <IconTooltip
+                                                tooltipClassName="right-full"
+                                                iconClassName="inline"
+                                                iconNode={property.region?.name}
+                                                tooltipText={property.address}
+                                            />
+                                        ) : (
+                                            property.region?.name
+                                        )}
+                                    </th>
+                                    <th className="px-3 py-3">
+                                        <div className={`flex items-center gap-2 ${property.region_bool_c}`}>
+                                            <StatusIcon value={property.region_bool ?? undefined} />
+                                        </div>
+                                    </th>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                     <div className="relative overflow-hidden rounded-xl border-[1px] border-[#B8B8B8] bg-[#EFEEEC] dark:bg-[#123251]">

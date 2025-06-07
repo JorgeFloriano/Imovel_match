@@ -114,14 +114,14 @@
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.87 0 0);
     --pc-blue: #123251;
-    --pc-gold: #BF9447;
-    --pc-gray: #B8B8B8;
-    --pc-white: #EFEEEC;
+    --pc-gold: #bf9447;
+    --pc-gray: #b8b8b8;
+    --pc-white: #efeeec;
 }
 
 .bg-pc-blue {
     background-color: var(--pc-blue);
-}   
+}
 
 .bg-pc-gold {
     background-color: var(--pc-gold);
@@ -201,31 +201,31 @@
     --sidebar-border: oklch(0.269 0 0);
     --sidebar-ring: oklch(0.439 0 0);
     --pc-blue: #123251;
-    --pc-gold: #BF9447;
-    --pc-gray: #B8B8B8;
-    --pc-white: #EFEEEC;
+    --pc-gold: #bf9447;
+    --pc-gray: #b8b8b8;
+    --pc-white: #efeeec;
 }
 
 /* For WebKit browsers */
-input[type="date"]::-webkit-calendar-picker-indicator {
+input[type='date']::-webkit-calendar-picker-indicator {
     filter: var(--tw-text-opacity);
     color: currentColor;
     opacity: 1;
-  }
-  
-  /* For Firefox */
-  input[type="date"]::-moz-calendar-picker-indicator {
+}
+
+/* For Firefox */
+input[type='date']::-moz-calendar-picker-indicator {
     filter: var(--tw-text-opacity);
     color: currentColor;
     opacity: 1;
-  }
-  
-  @layer base {
-      * {
-          @apply border-border;
-      }
-  
-      body {
-          @apply bg-background text-foreground;
-      }
-  }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+}
