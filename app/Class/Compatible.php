@@ -8,6 +8,7 @@ class Compatible
 {
     public object $client;
     public object $property;
+    public int $pts = 0;
 
     public $ok = [
         'text' => 'text-green-800',
@@ -37,9 +38,9 @@ class Compatible
         $this->client = $client;
         $this->property = $property;
 
-        if (isset($this->client->id) && isset($this->property->id)) {
-            
-        }
+        $this->pts += $this->string($client->wishe->type, $property->type)['count'];
+
+        $this->pts += ($this->number($property->range(), $client->range())['count'] * 3);
     }
 
     public function number($client_wishe, $property)
@@ -51,9 +52,7 @@ class Compatible
                 'count' => 1,
                 'result' => null
             ];
-        }
-
-        elseif ($client_wishe > $property) {
+        } elseif ($client_wishe > $property) {
             return [
                 'class' => $this->no['class'],
                 'class2' => $this->no['class2'],
@@ -61,7 +60,7 @@ class Compatible
                 'result' => false
             ];
         }
-        
+
         return [
             'class' => $this->ok['class'],
             'class2' => $this->ok['class2'],
@@ -72,9 +71,10 @@ class Compatible
 
     public function bool($client_wishe, $property)
     {
-        if (($property === false || $property === true) && 
-        ($client_wishe === true || $client_wishe === false) && 
-        $client_wishe != $property) {
+        if (($property === false || $property === true) &&
+            ($client_wishe === true || $client_wishe === false) &&
+            $client_wishe != $property
+        ) {
             return [
                 'class' => $this->no['class'],
                 'count' => 0,
@@ -102,17 +102,17 @@ class Compatible
                 'count' => 1,
             ];
         }
-        
-       if ($client_wishe == $property) {
+
+        if ($client_wishe == $property) {
             return [
                 'class' => $this->ok['class2'],
                 'count' => 2,
             ];
         }
-        
+
         return [
-            'class' => $this->undef['class2'],
-            'count' => 1,
+            'class' => $this->no['class2'],
+            'count' => 0,
         ];
     }
     public function date($client_wishe, $property)
@@ -124,7 +124,7 @@ class Compatible
                 'count' => 1,
             ];
         }
-        
+
         $client_wishe = new DateTime($client_wishe);
         $property = new DateTime($property);
 
@@ -135,7 +135,7 @@ class Compatible
                 'count' => 2,
             ];
         }
-        
+
         return [
             'class' => $this->no['class'],
             'class2' => $this->no['class2'],
@@ -152,14 +152,14 @@ class Compatible
             ];
         }
 
-       if (in_array($client_wishe, $property)) {
+        if (in_array($client_wishe, $property)) {
             return [
                 'class' => $this->ok['class2'],
                 'count' => 2,
                 'result' => true
             ];
         }
-        
+
         return [
             'class' => $this->no['class2'],
             'count' => 0,

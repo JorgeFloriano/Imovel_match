@@ -223,6 +223,9 @@ class ClientController extends Controller
 
             $property->building_area_c = $c->number($client->wishe->building_area, $property->building_area)['class'];
             $property->ok_count += $c->number($client->wishe->building_area, $property->building_area)['count'];
+
+            $comp = new Compatible($client, $property);
+            $property->pts += $comp->pts;
         }
 
         // Convert to array after sorting
@@ -276,7 +279,7 @@ class ClientController extends Controller
         $property->region_bool_c = $c->inArray($property->region->id ?? '', $client->wishe->regions()->get()->pluck('id')->toArray())['class'];
 
         $comp = new Compatible($client, $property);
-        dd($comp->client->name);
+        //dd($comp->client->name);
 
         return Inertia::render('dashboard', [
             'client' => $client,
