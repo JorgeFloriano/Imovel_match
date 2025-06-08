@@ -40,7 +40,22 @@ class Compatible
 
         $this->pts += $this->string($client->wishe->type, $property->type)['count'];
 
-        $this->pts += ($this->number($property->range(), $client->range())['count'] * 3);
+        $this->pts = $this->pts + ($this->number($property->range(), $client->range())['count'] * 3);
+
+        $this->pts += $this->date($client->wishe->delivery_key, $property->delivery_key)['count'];
+
+        $this->pts += $this->number($client->wishe->building_area, $property->building_area)['count'];
+
+        $this->pts += $this->number($client->wishe->rooms, $property->rooms)['count'];
+
+        $this->pts += $this->number($client->wishe->suites, $property->suites)['count'];
+
+        $this->pts += $this->number($client->wishe->garages, $property->garages)['count'];
+
+        $this->pts += $this->bool($client->wishe->balcony, $property->balcony)['count'];
+
+        $cli_reg_ids = $client->wishe->regions()->get()->pluck('id')->toArray();
+        $this->pts += $this->inArray($property->region->id ?? '', $cli_reg_ids ?? '')['count'];
     }
 
     public function number($client_wishe, $property)

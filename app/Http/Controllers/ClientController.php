@@ -119,56 +119,56 @@ class ClientController extends Controller
     }
 
     public function update(ClientRequest $request, Client $client): RedirectResponse
-{
-    $validated = $request->validated();
-    $validated['user_id'] = Auth::user()->id;
+    {
+        $validated = $request->validated();
+        $validated['user_id'] = Auth::user()->id;
 
-    // Update client with validated data
-    $client->update($validated);
+        // Update client with validated data
+        $client->update($validated);
 
-    // Define wish fields and update/create
-    $wishFields = [
-        'region_id',
-        'type',
-        'rooms',
-        'bathrooms',
-        'suites',
-        'garages',
-        'delivery_key',
-        'building_area',
-        'installment_payment',
-        'air_conditioning',
-        'garden',
-        'pool',
-        'balcony',
-        'acept_pets',
-        'acessibility',
-        'obs',
-        'air_conditioning',
-    ];
+        // Define wish fields and update/create
+        $wishFields = [
+            'region_id',
+            'type',
+            'rooms',
+            'bathrooms',
+            'suites',
+            'garages',
+            'delivery_key',
+            'building_area',
+            'installment_payment',
+            'air_conditioning',
+            'garden',
+            'pool',
+            'balcony',
+            'acept_pets',
+            'acessibility',
+            'obs',
+            'air_conditioning',
+        ];
 
-    // Initialize all wish fields with null first
-    $wishData = array_fill_keys($wishFields, null);
-    
-    // Then merge with the validated data (this will overwrite the null values with actual values when present)
-    $wishData = array_merge(
-        $wishData,
-        array_intersect_key($validated, array_flip($wishFields))
-    );
+        // Initialize all wish fields with null first
+        $wishData = array_fill_keys($wishFields, null);
 
-    // Update or create the associated wish
-    $wish = $client->wishe()->updateOrCreate([], $wishData);
+        // Then merge with the validated data (this will overwrite the null values with actual values when present)
+        $wishData = array_merge(
+            $wishData,
+            array_intersect_key($validated, array_flip($wishFields))
+        );
 
-    // Sync selected regions if they exist
-    if ($request->has('selected_regions')) {
-        $selectedRegions = $request->input('selected_regions', []);
-        $wish->regions()->sync($selectedRegions);
-    } else {
-        $wish->regions()->detach();
+        // Update or create the associated wish
+        $wish = $client->wishe()->updateOrCreate([], $wishData);
+
+        // Sync selected regions if they exist
+        if ($request->has('selected_regions')) {
+            $selectedRegions = $request->input('selected_regions', []);
+            $wish->regions()->sync($selectedRegions);
+        } else {
+            $wish->regions()->detach();
+        }
+
+        return back()->with('success', 'Client updated successfully');
     }
-
-    return back()->with('success', 'Client updated successfully');
-}
     public function destroy(Client $client): RedirectResponse
     {
         // Delete the associated wish first
@@ -196,8 +196,21 @@ class ClientController extends Controller
         $c = new Compatible(); // calss to compare client and property
         $cli_reg_ids = $client->wishe->regions()->get()->pluck('id')->toArray();
         foreach ($properties as $property) {
+            $property->typ = $property->typ();
+            $property->typ_c = $c->string($client->wishe->type ?? '', $property->type ?? '')['class'];
+            $property->ok_count += $c->string($client->wishe->type ?? '', $property->type ?? '')['count'];
+
+            $property->range_c = $c->number($property->range(), $client->range())['class2'];
+            $property->ok_count = $property->ok_count + ($c->number($property->range(), $client->range())['count'] * 3);
+
+            $property->delivery_key_c = $c->date($client->wishe->delivery_key, $property->delivery_key)['class'];
+            $property->ok_count += $c->date($client->wishe->delivery_key, $property->delivery_key)['count'];
+
+            $property->building_area_c = $c->number($client->wishe->building_area, $property->building_area)['class'];
+            $property->ok_count += $c->number($client->wishe->building_area, $property->building_area)['count'];
+
             $property->rooms_c = $c->number($client->wishe->rooms, $property->rooms)['class'];
-            $property->ok_count = $c->number($client->wishe->rooms, $property->rooms)['count'];
+            $property->ok_count += $c->number($client->wishe->rooms, $property->rooms)['count'];
 
             $property->suites_c = $c->number($client->wishe->suites, $property->suites)['class'];
             $property->ok_count += $c->number($client->wishe->suites, $property->suites)['count'];
@@ -205,24 +218,11 @@ class ClientController extends Controller
             $property->garages_c = $c->number($client->wishe->garages, $property->garages)['class'];
             $property->ok_count += $c->number($client->wishe->garages, $property->garages)['count'];
 
-            $property->delivery_key_c = $c->date($client->wishe->delivery_key, $property->delivery_key)['class'];
-            $property->ok_count += $c->date($client->wishe->delivery_key, $property->delivery_key)['count'];
-
-            $property->typ = $property->typ();
-            $property->typ_c = $c->string($client->wishe->type ?? '', $property->type ?? '')['class'];
-            $property->ok_count += $c->string($client->wishe->type ?? '', $property->type ?? '')['count'];
+            $property->balcony_c = $c->bool($client->wishe->balcony, $property->balcony)['class'];
+            $property->ok_count += $c->bool($client->wishe->balcony, $property->balcony)['count'];
 
             $property->region_c = $c->inArray($property->region->id ?? '', $cli_reg_ids ?? '')['class'];
             $property->ok_count += $c->inArray($property->region->id ?? '', $cli_reg_ids ?? '')['count'];
-
-            $property->balcony_c = $c->bool($client->wishe->balcony, $property->balcony)['class'];
-            $property->ok_count += $c->bool($client->wishe->balcony ?? '', $property->balcony ?? '')['count'];
-
-            $property->range_c = $c->number($property->range(), $client->range())['class2'];
-            $property->ok_count += ($c->number($property->range(), $client->range())['count'] * 3);
-
-            $property->building_area_c = $c->number($client->wishe->building_area, $property->building_area)['class'];
-            $property->ok_count += $c->number($client->wishe->building_area, $property->building_area)['count'];
 
             $comp = new Compatible($client, $property);
             $property->pts += $comp->pts;

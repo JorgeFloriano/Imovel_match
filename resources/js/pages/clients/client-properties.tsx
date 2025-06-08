@@ -203,7 +203,7 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                             </a>
                                         </th>
                                         <td>
-                                            {property.pts}
+                                            {property.pts} - {property.ok_count}
                                         </td>
                                         <td className="px-6 py-3 text-left">
                                             <div className={property.typ_c}>
