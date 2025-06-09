@@ -157,7 +157,7 @@ class Compatible
             'count' => 0,
         ];
     }
-    public function inArray($client_wishe, $property = null)
+    public function inArray($client_wishe = null, $property = null)
     {
         if ($property == null || $client_wishe == null) {
             return [

@@ -191,7 +191,7 @@ class ClientController extends Controller
 
         $client->wishe->regions_descr = $client->wishe->regionsDescr();
 
-        $properties = Property::with(['user', 'region'])->get();
+        $properties = Property::with(['user', 'region'])->where('user_id', Auth::user()->id)->get();
 
         $c = new Compatible(); // calss to compare client and property
         $cli_reg_ids = $client->wishe->regions()->get()->pluck('id')->toArray();
@@ -225,7 +225,7 @@ class ClientController extends Controller
             $property->ok_count += $c->inArray($property->region->id ?? '', $cli_reg_ids ?? '')['count'];
 
             $comp = new Compatible($client, $property);
-            $property->pts += $comp->pts;
+            $property->pts = $comp->pts;
         }
 
         // Convert to array after sorting
@@ -278,8 +278,33 @@ class ClientController extends Controller
         $property->region_bool = $c->inArray($property->region->id ?? '', $client->wishe->regions()->get()->pluck('id')->toArray())['result'];
         $property->region_bool_c = $c->inArray($property->region->id ?? '', $client->wishe->regions()->get()->pluck('id')->toArray())['class'];
 
-        $comp = new Compatible($client, $property);
-        //dd($comp->client->name);
+        // Get clients with their wishes and wish regions (corrected)
+        $clients = Client::where('user_id', Auth::id())
+            ->with(['wishe' => function ($query) {
+                // Don't select region_id here as it's a many-to-many
+                $query->select('id', 'client_id', 'type', 'delivery_key', 'building_area', 'rooms', 'suites', 'garages', 'balcony')
+                    ->with(['regions' => function ($q) {
+                        $q->select('regions.id', 'regions.name');
+                    }]);
+            }])
+            ->select('id', 'name', 'revenue')
+            ->get();
+
+        // Get only the needed property data
+        $properties = Property::where('user_id', Auth::id())
+            ->select('id', 'description', 'price', 'type', 'delivery_key', 'building_area', 'rooms', 'suites', 'garages', 'balcony', 'region_id') // Only fields needed for comparison
+            ->get();
+
+        // Create compatibility objects
+        $compatibleObjects = $clients->flatMap(function ($client) use ($properties) {
+            return $properties->map(function ($property) use ($client) {
+                return new Compatible(
+                    $client,
+                    $property,
+                );
+            });
+        })->all();
+        dd($compatibleObjects[0]);
 
         return Inertia::render('dashboard', [
             'client' => $client,

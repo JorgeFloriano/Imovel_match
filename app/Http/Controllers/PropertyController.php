@@ -18,7 +18,7 @@ class PropertyController extends Controller
     }
     public function index()
     {
-        $properties = Property::with(['user', 'region'])->orderBy('description')->get();
+        $properties = Property::with(['user', 'region'])->where('user_id', Auth::user()->id)->orderBy('description')->get();
 
         foreach ($properties as $property) {
             $property->typ = $property->typ();
