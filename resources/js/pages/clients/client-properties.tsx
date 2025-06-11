@@ -202,9 +202,6 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                                 <div className="inline-flex gap-2">{property.description}</div>
                                             </a>
                                         </th>
-                                        <td>
-                                            {property.pts} - {property.ok_count}
-                                        </td>
                                         <td className="px-6 py-3 text-left">
                                             <div className={property.typ_c}>
                                                 {property.typ ? property.typ.charAt(0).toUpperCase() + property.typ.slice(1) : ' '}

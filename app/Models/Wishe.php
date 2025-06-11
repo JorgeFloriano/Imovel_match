@@ -107,7 +107,7 @@ class Wishe extends Model
     {
         $reg_num = count($this->regions()->get());
         if ($reg_num == 0) {
-            return 'Ñ especif.';
+            return 'Ñ espec.';
         } elseif ($reg_num == 1) {
             return $this->regions()->get()[0]->name;
         } else {

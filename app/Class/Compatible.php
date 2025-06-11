@@ -32,8 +32,13 @@ class Compatible
     ];
     public function __construct($client = null, $property = null)
     {
+        $this->calculateCompatibility($client, $property);
+    }
+
+    public function calculateCompatibility($client, $property)
+    {
         if (!isset($client) || !isset($property)) {
-            return;
+            return 0;
         }
         $this->client = $client;
         $this->property = $property;
