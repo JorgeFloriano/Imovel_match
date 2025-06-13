@@ -128,9 +128,9 @@ interface ClientPropertyProps {
         acessibility: boolean | null;
         obs: string | null;
         range: boolean | null;
-        region_bool: boolean | null;
-        region_bool_c: string;
     };
+    region_bool: boolean | null;
+    region_bool_c: string;
 }
 
 export default function Dashboard({ matches }: { matches: Array<ClientPropertyProps> }) {
@@ -322,8 +322,8 @@ export default function Dashboard({ matches }: { matches: Array<ClientPropertyPr
                                             )}
                                         </th>
                                         <th className="px-3 py-3">
-                                            <div className={`flex items-center gap-2 ${match.property.region_bool_c}`}>
-                                                <StatusIcon value={match.property.region_bool ?? undefined} />
+                                            <div className={`flex items-center gap-2 ${match.region_bool_c}`}>
+                                                <StatusIcon value={match.region_bool} />
                                             </div>
                                         </th>
                                     </tr>

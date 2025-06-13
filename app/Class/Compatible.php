@@ -45,6 +45,7 @@ class Compatible
 
         $this->pts += $this->string($client->wishe->type, $property->type)['count'];
 
+        $this->property->range = $this->number($property->range(), $client->range())['result'];
         $this->pts = $this->pts + ($this->number($property->range(), $client->range())['count'] * 3);
 
         $this->pts += $this->date($client->wishe->delivery_key, $property->delivery_key)['count'];
@@ -59,8 +60,8 @@ class Compatible
 
         $this->pts += $this->bool($client->wishe->balcony, $property->balcony)['count'];
 
-        $cli_reg_ids = $client->wishe->regions()->get()->pluck('id')->toArray();
-        $this->pts += $this->inArray($property->region->id ?? '', $cli_reg_ids ?? '')['count'];
+        $this->client->wishe->regions_msg = $this->client->wishe->regionsMsg();
+        $this->client->wishe->regions_descr = $this->client->wishe->regionsDescr();
     }
 
     public function number($client_wishe, $property)

@@ -260,15 +260,17 @@ class ClientController extends Controller
     {
         $c = new Compatible(); // class to compare client and property
 
-        $client = Client::find(1)->load('wishe.regions');
+        $client = Client::find(10)->load('wishe.regions');
         $client->wishe->regions_msg = $client->wishe->regionsMsg();
         $client->wishe->regions_descr = $client->wishe->regionsDescr();
 
-        $property = Property::with(['user', 'region'])->find(1);
+        $property = Property::with(['user', 'region'])->find(60);
         $property->range = $c->number($property->range(), $client->range())['result'];
 
         $property->region_bool = $c->inArray($property->region->id ?? '', $client->wishe->regions()->get()->pluck('id')->toArray())['result'];
         $property->region_bool_c = $c->inArray($property->region->id ?? '', $client->wishe->regions()->get()->pluck('id')->toArray())['class'];
+
+        //dd($property->region_bool);
 
         // Get clients with their wishes and wish regions
         $clients = Client::where('user_id', Auth::id())
@@ -288,8 +290,8 @@ class ClientController extends Controller
             ->get();
 
         // Create and sort compatible objects
-        $compatibleObjects = collect($clients->flatMap(function ($client) use ($properties, $c) {
-            return $properties->map(function ($property) use ($client, $c) {
+        $compatibleObjects = collect($clients->flatMap(function ($client) use ($properties) {
+            return $properties->map(function ($property) use ($client) {
                 $compatible = new Compatible($client, $property);
 
                 // Calculate compatibility points if not done in constructor
@@ -303,16 +305,40 @@ class ClientController extends Controller
             ->sortByDesc('pts') // Sort by pts descending
             ->take(6)           // Take only top 6
             ->values();         // Reset array keys
-            
-        //dd($compatibleObjects);
+
+        // return Inertia::render('dashboard', [
+        //     'matches' => $compatibleObjects->map(function ($compatible) {
+        //         $cli_reg_ids = $compatible->client->wishe->regions()->get()->pluck('id')->toArray();
+        //         $compatible->property->region_bool = $compatible->inArray($compatible->property->region->id ?? '', $cli_reg_ids)['result'];
+        //         $compatible->property->region_bool_c = $compatible->inArray($compatible->property->region->id ?? '', $cli_reg_ids)['class'];
+        //         //dd($compatible->property->region_bool);
+        //         return [
+        //             'client' => $compatible->client,
+        //             'property' => $compatible->property,
+        //             // Include any other compatibility data you need
+        //         ];
+        //     })->toArray(),
+        // ]);
+
         return Inertia::render('dashboard', [
             'matches' => $compatibleObjects->map(function ($compatible) {
+                // $cli_reg_ids = $compatible->client->wishe->regions()->get()->pluck('id')->toArray();
+                // $compatible->property->region_bool = 
+                // $compatible->property->region_bool_c = $compatible->inArray($compatible->property->region->id ?? '', $cli_reg_ids)['class'];
+                // dd($compatible->property->region_bool);
                 return [
                     'client' => $compatible->client,
                     'property' => $compatible->property,
+                    'region_bool' => $compatible->inArray(
+                        $compatible->property->region->id ?? '',
+                        $compatible->client->wishe->regions()->get()->pluck('id')->toArray())['result'],
+                    'region_bool_c' => $compatible->inArray(
+                        $compatible->property->region->id ?? '',
+                        $compatible->client->wishe->regions()->get()->pluck('id')->toArray())['class'],
                     // Include any other compatibility data you need
                 ];
             })->toArray(),
         ]);
+        //dd($test['matches'][0]);
     }
 }
