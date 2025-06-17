@@ -88,13 +88,6 @@ class ClientController extends Controller
 
     public function show(Client $client)
     {
-        // foreach ($client->wishe->regions()->get() as $key => $region) {
-        //     echo $region->name . '<br>';   
-        // }
-
-        //dd($client->wishe->regions()->get()[1]->id);
-        //dd($client->wishe->regions()->get());
-
         $client->load('wishe.regions');
         $client->wishe->regions_descr = $client->wishe->regionsDescr();
 
@@ -258,20 +251,6 @@ class ClientController extends Controller
     }
     public function dashboard()
     {
-        $c = new Compatible(); // class to compare client and property
-
-        $client = Client::find(10)->load('wishe.regions');
-        $client->wishe->regions_msg = $client->wishe->regionsMsg();
-        $client->wishe->regions_descr = $client->wishe->regionsDescr();
-
-        $property = Property::with(['user', 'region'])->find(60);
-        $property->range = $c->number($property->range(), $client->range())['result'];
-
-        $property->region_bool = $c->inArray($property->region->id ?? '', $client->wishe->regions()->get()->pluck('id')->toArray())['result'];
-        $property->region_bool_c = $c->inArray($property->region->id ?? '', $client->wishe->regions()->get()->pluck('id')->toArray())['class'];
-
-        //dd($property->region_bool);
-
         // Get clients with their wishes and wish regions
         $clients = Client::where('user_id', Auth::id())
             ->with(['wishe' => function ($query) {
@@ -303,29 +282,11 @@ class ClientController extends Controller
             });
         }))
             ->sortByDesc('pts') // Sort by pts descending
-            ->take(6)           // Take only top 6
+            ->where('pts', '>', 15) // Filter out objects with pts less than 10
             ->values();         // Reset array keys
-
-        // return Inertia::render('dashboard', [
-        //     'matches' => $compatibleObjects->map(function ($compatible) {
-        //         $cli_reg_ids = $compatible->client->wishe->regions()->get()->pluck('id')->toArray();
-        //         $compatible->property->region_bool = $compatible->inArray($compatible->property->region->id ?? '', $cli_reg_ids)['result'];
-        //         $compatible->property->region_bool_c = $compatible->inArray($compatible->property->region->id ?? '', $cli_reg_ids)['class'];
-        //         //dd($compatible->property->region_bool);
-        //         return [
-        //             'client' => $compatible->client,
-        //             'property' => $compatible->property,
-        //             // Include any other compatibility data you need
-        //         ];
-        //     })->toArray(),
-        // ]);
 
         return Inertia::render('dashboard', [
             'matches' => $compatibleObjects->map(function ($compatible) {
-                // $cli_reg_ids = $compatible->client->wishe->regions()->get()->pluck('id')->toArray();
-                // $compatible->property->region_bool = 
-                // $compatible->property->region_bool_c = $compatible->inArray($compatible->property->region->id ?? '', $cli_reg_ids)['class'];
-                // dd($compatible->property->region_bool);
                 return [
                     'client' => $compatible->client,
                     'property' => $compatible->property,
@@ -335,10 +296,10 @@ class ClientController extends Controller
                     'region_bool_c' => $compatible->inArray(
                         $compatible->property->region->id ?? '',
                         $compatible->client->wishe->regions()->get()->pluck('id')->toArray())['class'],
+                    'range'=> $compatible->number($compatible->property->range(), $compatible->client->range())['result'],
                     // Include any other compatibility data you need
                 ];
             })->toArray(),
         ]);
-        //dd($test['matches'][0]);
     }
 }

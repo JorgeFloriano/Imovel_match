@@ -56,7 +56,7 @@ class ClientRequest extends FormRequest
             'suites' => 'nullable|integer|min:0|max:99',
             'garages' => 'nullable|integer|min:0|max:99',
             'delivery_key' => 'nullable|date',
-            'building_area' => 'nullable|integer|min:0|max:9999',
+            'building_area' => 'nullable|numeric|min:0|max:9999',
             'installment_payment' => 'nullable|boolean',
             'air_conditioning' => 'nullable|in:incluso,somente infra,não incluso',
             'garden' => 'nullable|boolean',

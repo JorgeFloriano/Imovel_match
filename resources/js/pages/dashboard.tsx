@@ -1,11 +1,8 @@
 import { Icon } from '@/components/icon';
-import IconTooltip from '@/components/ui/icon-tooltip';
-import { Status } from '@/components/ui/status';
-import { StatusIcon } from '@/components/ui/status-icon';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { Bath, Bed, Car, DollarSign, House, KeyRound, MapPin, Ruler } from 'lucide-react';
+import { Bath, Bed, Car, DollarSign, House, KeyRound, Ruler } from 'lucide-react';
 import React from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -15,19 +12,13 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-interface TableRoleProps {
-    iconLabel?: React.ReactNode;
-    clientValue?: React.ReactNode;
-    propertyValue?: React.ReactNode;
+interface AtribIconProps {
     iconValue?: boolean;
     iconColor?: string;
+    iconNode?: React.ReactNode;
 }
 
-const TableRole = ({ iconLabel, clientValue, propertyValue, iconValue, iconColor }: TableRoleProps) => {
-    // Handle null/undefined values
-    const showClientValue = clientValue !== null && clientValue !== undefined;
-    const showPropertyValue = propertyValue !== null && propertyValue !== undefined;
-
+const AtribIcon = ({ iconValue, iconColor, iconNode }: AtribIconProps) => {
     // Determine icon display logic
     if (iconValue === undefined) {
         iconColor = '';
@@ -38,18 +29,11 @@ const TableRole = ({ iconLabel, clientValue, propertyValue, iconValue, iconColor
     }
 
     return (
-        <tr className="border-b">
-            <th className="py-3 pl-3">{iconLabel}</th>
-            <th className="py-3 text-center">{showClientValue ? clientValue : null}</th>
-            <th className="py-3 text-center">{showPropertyValue ? propertyValue : null}</th>
-            <th className="w-1 items-center px-3 py-3">
-                {iconValue !== undefined && (
-                    <div className={`flex items-center gap-2 ${iconColor}`}>
-                        <StatusIcon value={iconValue} />
-                    </div>
-                )}
-            </th>
-        </tr>
+        <div className="py-3">
+            {iconValue !== undefined && (
+                <div className={`flex w-8 items-center justify-center ${iconColor}`}>{iconNode && <span className="inline">{iconNode}</span>}</div>
+            )}
+        </div>
     );
 };
 
@@ -127,108 +111,54 @@ interface ClientPropertyProps {
         acept_pets: boolean | null;
         acessibility: boolean | null;
         obs: string | null;
-        range: boolean | null;
     };
     region_bool: boolean | null;
     region_bool_c: string;
+    range: boolean | null;
 }
 
 export default function Dashboard({ matches }: { matches: Array<ClientPropertyProps> }) {
-    const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat('pt-BR', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }).format(value);
-    };
-
-    const formatDate = (dateString?: string | null) => {
-        return dateString ? new Date(dateString).toLocaleDateString('pt-BR') : null;
-    };
-
-    const formatArea = (area?: number | null) => {
-        return area ? `${area} m²` : null;
-    };
-
-    // First, let's create a helper function to format numeric values
-    const formatNumericValue = (value: number | null | undefined) => {
-        if (value === null) return null;
-        if (value === undefined) return undefined;
-        return value === 0 ? '0' : value.toString();
-    };
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {matches.map((match, index) => (
-                        <div key={index} className="relative overflow-hidden rounded-xl border-[1px] border-[#B8B8B8] bg-[#EFEEEC] dark:bg-[#123251]">
-                            <div className="flex justify-evenly border-b-[1px] border-[#B8B8B8] p-3 font-bold text-[#123251] dark:text-[#B8B8B8]">
-                                <div className="pt-2 text-left">{match.client.name}</div>
-                                <div className="text-center">
-                                    <img src="/logo_build.png" className="" width={30} alt="Varanda" />
+                        <a href={route('clients.property', [match.client.id, match.property.id])}>
+                            <div
+                                key={index}
+                                className="relative overflow-hidden rounded-xl border-[1px] border-[#B8B8B8] bg-[#EFEEEC] dark:bg-[#123251]"
+                            >
+                                <div className="flex justify-evenly border-b-[1px] border-[#B8B8B8] p-3 font-bold text-[#123251] dark:text-[#B8B8B8]">
+                                    <div className="pt-2 text-left">{match.client.name}</div>
+                                    <div className="text-center">
+                                        <img src="/logo_build.png" className="" width={30} alt="Varanda" />
+                                    </div>
+                                    <div className="pt-2 text-right">{match.property.description}</div>
                                 </div>
-                                <div className="pt-2 text-right">{match.property.description}</div>
-                            </div>
-                            <table className="w-full text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
-                                <tbody>
-                                    <TableRole
-                                        iconLabel={
-                                            <IconTooltip
-                                                iconNode={House && <Icon className="h-6 w-5" iconNode={House} />}
-                                                tooltipText="Tipo de imóvel"
-                                            />
-                                        }
-                                        clientValue={match.client.wishe?.type}
-                                        propertyValue={match.property.type}
+                                <div className="px-4 justify-between flex w-full text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
+                                    <AtribIcon
+                                        iconNode={House && <Icon className="h-6 w-5" iconNode={House} />}
                                         iconValue={match.client.wishe?.type === match.property.type}
                                     />
 
-                                    <TableRole
-                                        iconLabel={
-                                            <IconTooltip
-                                                iconNode={DollarSign && <Icon className="h-6 w-5" iconNode={DollarSign} />}
-                                                tooltipText="Renda do cliente / Preço do imóvel"
-                                            />
-                                        }
-                                        clientValue={formatCurrency(match.client.revenue ?? 0)}
-                                        propertyValue={formatCurrency(match.property.price)}
-                                        iconValue={match.property.range ?? undefined}
+                                    <AtribIcon
+                                        iconNode={DollarSign && <Icon className="h-6 w-5" iconNode={DollarSign} />}
+                                        iconValue={match.range ?? undefined}
                                     />
 
-                                    <TableRole
-                                        iconLabel={
-                                            <IconTooltip
-                                                iconNode={KeyRound && <Icon className="h-6 w-5" iconNode={KeyRound} />}
-                                                tooltipText="Provável entrega das chaves"
-                                            />
-                                        }
-                                        clientValue={formatDate(match.client.wishe?.delivery_key ?? '')}
-                                        propertyValue={formatDate(match.property?.delivery_key ?? '')}
+                                    <AtribIcon
+                                        iconNode={KeyRound && <Icon className="h-6 w-5" iconNode={KeyRound} />}
                                         iconValue={(match.client.wishe?.delivery_key ?? '') >= (match.property?.delivery_key ?? '')}
                                     />
 
-                                    <TableRole
-                                        iconLabel={
-                                            <IconTooltip
-                                                iconNode={Ruler && <Icon className="h-6 w-5" iconNode={Ruler} />}
-                                                tooltipText="Tamanho interno do imóvel"
-                                            />
-                                        }
-                                        clientValue={formatArea(match.client.wishe?.building_area)}
-                                        propertyValue={formatArea(match.property.building_area)}
+                                    <AtribIcon
+                                        iconNode={Ruler && <Icon className="h-6 w-5" iconNode={Ruler} />}
                                         iconValue={(match.client.wishe?.building_area ?? 0) <= (match.property.building_area ?? 0)}
                                     />
 
-                                    <TableRole
-                                        iconLabel={
-                                            <IconTooltip
-                                                iconNode={Bed && <Icon className="h-6 w-5" iconNode={Bed} />}
-                                                tooltipText="Número de quartos"
-                                            />
-                                        }
-                                        clientValue={formatNumericValue(match.client.wishe?.rooms)}
-                                        propertyValue={formatNumericValue(match.property.rooms)}
+                                    <AtribIcon
+                                        iconNode={Bed && <Icon className="h-6 w-5" iconNode={Bed} />}
                                         iconValue={
                                             (match.client.wishe?.rooms ?? null) !== null && (match.property.rooms ?? null) !== null
                                                 ? (match.client.wishe?.rooms ?? 0) <= (match.property.rooms ?? 0)
@@ -236,15 +166,8 @@ export default function Dashboard({ matches }: { matches: Array<ClientPropertyPr
                                         }
                                     />
 
-                                    <TableRole
-                                        iconLabel={
-                                            <IconTooltip
-                                                iconNode={Bath && <Icon className="h-6 w-5" iconNode={Bath} />}
-                                                tooltipText="Número de suites"
-                                            />
-                                        }
-                                        clientValue={formatNumericValue(match.client.wishe?.suites)}
-                                        propertyValue={formatNumericValue(match.property.suites)}
+                                    <AtribIcon
+                                        iconNode={Bath && <Icon className="h-6 w-5" iconNode={Bath} />}
                                         iconValue={
                                             (match.client.wishe?.suites ?? null) !== null && (match.property.suites ?? null) !== null
                                                 ? (match.client.wishe?.suites ?? 0) <= (match.property.suites ?? 0)
@@ -252,15 +175,8 @@ export default function Dashboard({ matches }: { matches: Array<ClientPropertyPr
                                         }
                                     />
 
-                                    <TableRole
-                                        iconLabel={
-                                            <IconTooltip
-                                                iconNode={Car && <Icon className="h-6 w-5" iconNode={Car} />}
-                                                tooltipText="Vagas de garagem"
-                                            />
-                                        }
-                                        clientValue={formatNumericValue(match.client.wishe?.garages)}
-                                        propertyValue={formatNumericValue(match.property.garages)}
+                                    <AtribIcon
+                                        iconNode={Car && <Icon className="h-6 w-5" iconNode={Car} />}
                                         iconValue={
                                             (match.client.wishe?.garages ?? null) !== null && (match.property.garages ?? null) !== null
                                                 ? (match.client.wishe?.garages ?? 0) <= (match.property.garages ?? 0)
@@ -268,68 +184,61 @@ export default function Dashboard({ matches }: { matches: Array<ClientPropertyPr
                                         }
                                     />
 
-                                    <TableRole
-                                        iconLabel={
-                                            <IconTooltip
-                                                iconNode={
-                                                    <>
-                                                        <img src="/balcony.png" className="dark:hidden" width={20} alt="Varanda" />
-                                                        <img src="/balcony_dark.png" className="hidden dark:block" width={20} alt="Varanda" />
-                                                    </>
-                                                }
-                                                tooltipText="Possúi varanda"
-                                            />
+                                    <AtribIcon
+                                        iconNode={
+                                            <>
+                                                <img src="/balcony.png" className="dark:hidden" width={20} alt="Varanda" />
+                                                <img src="/balcony_dark.png" className="hidden dark:block" width={20} alt="Varanda" />
+                                            </>
                                         }
-                                        clientValue={Status({ value: match.client.wishe?.balcony })?.props.children}
-                                        propertyValue={Status({ value: match.property?.balcony })?.props.children}
                                         iconValue={match.client.wishe?.balcony === match.property.balcony}
                                     />
 
-                                    <tr className="overflow-hidden border-b">
-                                        <th className="px-3 py-3">
-                                            {
-                                                <IconTooltip
-                                                    iconNode={MapPin && <Icon className="h-6 w-5" iconNode={MapPin} />}
-                                                    containerClassName="flex"
-                                                    tooltipClassName="bottom-full"
-                                                    iconClassName="inline"
-                                                    tooltipText="Região"
-                                                />
-                                            }
-                                        </th>
-                                        <th className="px-3 py-3">
-                                            {match.client.wishe?.regions_descr ? (
-                                                <IconTooltip
-                                                    tooltipClassName="bottom-full"
-                                                    iconClassName="inline"
-                                                    iconNode={match.client.wishe?.regions_msg}
-                                                    tooltipText={match.client.wishe?.regions_descr}
-                                                />
-                                            ) : (
-                                                match.client.wishe?.regions_msg
-                                            )}
-                                        </th>
-                                        <th className="px-3 py-3 text-center">
-                                            {match.property.address ? (
-                                                <IconTooltip
-                                                    tooltipClassName="right-full"
-                                                    iconClassName="inline"
-                                                    iconNode={match.property.region?.name}
-                                                    tooltipText={match.property.address}
-                                                />
-                                            ) : (
-                                                match.property.region?.name
-                                            )}
-                                        </th>
-                                        <th className="px-3 py-3">
-                                            <div className={`flex items-center gap-2 ${match.region_bool_c}`}>
-                                                <StatusIcon value={match.region_bool} />
-                                            </div>
-                                        </th>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                                    {/* <tr className="overflow-hidden">
+                                            <th className="px-3 py-3">
+                                                {
+                                                    <IconTooltip
+                                                        iconNode={MapPin && <Icon className="h-6 w-5" iconNode={MapPin} />}
+                                                        containerClassName="flex"
+                                                        tooltipClassName="bottom-full"
+                                                        iconClassName="inline"
+                                                        tooltipText="Região"
+                                                    />
+                                                }
+                                            </th>
+                                            <th className="px-3 py-3">
+                                                {match.client.wishe?.regions_descr ? (
+                                                    <IconTooltip
+                                                        tooltipClassName="bottom-full"
+                                                        iconClassName="inline"
+                                                        iconNode={match.client.wishe?.regions_msg}
+                                                        tooltipText={match.client.wishe?.regions_descr}
+                                                    />
+                                                ) : (
+                                                    match.client.wishe?.regions_msg
+                                                )}
+                                            </th>
+                                            <th className="px-3 py-3 text-center">
+                                                {match.property.address ? (
+                                                    <IconTooltip
+                                                        tooltipClassName="right-full"
+                                                        iconClassName="inline"
+                                                        iconNode={match.property.region?.name}
+                                                        tooltipText={match.property.address}
+                                                    />
+                                                ) : (
+                                                    match.property.region?.name
+                                                )}
+                                            </th>
+                                            <th className="px-3 py-3">
+                                                <div className={`flex items-center gap-2 ${match.region_bool_c}`}>
+                                                    <StatusIcon value={match.region_bool} />
+                                                </div>
+                                            </th>
+                                        </tr> */}
+                                </div>
+                            </div>
+                        </a>
                     ))}
                 </div>
             </div>

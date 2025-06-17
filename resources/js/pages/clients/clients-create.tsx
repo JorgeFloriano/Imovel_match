@@ -427,6 +427,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 type="number"
                                 min={0}
                                 max={9999999999}
+                                step={0.01}
                                 value={data.building_area ?? 0}
                                 onChange={(value) => handleSetData('building_area', value)}
                                 error={errors.building_area}

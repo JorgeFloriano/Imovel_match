@@ -353,6 +353,7 @@ const [selectedRegions, setSelectedRegions] = useState<Record<string, boolean>>(
                                 type="number"
                                 min={0}
                                 max={9999999999}
+                                step={0.01}
                                 value={data.building_area || ''}
                                 onChange={(value) => handleSetData('building_area', value ? value : undefined)}
                                 error={errors.building_area}

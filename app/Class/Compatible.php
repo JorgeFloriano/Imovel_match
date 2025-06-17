@@ -45,8 +45,7 @@ class Compatible
 
         $this->pts += $this->string($client->wishe->type, $property->type)['count'];
 
-        $this->property->range = $this->number($property->range(), $client->range())['result'];
-        $this->pts = $this->pts + ($this->number($property->range(), $client->range())['count'] * 3);
+        $this->pts = $this->pts + ($this->number($this->property->range(), $this->client->range())['count'] * 3);
 
         $this->pts += $this->date($client->wishe->delivery_key, $property->delivery_key)['count'];
 

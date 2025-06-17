@@ -4,7 +4,7 @@ import IconTooltip from '@/components/ui/icon-tooltip';
 import { Status } from '@/components/ui/status';
 import { StatusIcon } from '@/components/ui/status-icon';
 import AppLayout from '@/layouts/app-layout';
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { HeartHandshake } from 'lucide-react';
 
 interface TableRoleProps {
@@ -20,9 +20,9 @@ const TableRole = ({ label, clientValue, propertyValue, iconValue, iconColor }: 
         iconColor = '';
         iconValue = undefined;
     } else if (iconValue === false) {
-        iconColor = 'rounded-md bg-red-200 p-1 text-center text-red-800';
+        iconColor = 'rounded-md bg-red-200 p-1 text-center text-red-800 px-2 py-1';
     } else if (iconValue === true) {
-        iconColor = 'rounded-md bg-green-200 p-1 text-center text-green-800';
+        iconColor = 'rounded-md bg-green-200 p-1 text-center text-green-800 px-2 py-1';
     } else {
         iconColor = '';
         iconValue = undefined;
@@ -153,12 +153,12 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                         Cliente {HeartHandshake && <Icon className="h-4 w-4 text-[#BF9447]" iconNode={HeartHandshake} />} Imóvel
                     </h1>
                     <div className="flex gap-2">
-                        <Button asChild variant="outline">
-                            <Link href={route('clients.properties', client.id)}>Voltar</Link>
+                        <Button variant="outline" onClick={() => window.history.back()}>
+                            Voltar
                         </Button>
                     </div>
                 </div>
-
+ 
                 <p className="text-sm">Informações do cliente e características do imóvel solicitado / Informaçõe do imóvel selecionado</p>
 
                 <div className="relative overflow-x-auto overflow-y-hidden shadow-md sm:rounded-lg">
@@ -233,16 +233,7 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                             <tr className="border-b">
                                 <th className="px-3 py-3">Região (s)</th>
                                 <th className="px-3 py-3 text-center">
-                                    {client.wishe?.regions_descr ? (
-                                        <IconTooltip
-                                            tooltipClassName="right-full"
-                                            iconClassName="inline"
-                                            iconNode={client.wishe?.regions_msg}
-                                            tooltipText={client.wishe?.regions_descr}
-                                        />
-                                    ) : (
-                                        client.wishe?.regions_msg
-                                    )}
+                                    {client.wishe?.regions_descr || null}
                                 </th>
                                 <th className="px-3 py-3 text-center">
                                     {property.address ? (
