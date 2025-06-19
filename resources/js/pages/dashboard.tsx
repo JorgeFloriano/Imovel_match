@@ -2,7 +2,7 @@ import { Icon } from '@/components/icon';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { Bath, Bed, Car, DollarSign, House, KeyRound, Ruler } from 'lucide-react';
+import { Bath, Bed, Car, DollarSign, House, KeyRound, Ruler, MapPin } from 'lucide-react';
 import React from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -13,25 +13,25 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface AtribIconProps {
-    iconValue?: boolean;
+    iconValue?: boolean | null | undefined;
     iconColor?: string;
     iconNode?: React.ReactNode;
 }
 
 const AtribIcon = ({ iconValue, iconColor, iconNode }: AtribIconProps) => {
     // Determine icon display logic
-    if (iconValue === undefined) {
-        iconColor = '';
+    if (iconValue == undefined || iconValue === null) {
+        iconColor = 'rounded-md text-center px-2 py-1 border-1 border-[#BF9447] bg-[#EFEEEC]';
     } else if (iconValue === false) {
-        iconColor = 'rounded-md bg-red-200 text-center text-red-800 px-2 py-1';
+        iconColor = 'rounded-md bg-red-200 text-center border-1 border-red-800 px-2 py-1';
     } else if (iconValue === true) {
-        iconColor = 'rounded-md bg-green-200 text-center text-green-800 px-2 py-1';
+        iconColor = 'rounded-md bg-green-200 text-center border-1 border-green-800 px-2 py-1';
     }
 
     return (
         <div className="py-3">
             {iconValue !== undefined && (
-                <div className={`flex w-8 items-center justify-center ${iconColor}`}>{iconNode && <span className="inline">{iconNode}</span>}</div>
+                <div className={`flex w-8 h-8 items-center justify-center ${iconColor}`}>{iconNode && <span className="inline">{iconNode}</span>}</div>
             )}
         </div>
     );
@@ -136,15 +136,15 @@ export default function Dashboard({ matches }: { matches: Array<ClientPropertyPr
                                     </div>
                                     <div className="pt-2 text-right">{match.property.description}</div>
                                 </div>
-                                <div className="px-4 justify-between flex w-full text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
+                                <div className="px-4 justify-between flex w-full text-sm text-[#123251] rtl:text-right">
                                     <AtribIcon
                                         iconNode={House && <Icon className="h-6 w-5" iconNode={House} />}
-                                        iconValue={match.client.wishe?.type === match.property.type}
+                                        iconValue={match.client.wishe?.type == match.property.type}
                                     />
 
                                     <AtribIcon
                                         iconNode={DollarSign && <Icon className="h-6 w-5" iconNode={DollarSign} />}
-                                        iconValue={match.range ?? undefined}
+                                        iconValue={match.range}
                                     />
 
                                     <AtribIcon
@@ -187,11 +187,15 @@ export default function Dashboard({ matches }: { matches: Array<ClientPropertyPr
                                     <AtribIcon
                                         iconNode={
                                             <>
-                                                <img src="/balcony.png" className="dark:hidden" width={20} alt="Varanda" />
-                                                <img src="/balcony_dark.png" className="hidden dark:block" width={20} alt="Varanda" />
+                                                <img src="/balcony.png" className="h-5" alt="Varanda" />
                                             </>
                                         }
                                         iconValue={match.client.wishe?.balcony === match.property.balcony}
+                                    />
+
+                                    <AtribIcon
+                                        iconNode={MapPin && <Icon className="h-6 w-5" iconNode={MapPin} />}
+                                        iconValue={match.region_bool}
                                     />
 
                                     {/* <tr className="overflow-hidden">
