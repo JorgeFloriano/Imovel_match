@@ -98,6 +98,7 @@ class Compatible
             return [
                 'class' => $this->no['class'],
                 'count' => 0,
+                'result' => false
             ];
         }
 
@@ -105,12 +106,14 @@ class Compatible
             return [
                 'class' => $this->ok['class'],
                 'count' => 2,
+                'result' => true
             ];
         }
 
         return [
             'class' => $this->undef['class'],
             'count' => 1,
+            'result' => null
         ];
     }
 
@@ -120,6 +123,7 @@ class Compatible
             return [
                 'class' => $this->undef['class2'],
                 'count' => 1,
+                'result' => null
             ];
         }
 
@@ -127,12 +131,14 @@ class Compatible
             return [
                 'class' => $this->ok['class2'],
                 'count' => 2,
+                'result' => true
             ];
         }
 
         return [
             'class' => $this->no['class2'],
             'count' => 0,
+            'result' => false
         ];
     }
     public function date($client_wishe, $property)
@@ -142,6 +148,7 @@ class Compatible
                 'class' => $this->undef['class'],
                 'class2' => $this->undef['class2'],
                 'count' => 1,
+                'result' => null
             ];
         }
 
@@ -153,6 +160,7 @@ class Compatible
                 'class' => $this->ok['class'],
                 'class2' => $this->ok['class2'],
                 'count' => 2,
+                'result' => true
             ];
         }
 
@@ -160,6 +168,7 @@ class Compatible
             'class' => $this->no['class'],
             'class2' => $this->no['class2'],
             'count' => 0,
+            'result' => false
         ];
     }
     public function inArray($client_wishe = null, $property = null)

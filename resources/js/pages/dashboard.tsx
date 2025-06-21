@@ -2,7 +2,7 @@ import { Icon } from '@/components/icon';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { Bath, Bed, Car, DollarSign, House, KeyRound, Ruler, MapPin } from 'lucide-react';
+import { Bath, Bed, Car, DollarSign, House, KeyRound, LucideIcon, MapPin, Ruler } from 'lucide-react';
 import React from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -15,12 +15,16 @@ const breadcrumbs: BreadcrumbItem[] = [
 interface AtribIconProps {
     iconValue?: boolean | null | undefined;
     iconColor?: string;
-    iconNode?: React.ReactNode;
+    icon?: LucideIcon | React.ComponentType<{ className?: string }>;
 }
 
-const AtribIcon = ({ iconValue, iconColor, iconNode }: AtribIconProps) => {
+export const BalconyIcon = ({ className = '' }: { className?: string }) => (
+    <img src="/balcony.png" className={` ${className}`} alt="Balcony" />
+);
+
+const AtribIcon = ({ iconValue, iconColor, icon }: AtribIconProps) => {
     // Determine icon display logic
-    if (iconValue == undefined || iconValue === null) {
+    if (iconValue == undefined || iconValue == null) {
         iconColor = 'rounded-md text-center px-2 py-1 border-1 border-[#BF9447] bg-[#EFEEEC]';
     } else if (iconValue === false) {
         iconColor = 'rounded-md bg-red-200 text-center border-1 border-red-800 px-2 py-1';
@@ -31,7 +35,17 @@ const AtribIcon = ({ iconValue, iconColor, iconNode }: AtribIconProps) => {
     return (
         <div className="py-3">
             {iconValue !== undefined && (
-                <div className={`flex w-8 h-8 items-center justify-center ${iconColor}`}>{iconNode && <span className="inline">{iconNode}</span>}</div>
+                <div className={`flex h-8 w-8 items-center justify-center ${iconColor}`}>
+                    {icon && (
+                        <span className="inline">
+                            {'$$typeof' in icon ? (
+                                <Icon className="h-5 w-5" iconNode={icon} />
+                            ) : (
+                                React.createElement(icon, { className: "h-4 w-5"})
+                            )}
+                        </span>
+                    )}
+                </div>
             )}
         </div>
     );
@@ -112,9 +126,10 @@ interface ClientPropertyProps {
         acessibility: boolean | null;
         obs: string | null;
     };
+    id: number;
     region_bool: boolean | null;
-    region_bool_c: string;
     range: boolean | null;
+    type: boolean | null;
 }
 
 export default function Dashboard({ matches }: { matches: Array<ClientPropertyProps> }) {
@@ -123,42 +138,36 @@ export default function Dashboard({ matches }: { matches: Array<ClientPropertyPr
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {matches.map((match, index) => (
-                        <a href={route('clients.property', [match.client.id, match.property.id])}>
+                    {matches.map((match) => (
+                        <a key={match.id} href={route('clients.property', [match.client.id, match.property.id])}>
                             <div
-                                key={index}
+                                key={match.id}
                                 className="relative overflow-hidden rounded-xl border-[1px] border-[#B8B8B8] bg-[#EFEEEC] dark:bg-[#123251]"
                             >
-                                <div className="flex justify-evenly border-b-[1px] border-[#B8B8B8] p-3 font-bold text-[#123251] dark:text-[#B8B8B8]">
+                                <div className="flex justify-evenly border-b-[1px] border-[#B8B8B8] p-3 font-bold text-[#123251] dark:text-[#EFEEEC]">
                                     <div className="pt-2 text-left">{match.client.name}</div>
                                     <div className="text-center">
                                         <img src="/logo_build.png" className="" width={30} alt="Varanda" />
                                     </div>
                                     <div className="pt-2 text-right">{match.property.description}</div>
                                 </div>
-                                <div className="px-4 justify-between flex w-full text-sm text-[#123251] rtl:text-right">
-                                    <AtribIcon
-                                        iconNode={House && <Icon className="h-6 w-5" iconNode={House} />}
-                                        iconValue={match.client.wishe?.type == match.property.type}
-                                    />
+                                <div className="flex w-full justify-between px-4 text-sm text-[#123251] rtl:text-right">
+                                    <AtribIcon icon={House} iconValue={match.type} />
+
+                                    <AtribIcon icon={DollarSign} iconValue={match.range} />
 
                                     <AtribIcon
-                                        iconNode={DollarSign && <Icon className="h-6 w-5" iconNode={DollarSign} />}
-                                        iconValue={match.range}
-                                    />
-
-                                    <AtribIcon
-                                        iconNode={KeyRound && <Icon className="h-6 w-5" iconNode={KeyRound} />}
+                                        icon={KeyRound}
                                         iconValue={(match.client.wishe?.delivery_key ?? '') >= (match.property?.delivery_key ?? '')}
                                     />
 
                                     <AtribIcon
-                                        iconNode={Ruler && <Icon className="h-6 w-5" iconNode={Ruler} />}
+                                        icon={Ruler}
                                         iconValue={(match.client.wishe?.building_area ?? 0) <= (match.property.building_area ?? 0)}
                                     />
 
                                     <AtribIcon
-                                        iconNode={Bed && <Icon className="h-6 w-5" iconNode={Bed} />}
+                                        icon={Bed}
                                         iconValue={
                                             (match.client.wishe?.rooms ?? null) !== null && (match.property.rooms ?? null) !== null
                                                 ? (match.client.wishe?.rooms ?? 0) <= (match.property.rooms ?? 0)
@@ -167,7 +176,7 @@ export default function Dashboard({ matches }: { matches: Array<ClientPropertyPr
                                     />
 
                                     <AtribIcon
-                                        iconNode={Bath && <Icon className="h-6 w-5" iconNode={Bath} />}
+                                        icon={Bath}
                                         iconValue={
                                             (match.client.wishe?.suites ?? null) !== null && (match.property.suites ?? null) !== null
                                                 ? (match.client.wishe?.suites ?? 0) <= (match.property.suites ?? 0)
@@ -176,7 +185,7 @@ export default function Dashboard({ matches }: { matches: Array<ClientPropertyPr
                                     />
 
                                     <AtribIcon
-                                        iconNode={Car && <Icon className="h-6 w-5" iconNode={Car} />}
+                                        icon={Car}
                                         iconValue={
                                             (match.client.wishe?.garages ?? null) !== null && (match.property.garages ?? null) !== null
                                                 ? (match.client.wishe?.garages ?? 0) <= (match.property.garages ?? 0)
@@ -184,62 +193,8 @@ export default function Dashboard({ matches }: { matches: Array<ClientPropertyPr
                                         }
                                     />
 
-                                    <AtribIcon
-                                        iconNode={
-                                            <>
-                                                <img src="/balcony.png" className="h-5" alt="Varanda" />
-                                            </>
-                                        }
-                                        iconValue={match.client.wishe?.balcony === match.property.balcony}
-                                    />
-
-                                    <AtribIcon
-                                        iconNode={MapPin && <Icon className="h-6 w-5" iconNode={MapPin} />}
-                                        iconValue={match.region_bool}
-                                    />
-
-                                    {/* <tr className="overflow-hidden">
-                                            <th className="px-3 py-3">
-                                                {
-                                                    <IconTooltip
-                                                        iconNode={MapPin && <Icon className="h-6 w-5" iconNode={MapPin} />}
-                                                        containerClassName="flex"
-                                                        tooltipClassName="bottom-full"
-                                                        iconClassName="inline"
-                                                        tooltipText="Região"
-                                                    />
-                                                }
-                                            </th>
-                                            <th className="px-3 py-3">
-                                                {match.client.wishe?.regions_descr ? (
-                                                    <IconTooltip
-                                                        tooltipClassName="bottom-full"
-                                                        iconClassName="inline"
-                                                        iconNode={match.client.wishe?.regions_msg}
-                                                        tooltipText={match.client.wishe?.regions_descr}
-                                                    />
-                                                ) : (
-                                                    match.client.wishe?.regions_msg
-                                                )}
-                                            </th>
-                                            <th className="px-3 py-3 text-center">
-                                                {match.property.address ? (
-                                                    <IconTooltip
-                                                        tooltipClassName="right-full"
-                                                        iconClassName="inline"
-                                                        iconNode={match.property.region?.name}
-                                                        tooltipText={match.property.address}
-                                                    />
-                                                ) : (
-                                                    match.property.region?.name
-                                                )}
-                                            </th>
-                                            <th className="px-3 py-3">
-                                                <div className={`flex items-center gap-2 ${match.region_bool_c}`}>
-                                                    <StatusIcon value={match.region_bool} />
-                                                </div>
-                                            </th>
-                                        </tr> */}
+                                    <AtribIcon icon={BalconyIcon} iconValue={match.client.wishe?.balcony === match.property.balcony} />
+                                    <AtribIcon icon={MapPin} iconValue={match.region_bool} />
                                 </div>
                             </div>
                         </a>

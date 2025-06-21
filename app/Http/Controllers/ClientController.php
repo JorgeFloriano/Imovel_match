@@ -282,22 +282,20 @@ class ClientController extends Controller
             });
         }))
             ->sortByDesc('pts') // Sort by pts descending
-            ->where('pts', '>', 15) // Filter out objects with pts less than 10
+            ->where('pts', '>', 15) // Filter out objects with pts less than 15
             ->values();         // Reset array keys
 
         return Inertia::render('dashboard', [
-            'matches' => $compatibleObjects->map(function ($compatible) {
+            'matches' => $compatibleObjects->map(function ($compatible, $key) {
                 return [
+                    'id' => $key,
                     'client' => $compatible->client,
                     'property' => $compatible->property,
                     'region_bool' => $compatible->inArray(
                         $compatible->property->region->id ?? '',
                         $compatible->client->wishe->regions()->get()->pluck('id')->toArray())['result'],
-                    'region_bool_c' => $compatible->inArray(
-                        $compatible->property->region->id ?? '',
-                        $compatible->client->wishe->regions()->get()->pluck('id')->toArray())['class'],
                     'range'=> $compatible->number($compatible->property->range(), $compatible->client->range())['result'],
-                    // Include any other compatibility data you need
+                    'type' => $compatible->string($compatible->client->wishe->type ?? '', $compatible->property->type ?? '')['result'],
                 ];
             })->toArray(),
         ]);
