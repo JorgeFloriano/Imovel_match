@@ -282,20 +282,61 @@ class ClientController extends Controller
             });
         }))
             ->sortByDesc('pts') // Sort by pts descending
-            ->where('pts', '>', 15) // Filter out objects with pts less than 15
+            ->where('pts', '>', 14) // Filter out objects with pts less than 15
             ->values();         // Reset array keys
 
         return Inertia::render('dashboard', [
             'matches' => $compatibleObjects->map(function ($compatible, $key) {
                 return [
+                    'pts' => $compatible->pts,
                     'id' => $key,
                     'client' => $compatible->client,
                     'property' => $compatible->property,
-                    'region_bool' => $compatible->inArray(
+                    'type' => $compatible->string(
+                        $compatible->client->wishe->type ?? '',
+                        $compatible->property->type ?? ''
+                    )['result'],
+
+                    'range' => $compatible->number(
+                        $compatible->property->range(),
+                        $compatible->client->range()
+                    )['result'],
+
+                    'delivery_key' => $compatible->date(
+                        $compatible->client->wishe->delivery_key,
+                        $compatible->property->delivery_key
+                    )['result'],
+
+                    'building_area' => $compatible->number(
+                        $compatible->client->wishe->building_area,
+                        $compatible->property->building_area
+                    )['result'],
+
+                    'rooms' => $compatible->number(
+                        $compatible->client->wishe->rooms,
+                        $compatible->property->rooms
+                    )['result'],
+
+                    'suites' => $compatible->number(
+                        $compatible->client->wishe->suites,
+                        $compatible->property->suites
+                    )['result'],
+
+                    'garages' => $compatible->number(
+                        $compatible->client->wishe->garages,
+                        $compatible->property->garages
+                    )['result'],
+
+                    'balcony' => $compatible->bool(
+                        $compatible->client->wishe->balcony,
+                        $compatible->property->balcony
+                    )['result'],
+
+                    'region' => $compatible->inArray(
                         $compatible->property->region->id ?? '',
-                        $compatible->client->wishe->regions()->get()->pluck('id')->toArray())['result'],
-                    'range'=> $compatible->number($compatible->property->range(), $compatible->client->range())['result'],
-                    'type' => $compatible->string($compatible->client->wishe->type ?? '', $compatible->property->type ?? '')['result'],
+                        $compatible->client->wishe->regions()
+                            ->get()->pluck('id')->toArray()
+                    )['result'],
                 ];
             })->toArray(),
         ]);

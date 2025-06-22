@@ -12,15 +12,15 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+export const BalconyIcon = ({ className = '' }: { className?: string }) => (
+    <img src="/balcony.png" className={` ${className}`} alt="Balcony" />
+);
+
 interface AtribIconProps {
     iconValue?: boolean | null | undefined;
     iconColor?: string;
     icon?: LucideIcon | React.ComponentType<{ className?: string }>;
 }
-
-export const BalconyIcon = ({ className = '' }: { className?: string }) => (
-    <img src="/balcony.png" className={` ${className}`} alt="Balcony" />
-);
 
 const AtribIcon = ({ iconValue, iconColor, icon }: AtribIconProps) => {
     // Determine icon display logic
@@ -126,18 +126,22 @@ interface ClientPropertyProps {
         acessibility: boolean | null;
         obs: string | null;
     };
+    pts: number;
     id: number;
-    region_bool: boolean | null;
-    range: boolean | null;
     type: boolean | null;
+    range: boolean | null;
+    delivery_key: boolean | null;
+    building_area: boolean | null;
+    rooms: boolean | null;
+    region: boolean | null;
 }
 
 export default function Dashboard({ matches }: { matches: Array<ClientPropertyProps> }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="grid auto-rows-min gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="flex h-full flex-1 flex-col gap-3 rounded-xl p-3">
+                <div className="grid auto-rows-min gap-3 md:grid-cols-2 lg:grid-cols-3">
                     {matches.map((match) => (
                         <a key={match.id} href={route('clients.property', [match.client.id, match.property.id])}>
                             <div
@@ -145,7 +149,7 @@ export default function Dashboard({ matches }: { matches: Array<ClientPropertyPr
                                 className="relative overflow-hidden rounded-xl border-[1px] border-[#B8B8B8] bg-[#EFEEEC] dark:bg-[#123251]"
                             >
                                 <div className="flex justify-evenly border-b-[1px] border-[#B8B8B8] p-3 font-bold text-[#123251] dark:text-[#EFEEEC]">
-                                    <div className="pt-2 text-left">{match.client.name}</div>
+                                    <div className="pt-2 text-left">{match.pts} - {match.client.name}</div>
                                     <div className="text-center">
                                         <img src="/logo_build.png" className="" width={30} alt="Varanda" />
                                     </div>
@@ -158,21 +162,17 @@ export default function Dashboard({ matches }: { matches: Array<ClientPropertyPr
 
                                     <AtribIcon
                                         icon={KeyRound}
-                                        iconValue={(match.client.wishe?.delivery_key ?? '') >= (match.property?.delivery_key ?? '')}
+                                        iconValue={match.delivery_key}
                                     />
 
                                     <AtribIcon
                                         icon={Ruler}
-                                        iconValue={(match.client.wishe?.building_area ?? 0) <= (match.property.building_area ?? 0)}
+                                        iconValue={match.building_area}
                                     />
 
                                     <AtribIcon
                                         icon={Bed}
-                                        iconValue={
-                                            (match.client.wishe?.rooms ?? null) !== null && (match.property.rooms ?? null) !== null
-                                                ? (match.client.wishe?.rooms ?? 0) <= (match.property.rooms ?? 0)
-                                                : undefined
-                                        }
+                                        iconValue={match.rooms}
                                     />
 
                                     <AtribIcon
@@ -194,7 +194,7 @@ export default function Dashboard({ matches }: { matches: Array<ClientPropertyPr
                                     />
 
                                     <AtribIcon icon={BalconyIcon} iconValue={match.client.wishe?.balcony === match.property.balcony} />
-                                    <AtribIcon icon={MapPin} iconValue={match.region_bool} />
+                                    <AtribIcon icon={MapPin} iconValue={match.region} />
                                 </div>
                             </div>
                         </a>

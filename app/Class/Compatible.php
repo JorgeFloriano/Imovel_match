@@ -65,7 +65,7 @@ class Compatible
 
     public function number($client_wishe, $property)
     {
-        if ($property === null || $client_wishe === null) {
+        if ($property == null || $client_wishe == null) {
             return [
                 'class' => $this->undef['class'],
                 'class2' => $this->undef['class2'],
