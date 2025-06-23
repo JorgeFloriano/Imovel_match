@@ -13,15 +13,15 @@ class Compatible
     public $ok = [
         'text' => 'text-green-800',
         'bg' => 'bg-green-200',
-        'class' => 'rounded-md bg-green-200 p-1 text-center text-green-800',
-        'class2' => 'rounded-md bg-green-200 text-green-800 px-2 py-1',
+        'class' => 'rounded-md bg-green-200 p-1 text-center text-green-800 border-1 border-green-800',
+        'class2' => 'rounded-md bg-green-200 text-green-800 px-2 py-1 border-1 border-green-800',
     ];
 
     public $no = [
         'text' => 'text-red-800',
         'bg' => 'bg-red-200',
-        'class' => 'rounded-md bg-red-200 p-1 text-center text-red-800',
-        'class2' => 'rounded-md bg-red-200 text-red-800 px-2 py-1',
+        'class' => 'rounded-md bg-red-200 p-1 text-center text-red-800 border-1 border-red-800',
+        'class2' => 'rounded-md bg-red-200 text-red-800 px-2 py-1 border-1 border-red-800',
     ];
 
     public $undef = [
@@ -41,6 +41,7 @@ class Compatible
             return 0;
         }
         $this->client = $client;
+
         $this->property = $property;
 
         $this->pts += $this->string($client->wishe->type, $property->type)['count'];

@@ -70,12 +70,16 @@ export default function Dashboard({ matches }: { matches: Array<ClientPropertyPr
             <div className="flex h-full flex-1 flex-col gap-3 rounded-xl p-3">
                 <div className="grid auto-rows-min gap-3 md:grid-cols-2 lg:grid-cols-3">
                     {matches.map((match) => (
-                        <a key={match.id} href={route('clients.property', [match.client_id, match.property_id])}>
+                        <a 
+                            key={match.id} 
+                            href={route('clients.property', [match.client_id, match.property_id])}
+                            className="transition-transform duration-200 hover:scale-[1.02]"
+                        >
                             <div
                                 key={match.id}
-                                className="relative overflow-hidden rounded-xl border-[1px] border-[#B8B8B8] bg-[#EFEEEC] dark:bg-[#123251]"
+                                className="relative overflow-hidden rounded-xl border-[1px] border-[#B8B8B8] bg-[#EFEEEC] dark:bg-[#123251] shadow-md dark:shadow-zinc-700 transition-all duration-300 hover:border-[#BF9447]"
                             >
-                                <div className="flex justify-evenly border-b-[1px] border-[#B8B8B8] p-3 font-bold text-[#123251] dark:text-[#EFEEEC]">
+                                <div className="flex justify-evenly border-b-[1px] border-[#B8B8B8] hover:border-[#BF9447] p-3 font-bold text-[#123251] dark:text-[#EFEEEC]">
                                     <div className="pt-2 text-left">
                                         {match.pts} - {match.client_name}
                                     </div>
@@ -86,21 +90,13 @@ export default function Dashboard({ matches }: { matches: Array<ClientPropertyPr
                                 </div>
                                 <div className="flex w-full justify-between px-4 text-sm text-[#123251] rtl:text-right">
                                     <AtribIcon icon={House} iconValue={match.type} />
-
                                     <AtribIcon icon={DollarSign} iconValue={match.range} />
-
                                     <AtribIcon icon={KeyRound} iconValue={match.delivery_key} />
-
                                     <AtribIcon icon={Ruler} iconValue={match.building_area} />
-
                                     <AtribIcon icon={Bed} iconValue={match.rooms} />
-
                                     <AtribIcon icon={Bath} iconValue={match.suites} />
-
                                     <AtribIcon icon={Car} iconValue={match.garages} />
-
                                     <AtribIcon icon={BalconyIcon} iconValue={match.balcony} />
-
                                     <AtribIcon icon={MapPin} iconValue={match.region} />
                                 </div>
                             </div>

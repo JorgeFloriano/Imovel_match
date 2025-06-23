@@ -29,6 +29,7 @@ interface ClientPropertiesProps {
         balcony: boolean | null;
         balcony_c: string;
         address: string;
+        pts: number;
     };
 }
 
@@ -199,7 +200,7 @@ export default function ClientProperties({ properties, client }: ClientPropertie
                                     >
                                         <th className="px-6 py-3 text-left font-medium text-gray-900 dark:text-white">
                                             <a href={route('clients.property', [client.id, property.id])} className="font-medium hover:underline">
-                                                <div className="inline-flex gap-2">{property.description}</div>
+                                                <div className="inline-flex gap-2">{property.pts} - {property.description}</div>
                                             </a>
                                         </th>
                                         <td className="px-6 py-3 text-left">

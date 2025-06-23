@@ -20,7 +20,7 @@ class ClientController extends Controller
     }
     public function index()
     {
-        $clients = Client::with('wishe.regions')->where('user_id', Auth::user()->id)->get();
+        $clients = Client::with('wishe.regions')->where('user_id', Auth::user()->id)->orderBy('name')->get();
 
         foreach ($clients as $client) {
             $client->wishe->regions_descr = $client->wishe->regionsDescr();
@@ -186,40 +186,42 @@ class ClientController extends Controller
 
         $properties = Property::with(['user', 'region'])->where('user_id', Auth::user()->id)->get();
 
-        $c = new Compatible(); // calss to compare client and property
+        // Array of client region options ids
         $cli_reg_ids = $client->wishe->regions()->get()->pluck('id')->toArray();
         foreach ($properties as $property) {
+
+            $compatible = new Compatible($client, $property); // calss to compare client and property
+
             $property->typ = $property->typ();
-            $property->typ_c = $c->string($client->wishe->type ?? '', $property->type ?? '')['class'];
-            $property->ok_count += $c->string($client->wishe->type ?? '', $property->type ?? '')['count'];
 
-            $property->range_c = $c->number($property->range(), $client->range())['class2'];
-            $property->ok_count = $property->ok_count + ($c->number($property->range(), $client->range())['count'] * 3);
+            $property->typ_c = $compatible->string($client->wishe->type, $property->type)['class'];
 
-            $property->delivery_key_c = $c->date($client->wishe->delivery_key, $property->delivery_key)['class'];
-            $property->ok_count += $c->date($client->wishe->delivery_key, $property->delivery_key)['count'];
+            $property->range_c = $compatible->number($property->range(), $client->range())['class2'];
 
-            $property->building_area_c = $c->number($client->wishe->building_area, $property->building_area)['class'];
-            $property->ok_count += $c->number($client->wishe->building_area, $property->building_area)['count'];
+            $property->delivery_key_c = $compatible->date($client->wishe->delivery_key, $property->delivery_key)['class'];
 
-            $property->rooms_c = $c->number($client->wishe->rooms, $property->rooms)['class'];
-            $property->ok_count += $c->number($client->wishe->rooms, $property->rooms)['count'];
+            $property->building_area_c = $compatible->number($client->wishe->building_area, $property->building_area)['class'];
 
-            $property->suites_c = $c->number($client->wishe->suites, $property->suites)['class'];
-            $property->ok_count += $c->number($client->wishe->suites, $property->suites)['count'];
+            $property->rooms_c = $compatible->number($client->wishe->rooms, $property->rooms)['class'];
 
-            $property->garages_c = $c->number($client->wishe->garages, $property->garages)['class'];
-            $property->ok_count += $c->number($client->wishe->garages, $property->garages)['count'];
+            $property->suites_c = $compatible->number($client->wishe->suites, $property->suites)['class'];
 
-            $property->balcony_c = $c->bool($client->wishe->balcony, $property->balcony)['class'];
-            $property->ok_count += $c->bool($client->wishe->balcony, $property->balcony)['count'];
+            $property->garages_c = $compatible->number($client->wishe->garages, $property->garages)['class'];
 
-            $property->region_c = $c->inArray($property->region->id ?? '', $cli_reg_ids ?? '')['class'];
-            $property->ok_count += $c->inArray($property->region->id ?? '', $cli_reg_ids ?? '')['count'];
+            $property->balcony_c = $compatible->bool($client->wishe->balcony, $property->balcony)['class'];
+
+            $property->region_c = $compatible->inArray($property->region->id ?? '', $cli_reg_ids ?? '')['class'];
+
+            $property->pts = $compatible->pts;
         }
 
         // Convert to array after sorting
-        $sortedProperties = $properties->sortByDesc('ok_count')->values()->all();
+        $sortedProperties = $properties->sortBy([ // Multi-level sorting
+            ['pts', 'desc'], // Primary sort by pts descending
+            ['description', 'asc'] // Secondary sort by client name ascending
+        ])->values()->all();
+
+        //dd($sortedProperties);
 
         return Inertia::render('clients/client-properties', [
             'properties' => $sortedProperties,
@@ -230,13 +232,13 @@ class ClientController extends Controller
     public function property($client_id, $property_id)
     {
         $client = Client::find($client_id)->load('wishe.regions');
-        
+
         $client->wishe->regions_msg = $client->wishe->regionsMsg();
-        
+
         $client->wishe->regions_descr = $client->wishe->regionsDescr();
-        
+
         $property = Property::with(['user', 'region'])->find($property_id);
-        
+
         $compatible = new Compatible($client, $property); // calss to compare client and property
 
         $property->region_bool_c = $compatible->inArray($property->region->id ?? '', $client->wishe->regions()->get()->pluck('id')->toArray())['class'];
@@ -365,7 +367,10 @@ class ClientController extends Controller
                 return $compatible;
             });
         }))
-            ->sortByDesc('pts') // Sort by pts descending
+            ->sortBy([ // Multi-level sorting
+                ['pts', 'desc'], // Primary sort by pts descending
+                ['client.name', 'asc'] // Secondary sort by client name ascending
+            ])
             ->where('pts', '>', 14) // Filter out objects with pts less than 15
             ->values();         // Reset array keys
 
