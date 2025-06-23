@@ -11,18 +11,18 @@ interface TableRoleProps {
     label: string;
     clientValue?: React.ReactNode;
     propertyValue?: React.ReactNode;
-    iconValue?: boolean;
+    iconValue?: boolean | null | undefined;
     iconColor?: string;
 }
 
 const TableRole = ({ label, clientValue, propertyValue, iconValue, iconColor }: TableRoleProps) => {
-    if ([iconValue, clientValue, propertyValue].some((val) => val == null || val === '')) {
+    if (iconValue === undefined || iconValue ===null) {
         iconColor = '';
         iconValue = undefined;
     } else if (iconValue === false) {
-        iconColor = 'rounded-md bg-red-200 p-1 text-center text-red-800 px-2 py-1';
+        iconColor = 'rounded-md bg-red-200 text-center text-red-800 border-1 border-red-800 px-2 py-1';
     } else if (iconValue === true) {
-        iconColor = 'rounded-md bg-green-200 p-1 text-center text-green-800 px-2 py-1';
+        iconColor = 'rounded-md bg-green-200 text-center text-green-800 border-1 border-green-800 px-2 py-1';
     } else {
         iconColor = '';
         iconValue = undefined;
@@ -116,25 +116,57 @@ interface ClientPropertyProps {
         acessibility: boolean | null;
         obs: string | null;
         range: boolean | null;
-        region_bool: boolean | null;
         region_bool_c: string;
     };
+    match: {
+        type: boolean | null;
+        range: boolean | null;
+        delivery_key: boolean | null;
+        building_area: boolean | null;
+        rooms: boolean | null;
+        suites: boolean | null;
+        garages: boolean | null;
+        balcony: boolean | null;
+        region: boolean | null;
+        bathrooms: boolean | null;
+        air_conditioning: boolean | null;
+        garden: boolean | null;
+        pool: boolean | null;
+        acept_pets: boolean | null;
+        acessibility: boolean | null;
+        installment_payment: boolean | null;
+        min_act: boolean | null;
+    }
 }
 
-export default function ClientProperties({ property, client }: ClientPropertyProps) {
-    const formatCurrency = (value: number) => {
+export default function ClientProperties({ property, client, match }: ClientPropertyProps) {
+    // This function formats the currency
+    const formatCurrency = (value: number | null | undefined | string) => {
+    // Convert string to number if it's a numeric string
+    const numericValue = typeof value === 'string' ? Number(value) : value;
+    
+    // Check if the value is exactly 0 (not null/undefined/empty string/negative)
+    if (numericValue === 0) {
         return new Intl.NumberFormat('pt-BR', {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
-        }).format(value);
-    };
-
-    {
-        new Intl.NumberFormat('pt-BR', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }).format(client.revenue || 0);
+        }).format(0);
     }
+    
+    // Return empty string for all other cases
+    if (numericValue === null || 
+        numericValue === undefined || 
+        isNaN(numericValue) || 
+        numericValue < 0) {
+        return null;
+    }
+    
+    // Format positive numbers
+    return new Intl.NumberFormat('pt-BR', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    }).format(numericValue);
+};
 
     const formatDate = (dateString?: string | null) => {
         return dateString ? new Date(dateString).toLocaleDateString('pt-BR') : null;
@@ -178,56 +210,56 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                                 label="Tipo"
                                 clientValue={client.wishe?.type}
                                 propertyValue={property.type}
-                                iconValue={client.wishe?.type === property.type}
+                                iconValue={match.type}
                             />
 
                             <TableRole
                                 label="Renda / Preço (R$)"
-                                clientValue={formatCurrency(client.revenue ?? 0)}
+                                clientValue={formatCurrency(client.revenue)}
                                 propertyValue={formatCurrency(property.price)}
-                                iconValue={property.range ?? undefined}
+                                iconValue={match.range}
                             />
 
                             <TableRole
                                 label="Entrega das chaves"
                                 clientValue={formatDate(client.wishe?.delivery_key ?? '')}
                                 propertyValue={formatDate(property?.delivery_key ?? '')}
-                                iconValue={(client.wishe?.delivery_key ?? '') >= (property?.delivery_key ?? '')}
+                                iconValue={match.delivery_key}
                             />
 
                             <TableRole
                                 label="Área construída"
                                 clientValue={formatArea(client.wishe?.building_area)}
                                 propertyValue={formatArea(property.building_area)}
-                                iconValue={(client.wishe?.building_area ?? 0) <= (property.building_area ?? 0)}
+                                iconValue={match.building_area}
                             />
 
                             <TableRole
                                 label="Número de quartos"
-                                clientValue={client.wishe?.rooms}
-                                propertyValue={property.rooms}
-                                iconValue={(client.wishe?.rooms ?? 0) <= (property.rooms ?? 0)}
+                                clientValue={formatCurrency(client.wishe?.rooms)}
+                                propertyValue={formatCurrency(property.rooms)}
+                                iconValue={match.rooms}
                             />
 
                             <TableRole
                                 label="Número de suítes"
-                                clientValue={client.wishe?.suites}
-                                propertyValue={property.suites}
-                                iconValue={(client.wishe?.suites ?? 0) <= (property.suites ?? 0)}
+                                clientValue={formatCurrency(client.wishe?.suites)}
+                                propertyValue={formatCurrency(property.suites)}
+                                iconValue={match.suites}
                             />
 
                             <TableRole
                                 label="Vagas de garagem"
-                                clientValue={client.wishe?.garages}
-                                propertyValue={property.garages}
-                                iconValue={(client.wishe?.garages ?? 0) <= (property.garages ?? 0)}
+                                clientValue={formatCurrency(client.wishe?.garages)}
+                                propertyValue={formatCurrency(property.garages)}
+                                iconValue={match.garages}
                             />
 
                             <TableRole
                                 label="Possúi varanda?"
                                 clientValue={Status({ value: client.wishe?.balcony })?.props.children}
                                 propertyValue={Status({ value: property?.balcony })?.props.children}
-                                iconValue={client.wishe?.balcony === property.balcony}
+                                iconValue={match.balcony}
                             />
 
                             <tr className="border-b">
@@ -249,65 +281,65 @@ export default function ClientProperties({ property, client }: ClientPropertyPro
                                 </th>
                                 <th className="px-3 py-3">
                                     <div className={`flex items-center gap-2 ${property.region_bool_c}`}>
-                                        <StatusIcon value={property.region_bool ?? undefined} />
+                                        <StatusIcon value={match?.region} />
                                     </div>
                                 </th>
                             </tr>
 
                             <TableRole
                                 label="Número de banheiros"
-                                clientValue={client.wishe?.bathrooms}
-                                propertyValue={property.bathrooms}
-                                iconValue={(client.wishe?.bathrooms ?? 0) <= (property.bathrooms ?? 0)}
+                                clientValue={formatCurrency(client.wishe?.bathrooms)}
+                                propertyValue={formatCurrency(property.bathrooms)}
+                                iconValue={match.bathrooms}
                             />
 
                             <TableRole
                                 label="Ar condicionado"
                                 clientValue={client.wishe?.air_conditioning}
                                 propertyValue={property.air_conditioning}
-                                iconValue={client.wishe?.air_conditioning === property.air_conditioning}
+                                iconValue={match.air_conditioning}
                             />
 
                             <TableRole
                                 label="Possúi quintal?"
                                 clientValue={Status({ value: client.wishe?.garden })?.props.children}
                                 propertyValue={Status({ value: property?.garden })?.props.children}
-                                iconValue={client.wishe?.garden === property.garden}
+                                iconValue={match.garden}
                             />
 
                             <TableRole
                                 label="Possúi piscina?"
                                 clientValue={Status({ value: client.wishe?.pool })?.props.children}
                                 propertyValue={Status({ value: property?.pool })?.props.children}
-                                iconValue={client.wishe?.pool === property.pool}
+                                iconValue={match.pool}
                             />
 
                             <TableRole
                                 label="Aceita pets?"
                                 clientValue={Status({ value: client.wishe?.acept_pets })?.props.children}
                                 propertyValue={Status({ value: property?.acept_pets })?.props.children}
-                                iconValue={client.wishe?.acept_pets === property.acept_pets}
+                                iconValue={match.acept_pets}
                             />
 
                             <TableRole
                                 label="Acessibilidade?"
                                 clientValue={Status({ value: client.wishe?.acessibility })?.props.children}
                                 propertyValue={Status({ value: property?.acessibility })?.props.children}
-                                iconValue={client.wishe?.acessibility === property.acessibility}
+                                iconValue={match.acessibility}
                             />
 
                             <TableRole
                                 label="Parcela a entrada?"
                                 clientValue={Status({ value: client.wishe?.installment_payment })?.props.children}
                                 propertyValue={Status({ value: property?.installment_payment })?.props.children}
-                                iconValue={client.wishe?.installment_payment === property.installment_payment}
+                                iconValue={match.installment_payment}
                             />
 
                             <TableRole
                                 label="Ato mínimo (R$)"
-                                clientValue={formatCurrency(client.wishe?.min_act as number)}
-                                propertyValue={formatCurrency(property.min_act as number)}
-                                iconValue={(client.wishe?.min_act ?? 0) >= (property.min_act ?? 0)}
+                                clientValue={formatCurrency(client.wishe?.min_act)}
+                                propertyValue={formatCurrency(property.min_act)}
+                                iconValue={match.min_act}
                             />
                         </tbody>
                     </table>

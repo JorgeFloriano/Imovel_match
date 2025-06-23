@@ -59,19 +59,38 @@ class Compatible
 
         $this->pts += $this->bool($client->wishe->balcony, $property->balcony)['count'];
 
+        $this->pts += $this->inArray($property->region_id, $client->wishe->regions()->get()->pluck('id')->toArray())['count'];
+
+        $this->pts += $this->number($client->wishe->bathrooms, $property->bathrooms)['count'] - 1;
+
+        $this->pts += $this->string($client->wishe->air_conditioning, $property->air_conditioning)['count'] - 1;
+
+        $this->pts += $this->bool($client->wishe->garden, $property->garden)['count'] - 1;
+
+        $this->pts += $this->bool($client->wishe->pool, $property->pool)['count'] - 1;
+
+        $this->pts += $this->bool($client->wishe->acept_pets, $property->acept_pets)['count'] - 1;
+
+        $this->pts += $this->bool($client->wishe->acessibility, $property->acessibility)['count'] - 1;
+
+        $this->pts += $this->bool($client->wishe->install_payment, $property->install_payment)['count'] - 1;
+
+        $this->pts += $this->bool($client->wishe->min_act, $property->min_act)['count'] - 1;
+
         $this->client->wishe->regions_msg = $this->client->wishe->regionsMsg();
         $this->client->wishe->regions_descr = $this->client->wishe->regionsDescr();
     }
 
     public function number($client_wishe, $property)
     {
-        if ($property == null || $client_wishe == null) {
+        if ($property === null || $client_wishe === null) {
             return [
                 'class' => $this->undef['class'],
                 'class2' => $this->undef['class2'],
                 'count' => 1,
                 'result' => null
             ];
+
         } elseif ($client_wishe > $property) {
             return [
                 'class' => $this->no['class'],
@@ -171,7 +190,7 @@ class Compatible
             'result' => false
         ];
     }
-    public function inArray($client_wishe = null, $property = null)
+    public function inArray($property = null, $client_wishe = null)
     {
         if ($property == null || $client_wishe == null) {
             return [
@@ -181,7 +200,7 @@ class Compatible
             ];
         }
 
-        if (in_array($client_wishe, $property)) {
+        if (in_array($property, $client_wishe)) {
             return [
                 'class' => $this->ok['class2'],
                 'count' => 2,

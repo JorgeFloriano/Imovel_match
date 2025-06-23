@@ -229,24 +229,108 @@ class ClientController extends Controller
 
     public function property($client_id, $property_id)
     {
-        $c = new Compatible(); // calss to compare client and property
-
         $client = Client::find($client_id)->load('wishe.regions');
-
+        
         $client->wishe->regions_msg = $client->wishe->regionsMsg();
-
+        
         $client->wishe->regions_descr = $client->wishe->regionsDescr();
-
+        
         $property = Property::with(['user', 'region'])->find($property_id);
+        
+        $compatible = new Compatible($client, $property); // calss to compare client and property
 
-        $property->range = $c->number($property->range(), $client->range())['result'];
-
-        $property->region_bool = $c->inArray($property->region->id ?? '', $client->wishe->regions()->get()->pluck('id')->toArray())['result'];
-        $property->region_bool_c = $c->inArray($property->region->id ?? '', $client->wishe->regions()->get()->pluck('id')->toArray())['class'];
+        $property->region_bool_c = $compatible->inArray($property->region->id ?? '', $client->wishe->regions()->get()->pluck('id')->toArray())['class'];
 
         return Inertia::render('clients/client-property', [
             'client' => $client,
             'property' => $property,
+            'match' => [
+                'type' => $compatible->string(
+                    $client->wishe->type,
+                    $property->type
+                )['result'],
+
+                'range' => $compatible->number(
+                    $compatible->property->range(),
+                    $compatible->client->range()
+                )['result'],
+
+                'delivery_key' => $compatible->date(
+                    $client->wishe->delivery_key,
+                    $property->delivery_key
+                )['result'],
+
+                'building_area' => $compatible->number(
+                    $client->wishe->building_area,
+                    $property->building_area
+                )['result'],
+
+                'rooms' => $compatible->number(
+                    $client->wishe->rooms,
+                    $property->rooms
+                )['result'],
+
+                'suites' => $compatible->number(
+                    $compatible->client->wishe->suites,
+                    $compatible->property->suites
+                )['result'],
+
+                'garages' => $compatible->number(
+                    $client->wishe->garages,
+                    $property->garages
+                )['result'],
+
+                'balcony' => $compatible->bool(
+                    $client->wishe->balcony,
+                    $property->balcony
+                )['result'],
+
+                'region' => $compatible->inArray(
+                    $property->region->id ?? '',
+                    $client->wishe->regions()
+                        ->get()->pluck('id')->toArray()
+                )['result'],
+
+                'bathrooms' => $compatible->number(
+                    $client->wishe->bathrooms,
+                    $property->bathrooms
+                )['result'],
+
+                'air_conditioning' => $compatible->string(
+                    $client->wishe->air_conditioning,
+                    $property->air_conditioning
+                )['result'],
+
+                'garden' => $compatible->bool(
+                    $client->wishe->garden,
+                    $property->garden
+                )['result'],
+
+                'pool' => $compatible->bool(
+                    $client->wishe->pool,
+                    $property->pool
+                )['result'],
+
+                'acept_pets' => $compatible->bool(
+                    $client->wishe->acept_pets,
+                    $property->acept_pets
+                )['result'],
+
+                'acessibility' => $compatible->bool(
+                    $client->wishe->acessibility,
+                    $property->acessibility
+                )['result'],
+
+                'installment_payment' => $compatible->bool(
+                    $client->wishe->installment_payment,
+                    $property->installment_payment
+                )['result'],
+
+                'min_act' => $compatible->number(
+                    $property->min_act,
+                    $client->wishe->min_act
+                )['result']
+            ]
         ]);
     }
     public function dashboard()
@@ -254,7 +338,7 @@ class ClientController extends Controller
         // Get clients with their wishes and wish regions
         $clients = Client::where('user_id', Auth::id())
             ->with(['wishe' => function ($query) {
-                $query->select('id', 'client_id', 'type', 'delivery_key', 'building_area', 'rooms', 'suites', 'garages', 'balcony')
+                $query->select('id', 'client_id', 'type', 'delivery_key', 'building_area', 'rooms', 'suites', 'garages', 'balcony', 'bathrooms', 'air_conditioning', 'garden', 'pool', 'acept_pets', 'acessibility', 'installment_payment', 'min_act')
                     ->with(['regions' => function ($q) {
                         $q->select('regions.id', 'regions.name');
                     }]);
@@ -265,7 +349,7 @@ class ClientController extends Controller
         // Get properties with regions
         $properties = Property::where('user_id', Auth::id())
             ->with(['region'])
-            ->select('id', 'description', 'price', 'type', 'delivery_key', 'building_area', 'rooms', 'suites', 'garages', 'balcony', 'region_id')
+            ->select('id', 'description', 'price', 'type', 'delivery_key', 'building_area', 'rooms', 'suites', 'garages', 'balcony', 'region_id', 'bathrooms', 'air_conditioning', 'garden', 'pool', 'acept_pets', 'acessibility', 'installment_payment', 'min_act')
             ->get();
 
         // Create and sort compatible objects
@@ -290,11 +374,13 @@ class ClientController extends Controller
                 return [
                     'pts' => $compatible->pts,
                     'id' => $key,
-                    'client' => $compatible->client,
-                    'property' => $compatible->property,
+                    'client_id' => $compatible->client->id,
+                    'client_name' => $compatible->client->name,
+                    'property_id' => $compatible->property->id,
+                    'property_description' => $compatible->property->description,
                     'type' => $compatible->string(
-                        $compatible->client->wishe->type ?? '',
-                        $compatible->property->type ?? ''
+                        $compatible->client->wishe->type,
+                        $compatible->property->type
                     )['result'],
 
                     'range' => $compatible->number(
