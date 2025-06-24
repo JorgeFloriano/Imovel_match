@@ -12,7 +12,9 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export const BalconyIcon = ({ className = '' }: { className?: string }) => <img src="/balcony.png" className={` ${className}`} alt="Balcony" />;
+export const BalconyIcon = (
+    { className = '' }: { className?: string }
+) => <img src="/balcony.png" width={300} className={`${className}`} alt="Balcony" />;
 
 interface AtribIconProps {
     iconValue?: boolean | null | undefined;
@@ -23,20 +25,22 @@ interface AtribIconProps {
 const AtribIcon = ({ iconValue, iconColor, icon }: AtribIconProps) => {
     // Determine icon display logic
     if (iconValue === undefined || iconValue === null) {
-        iconColor = 'rounded-md text-center px-2 py-1 border-1 border-[#BF9447] bg-[#EFEEEC]';
+        iconColor = 'bg-[#EFEEEC] border-[#BF9447]';
     } else if (iconValue === false) {
-        iconColor = 'rounded-md bg-red-200 text-center border-1 border-red-800 px-2 py-1';
+        iconColor = 'bg-red-200 border-red-800';
     } else if (iconValue === true) {
-        iconColor = 'rounded-md bg-green-200 text-center border-1 border-green-800 px-2 py-1';
+        iconColor = 'bg-green-200 border-green-800';
     }
 
     return (
         <div className="py-3">
             {iconValue !== undefined && (
-                <div className={`flex h-8 w-8 items-center justify-center ${iconColor}`}>
+                <div className={`flex p-1 items-center justify-center rounded-md border-1 ${iconColor}`}>
                     {icon && (
                         <span className="inline">
-                            {'$$typeof' in icon ? <Icon className="h-5 w-5" iconNode={icon} /> : React.createElement(icon, { className: 'h-4 w-5' })}
+                            {'$$typeof' in icon ? 
+                            <Icon className="h-5 w-5" iconNode={icon} /> : 
+                            React.createElement(icon, { className: 'h-5 w-5' })}
                         </span>
                     )}
                 </div>
@@ -67,28 +71,28 @@ export default function Dashboard({ matches }: { matches: Array<ClientPropertyPr
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="flex h-full flex-1 flex-col gap-3 rounded-xl p-3">
-                <div className="grid auto-rows-min gap-3 md:grid-cols-2 lg:grid-cols-3">
+            <div className="flex h-full flex-1 flex-col rounded-xl p-3">
+                <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
                     {matches.map((match) => (
-                        <a 
-                            key={match.id} 
+                        <a
+                            key={match.id}
                             href={route('clients.property', [match.client_id, match.property_id])}
                             className="transition-transform duration-200 hover:scale-[1.02]"
                         >
                             <div
                                 key={match.id}
-                                className="relative overflow-hidden rounded-xl border-[1px] border-[#B8B8B8] bg-[#EFEEEC] dark:bg-[#123251] shadow-md dark:shadow-zinc-700 transition-all duration-300 hover:border-[#BF9447]"
+                                className="overflow-hidden rounded-xl border-[1px] border-[#B8B8B8] bg-[#EFEEEC] text-[#123251] shadow-md transition-all duration-400 hover:border-[#BF9447] hover:text-[#BF9447] dark:bg-[#123251] dark:text-[#EFEEEC] hover:dark:text-[#BF9447]"
                             >
-                                <div className="flex justify-evenly border-b-[1px] border-[#B8B8B8] hover:border-[#BF9447] p-3 font-bold text-[#123251] dark:text-[#EFEEEC]">
-                                    <div className="pt-2 text-left">
+                                <div className="flex justify-evenly p-3 font-bold">
+                                    <div className="flex items-center">
                                         {match.pts} - {match.client_name}
                                     </div>
-                                    <div className="text-center">
-                                        <img src="/logo_build.png" className="" width={30} alt="Varanda" />
+                                    <div>
+                                        <img src="/logo_build.png" width={30} alt="Build" />
                                     </div>
-                                    <div className="pt-2 text-right">{match.property_description}</div>
+                                    <div className="flex items-center">{match.property_description}</div>
                                 </div>
-                                <div className="flex w-full justify-between px-4 text-sm text-[#123251] rtl:text-right">
+                                <div className="flex justify-between px-3 text-[#123251]">
                                     <AtribIcon icon={House} iconValue={match.type} />
                                     <AtribIcon icon={DollarSign} iconValue={match.range} />
                                     <AtribIcon icon={KeyRound} iconValue={match.delivery_key} />
