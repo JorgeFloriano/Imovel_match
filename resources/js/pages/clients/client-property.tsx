@@ -17,23 +17,23 @@ interface TableRoleProps {
 
 const TableRole = ({ label, clientValue, propertyValue, iconValue, iconColor }: TableRoleProps) => {
     if (iconValue === undefined || iconValue ===null) {
-        iconColor = '';
+        iconColor = 'bg-transparent text-transparent border-transparent';
         iconValue = undefined;
     } else if (iconValue === false) {
-        iconColor = 'rounded-md bg-red-200 text-center text-red-800 border-1 border-red-800 px-2 py-1';
+        iconColor = 'bg-red-200 text-red-800 border-red-800';
     } else if (iconValue === true) {
-        iconColor = 'rounded-md bg-green-200 text-center text-green-800 border-1 border-green-800 px-2 py-1';
+        iconColor = 'bg-green-200 text-green-800 border-green-800';
     } else {
         iconColor = '';
         iconValue = undefined;
     }
     return (
         <tr className="border-b">
-            <th className="px-3 py-3">{label}</th>
-            <th className="px-3 py-3 text-center">{clientValue || null}</th>
-            <th className="px-3 py-3 text-center">{propertyValue || null}</th>
-            <th className="px-3 py-3">
-                <div className={`flex items-center gap-2 ${iconColor}`}>
+            <th className="p-3">{label}</th>
+            <th className="p-3 text-center">{clientValue || null}</th>
+            <th className="p-3 text-center">{propertyValue || null}</th>
+            <th className="p-3 text-center">
+                <div className={`w-8 flex items-center p-1 justify-center rounded-md border-1 ${iconColor}`}>
                     <StatusIcon value={iconValue} />
                 </div>
             </th>
@@ -197,10 +197,10 @@ export default function ClientProperties({ property, client, match }: ClientProp
                     <table className="w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
                         <thead className="m-1 bg-[#D8D8D8] text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
-                                <th className="px-3 py-3">Referência</th>
-                                <th className="px-3 py-3 text-center">Sonho (Cliente)</th>
-                                <th className="px-3 py-3 text-center">Realidade (Imóvel)</th>
-                                <th className="w-1 px-3 py-3">St.</th>
+                                <th className="p-3">Referência</th>
+                                <th className="p-3 text-center">Sonho (Cliente)</th>
+                                <th className="p-3 text-center">Realidade (Imóvel)</th>
+                                <th className="w-1 p-2 text-center">St.</th>
                             </tr>
                         </thead>
                         <tbody className="border-gray-200 text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-white">
@@ -263,11 +263,11 @@ export default function ClientProperties({ property, client, match }: ClientProp
                             />
 
                             <tr className="border-b">
-                                <th className="px-3 py-3">Região (s)</th>
-                                <th className="px-3 py-3 text-center">
+                                <th className="p-3">Região (s)</th>
+                                <th className="p-3 text-center">
                                     {client.wishe?.regions_descr || null}
                                 </th>
-                                <th className="px-3 py-3 text-center">
+                                <th className="p-3 text-center">
                                     {property.address ? (
                                         <IconTooltip
                                             tooltipClassName="right-full"
@@ -279,8 +279,8 @@ export default function ClientProperties({ property, client, match }: ClientProp
                                         property.region?.name
                                     )}
                                 </th>
-                                <th className="px-3 py-3">
-                                    <div className={`flex items-center gap-2 ${property.region_bool_c}`}>
+                                <th className="p-3 text-center">
+                                    <div className={`w-8 ${property.region_bool_c}`}>
                                         <StatusIcon value={match?.region} />
                                     </div>
                                 </th>

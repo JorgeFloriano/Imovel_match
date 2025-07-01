@@ -195,7 +195,7 @@ class Compatible
     {
         if ($property == null || $client_wishe == null) {
             return [
-                'class' => $this->undef['class2'],
+                'class' => $this->undef['class'],
                 'count' => 1,
                 'result' => null
             ];
@@ -203,14 +203,14 @@ class Compatible
 
         if (in_array($property, $client_wishe)) {
             return [
-                'class' => $this->ok['class2'],
+                'class' => $this->ok['class'],
                 'count' => 2,
                 'result' => true
             ];
         }
 
         return [
-            'class' => $this->no['class2'],
+            'class' => $this->no['class'],
             'count' => 0,
             'result' => false
         ];
