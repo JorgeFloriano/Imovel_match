@@ -371,7 +371,7 @@ class ClientController extends Controller
                 ['pts', 'desc'], // Primary sort by pts descending
                 ['client.name', 'asc'] // Secondary sort by client name ascending
             ])
-            ->where('pts', '>', 14) // Filter out objects with pts less than 15
+            ->where('pts', '>', 18) // Filter out objects with pts less than 15
             ->values();         // Reset array keys
 
         return Inertia::render('dashboard', [
