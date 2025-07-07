@@ -1,7 +1,8 @@
 import { Icon } from '@/components/icon';
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Bath, Bed, Car, DollarSign, House, KeyRound, LucideIcon, MapPin, Ruler } from 'lucide-react';
 import React from 'react';
 
@@ -12,9 +13,9 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export const BalconyIcon = (
-    { className = '' }: { className?: string }
-) => <img src="/balcony.png" width={300} className={`${className}`} alt="Balcony" />;
+export const BalconyIcon = ({ className = '' }: { className?: string }) => (
+    <img src="/balcony.png" width={300} className={`${className}`} alt="Balcony" />
+);
 
 interface AtribIconProps {
     iconValue?: boolean | null | undefined;
@@ -35,12 +36,10 @@ const AtribIcon = ({ iconValue, iconColor, icon }: AtribIconProps) => {
     return (
         <div className="py-3">
             {iconValue !== undefined && (
-                <div className={`flex p-1 items-center justify-center rounded-md border-1 ${iconColor}`}>
+                <div className={`flex items-center justify-center rounded-md border-1 p-1 ${iconColor}`}>
                     {icon && (
                         <span className="inline">
-                            {'$$typeof' in icon ? 
-                            <Icon className="h-5 w-5" iconNode={icon} /> : 
-                            React.createElement(icon, { className: 'h-5 w-5' })}
+                            {'$$typeof' in icon ? <Icon className="h-5 w-5" iconNode={icon} /> : React.createElement(icon, { className: 'h-5 w-5' })}
                         </span>
                     )}
                 </div>
@@ -67,7 +66,28 @@ interface ClientPropertyProps {
     region: boolean | null;
 }
 
-export default function Dashboard({ matches }: { matches: Array<ClientPropertyProps> }) {
+interface PaginationProps {
+    total: number;
+    per_page: number;
+    current_page: number;
+    last_page: number;
+    from: number;
+    to: number;
+}
+
+export default function Dashboard({ matches, pagination }: { matches: Array<ClientPropertyProps>; pagination: PaginationProps }) {
+    const handlePageChange = (page: number) => {
+        router.get(
+            '/dashboard',
+            { page },
+            {
+                preserveState: true,
+                replace: true,
+                only: ['matches', 'pagination'],
+            },
+        );
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -106,6 +126,54 @@ export default function Dashboard({ matches }: { matches: Array<ClientPropertyPr
                             </div>
                         </a>
                     ))}
+                </div>
+
+                {/* Pagination Controls */}
+                <div className="mt-6 flex justify-center">
+                    <Pagination>
+                        <PaginationContent>
+                            <PaginationItem>
+                                <PaginationPrevious
+                                    href="#"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        if (pagination.current_page > 1) {
+                                            handlePageChange(pagination.current_page - 1);
+                                        }
+                                    }}
+                                    className={pagination.current_page === 1 ? 'cursor-not-allowed opacity-50' : ''}
+                                />
+                            </PaginationItem>
+
+                            {Array.from({ length: pagination.last_page }, (_, i) => i + 1).map((page) => (
+                                <PaginationItem key={page}>
+                                    <PaginationLink
+                                        href="#"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            handlePageChange(page);
+                                        }}
+                                        isActive={page === pagination.current_page}
+                                    >
+                                        {page}
+                                    </PaginationLink>
+                                </PaginationItem>
+                            ))}
+
+                            <PaginationItem>
+                                <PaginationNext
+                                    href="#"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        if (pagination.current_page < pagination.last_page) {
+                                            handlePageChange(pagination.current_page + 1);
+                                        }
+                                    }}
+                                    className={pagination.current_page === pagination.last_page ? 'cursor-not-allowed opacity-50' : ''}
+                                />
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
                 </div>
             </div>
         </AppLayout>
