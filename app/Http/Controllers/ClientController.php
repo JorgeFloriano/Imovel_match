@@ -374,8 +374,25 @@ class ClientController extends Controller
             ->where('pts', '>', 14) // Filter out objects with pts less than 15
             ->values();         // Reset array keys
 
+        // Paginate the results
+        $page = request()->input('page', 1);
+        $perPage = 30;
+        $offset = ($page - 1) * $perPage;
+        $paginatedItems = $compatibleObjects->slice($offset, $perPage)->values();
+
+        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
+            $paginatedItems,
+            $compatibleObjects->count(),
+            $perPage,
+            $page,
+            [
+                'path' => request()->url(),
+                'query' => request()->query(),
+            ]
+        );
+
         return Inertia::render('dashboard', [
-            'matches' => $compatibleObjects->map(function ($compatible, $key) {
+            'matches' => $paginatedItems->map(function ($compatible, $key) {
                 return [
                     'pts' => $compatible->pts,
                     'id' => $key,
@@ -430,6 +447,14 @@ class ClientController extends Controller
                     )['result'],
                 ];
             })->toArray(),
+            'pagination' => [
+                'total' => $paginator->total(),
+                'per_page' => $paginator->perPage(),
+                'current_page' => $paginator->currentPage(),
+                'last_page' => $paginator->lastPage(),
+                'from' => $paginator->firstItem(),
+                'to' => $paginator->lastItem(),
+            ],
         ]);
     }
 }
