@@ -9,7 +9,7 @@ import {
   import { Label } from '@/components/ui/label';
   
   interface FormSelectProps {
-    label: string;
+    label?: string;
     value: string | boolean;
     onValueChange: (value: string) => void;
     options?: Record<string, string>;
