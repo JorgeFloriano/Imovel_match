@@ -11,6 +11,7 @@ Route::get('/', function () {
 
 Route::middleware(['web', 'verified'])->group(function () {
     Route::get('dashboard', [ClientController::class, 'dashboard'])->name('dashboard');
+    Route::post('dashboard', [ClientController::class, 'filter'])->name('filter');
 
     Route::resource('/clients', ClientController::class);
     Route::get('/clients/{client}/properties', [ClientController::class, 'properties'])->name('clients.properties');

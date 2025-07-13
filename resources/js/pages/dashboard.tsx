@@ -21,20 +21,6 @@ type FilterForm = {
     show?: string;
 };
 
-const clientOptions = [
-    { value: '1', label: 'Waldemar da Costa' },
-    { value: '2', label: 'Roberto da Silva' },
-    { value: '3', label: 'Maria da Silva' },
-    { value: '4', label: 'João da Silva' },
-];
-
-const propertyOptions = [
-    { value: '1', label: 'Mirage São Paulo' },
-    { value: '2', label: 'Iris Residêncial' },
-    { value: '3', label: 'Parque Lobato' },
-    { value: '4', label: 'Vila Zamora' },
-];
-
 const showOptions = [
     { value: '30', label: 'Exibir 30 conexões' },
     { value: '60', label: 'Exibir 60 conexões' },
@@ -95,14 +81,17 @@ interface ClientPropertyProps {
     region: boolean | null;
 }
 export default function Dashboard({
-    matches
+    matches,
+    clientOptions,
+    propertyOptions,
 }: {
     matches: Array<ClientPropertyProps>;
-    showOptions: Array<{ value: number; label: string }>;
+    clientOptions: Array<{ value: string; label: string }>;
+    propertyOptions: Array<{ value: string; label: string }>;
 }) {
-    const { data, setData, post, errors, reset } = useForm<FilterForm>({
-        client_id: '',
-        property_id: '',
+    const { data, setData, post, errors} = useForm<FilterForm>({
+        client_id: undefined,
+        property_id: undefined,
         show: '30',
     });
 
@@ -112,11 +101,7 @@ export default function Dashboard({
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('dashboard'), {
-            onSuccess: () => {
-                reset('show', 'client_id', 'property_id');
-            },
-        });
+        post(route('filter'));
     };
 
     return (
@@ -194,23 +179,23 @@ export default function Dashboard({
                 <form onSubmit={submit} className="space-y-6 py-3">
                     <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                         <FormSelect
-                            value={data.client_id ?? ''}
-                            placeholder='Filtrar por cliente'
+                            value={data.client_id || ''}
+                            placeholder="Filtrar por cliente"
                             onValueChange={(value) => handleSetData('client_id', value)}
                             customOptions={clientOptions}
                             error={errors.client_id}
                         />
 
                         <FormSelect
-                            value={data.property_id ?? ''}
-                            placeholder='Filtrar por imóvel'
+                            value={data.property_id || ''}
+                            placeholder="Filtrar por imóvel"
                             onValueChange={(value) => handleSetData('property_id', value)}
                             customOptions={propertyOptions}
                             error={errors.property_id}
                         />
 
                         <FormSelect
-                            value={data.show ?? ''} // Provide an empty string as a fallback value
+                            value={data.show || '30'} // Default to '30' if empty
                             onValueChange={(value) => handleSetData('show', value)}
                             customOptions={showOptions}
                             error={errors.show}

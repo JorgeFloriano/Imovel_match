@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Class\Compatible;
 use App\Models\Property;
+use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
@@ -337,6 +338,10 @@ class ClientController extends Controller
     }
     public function dashboard()
     {
+        if (session('compatibleObjects')) {
+            redirect()->route('filter');
+        }
+
         // Get clients with their wishes and wish regions
         $clients = Client::where('user_id', Auth::id())
             ->with(['wishe' => function ($query) {
@@ -355,7 +360,7 @@ class ClientController extends Controller
             ->get();
 
         // Create and sort compatible objects
-        $compatibleObjects = collect($clients->flatMap(function ($client) use ($properties) {
+        $allCompatibleObjects = collect($clients->flatMap(function ($client) use ($properties) {
             return $properties->map(function ($property) use ($client) {
                 $compatible = new Compatible($client, $property);
 
@@ -370,9 +375,15 @@ class ClientController extends Controller
             ->sortBy([ // Multi-level sorting
                 ['pts', 'desc'], // Primary sort by pts descending
                 ['client.name', 'asc'] // Secondary sort by client name ascending
-            ])
-            ->where('pts', '>', 18) // Filter out objects with pts less than 15
-            ->values();         // Reset array keys
+            ]);
+
+        // Store the FULL sorted collection in the session
+        session()->put('compatibleObjects', $allCompatibleObjects);
+
+        // 2. Take only the first 120 results for further use
+        $compatibleObjects = $allCompatibleObjects
+            ->take(30) // Take only the first 120 results
+            ->values(); // Reset array keys
 
         return Inertia::render('dashboard', [
             'matches' => $compatibleObjects->map(function ($compatible, $key) {
@@ -430,6 +441,106 @@ class ClientController extends Controller
                     )['result'],
                 ];
             })->toArray(),
+            'clientOptions' => Client::orderBy('name')->get()->map(fn($client) => [
+                'value' => strval($client->id), // Convert to string
+                'label' => $client->name,
+            ])->all(),
+            'propertyOptions' => Property::orderBy('description')->get()->map(fn($property) => [
+                'value' => strval($property->id), // Convert to string
+                'label' => $property->description,
+            ])->all(),
+        ]);
+    }
+
+    public function filter(Request $request)
+    {
+        $n_displayed = $request->show;
+        if (isset($request->client_id) || (isset($request->property_id))) {
+            $n_displayed = 200;
+        }
+
+        $compatibleObjects = session('compatibleObjects')
+            ->sortBy([ // Multi-level sorting
+                ['pts', 'desc'], // Primary sort by pts descending
+                ['client.name', 'asc'] // Secondary sort by client name ascending
+            ])
+            // Optional search by client name (commented out)
+            //->when($request->search, function ($collection) use ($request) {
+            //    return $collection->where('client.name', 'like', '%' . $request->search . '%');
+            //})
+            ->when($request->client_id, function ($collection) use ($request) {
+                return $collection->where('client.id', $request->client_id);
+            })
+            ->when($request->property_id, function ($collection) use ($request) {
+                return $collection->where('property.id', $request->property_id);
+            })
+            ->take($n_displayed) // Take predetermined results
+            ->values(); // Reset array keys
+
+        return Inertia::render('dashboard', [
+            'matches' => $compatibleObjects->map(function ($compatible, $key) {
+                return [
+                    'pts' => $compatible->pts,
+                    'id' => $key,
+                    'client_id' => $compatible->client->id,
+                    'client_name' => $compatible->client->name,
+                    'property_id' => $compatible->property->id,
+                    'property_description' => $compatible->property->description,
+                    'type' => $compatible->string(
+                        $compatible->client->wishe->type,
+                        $compatible->property->type
+                    )['result'],
+
+                    'range' => $compatible->number(
+                        $compatible->property->range(),
+                        $compatible->client->range()
+                    )['result'],
+
+                    'delivery_key' => $compatible->date(
+                        $compatible->client->wishe->delivery_key,
+                        $compatible->property->delivery_key
+                    )['result'],
+
+                    'building_area' => $compatible->number(
+                        $compatible->client->wishe->building_area,
+                        $compatible->property->building_area
+                    )['result'],
+
+                    'rooms' => $compatible->number(
+                        $compatible->client->wishe->rooms,
+                        $compatible->property->rooms
+                    )['result'],
+
+                    'suites' => $compatible->number(
+                        $compatible->client->wishe->suites,
+                        $compatible->property->suites
+                    )['result'],
+
+                    'garages' => $compatible->number(
+                        $compatible->client->wishe->garages,
+                        $compatible->property->garages
+                    )['result'],
+
+                    'balcony' => $compatible->bool(
+                        $compatible->client->wishe->balcony,
+                        $compatible->property->balcony
+                    )['result'],
+
+                    'region' => $compatible->inArray(
+                        $compatible->property->region->id ?? '',
+                        $compatible->client->wishe->regions()
+                            ->get()->pluck('id')->toArray()
+                    )['result'],
+                ];
+            })->toArray(),
+            'clientOptions' => Client::orderBy('name')->get()->map(fn($client) => [
+                'value' => strval($client->id), // Cast to string
+                'label' => $client->name,
+            ])->all(),
+            'propertyOptions' => Property::orderBy('description')->get()->map(fn($property) => [
+                'value' => strval($property->id), // Cast to string
+                'label' => $property->description,
+            ])->all(),
         ]);
     }
 }
