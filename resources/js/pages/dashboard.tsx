@@ -101,7 +101,7 @@ export default function Dashboard({
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('filter'));
+        post(route('dashboard.filter'));
     };
 
     return (
@@ -209,7 +209,7 @@ export default function Dashboard({
                     {matches.map((match) => (
                         <a
                             key={match.id}
-                            href={route('clients.property', [match.client_id, match.property_id])}
+                            href={route('dashboard.details', [match.client_id, match.property_id])}
                             className="transition-transform duration-200 hover:scale-[1.02]"
                         >
                             <div
