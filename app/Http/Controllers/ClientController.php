@@ -46,6 +46,7 @@ class ClientController extends Controller
 
     public function store(ClientRequest $request): RedirectResponse
     {
+        session()->forget('compatibleObjects');
         $validated = $request->validated();
         $validated['user_id'] = Auth::user()->id;
 
@@ -114,6 +115,7 @@ class ClientController extends Controller
 
     public function update(ClientRequest $request, Client $client): RedirectResponse
     {
+        session()->forget('compatibleObjects');
         $validated = $request->validated();
         $validated['user_id'] = Auth::user()->id;
 
@@ -165,6 +167,7 @@ class ClientController extends Controller
     }
     public function destroy(Client $client): RedirectResponse
     {
+        session()->forget('compatibleObjects');
         // Delete the associated wish first
         if ($client->wishe) {
             $client->wishe()->delete();
@@ -444,10 +447,16 @@ class ClientController extends Controller
             'clientOptions' => Client::orderBy('name')->get()->map(fn($client) => [
                 'value' => strval($client->id), // Convert to string
                 'label' => $client->name,
+            ])->prepend([
+                'value' => '0',
+                'label' => 'Selecionar todos',
             ])->all(),
             'propertyOptions' => Property::orderBy('description')->get()->map(fn($property) => [
                 'value' => strval($property->id), // Convert to string
                 'label' => $property->description,
+            ])->prepend([
+                'value' => '0',
+                'label' => 'Selecionat todos',
             ])->all(),
         ]);
     }
@@ -536,10 +545,17 @@ class ClientController extends Controller
             'clientOptions' => Client::orderBy('name')->get()->map(fn($client) => [
                 'value' => strval($client->id), // Cast to string
                 'label' => $client->name,
-            ])->all(),
+            ])->prepend([
+                'value' => '0',
+                'label' => 'Selecionar todos',
+            ])
+                ->all(),
             'propertyOptions' => Property::orderBy('description')->get()->map(fn($property) => [
                 'value' => strval($property->id), // Cast to string
                 'label' => $property->description,
+            ])->prepend([
+                'value' => '0',
+                'label' => 'Todos os imóveis',
             ])->all(),
         ]);
     }

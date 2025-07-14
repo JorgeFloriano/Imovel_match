@@ -22,10 +22,10 @@ type FilterForm = {
 };
 
 const showOptions = [
-    { value: '30', label: 'Exibir 30 conexões' },
-    { value: '60', label: 'Exibir 60 conexões' },
-    { value: '90', label: 'Exibir 90 conexões' },
-    { value: '120', label: 'Exibir 120 conexões' },
+    { value: '30', label: '30 conexões' },
+    { value: '60', label: '60 conexões' },
+    { value: '90', label: '90 conexões' },
+    { value: '120', label: '120 conexões' },
 ];
 
 export const BalconyIcon = ({ className = '' }: { className?: string }) => (
@@ -176,32 +176,33 @@ export default function Dashboard({
                         </div>
                     </div>
                 </div>
-                <form onSubmit={submit} className="space-y-6 py-3">
-                    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                <form onSubmit={submit} className="space-y-6 pt-4 pb-6">
+                    <div className="grid grid-cols-2 gap-4 md:grid-cols-4 items-end">
                         <FormSelect
-                            value={data.client_id || ''}
-                            placeholder="Filtrar por cliente"
+                            label='Cliente'
+                            value={data.client_id || '0'}
                             onValueChange={(value) => handleSetData('client_id', value)}
                             customOptions={clientOptions}
                             error={errors.client_id}
                         />
 
                         <FormSelect
-                            value={data.property_id || ''}
-                            placeholder="Filtrar por imóvel"
+                            label='Imóvel'
+                            value={data.property_id || '0'}
                             onValueChange={(value) => handleSetData('property_id', value)}
                             customOptions={propertyOptions}
                             error={errors.property_id}
                         />
 
                         <FormSelect
+                            label='Mostrar'
                             value={data.show || '30'} // Default to '30' if empty
                             onValueChange={(value) => handleSetData('show', value)}
                             customOptions={showOptions}
                             error={errors.show}
                         />
 
-                        <Button type="submit">Buscar Resultados</Button>
+                        <Button type="submit">Exibir Resultados</Button>
                     </div>
                 </form>
                 <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">

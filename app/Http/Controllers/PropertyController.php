@@ -44,6 +44,7 @@ class PropertyController extends Controller
 
     public function store(PropertyRequest $request): RedirectResponse
     {
+        session()->forget('compatibleObjects');
         $validated = $request->validated();
         $validated['user_id'] = Auth::user()->id;
 
@@ -82,6 +83,7 @@ class PropertyController extends Controller
 
     public function update(PropertyRequest $request, Property $property): RedirectResponse
     {
+        session()->forget('compatibleObjects');
         $validated = $request->validated();
         $validated['user_id'] = Auth::user()->id;
 
@@ -92,6 +94,7 @@ class PropertyController extends Controller
 
     public function destroy(Property $property): RedirectResponse
     {
+        session()->forget('compatibleObjects');
         $property->delete();
         return to_route('properties.index')->with('success', 'Property deleted successfully');
     }
