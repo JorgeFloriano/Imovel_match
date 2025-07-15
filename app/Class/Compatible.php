@@ -5,6 +5,7 @@ namespace App\Class;
 use App\Models\Client;
 use App\Models\Property;
 use DateTime;
+use Illuminate\Support\Facades\Auth;
 
 class Compatible
 {
@@ -249,19 +250,19 @@ class Compatible
                     )['result'],
                 ];
             })->toArray(),
-            'clientOptions' => Client::orderBy('name')->get()->map(fn($client) => [
+            'clientOptions' => Client::where('user_id', Auth::user()->id)->orderBy('name')->get()->map(fn($client) => [
                 'value' => strval($client->id), // Convert to string
                 'label' => $client->name,
             ])->prepend([
                 'value' => '0',
                 'label' => 'Selecionar todos',
             ])->all(),
-            'propertyOptions' => Property::orderBy('description')->get()->map(fn($property) => [
+            'propertyOptions' => Property::where('user_id', Auth::user()->id)->orderBy('description')->get()->map(fn($property) => [
                 'value' => strval($property->id), // Convert to string
                 'label' => $property->description,
             ])->prepend([
                 'value' => '0',
-                'label' => 'Selecionat todos',
+                'label' => 'Selecionar todos',
             ])->all(),
         ];
     }

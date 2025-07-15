@@ -72,16 +72,16 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                         {House && <Icon iconNode={House} />}
                                     </div>
                                 </th>
-                                <th scope="col" className="px-6 py-3">
+                                <th scope="col" className="px-6 py-3 hidden md:table-cell">
                                     Profissão
                                 </th>
-                                <th scope="col" className="px-6 py-3">
+                                <th scope="col" className="px-6 py-3 hidden md:table-cell">
                                     Renda
                                 </th>
-                                <th scope="col" className="px-6 py-3">
+                                <th scope="col" className="px-6 py-3 hidden md:table-cell">
                                     Tel./Whatsapp
                                 </th>
-                                <th scope="col" className="px-6 py-3">
+                                <th scope="col" className="px-6 py-3 text-center">
                                     <span>Ações</span>
                                 </th>
                             </tr>
@@ -102,16 +102,16 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                             {client.name}
                                         </a>
                                     </th>
-                                    <td className="px-6 py-3">{client.profession}</td>
-                                    <td className="px-6 py-3">
+                                    <td className="px-6 py-3 hidden md:table-cell">{client.profession}</td>
+                                    <td className="px-6 py-3 hidden md:table-cell">
                                         {new Intl.NumberFormat('pt-BR', {
                                             style: 'currency',
                                             currency: 'BRL',
                                         }).format(client.revenue)}
                                     </td>
-                                    <td className="px-6 py-3">{client.phone}</td>
+                                    <td className="px-6 py-3 hidden md:table-cell">{client.phone}</td>
 
-                                    <td className="px-6 py-3 align-middle">
+                                    <td className="px-6 py-3 align-middle text-center">
                                         <div className="inline-flex items-center gap-2">
                                             <a
                                                 href={route('clients.edit', client.id)}

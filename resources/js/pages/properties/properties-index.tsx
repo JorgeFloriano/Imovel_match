@@ -81,11 +81,11 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                 <th scope="col" className="px-6 py-3">
                                     Descrição/Link
                                 </th>
-                                <th>
+                                <th className='hidden md:table-cell'>
                                     <div className="px-6">Tipo</div>
                                 </th>
-                                <th className="px-6">Preço(R$)</th>
-                                <th className="px-6">
+                                <th className="px-6 hidden md:table-cell">Preço(R$)</th>
+                                <th className="px-6 hidden md:table-cell">
                                     <IconTooltip
                                         iconNode={
                                             <div className="inline-flex gap-2">
@@ -97,19 +97,19 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                         tooltipText="Previsão de entrega das chaves"
                                     />
                                 </th>
-                                <th className="text-center">
+                                <th className="text-center hidden md:table-cell">
                                     <IconTooltip iconNode="M²" tooltipText="Área construída" />
                                 </th>
-                                <th>
+                                <th className='hidden md:table-cell'>
                                     <IconTooltip iconNode={Bed && <Icon className="inline h-4 w-4" iconNode={Bed} />} tooltipText="Quartos" />
                                 </th>
-                                <th>
+                                <th className='hidden md:table-cell'>
                                     <IconTooltip iconNode={Bath && <Icon className="inline h-4 w-4" iconNode={Bath} />} tooltipText="Suítes" />
                                 </th>
-                                <th>
+                                <th className='hidden md:table-cell'>
                                     <IconTooltip iconNode={Car && <Icon className="inline h-4 w-4" iconNode={Car} />} tooltipText="Vagas" />
                                 </th>
-                                <th>
+                                <th className='hidden md:table-cell'>
                                     <IconTooltip
                                         iconNode={
                                             <>
@@ -120,10 +120,10 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                         tooltipText="Varanda"
                                     />
                                 </th>
-                                <th>
+                                <th className='hidden md:table-cell'>
                                     <div className="px-6">Região</div>
                                 </th>
-                                <th scope="col" className="px-6 py-3">
+                                <th scope="col" className="px-6 py-3 text-center">
                                     <span>Ações</span>
                                 </th>
                             </tr>
@@ -146,24 +146,24 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                             {property.description || 'Sem descrição'}
                                         </a>
                                     </th>
-                                    <td className="px-6">{property.typ ? property.typ.charAt(0).toUpperCase() + property.typ.slice(1) : ' '}</td>
-                                    <td className="px-6">
+                                    <td className="px-6 hidden md:table-cell">{property.typ ? property.typ.charAt(0).toUpperCase() + property.typ.slice(1) : ' '}</td>
+                                    <td className="px-6 hidden md:table-cell">
                                         {new Intl.NumberFormat('pt-BR', {
                                             minimumFractionDigits: 0,
                                             maximumFractionDigits: 0,
                                         }).format(property.price)}
                                     </td>
-                                    <td className="px-6 text-center">
+                                    <td className="px-6 text-center hidden md:table-cell">
                                         {property.delivery_key ? new Date(property.delivery_key).toLocaleDateString('pt-BR') : null}
                                     </td>
-                                    <td className="px-6 text-center">{property.building_area}</td>
-                                    <td className="px-6 text-center">{property.rooms}</td>
-                                    <td className="px-6 text-center">{property.suites}</td>
-                                    <td className="px-6 text-center">{property.garages}</td>
-                                    <td className="px-6 text-center">
+                                    <td className="px-6 text-center hidden md:table-cell">{property.building_area}</td>
+                                    <td className="px-6 text-center hidden md:table-cell">{property.rooms}</td>
+                                    <td className="px-6 text-center hidden md:table-cell">{property.suites}</td>
+                                    <td className="px-6 text-center hidden md:table-cell">{property.garages}</td>
+                                    <td className="px-6 text-center hidden md:table-cell">
                                         <StatusIcon value={property.balcony} />
                                     </td>
-                                    <td className="px-6">
+                                    <td className="px-6 hidden md:table-cell">
                                         {property.address ? (
                                             <IconTooltip
                                                 tooltipClassName="right-full"
@@ -192,7 +192,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                         )}
                                     </td>
 
-                                    <td className="px-6 py-3 align-middle">
+                                    <td className="px-6 py-3 align-middle text-center">
                                         <div className="inline-flex items-center gap-2">
                                             <a
                                                 href={route('properties.edit', property.id)}
