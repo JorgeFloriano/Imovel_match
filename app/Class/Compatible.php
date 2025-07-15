@@ -250,14 +250,14 @@ class Compatible
                     )['result'],
                 ];
             })->toArray(),
-            'clientOptions' => Client::where('user_id', Auth::user()->id)->orderBy('name')->get()->map(fn($client) => [
+            'clientOptions' => Client::where('user_id', Auth::id())->orderBy('name')->get()->map(fn($client) => [
                 'value' => strval($client->id), // Convert to string
                 'label' => $client->name,
             ])->prepend([
                 'value' => '0',
                 'label' => 'Selecionar todos',
             ])->all(),
-            'propertyOptions' => Property::where('user_id', Auth::user()->id)->orderBy('description')->get()->map(fn($property) => [
+            'propertyOptions' => Property::where('user_id', Auth::id())->orderBy('description')->get()->map(fn($property) => [
                 'value' => strval($property->id), // Convert to string
                 'label' => $property->description,
             ])->prepend([

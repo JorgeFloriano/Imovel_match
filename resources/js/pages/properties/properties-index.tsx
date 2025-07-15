@@ -136,7 +136,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                         index !== properties.length - 1 ? 'border-b' : ''
                                     }`}
                                 >
-                                    <th scope="row" className="px-6 py-3 font-medium whitespace-nowrap text-gray-900 dark:text-white">
+                                    <th scope="row" className="px-6 py-3 font-medium whitespace-normal text-gray-900 dark:text-white">
                                         <a
                                             href={property.contact_link || '#'}
                                             target="_blank"

@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Client extends Model
 {
@@ -66,7 +68,8 @@ class Client extends Model
     {
         return $this->hasOne(Wishe::class, 'client_id');
     }
-    public function maritalStatOpt() {
+    public function maritalStatOpt()
+    {
         return [
             'solteiro' => 'Solteiro',
             'casado' => 'Casado',
@@ -74,7 +77,8 @@ class Client extends Model
             'viúvo' => 'Viúvo',
         ];
     }
-    public function boolOpt() {
+    public function boolOpt()
+    {
         return [
             'true' => 'Sim',
             'false' => 'Não',
@@ -96,4 +100,12 @@ class Client extends Model
             return 5;
         }
     }
+
+    // // blocks access to other users' clients
+    // protected static function booted()
+    // {
+    //     static::addGlobalScope('user', function (Builder $builder) {
+    //         $builder->where('user_id', Auth::user()->id);
+    //     });
+    // }
 }

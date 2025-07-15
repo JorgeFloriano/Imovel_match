@@ -160,7 +160,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                     <div className="mb-3 grid grid-cols-1 gap-4 md:grid-cols-2">
                         <FormInput
                             label="Descrição"
-                            maxLength={100}
+                            maxLength={40}
                             placeholder="Ex: Troplical Park (duplex)"
                             value={data.description || ''}
                             onChange={(value) => handleSetData('description', value)}

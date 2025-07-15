@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Class\Compatible;
 use App\Models\Property;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+
 
 class ClientController extends Controller
 {
@@ -90,6 +91,7 @@ class ClientController extends Controller
 
     public function show(Client $client)
     {
+        Gate::authorize('show', $client);
         $client->load('wishe.regions');
         $client->wishe->regions_descr = $client->wishe->regionsDescr();
 
@@ -97,11 +99,12 @@ class ClientController extends Controller
             'client' => $client,
             'maritalStatusOptions' => $this->client->maritalStatOpt(),
             'booleanOptions' => $this->client->boolOpt(),
-        ]);
+        ], compact('client'));
     }
 
     public function edit(Client $client)
     {
+        Gate::authorize('edit', $client);
         return Inertia::render('clients/clients-edit', [
             'client' => $client->load('wishe.regions'),
             'maritalStatusOptions' => $this->client->maritalStatOpt(),
@@ -115,6 +118,7 @@ class ClientController extends Controller
 
     public function update(ClientRequest $request, Client $client): RedirectResponse
     {
+        Gate::authorize('update', $client);
         session()->forget('compatibleObjects');
         $validated = $request->validated();
         $validated['user_id'] = Auth::user()->id;
@@ -167,6 +171,7 @@ class ClientController extends Controller
     }
     public function destroy(Client $client): RedirectResponse
     {
+        Gate::authorize('delete', $client);
         session()->forget('compatibleObjects');
         // Delete the associated wish first
         if ($client->wishe) {
@@ -181,6 +186,7 @@ class ClientController extends Controller
 
     public function properties($client_id)
     {
+        Gate::authorize('show', Client::find($client_id));
         $client = Client::find($client_id)->load('wishe.regions');
         $client->wishe->typ = $client->wishe->typ();
 

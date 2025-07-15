@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Property extends Model
 {
@@ -183,4 +185,12 @@ class Property extends Model
             return 5;
         }
     }
+
+    // // blocks access to other users' properties
+    // protected static function booted()
+    // {
+    //     static::addGlobalScope('user', function (Builder $builder) {
+    //         $builder->where('user_id', Auth::id());
+    //     });
+    // }
 }

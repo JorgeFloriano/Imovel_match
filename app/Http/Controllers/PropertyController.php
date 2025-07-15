@@ -8,6 +8,7 @@ use App\Models\Region;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
 
 class PropertyController extends Controller
 {
@@ -59,6 +60,7 @@ class PropertyController extends Controller
 
     public function show(Property $property)
     {
+        Gate::authorize('show', $property);
         return Inertia::render('properties/properties-show', [
             'property' => $property->load(['user', 'region']),
             'typeOptions' => $this->property->typeOpt(),
@@ -69,6 +71,7 @@ class PropertyController extends Controller
 
     public function edit(Property $property)
     {
+        Gate::authorize('edit', $property);
         return Inertia::render('properties/properties-edit', [
             'property' => $property,
             'typeOptions' => $this->property->typeOpt(),
@@ -83,6 +86,7 @@ class PropertyController extends Controller
 
     public function update(PropertyRequest $request, Property $property): RedirectResponse
     {
+        Gate::authorize('update', $property);
         session()->forget('compatibleObjects');
         $validated = $request->validated();
         $validated['user_id'] = Auth::user()->id;
@@ -94,6 +98,7 @@ class PropertyController extends Controller
 
     public function destroy(Property $property): RedirectResponse
     {
+        Gate::authorize('delete', $property);
         session()->forget('compatibleObjects');
         $property->delete();
         return to_route('properties.index')->with('success', 'Property deleted successfully');

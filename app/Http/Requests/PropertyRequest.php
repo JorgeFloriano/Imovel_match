@@ -22,6 +22,7 @@ class PropertyRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'description' => 'required|string|max:40',
             'contact_name' => 'nullable|string|max:100',
             'contact_phone' => 'nullable|string|max:20',
             'contact_link' => 'nullable|string|max:500',

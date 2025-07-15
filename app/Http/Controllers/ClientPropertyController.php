@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use App\Class\Compatible;
 use App\Models\Property;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ClientPropertyController extends Controller
 {
@@ -95,6 +96,9 @@ class ClientPropertyController extends Controller
 
     public function details($client_id, $property_id)
     {
+        Gate::authorize('show', Client::find($client_id));
+        Gate::authorize('show', Property::find($property_id));
+    
         $comp = new Compatible();
         return Inertia::render('clients/client-property', $comp->detailsData($client_id, $property_id));
     }

@@ -220,7 +220,7 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                             <FormInput
                                 label="Nome Completo"
                                 placeholder="Ex.: João Paulo Pereira Mendonsa"
-                                maxLength={60}
+                                maxLength={40}
                                 value={data.name}
                                 onChange={(value) => handleSetData('name', value)}
                                 error={errors.name}

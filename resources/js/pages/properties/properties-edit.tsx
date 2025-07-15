@@ -132,6 +132,7 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
                         <FormInput
                             label="Descrição"
                             placeholder="Ex: Troplical Park (duplex)"
+                            maxLength={40}
                             value={data.description || ''}
                             onChange={(value) => handleSetData('description', value)}
                             error={errors.description}

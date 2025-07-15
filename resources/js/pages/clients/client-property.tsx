@@ -16,7 +16,7 @@ interface TableRoleProps {
 }
 
 const TableRole = ({ label, clientValue, propertyValue, iconValue, iconColor }: TableRoleProps) => {
-    if (iconValue === undefined || iconValue ===null) {
+    if (iconValue === undefined || iconValue === null) {
         iconColor = 'bg-transparent text-transparent border-transparent';
         iconValue = undefined;
     } else if (iconValue === false) {
@@ -33,7 +33,7 @@ const TableRole = ({ label, clientValue, propertyValue, iconValue, iconColor }: 
             <th className="p-3 text-center">{clientValue || null}</th>
             <th className="p-3 text-center">{propertyValue || null}</th>
             <th className="p-3 text-center">
-                <div className={`w-8 flex items-center p-1 justify-center rounded-md border-1 ${iconColor}`}>
+                <div className={`flex w-8 items-center justify-center rounded-md border-1 p-1 ${iconColor}`}>
                     <StatusIcon value={iconValue} />
                 </div>
             </th>
@@ -136,37 +136,34 @@ interface ClientPropertyProps {
         acessibility: boolean | null;
         installment_payment: boolean | null;
         min_act: boolean | null;
-    }
+    };
 }
 
 export default function ClientProperties({ property, client, match }: ClientPropertyProps) {
     // This function formats the currency
     const formatCurrency = (value: number | null | undefined | string) => {
-    // Convert string to number if it's a numeric string
-    const numericValue = typeof value === 'string' ? Number(value) : value;
-    
-    // Check if the value is exactly 0 (not null/undefined/empty string/negative)
-    if (numericValue === 0) {
+        // Convert string to number if it's a numeric string
+        const numericValue = typeof value === 'string' ? Number(value) : value;
+
+        // Check if the value is exactly 0 (not null/undefined/empty string/negative)
+        if (numericValue === 0) {
+            return new Intl.NumberFormat('pt-BR', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+            }).format(0);
+        }
+
+        // Return empty string for all other cases
+        if (numericValue === null || numericValue === undefined || isNaN(numericValue) || numericValue < 0) {
+            return null;
+        }
+
+        // Format positive numbers
         return new Intl.NumberFormat('pt-BR', {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
-        }).format(0);
-    }
-    
-    // Return empty string for all other cases
-    if (numericValue === null || 
-        numericValue === undefined || 
-        isNaN(numericValue) || 
-        numericValue < 0) {
-        return null;
-    }
-    
-    // Format positive numbers
-    return new Intl.NumberFormat('pt-BR', {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(numericValue);
-};
+        }).format(numericValue);
+    };
 
     const formatDate = (dateString?: string | null) => {
         return dateString ? new Date(dateString).toLocaleDateString('pt-BR') : null;
@@ -190,7 +187,7 @@ export default function ClientProperties({ property, client, match }: ClientProp
                         </Button>
                     </div>
                 </div>
- 
+
                 <p className="text-sm">Informações do cliente e características do imóvel solicitado / Informaçõe do imóvel selecionado</p>
 
                 <div className="relative overflow-x-auto overflow-y-hidden shadow-md sm:rounded-lg">
@@ -206,12 +203,7 @@ export default function ClientProperties({ property, client, match }: ClientProp
                         <tbody className="border-gray-200 text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-white">
                             <TableRole label="Nome / Descr." clientValue={client.name} propertyValue={property.description} />
 
-                            <TableRole
-                                label="Tipo"
-                                clientValue={client.wishe?.type}
-                                propertyValue={property.type}
-                                iconValue={match.type}
-                            />
+                            <TableRole label="Tipo" clientValue={client.wishe?.type} propertyValue={property.type} iconValue={match.type} />
 
                             <TableRole
                                 label="Renda / Preço (R$)"
@@ -264,9 +256,7 @@ export default function ClientProperties({ property, client, match }: ClientProp
 
                             <tr className="border-b">
                                 <th className="p-3">Região (s)</th>
-                                <th className="p-3 text-center">
-                                    {client.wishe?.regions_descr || null}
-                                </th>
+                                <th className="p-3 text-center">{client.wishe?.regions_descr || null}</th>
                                 <th className="p-3 text-center">
                                     {property.address ? (
                                         <IconTooltip
