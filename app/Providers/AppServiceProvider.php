@@ -30,16 +30,16 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Client::class, ClientPolicy::class);
         Gate::policy(Property::class, PropertyPolicy::class);
 
-        // Route::bind('client', function ($value) {
-        //     return Client::where('id', $value)
-        //         ->where('user_id', Auth::id())
-        //         ->firstOrFail();
-        // });
+        Route::bind('client', function ($value) {
+            return Client::where('id', $value)
+                ->where('user_id', Auth::id())
+                ->firstOrFail();
+        });
 
-        // Route::bind('property', function ($value) {
-        //     return Property::where('id', $value)
-        //         ->where('user_id', Auth::id())
-        //         ->firstOrFail();
-        // });
+        Route::bind('property', function ($value) {
+            return Property::where('id', $value)
+                ->where('user_id', Auth::id())
+                ->firstOrFail();
+        });
     }
 }

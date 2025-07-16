@@ -9,11 +9,6 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class PropertyPolicy
 {
     use HandlesAuthorization;
-
-    public function view(User $user, Property $property): bool
-    {
-        return $user->id === $property->user_id;
-    }
     
     /**
      * Determine whether the user can view the model.

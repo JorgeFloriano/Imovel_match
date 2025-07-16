@@ -186,11 +186,11 @@ class Property extends Model
         }
     }
 
-    // // blocks access to other users' properties
-    // protected static function booted()
-    // {
-    //     static::addGlobalScope('user', function (Builder $builder) {
-    //         $builder->where('user_id', Auth::id());
-    //     });
-    // }
+    // blocks access to other users' properties
+    protected static function booted()
+    {
+        static::addGlobalScope('user', function (Builder $builder) {
+            $builder->where('user_id', Auth::id());
+        });
+    }
 }

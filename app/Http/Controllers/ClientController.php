@@ -184,10 +184,10 @@ class ClientController extends Controller
         return to_route('clients.index')->with('success', 'Client deleted successfully');
     }
 
-    public function properties($client_id)
+    public function properties(Client $client)
     {
-        Gate::authorize('show', Client::find($client_id));
-        $client = Client::find($client_id)->load('wishe.regions');
+        Gate::authorize('show', $client);
+        $client = Client::find($client->id)->load('wishe.regions');
         $client->wishe->typ = $client->wishe->typ();
 
         $client->wishe->regions_msg = $client->wishe->regionsMsg();

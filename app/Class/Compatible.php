@@ -85,15 +85,15 @@ class Compatible
         $this->client->wishe->regions_descr = $this->client->wishe->regionsDescr();
     }
 
-    public function detailsData($client_id, $property_id)
+    public function detailsData($client, $property)
     {
-        $client = Client::find($client_id)->load('wishe.regions');
+        $client->load('wishe.regions');
 
         $client->wishe->regions_msg = $client->wishe->regionsMsg();
 
         $client->wishe->regions_descr = $client->wishe->regionsDescr();
 
-        $property = Property::with(['user', 'region'])->find($property_id);
+        $property = Property::with(['user', 'region'])->find($property->id);
 
         $compatible = new Compatible($client, $property); // calss to compare client and property
 

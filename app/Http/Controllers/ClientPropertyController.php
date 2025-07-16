@@ -94,12 +94,12 @@ class ClientPropertyController extends Controller
         return Inertia::render('dashboard', $comp->dashboardData($compatibleObjects));
     }
 
-    public function details($client_id, $property_id)
+    public function details(Client $client, Property $property)
     {
-        Gate::authorize('show', Client::find($client_id));
-        Gate::authorize('show', Property::find($property_id));
+        Gate::authorize('show', $client);
+        Gate::authorize('show', $property);
     
         $comp = new Compatible();
-        return Inertia::render('clients/client-property', $comp->detailsData($client_id, $property_id));
+        return Inertia::render('clients/client-property', $comp->detailsData($client, $property));
     }
 }
