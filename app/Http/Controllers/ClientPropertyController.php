@@ -6,8 +6,8 @@ use App\Models\Client;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Class\Compatible;
+use App\Http\Requests\FilterRequest;
 use App\Models\Property;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class ClientPropertyController extends Controller
@@ -65,8 +65,9 @@ class ClientPropertyController extends Controller
         return Inertia::render('dashboard', $comp->dashboardData($compatibleObjects));
     }
 
-    public function filter(Request $request)
+    public function filter(FilterRequest $request)
     {
+        $request->validated();
         //if client_id or property_id is 0/empty/null desconsider $request->show and , show 200 results
         $n_displayed = (($request->client_id ?? '0') != '0' || ($request->property_id ?? '0') != '0')
             ? 200

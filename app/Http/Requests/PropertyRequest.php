@@ -11,7 +11,10 @@ class PropertyRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        if ($this->user()) {
+            return true;
+        }
+        return false;
     }
 
     /**

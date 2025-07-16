@@ -101,7 +101,7 @@ class Client extends Model
         }
     }
 
-    // // blocks access to other users' clients
+    // blocks access to other users' clients
     protected static function booted()
     {
         static::addGlobalScope('user', function (Builder $builder) {
