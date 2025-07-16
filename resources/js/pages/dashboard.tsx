@@ -35,26 +35,44 @@ export const BalconyIcon = ({ className = '' }: { className?: string }) => (
 interface AtribIconProps {
     iconValue?: boolean | null | undefined;
     iconClass?: string;
-    icon?: LucideIcon | React.ComponentType<{ className?: string }>;
+    icon?: React.ComponentType<{ className?: string }> | LucideIcon;
 }
 
 const AtribIcon = ({ iconValue, iconClass, icon }: AtribIconProps) => {
     // Determine icon display logic
+    let finalIconClass = iconClass;
+    let iconToRender = icon;
+
     if (iconValue === undefined || iconValue === null) {
-        iconClass = 'bg-[#EFEEEC] border-[#BF9447]';
+        finalIconClass = 'bg-[#EFEEEC] border-[#BF9447]';
     } else if (iconValue === false) {
-        iconClass = 'bg-red-200 border-red-500';
+        finalIconClass = 'bg-red-200 border-red-500 text-red-800';
+        // If it's the BalconyIcon, use the red version
+        if (icon === BalconyIcon) {
+            iconToRender = ({ className = '' }) => (
+                <img src="/balcony_red.png" width={300} className={`${className}`} alt="Balcony" />
+            );
+        }
     } else if (iconValue === true) {
-        iconClass = 'bg-green-200 border-green-500';
+        finalIconClass = 'bg-green-200 border-green-500 text-green-800';
+        // If it's the BalconyIcon, use the green version
+        if (icon === BalconyIcon) {
+            iconToRender = ({ className = '' }) => (
+                <img src="/balcony_green.png" width={300} className={`${className}`} alt="Balcony" />
+            );
+        }
     }
 
     return (
         <div className="w-8">
             {iconValue !== undefined && (
-                <div className={`flex items-center justify-center rounded-md border-1 p-1 text-[#123251] ${iconClass}`}>
-                    {icon && (
+                <div className={`flex items-center justify-center rounded-md border-1 p-1 text-[#123251] ${finalIconClass}`}>
+                    {iconToRender && (
                         <span className="inline">
-                            {'$$typeof' in icon ? <Icon className="h-5 w-5" iconNode={icon} /> : React.createElement(icon, { className: 'h-5 w-5' })}
+                            {'$$typeof' in iconToRender ? 
+                                <Icon className="h-5 w-5" iconNode={iconToRender} /> : 
+                                React.createElement(iconToRender, { className: 'h-5 w-5' })
+                            }
                         </span>
                     )}
                 </div>
@@ -89,7 +107,7 @@ export default function Dashboard({
     clientOptions: Array<{ value: string; label: string }>;
     propertyOptions: Array<{ value: string; label: string }>;
 }) {
-    const { data, setData, post, errors} = useForm<FilterForm>({
+    const { data, setData, post, errors } = useForm<FilterForm>({
         client_id: undefined,
         property_id: undefined,
         show: '30',
@@ -177,9 +195,9 @@ export default function Dashboard({
                     </div>
                 </div>
                 <form onSubmit={submit} className="space-y-6 pt-4 pb-6">
-                    <div className="grid grid-cols-2 gap-4 md:grid-cols-4 items-end">
+                    <div className="grid grid-cols-2 items-end gap-4 md:grid-cols-4">
                         <FormSelect
-                            label='Cliente'
+                            label="Cliente"
                             value={data.client_id || '0'}
                             onValueChange={(value) => handleSetData('client_id', value)}
                             customOptions={clientOptions}
@@ -187,7 +205,7 @@ export default function Dashboard({
                         />
 
                         <FormSelect
-                            label='Imóvel'
+                            label="Imóvel"
                             value={data.property_id || '0'}
                             onValueChange={(value) => handleSetData('property_id', value)}
                             customOptions={propertyOptions}
@@ -195,7 +213,7 @@ export default function Dashboard({
                         />
 
                         <FormSelect
-                            label='Mostrar'
+                            label="Mostrar"
                             value={data.show || '30'} // Default to '30' if empty
                             onValueChange={(value) => handleSetData('show', value)}
                             customOptions={showOptions}
