@@ -1,6 +1,6 @@
 import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import IconTooltip from '@/components/ui/icon-tooltip';
 import { Status } from '@/components/ui/status';
 import { StatusIcon } from '@/components/ui/status-icon';
@@ -66,13 +66,35 @@ export default function Properties({ properties }: { properties: Property[] }) {
                 <div className="flex items-center justify-between">
                     <h1 className="text-xl font-semibold">Imóveis</h1>
 
-                    <Button asChild>
-                        <a href={route('properties.create')}>
-                            <span className="flex items-center gap-2">
-                                <span>Cadastrar</span>
-                            </span>
-                        </a>
-                    </Button>
+                    {properties.length >= 5 ? (
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button>Cadastrar</Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogTitle>O plano Imóveis-Match free da direito à 5 cadastros de imóveis</DialogTitle>
+                                <DialogDescription>
+                                    Para migrar para um plano mais completo, entre em contato com a equipe JLDev (15) 98165-5797.
+                                </DialogDescription>
+
+                                <DialogFooter className="gap-2">
+                                    <DialogClose asChild>
+                                        <Button variant="secondary">
+                                            Cancelar
+                                        </Button>
+                                    </DialogClose>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+                    ) : (
+                        <Button asChild>
+                            <a href={route('properties.create')}>
+                                <span className="flex items-center gap-2">
+                                    <span>Cadastrar</span>
+                                </span>
+                            </a>
+                        </Button>
+                    )}
                 </div>
                 <div className="relative overflow-x-auto overflow-y-hidden shadow-md sm:rounded-lg">
                     <table className="w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">

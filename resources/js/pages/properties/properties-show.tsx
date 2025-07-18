@@ -244,3 +244,4 @@ export default function ShowProperty({ property, booleanOptions }: PropertyShowP
         </AppLayout>
     );
 }
+
