@@ -10,46 +10,31 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        // Proper Vite mock
-        app()->bind(\Illuminate\Foundation\Vite::class, function () {
-            return new class {
-                public function __invoke($assets, $buildDirectory = 'build')
-                {
-                    return is_array($assets) ? $assets : [$assets];
-                }
+        $this->mockVite();
+    }
 
-                public function __call($name, $arguments)
-                {
-                    // Handle asset() calls
-                    if ($name === 'asset') {
-                        return $arguments[0] ?? '';
-                    }
+    protected function mockVite()
+    {
+        app()->bind(\Illuminate\Foundation\Vite::class, fn() => new class {
+            public function __invoke($assets, $buildDirectory = null): string
+            {
+                return collect($assets)->map(fn($asset) => asset($asset))->implode('');
+            }
 
-                    // Handle reactRefresh() calls
-                    if ($name === 'reactRefresh') {
-                        return '';
-                    }
+            public function asset($asset, $buildDirectory = null): string
+            {
+                return asset($asset);
+            }
 
-                    // Default return empty array for other calls
-                    return [];
-                }
+            public function reactRefresh(): string
+            {
+                return '';
+            }
 
-                // Explicitly handle these common Vite methods
-                public function reactRefresh(): string
-                {
-                    return '';
-                }
-
-                public function asset(string $asset, string $buildDirectory = 'build'): string
-                {
-                    return $asset;
-                }
-
-                public function __toString(): string
-                {
-                    return '';
-                }
-            };
+            public function __call($method, $parameters)
+            {
+                return '';
+            }
         });
     }
 }
