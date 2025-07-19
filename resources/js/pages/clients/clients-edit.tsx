@@ -112,7 +112,7 @@ const [selectedRegions, setSelectedRegions] = useState<Record<string, boolean>>(
     transform((data) => ({
         ...data,
         selected_regions: Object.entries(selectedRegions)
-            .filter(([_, isSelected]) => isSelected)
+            .filter(([, isSelected]) => isSelected)
             .map(([regionId]) => regionId),
     }));
 

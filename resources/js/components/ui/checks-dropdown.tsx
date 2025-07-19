@@ -32,14 +32,14 @@ export default function ChecksDropdown({
             });
             setInternalSelected(initialState);
         }
-    }, []); // Empty dependency array to run only once
+    }, [customOptions, value]); // Empty dependency array to run only once
 
     // Handle external value changes
     useEffect(() => {
         if (value && JSON.stringify(value) !== JSON.stringify(internalSelected)) {
             setInternalSelected(value);
         }
-    }, [value]);
+    }, [internalSelected, value]);
 
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
