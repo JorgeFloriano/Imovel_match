@@ -14,6 +14,7 @@ class ClientPropertyController extends Controller
 {
     public function index()
     {
+        // Objects to be displayed in the dashboard will be stored in the session, to do this only once and not on every request, to avoid performance issues
         if (session('compatibleObjects')) {
             redirect()->route('dashboard.filter');
         }

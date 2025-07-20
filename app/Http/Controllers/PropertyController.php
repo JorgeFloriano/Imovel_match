@@ -32,6 +32,7 @@ class PropertyController extends Controller
 
     public function create()
     {
+        Gate::authorize('canStore', Property::class);
         return Inertia::render('properties/properties-create', [
             'typeOptions' => $this->property->typeOpt(),
             'airConditioningOptions' => $this->property->airConOpt(),
@@ -45,6 +46,7 @@ class PropertyController extends Controller
 
     public function store(PropertyRequest $request): RedirectResponse
     {
+        Gate::authorize('canStore', Property::class);
         session()->forget('compatibleObjects');
         $validated = $request->validated();
         $validated['user_id'] = Auth::user()->id;

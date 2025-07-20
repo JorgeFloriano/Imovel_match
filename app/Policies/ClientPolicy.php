@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Client;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class ClientPolicy
 {
@@ -42,5 +43,17 @@ class ClientPolicy
     public function delete(User $user, Client $client): bool
     {
         return $user->id === $client->user_id;
+    }
+
+    public function canStore(User $user): Response
+    {
+        if ($user->isSuperAdmin()) {
+            return Response::allow();
+        }
+        $numberOfClients = Client::where('user_id', $user->id)->count();
+        if ($numberOfClients >= 10) {
+            return Response::deny('Você já atingiu o limite de 10 clientes.');
+        }
+        return Response::allow();
     }
 }

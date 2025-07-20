@@ -52,4 +52,33 @@ class User extends Authenticatable
     {
         $this->notify(new CustomResetPasswordNotification($token));
     }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'super-admin';
+    }
+
+    public function canStoreClient(): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+        $numberOfClients = Client::where('user_id', $this->id)->count();
+        if ($numberOfClients >= 10) {
+            return false;
+        }
+        return true;
+    }
+
+    public function canStoreProperty(): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+        $numberOfProperties = Property::where('user_id', $this->id)->count();
+        if ($numberOfProperties >= 5) {
+            return false;
+        }
+        return true;
+    }
 }
