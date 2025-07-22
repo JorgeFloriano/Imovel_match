@@ -1,6 +1,6 @@
 import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger} from '@/components/ui/dialog';
 import IconTooltip from '@/components/ui/icon-tooltip';
 import { Status } from '@/components/ui/status';
 import { StatusIcon } from '@/components/ui/status-icon';
@@ -66,7 +66,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
                 <div className="flex items-center justify-between">
                     <h1 className="text-xl font-semibold">Imóveis</h1>
 
-                    {properties.length >= 5 ? (
+                    {/* {properties.length >= 5 ? (
                         <Dialog>
                             <DialogTrigger asChild>
                                 <Button>Cadastrar</Button>
@@ -86,7 +86,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                 </DialogFooter>
                             </DialogContent>
                         </Dialog>
-                    ) : (
+                    ) : ( */}
                         <Button asChild>
                             <a href={route('properties.create')}>
                                 <span className="flex items-center gap-2">
@@ -94,7 +94,8 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                 </span>
                             </a>
                         </Button>
-                    )}
+                    {/* ) */}
+                    
                 </div>
                 <div className="relative overflow-x-auto overflow-y-hidden shadow-md sm:rounded-lg">
                     <table className="w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">

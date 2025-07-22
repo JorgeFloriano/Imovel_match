@@ -114,6 +114,12 @@ export default function Register() {
                     </TextLink>
                 </div>
             </form>
+            <div className="text-text-[#EDEDEC] pt-15 text-center text-sm dark:text-[#EDEDEC]">
+                <a href="https://github.com/JorgeFloriano" target="_blank" className="text-[#EDEDEC]">
+                    Desenvolvido por
+                    <br /> JL-Dev &copy; {new Date().getFullYear()}
+                </a>
+            </div>
         </AuthLayout>
     );
 }

@@ -35,7 +35,6 @@ class ClientController extends Controller
 
     public function create()
     {
-        Gate::authorize('canStore', Client::class);
         return Inertia::render('clients/clients-create', [
             'maritalStatusOptions' => $this->client->maritalStatOpt(),
             'booleanOptions' => $this->client->boolOpt(),
@@ -48,7 +47,6 @@ class ClientController extends Controller
 
     public function store(ClientRequest $request): RedirectResponse
     {
-        Gate::authorize('canStore', Client::class);
         session()->forget('compatibleObjects');
         $validated = $request->validated();
         $validated['user_id'] = Auth::user()->id;

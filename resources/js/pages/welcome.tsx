@@ -24,7 +24,7 @@ export default function Welcome() {
                             <>
                                 <Link
                                     href={route('login')}
-                                    className="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
+                                    className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
                                 >
                                     Entrar
                                 </Link>
@@ -40,12 +40,20 @@ export default function Welcome() {
                 </header>
                 <div className="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
                     <main className="max-w-[335px] lg:max-w-4xl lg:flex-row">
-                        <div className="rounded-lg p-5 text-center leading-[20px] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] bg-pc-blue dark:text-[#EDEDEC] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] border-[1px] bc-pc-white">
-                            <img src="/logo_complete.png" className="inline rounded-lg" width="100%" alt="Varanda" />
+                        <div className="bg-pc-blue bc-pc-white rounded-lg border-[1px] p-5 py-16 text-center leading-[20px] text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]">
+                            <h1 className="text-4xl" style={{ fontFamily: 'Playfair Display', color: '#EDEDEC' }}>
+                                Tinder Home
+                            </h1>
+                            <img src="/logo_build.png" className="inline rounded-lg py-16" width="60%" alt="Logo" />
+                        </div>
+                        <div className="text-text-[#EDEDEC] text-center text-sm dark:text-[#EDEDEC] py-15">
+                            <a href="https://github.com/JorgeFloriano" target="_blank" className="text-[#EDEDEC]">
+                                Desenvolvido por
+                                <br /> JL-Dev &copy; {new Date().getFullYear()}
+                            </a>
                         </div>
                     </main>
                 </div>
-                <div className="hidden h-14.5 lg:block"></div>
             </div>
         </>
     );

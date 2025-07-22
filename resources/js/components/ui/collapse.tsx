@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { Button } from './button';
+import { X, ChevronDown } from 'lucide-react';
+import { Icon } from '@/components/icon';
+
 
 interface CollapseProps {
   id: string;
@@ -34,6 +37,9 @@ export function Collapse({
           aria-controls={id}
         >
           {title}
+          {isOpen ? 
+          X && <Icon className="h-4 w-4 text-[#B8B8B8]" iconNode={X} /> : 
+          ChevronDown && <Icon className="h-4 w-4 text-[#B8B8B8]" iconNode={ChevronDown} />}
         </Button>
       ) : (
         <a

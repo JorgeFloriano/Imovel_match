@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="shortcut icon" href="{{asset('android-chrome-192x192.png')}}">
+        <link href='https://fonts.googleapis.com/css?family=Playfair Display' rel='stylesheet'>
 
         <script>
             (function() {
