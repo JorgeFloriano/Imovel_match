@@ -98,7 +98,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
                 </div>
 
                 <p className="py-3 text-sm">
-                    Clique na descrição do imóvelpara acessar as informações ou na região para acessar a localização, caso os links tenham sido informados.
+                    Clique na descrição do imóvelpara acessar as informações ou na região para acessar a localização, caso os links tenham sido preenchidos no cadastro.
                 </p>
 
                 <div className="relative overflow-x-auto overflow-y-hidden shadow-md sm:rounded-lg">

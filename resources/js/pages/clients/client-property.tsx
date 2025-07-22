@@ -194,7 +194,7 @@ export default function ClientProperties({ property, client, match }: ClientProp
                 <p className="text-sm">Informações do cliente e características do imóvel solicitado / Informaçõe do imóvel selecionado</p>
 
                 <div className="relative overflow-x-auto overflow-y-hidden shadow-md sm:rounded-lg">
-                    <table className="w-full text-left text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
+                    <table className="w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
                         <thead className="m-1 bg-[#D8D8D8] text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
                                 <th className="p-3">Ref.</th>

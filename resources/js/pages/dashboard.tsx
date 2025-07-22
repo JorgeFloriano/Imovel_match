@@ -132,7 +132,7 @@ export default function Dashboard({
                 </div>
 
                 <p className="py-3 text-sm">
-                    Conexões Cliente/Imóvel, ordenadas por maior compatibolidade entre características do imóvel e espectativa do cliente, clique para
+                    Conexões Cliente/Imóvel, ordenadas por maior compatibilidade entre características do imóvel e espectativa do cliente, clique para
                     ver as informações em detalhes.
                 </p>
 
