@@ -61,8 +61,13 @@ export default function Clients({ clients }: { clients: Client[] }) {
                         </a>
                     </Button>
                 </div>
-                <div className="relative overflow-y-hidden overflow-x-auto shadow-md sm:rounded-lg">
-                    <table className="w-full h-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
+
+                <p className="py-3 text-sm">
+                    Clique no nome do cliente para ver as melhores indicações de imóveis.
+                </p>
+
+                <div className="relative overflow-x-auto overflow-y-hidden shadow-md sm:rounded-lg">
+                    <table className="h-full w-full text-left text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
                         <thead className="bg-[#D8D8D8] text-xs text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
                                 <th className="px-6 py-3 align-middle text-[#BF9447]">
@@ -72,13 +77,13 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                         {House && <Icon iconNode={House} />}
                                     </div>
                                 </th>
-                                <th scope="col" className="px-6 py-3 hidden md:table-cell">
+                                <th scope="col" className="hidden px-6 py-3 md:table-cell">
                                     Profissão
                                 </th>
-                                <th scope="col" className="px-6 py-3 hidden md:table-cell">
+                                <th scope="col" className="hidden px-6 py-3 md:table-cell">
                                     Renda
                                 </th>
-                                <th scope="col" className="px-6 py-3 hidden md:table-cell">
+                                <th scope="col" className="hidden px-6 py-3 md:table-cell">
                                     Tel./Whatsapp
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-center">
@@ -95,23 +100,20 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                     }`}
                                 >
                                     <th scope="row" className="px-6 py-3 font-medium whitespace-normal text-gray-900 dark:text-white">
-                                        <a
-                                            href={route('clients.properties', client.id)}
-                                            className="font-medium  hover:underline"
-                                        >
+                                        <a href={route('clients.properties', client.id)} className="font-medium hover:underline">
                                             {client.name}
                                         </a>
                                     </th>
-                                    <td className="px-6 py-3 hidden md:table-cell">{client.profession}</td>
-                                    <td className="px-6 py-3 hidden md:table-cell">
+                                    <td className="hidden px-6 py-3 md:table-cell">{client.profession}</td>
+                                    <td className="hidden px-6 py-3 md:table-cell">
                                         {new Intl.NumberFormat('pt-BR', {
                                             style: 'currency',
                                             currency: 'BRL',
                                         }).format(client.revenue)}
                                     </td>
-                                    <td className="px-6 py-3 hidden md:table-cell">{client.phone}</td>
+                                    <td className="hidden px-6 py-3 md:table-cell">{client.phone}</td>
 
-                                    <td className="px-6 py-3 align-middle text-center">
+                                    <td className="px-6 py-3 text-center align-middle">
                                         <div className="inline-flex items-center gap-2">
                                             <a
                                                 href={route('clients.edit', client.id)}
@@ -142,7 +144,8 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                                         <br />
                                                         <strong>Estado Civil: </strong> {client.marital_status}
                                                         <br />
-                                                        <strong>Precisa de Financiamento: </strong><Status value={client.need_financing} />
+                                                        <strong>Precisa de Financiamento: </strong>
+                                                        <Status value={client.need_financing} />
                                                         <br />
                                                         <strong>Número de Dependentes: </strong> {client.dependents}
                                                         <br />
@@ -154,7 +157,8 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                                         <br />
                                                         <strong>FGTS (R$): </strong> {client.fgts}
                                                         <br />
-                                                        <strong>Possúi Propriedade: </strong><Status value={client.has_property} />
+                                                        <strong>Possúi Propriedade: </strong>
+                                                        <Status value={client.has_property} />
                                                         <br />
                                                         <strong>Renda Comprometida (%): </strong> {client.compromised_income}
                                                         <br />
@@ -164,7 +168,8 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                                         <div className="mt-4">
                                                             <h2 className="pb-3 text-lg font-semibold">Caracteristicas do imóvel desejado:</h2>
                                                             <p>
-                                                                <strong>Regiões preferidas:</strong> {client.wishe?.regions_descr || 'Não especificadas'}
+                                                                <strong>Regiões preferidas:</strong>{' '}
+                                                                {client.wishe?.regions_descr || 'Não especificadas'}
                                                                 <br />
                                                                 <strong>Número de Quartos: </strong> {client.wishe.rooms || 'Não especificado'}
                                                                 <br />
@@ -186,15 +191,20 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                                                 <br />
                                                                 <strong>Ar Condicionado: </strong> {client.wishe.air_conditioning}
                                                                 <br />
-                                                                <strong>Jardim: </strong><Status value={client.wishe.garden} />
+                                                                <strong>Jardim: </strong>
+                                                                <Status value={client.wishe.garden} />
                                                                 <br />
-                                                                <strong>Piscina: </strong><Status value={client.wishe.pool} />
+                                                                <strong>Piscina: </strong>
+                                                                <Status value={client.wishe.pool} />
                                                                 <br />
-                                                                <strong>Varanda: </strong><Status value={client.wishe.balcony} />
+                                                                <strong>Varanda: </strong>
+                                                                <Status value={client.wishe.balcony} />
                                                                 <br />
-                                                                <strong>Aceita Pets: </strong><Status value={client.wishe.acept_pets} />
+                                                                <strong>Aceita Pets: </strong>
+                                                                <Status value={client.wishe.acept_pets} />
                                                                 <br />
-                                                                <strong>Acessibilidade: </strong><Status value={client.wishe.acessibility} />
+                                                                <strong>Acessibilidade: </strong>
+                                                                <Status value={client.wishe.acessibility} />
                                                                 <br />
                                                                 <strong>Observações: </strong> {client.wishe.obs || 'Nenhuma'}
                                                                 <br />

@@ -95,10 +95,14 @@ export default function Properties({ properties }: { properties: Property[] }) {
                             </a>
                         </Button>
                     {/* ) */}
-                    
                 </div>
+
+                <p className="py-3 text-sm">
+                    Clique na descrição do imóvelpara acessar as informações ou na região para acessar a localização, caso os links tenham sido informados.
+                </p>
+
                 <div className="relative overflow-x-auto overflow-y-hidden shadow-md sm:rounded-lg">
-                    <table className="w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
+                    <table className="w-full text-left text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
                         <thead className="bg-[#D8D8D8] text-xs text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
                                 <th scope="col" className="px-6 py-3">

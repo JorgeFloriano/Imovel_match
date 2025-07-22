@@ -137,8 +137,8 @@ export default function Dashboard({
                 </p>
 
                 <Collapse id="legend" title="Legenda" asButton={true} buttonClassName="bg-blue-100 hover:bg-blue-200">
-                    <p className="mb-5">
-                        As cores dos icones indicam o resultado de um comparativo entre cada uma das caracteristica do imóvel idealizado pelo cliente (sonho) e as caracteristicas do imóvel em questão (realidade), sendo <span className='text-green-600'>verde</span> para compatível, <span className='text-red-600'>vermelho</span> para incompatível e cor neutra para informação não declarada, por exemplo:
+                    <p>
+                        As cores dos icones indicam o resultado de um comparativo entre cada uma das caracteristica do imóvel idealizado pelo cliente (sonho) e as caracteristicas do imóvel em questão (realidade), sendo <span className='text-green-500'>verde</span> para compatível, <span className='text-red-500'>vermelho</span> para incompatível e cor neutra para informação não declarada, por exemplo:
                     </p>
                     <ul>
                         <li className="mt-3 flex items-center">

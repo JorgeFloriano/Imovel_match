@@ -13,9 +13,12 @@ interface TableRoleProps {
     propertyValue?: React.ReactNode;
     iconValue?: boolean | null | undefined;
     iconColor?: string;
+    labelClassName?: string | null;
+    clientClassName?: string;
+    propertyClassName?: string;
 }
 
-const TableRole = ({ label, clientValue, propertyValue, iconValue, iconColor }: TableRoleProps) => {
+const TableRole = ({ label, clientValue, propertyValue, iconValue, iconColor, labelClassName, clientClassName, propertyClassName }: TableRoleProps) => {
     if (iconValue === undefined || iconValue === null) {
         iconColor = 'bg-transparent text-transparent border-transparent';
         iconValue = undefined;
@@ -28,15 +31,15 @@ const TableRole = ({ label, clientValue, propertyValue, iconValue, iconColor }: 
         iconValue = undefined;
     }
     return (
-        <tr className="border-b">
-            <th className="p-3">{label}</th>
-            <th className="p-3 text-center">{clientValue || null}</th>
-            <th className="p-3 text-center">{propertyValue || null}</th>
-            <th className="p-3 text-center">
+        <tr className="border-t">
+            <td className={`p-3 ${labelClassName}`}>{label}</td>
+            <td className={`p-3 text-center ${clientClassName}`}>{clientValue || null}</td>
+            <td className={`p-3 text-center ${propertyClassName}`}>{propertyValue || null}</td>
+            <td className="p-3 text-center">
                 <div className={`flex w-8 items-center justify-center rounded-md border-1 p-1 ${iconColor}`}>
                     <StatusIcon value={iconValue} />
                 </div>
-            </th>
+            </td>
         </tr>
     );
 };
@@ -191,17 +194,24 @@ export default function ClientProperties({ property, client, match }: ClientProp
                 <p className="text-sm">Informações do cliente e características do imóvel solicitado / Informaçõe do imóvel selecionado</p>
 
                 <div className="relative overflow-x-auto overflow-y-hidden shadow-md sm:rounded-lg">
-                    <table className="w-full text-left text-sm text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
+                    <table className="w-full text-left text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
                         <thead className="m-1 bg-[#D8D8D8] text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
-                                <th className="p-3">Referência</th>
+                                <th className="p-3">Ref.</th>
                                 <th className="p-3 text-center">Sonho (Cliente)</th>
                                 <th className="p-3 text-center">Realidade (Imóvel)</th>
                                 <th className="w-1 p-2 text-center">St.</th>
                             </tr>
                         </thead>
                         <tbody className="border-gray-200 text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-white">
-                            <TableRole label="Nome / Descr." clientValue={client.name} propertyValue={property.description} />
+                            <TableRole 
+                                label="Nome / Descr." 
+                                clientValue={client.name}
+                                clientClassName='font-bold'
+                                propertyValue={property.description}
+                                propertyClassName='font-bold'
+
+                            />
 
                             <TableRole label="Tipo" clientValue={client.wishe?.type} propertyValue={property.type} iconValue={match.type} />
 
@@ -254,10 +264,10 @@ export default function ClientProperties({ property, client, match }: ClientProp
                                 iconValue={match.balcony}
                             />
 
-                            <tr className="border-b">
-                                <th className="p-3">Região (s)</th>
-                                <th className="p-3 text-center">{client.wishe?.regions_descr || null}</th>
-                                <th className="p-3 text-center">
+                            <tr className="border-t">
+                                <td className="p-3">Região (s)</td>
+                                <td className="p-3 text-center">{client.wishe?.regions_descr || null}</td>
+                                <td className="p-3 text-center">
                                     {property.address ? (
                                         <IconTooltip
                                             tooltipClassName="right-full"
@@ -268,12 +278,12 @@ export default function ClientProperties({ property, client, match }: ClientProp
                                     ) : (
                                         property.region?.name
                                     )}
-                                </th>
-                                <th className="p-3 text-center">
+                                </td>
+                                <td className="p-3 text-center">
                                     <div className={`w-8 ${property.region_bool_c}`}>
                                         <StatusIcon value={match?.region} />
                                     </div>
-                                </th>
+                                </td>
                             </tr>
 
                             <TableRole
