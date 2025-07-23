@@ -28,9 +28,7 @@ const showOptions = [
     { value: '120', label: '120 conexões' },
 ];
 
-export const BalconyIcon = ({ className = '' }: { className?: string }) => (
-    <img src="/balcony.png" className={`${className}`} alt="Balcony" />
-);
+export const BalconyIcon = ({ className = '' }: { className?: string }) => <img src="/balcony.png" className={`${className}`} alt="Balcony" />;
 
 interface AtribIconProps {
     iconValue?: boolean | null | undefined;
@@ -62,7 +60,7 @@ const AtribIcon = ({ iconValue, iconClass, icon }: AtribIconProps) => {
     return (
         <div className="w-8">
             {iconValue !== undefined && (
-                <div className={`flex items-center justify-center rounded-md border-1 p-1 text-[#123251] w-8 h-8 ${finalIconClass}`}>
+                <div className={`flex h-8 w-8 items-center justify-center rounded-md border-1 p-1 text-[#123251] ${finalIconClass}`}>
                     {iconToRender && (
                         <span className="inline">
                             {'$$typeof' in iconToRender ? (
@@ -137,48 +135,74 @@ export default function Dashboard({
                 </p>
 
                 <Collapse id="legend" title="Legenda" asButton={true} buttonClassName="bg-blue-100 hover:bg-blue-200">
-                    <p>
-                        As cores dos icones indicam o resultado de um comparativo entre cada uma das caracteristica do imóvel idealizado pelo cliente (sonho) e as caracteristicas do imóvel em questão (realidade), sendo <span className='text-green-500'>verde</span> para compatível, <span className='text-red-500'>vermelho</span> para incompatível e cor neutra para informação não declarada, por exemplo:
+                    <p className='pb-4'>
+                        As cores dos icones indicam o resultado de um comparativo entre cada uma das caracteristica do imóvel idealizado pelo cliente
+                        (sonho) e as caracteristicas do imóvel em questão (realidade), sendo <span className="text-green-500">verde</span> para
+                        compatível, <span className="text-red-500">vermelho</span> para incompatível e cor neutra para informação não declarada, por
+                        exemplo:
                     </p>
+
+                    <div className='w-max m-auto'>
+                        <div className="overflow-hidden rounded-xl border-[1px] border-[#B8B8B8] bg-[#EFEEEC] py-3 text-[#123251] shadow-md transition-all duration-400 hover:border-[#BF9447] hover:text-[#BF9447] dark:bg-[#123251] dark:text-[#EFEEEC] hover:dark:text-[#BF9447]">
+                            <div className="flex justify-evenly p-3 font-bold">
+                                <div className="flex items-center">Fulano de Tal</div>
+                                <div>
+                                    <img src="/logo_build.png" width={30} alt="Build" />
+                                </div>
+                                <div className="flex items-center">Imóvel X</div>
+                            </div>
+                            <div className="flex justify-between px-3">
+                                <AtribIcon icon={House} iconValue={true} />
+                                <AtribIcon icon={DollarSign} iconValue={true} />
+                                <AtribIcon icon={KeyRound} iconValue={false} />
+                                <AtribIcon icon={Ruler} iconValue={true} />
+                                <AtribIcon icon={Bed} iconValue={null} />
+                                <AtribIcon icon={Bath} iconValue={true} />
+                                <AtribIcon icon={Car} iconValue={false} />
+                                <AtribIcon icon={BalconyIcon} iconValue={true} />
+                                <AtribIcon icon={MapPin} iconValue={null} />
+                            </div>
+                        </div>
+                    </div>
+
                     <ul>
-                        <li className="mt-3 flex items-center">
+                        <li className="mt-4 flex items-center">
                             <AtribIcon icon={House} iconValue={true} />
-                            <div className="ml-2">Tipo de imóvel (casa, apartamento, sobrado, etc...) compatível com o desejo do cliente.</div>
+                            <div className="ml-2">Tipo do imóvel X (casa, apartamento, sobrado, etc...) compatível com o desejo do cliente Fulano de Tal.</div>
                         </li>
                         <li className="mt-3 flex items-center">
                             <AtribIcon icon={DollarSign} iconValue={true} />
-                            <div className="ml-2">Faixa salarial do cliente é compatível com o preço do imóvel, segundo os critérios do programa "minha casa minha vida"</div>
-                        </li>
-                        <li className="mt-3 flex items-center">
-                            <AtribIcon icon={KeyRound} iconValue={false} />
-                            <div className="ml-2">Provável data de entrega das chaves não atende à espectativa do cliente.</div>
-                        </li>
-                        <li className="mt-3 flex items-center">
-                            <AtribIcon icon={Ruler} iconValue={true} />
-                            <div className="ml-2">Área interna do imóvel igual ou superior à espectativa do cliente</div>
-                        </li>
-                        <li className="mt-3 flex items-center">
-                            <AtribIcon icon={Bed} iconValue={null} />
-                            <div className="ml-2">Número de dormitórios do imóvel ou desejo do cliente não especificados.</div>
-                        </li>
-                        <li className="mt-3 flex items-center">
-                            <AtribIcon icon={Bath} iconValue={true} />
-                            <div className="ml-2">Número de banheiros igual ou superior à espectativa do cliente</div>
-                        </li>
-                        <li className="mt-3 flex items-center">
-                            <AtribIcon icon={Car} iconValue={false} />
-                            <div className="ml-2">Número de vagas de garagem inferior à espectativa do cliente</div>
-                        </li>
-                        <li className="mt-3 flex items-center">
-                            <AtribIcon icon={BalconyIcon} iconValue={true} />
                             <div className="ml-2">
-                                {' '}
-                            Imóvel com varanda, compatível com a espectativa do cliente
+                                Faixa salarial de Fulano de Tal é compatível com o preço do imóvel X, segundo os critérios do programa "minha casa minha vida"
                             </div>
                         </li>
                         <li className="mt-3 flex items-center">
+                            <AtribIcon icon={KeyRound} iconValue={false} />
+                            <div className="ml-2">Provável data de entrega das chaves do imóvel X não atende à espectativa de Fulano de Tal.</div>
+                        </li>
+                        <li className="mt-3 flex items-center">
+                            <AtribIcon icon={Ruler} iconValue={true} />
+                            <div className="ml-2">Área interna do imóvel X igual ou superior à espectativa de Fulano de Tal</div>
+                        </li>
+                        <li className="mt-3 flex items-center">
+                            <AtribIcon icon={Bed} iconValue={null} />
+                            <div className="ml-2">Número de dormitórios do imóvel X ou desejo de Fulano de Tal não especificados.</div>
+                        </li>
+                        <li className="mt-3 flex items-center">
+                            <AtribIcon icon={Bath} iconValue={true} />
+                            <div className="ml-2">Número de banheiros do imóvel X igual ou superior à espectativa de Fulano de Tal</div>
+                        </li>
+                        <li className="mt-3 flex items-center">
+                            <AtribIcon icon={Car} iconValue={false} />
+                            <div className="ml-2">Número de vagas de garagem do imóvel X inferior à espectativa de Fulano de Tal</div>
+                        </li>
+                        <li className="mt-3 flex items-center">
+                            <AtribIcon icon={BalconyIcon} iconValue={true} />
+                            <div className="ml-2"> Imóvel X possúi varanda, compatível com a espectativa de Fulano de Tal</div>
+                        </li>
+                        <li className="mt-3 flex items-center">
                             <AtribIcon icon={MapPin} iconValue={null} />
-                            <div className="ml-2"> - Localização do imóvel ou desejo do cliente não especificados</div>
+                            <div className="ml-2"> - Localização do imóvel X ou desejada por Fulano de Tal não especificados</div>
                         </li>
                     </ul>
                 </Collapse>
