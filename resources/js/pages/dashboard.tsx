@@ -6,7 +6,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { Bath, Bed, Car, DollarSign, House, KeyRound, LucideIcon, MapPin, Ruler } from 'lucide-react';
-import React, { FormEventHandler } from 'react';
+import React, { FormEventHandler, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -102,6 +102,7 @@ export default function Dashboard({
     clientOptions: Array<{ value: string; label: string }>;
     propertyOptions: Array<{ value: string; label: string }>;
 }) {
+    const [isLegendOpen, setIsLegendOpen] = useState(false);
     const { data, setData, post, errors } = useForm<FilterForm>({
         client_id: undefined,
         property_id: undefined,
@@ -121,91 +122,108 @@ export default function Dashboard({
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col rounded-xl p-3">
-                <div className="flex gap-3 py-3 text-xl font-semibold">
-                    <div className="flex items-center">Cliente</div>
-                    <div>
-                        <img src="/logo_build.png" width={30} alt="Build" />
+                {/* This will be our row container */}
+                <div className="flex items-center justify-between">
+                    {/* Title section */}
+                    <div id="title" className="flex gap-3 py-3 text-xl font-semibold">
+                        <div className="flex items-center">Cliente</div>
+                        <div>
+                            <img src="/logo_build.png" width={30} alt="Build" />
+                        </div>
+                        <div className="flex items-center">Imóvel</div>
                     </div>
-                    <div className="flex items-center">Imóvel</div>
+
+                    {/* Collapse button - moved here */}
+                    <Collapse
+                        id="legend"
+                        title="Legenda"
+                        asButton={true}
+                        isOpen={isLegendOpen}
+                        onToggle={() => setIsLegendOpen(!isLegendOpen)}
+                        standalone={false}
+                    />
                 </div>
+                <div className="flex flex-col gap-3">
+                    {/* Collapse content - now controlled by state */}
+                    <div className={`overflow-hidden transition-all duration-300 ${isLegendOpen ? 'h-full' : 'max-h-0'}`}>
+                        <div className="mb-2 rounded-md border border-gray-200 shadow-sm">
+                            <p className="m-4">
+                                As cores dos icones indicam se determinada característica do imóvel está ou não dentro da espectativa do cliente,
+                                sendo <span className="text-green-500">verde</span> para compatível, <span className="text-red-500">vermelho</span>{' '}
+                                para incompatível e cor neutra para informação não declarada, como no exemplo abaixo:
+                            </p>
 
-                <p className="py-3 text-sm">
-                    Conexões Cliente/Imóvel, ordenadas por maior compatibilidade entre características do imóvel e espectativa do cliente, clique para
-                    ver as informações em detalhes.
-                </p>
-
-                <Collapse id="legend" title="Legenda" asButton={true} buttonClassName="bg-blue-100 hover:bg-blue-200">
-                    <p className='pb-4'>
-                        As cores dos icones indicam o resultado de um comparativo entre cada uma das caracteristica do imóvel idealizado pelo cliente
-                        (sonho) e as caracteristicas do imóvel em questão (realidade), sendo <span className="text-green-500">verde</span> para
-                        compatível, <span className="text-red-500">vermelho</span> para incompatível e cor neutra para informação não declarada, por
-                        exemplo:
-                    </p>
-
-                    <div className='w-max m-auto'>
-                        <div className="overflow-hidden rounded-xl border-[1px] border-[#B8B8B8] bg-[#EFEEEC] py-3 text-[#123251] shadow-md transition-all duration-400 hover:border-[#BF9447] hover:text-[#BF9447] dark:bg-[#123251] dark:text-[#EFEEEC] hover:dark:text-[#BF9447]">
-                            <div className="flex justify-evenly p-3 font-bold">
-                                <div className="flex items-center">Fulano de Tal</div>
-                                <div>
-                                    <img src="/logo_build.png" width={30} alt="Build" />
+                            <div className="m-auto max-w-110 px-2">
+                                <div className="overflow-hidden rounded-xl border-[1px] border-[#B8B8B8] bg-[#EFEEEC] py-3 text-[#123251] shadow-md transition-all duration-400 hover:border-[#BF9447] hover:text-[#BF9447] dark:bg-[#123251] dark:text-[#EFEEEC] hover:dark:text-[#BF9447]">
+                                    <div className="flex justify-evenly p-3 font-bold">
+                                        <div className="flex items-center">Fulano de Tal</div>
+                                        <div>
+                                            <img src="/logo_build.png" width={30} alt="Build" />
+                                        </div>
+                                        <div className="flex items-center">Imóvel Exemplo</div>
+                                    </div>
+                                    <div className="flex justify-between px-3">
+                                        <AtribIcon icon={House} iconValue={true} />
+                                        <AtribIcon icon={DollarSign} iconValue={true} />
+                                        <AtribIcon icon={KeyRound} iconValue={false} />
+                                        <AtribIcon icon={Ruler} iconValue={true} />
+                                        <AtribIcon icon={Bed} iconValue={null} />
+                                        <AtribIcon icon={Bath} iconValue={true} />
+                                        <AtribIcon icon={Car} iconValue={false} />
+                                        <AtribIcon icon={BalconyIcon} iconValue={true} />
+                                        <AtribIcon icon={MapPin} iconValue={null} />
+                                    </div>
                                 </div>
-                                <div className="flex items-center">Imóvel X</div>
                             </div>
-                            <div className="flex justify-between px-3">
-                                <AtribIcon icon={House} iconValue={true} />
-                                <AtribIcon icon={DollarSign} iconValue={true} />
-                                <AtribIcon icon={KeyRound} iconValue={false} />
-                                <AtribIcon icon={Ruler} iconValue={true} />
-                                <AtribIcon icon={Bed} iconValue={null} />
-                                <AtribIcon icon={Bath} iconValue={true} />
-                                <AtribIcon icon={Car} iconValue={false} />
-                                <AtribIcon icon={BalconyIcon} iconValue={true} />
-                                <AtribIcon icon={MapPin} iconValue={null} />
-                            </div>
+
+                            <ul className="m-4 flex flex-col gap-3">
+                                <li className="flex">
+                                    <AtribIcon icon={House} iconValue={true} />
+                                    <div className="ml-2">
+                                        Tipo do imóvel exemplo (casa, apartamento, sobrado, etc...) compatível com o desejo do cliente Fulano de Tal.
+                                    </div>
+                                </li>
+                                <li className="flex">
+                                    <AtribIcon icon={DollarSign} iconValue={true} />
+                                    <div className="ml-2">
+                                        Faixa salarial de Fulano de Tal é compatível com o preço do imóvel exemplo, segundo os critérios do programa
+                                        "minha casa minha vida"
+                                    </div>
+                                </li>
+                                <li className="flex">
+                                    <AtribIcon icon={KeyRound} iconValue={false} />
+                                    <div className="ml-2">
+                                        Provável data de entrega das chaves do imóvel exemplo não atende à espectativa de Fulano de Tal.
+                                    </div>
+                                </li>
+                                <li className="flex">
+                                    <AtribIcon icon={Ruler} iconValue={true} />
+                                    <div className="ml-2">Área interna do imóvel exemplo igual ou superior à espectativa de Fulano de Tal</div>
+                                </li>
+                                <li className="flex">
+                                    <AtribIcon icon={Bed} iconValue={null} />
+                                    <div className="ml-2">Número de dormitórios do imóvel exemplo ou desejo de Fulano de Tal não especificados.</div>
+                                </li>
+                                <li className="flex">
+                                    <AtribIcon icon={Bath} iconValue={true} />
+                                    <div className="ml-2">Número de banheiros do imóvel exemplo igual ou superior à espectativa de Fulano de Tal</div>
+                                </li>
+                                <li className="flex">
+                                    <AtribIcon icon={Car} iconValue={false} />
+                                    <div className="ml-2">Número de vagas de garagem do imóvel exemplo inferior à espectativa de Fulano de Tal</div>
+                                </li>
+                                <li className="flex">
+                                    <AtribIcon icon={BalconyIcon} iconValue={true} />
+                                    <div className="ml-2">Imóvel exemplo possúi varanda, compatível com a espectativa de Fulano de Tal</div>
+                                </li>
+                                <li className="flex">
+                                    <AtribIcon icon={MapPin} iconValue={null} />
+                                    <div className="ml-2">Localização do imóvel exemplo ou desejada por Fulano de Tal não especificados</div>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-
-                    <ul>
-                        <li className="mt-4 flex items-center">
-                            <AtribIcon icon={House} iconValue={true} />
-                            <div className="ml-2">Tipo do imóvel X (casa, apartamento, sobrado, etc...) compatível com o desejo do cliente Fulano de Tal.</div>
-                        </li>
-                        <li className="mt-3 flex items-center">
-                            <AtribIcon icon={DollarSign} iconValue={true} />
-                            <div className="ml-2">
-                                Faixa salarial de Fulano de Tal é compatível com o preço do imóvel X, segundo os critérios do programa "minha casa minha vida"
-                            </div>
-                        </li>
-                        <li className="mt-3 flex items-center">
-                            <AtribIcon icon={KeyRound} iconValue={false} />
-                            <div className="ml-2">Provável data de entrega das chaves do imóvel X não atende à espectativa de Fulano de Tal.</div>
-                        </li>
-                        <li className="mt-3 flex items-center">
-                            <AtribIcon icon={Ruler} iconValue={true} />
-                            <div className="ml-2">Área interna do imóvel X igual ou superior à espectativa de Fulano de Tal</div>
-                        </li>
-                        <li className="mt-3 flex items-center">
-                            <AtribIcon icon={Bed} iconValue={null} />
-                            <div className="ml-2">Número de dormitórios do imóvel X ou desejo de Fulano de Tal não especificados.</div>
-                        </li>
-                        <li className="mt-3 flex items-center">
-                            <AtribIcon icon={Bath} iconValue={true} />
-                            <div className="ml-2">Número de banheiros do imóvel X igual ou superior à espectativa de Fulano de Tal</div>
-                        </li>
-                        <li className="mt-3 flex items-center">
-                            <AtribIcon icon={Car} iconValue={false} />
-                            <div className="ml-2">Número de vagas de garagem do imóvel X inferior à espectativa de Fulano de Tal</div>
-                        </li>
-                        <li className="mt-3 flex items-center">
-                            <AtribIcon icon={BalconyIcon} iconValue={true} />
-                            <div className="ml-2"> Imóvel X possúi varanda, compatível com a espectativa de Fulano de Tal</div>
-                        </li>
-                        <li className="mt-3 flex items-center">
-                            <AtribIcon icon={MapPin} iconValue={null} />
-                            <div className="ml-2"> - Localização do imóvel X ou desejada por Fulano de Tal não especificados</div>
-                        </li>
-                    </ul>
-                </Collapse>
+                </div>
 
                 <form onSubmit={submit} className="space-y-6 pt-4 pb-6">
                     <div className="grid grid-cols-2 items-end gap-4 md:grid-cols-4">
@@ -236,6 +254,12 @@ export default function Dashboard({
                         <Button type="submit">Exibir Resultados</Button>
                     </div>
                 </form>
+
+                <p className="py-3 text-sm">
+                    Cada espaço abaixo representa uma análize de compatibilidade entre cliente e imóvel, ordenadas por maior probabilidade de fechar a
+                    venda, clique para ver as informações em detalhes.
+                </p>
+
                 <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
                     {matches.map((match) => (
                         <a

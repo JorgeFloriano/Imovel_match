@@ -1,16 +1,18 @@
-import { useState } from 'react';
-import { Button } from './button';
+// components/ui/collapse.tsx
+import { Button } from '@/components/ui/button';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import { Icon } from '@/components/icon';
-
 
 interface CollapseProps {
   id: string;
   title: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   asButton?: boolean;
   className?: string;
   buttonClassName?: string;
+  isOpen?: boolean;
+  onToggle?: () => void;
+  standalone?: boolean;
 }
 
 export function Collapse({
@@ -18,48 +20,56 @@ export function Collapse({
   title,
   children,
   asButton = false,
-  className = 'py-2',
+  className = '',
+  buttonClassName = '',
+  isOpen = false,
+  onToggle,
+  standalone = true,
 }: CollapseProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const toggleComponent = asButton ? (
+    <Button
+      type="button"
+      variant="outline"
+      onClick={onToggle}
+      aria-expanded={isOpen}
+      aria-controls={id}
+      className={buttonClassName}
+    >
+      {title}
+      {isOpen ? (
+        <Icon className="h-4 w-4 text-[#B8B8B8]" iconNode={ChevronUp} />
+      ) : (
+        <Icon className="h-4 w-4 text-[#B8B8B8]" iconNode={ChevronDown} />
+      )}
+    </Button>
+  ) : (
+    <a
+      href={`#${id}`}
+      onClick={(e) => {
+        e.preventDefault();
+        onToggle?.();
+      }}
+      aria-expanded={isOpen}
+      aria-controls={id}
+    >
+      {title}
+    </a>
+  );
 
-  const toggleCollapse = () => {
-    setIsOpen(!isOpen);
-  };
+  if (!standalone) {
+    return toggleComponent;
+  }
 
   return (
-    <div className={` dark:bg-neutral-950 text-sm dark:text-neutral-100 ${className}`}>
-      {asButton ? (
-        <Button
-          type="button"
-          variant="outline"
-          onClick={toggleCollapse}
-          aria-expanded={isOpen}
-          aria-controls={id}
-        >
-          {title}
-          {isOpen ? 
-          ChevronUp && <Icon className="h-4 w-4 text-[#B8B8B8]" iconNode={ChevronUp} /> : 
-          ChevronDown && <Icon className="h-4 w-4 text-[#B8B8B8]" iconNode={ChevronDown} />}
-        </Button>
-      ) : (
-        <a
-          href={`#${id}`}
-          onClick={(e) => {
-            e.preventDefault();
-            toggleCollapse();
-          }}
-          aria-expanded={isOpen}
-          aria-controls={id}
-        >
-          {title}
-        </a>
-      )}
-
+    <div className={className}>
+      {toggleComponent}
       <div
         id={id}
-        className={`transition-all duration-300 overflow-hidden ${isOpen ? 'max-h-screen' : 'max-h-0'}`}
+        className={`transition-all duration-300 overflow-hidden ${
+          isOpen ? 'h-full' : 'max-h-0'
+        }`}
       >
-        <div className="p-4 border border-gray-200 rounded-md mt-2 shadow-sm">
+        <div className="border border-gray-200 rounded-md mt-2 shadow-sm">
           {children}
         </div>
       </div>

@@ -10,7 +10,7 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
-Route::middleware(['web', 'verified'])->group(function () {
+Route::middleware(['auth', 'web', 'verified'])->group(function () {
     Route::get('dashboard', [ClientPropertyController::class, 'index'])->name('dashboard');
     Route::post('dashboard', [ClientPropertyController::class, 'filter'])->name('dashboard.filter');
     Route::get('dashboard/{client}/{property}/details', [ClientPropertyController::class, 'details'])
