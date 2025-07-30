@@ -244,7 +244,6 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             value={data.price}
                             onChange={(value) => handleSetData('price', value)}
                             error={errors.price}
-                            required
                         />
 
                         <FormInput
@@ -256,7 +255,6 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             value={data.iptu}
                             onChange={(value) => handleSetData('iptu', value)}
                             error={errors.iptu}
-                            required
                         />
 
                         <FormInput

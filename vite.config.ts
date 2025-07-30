@@ -13,8 +13,8 @@ export default defineConfig({
     tailwindcss(),
   ],
   build: {
-    manifest: true,
-    outDir: 'public/build',
+    manifest: true, // Ensure this is enabled
+    outDir: 'public/build', // Laravel expects assets here
     rollupOptions: {
       output: {
         // Disable code splitting completely

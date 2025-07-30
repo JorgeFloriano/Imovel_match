@@ -29,7 +29,7 @@
         
         @production
             @php
-                $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true);
+                $manifest = json_decode(file_get_contents(public_path('build/.vite/manifest.json')), true);
                 $entry = $manifest['resources/js/app.tsx'];
             @endphp
             <link rel="stylesheet" href="{{ asset('build/' . $entry['css'][0]) }}">

@@ -68,7 +68,7 @@ class Property extends Model
      */
     protected $casts = [
         'price' => 'double',
-        'land_area' => 'float',
+        'land_area' => 'double',
         'building_area' => 'float',
         'delivery_key' => 'date',
         'installment_payment' => 'boolean',

@@ -136,6 +136,7 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
                             value={data.description || ''}
                             onChange={(value) => handleSetData('description', value)}
                             error={errors.description}
+                            required
                         />
 
                         <FormInput
@@ -212,7 +213,6 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
                             value={data.price}
                             onChange={(value) => handleSetData('price', value)}
                             error={errors.price}
-                            required
                         />
 
                         <FormInput
@@ -224,7 +224,6 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
                             value={data.iptu}
                             onChange={(value) => handleSetData('iptu', value)}
                             error={errors.iptu}
-                            required
                         />
 
                         <FormInput

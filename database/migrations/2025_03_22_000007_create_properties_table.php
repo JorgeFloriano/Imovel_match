@@ -33,8 +33,8 @@ return new class extends Migration
             ])->nullable();
             $table->integer('iptu')->nullable();
             $table->string('description')->nullable();
-            $table->integer('price')->nullable();
-            $table->float('land_area')->nullable();
+            $table->double('price')->nullable();
+            $table->double('land_area')->nullable();
             $table->float('building_area')->nullable();
             $table->string('image')->nullable();
             $table->string('address')->nullable();
@@ -46,7 +46,7 @@ return new class extends Migration
             $table->tinyInteger('building_floors')->nullable();
             $table->tinyInteger('property_floors')->nullable();
             $table->date('delivery_key')->nullable();
-            $table->integer('min_act')->nullable();
+            $table->double('min_act')->nullable();
             // entrada parcelada
             $table->boolean('installment_payment')->nullable();
             $table->boolean('incc_financing')->nullable();

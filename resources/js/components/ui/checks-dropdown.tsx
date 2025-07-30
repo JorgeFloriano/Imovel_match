@@ -85,7 +85,10 @@ export default function ChecksDropdown({
     return (
         <div className="relative inline-block text-left w-full" ref={dropdownRef}>
             <div>
-                <Label>{label}</Label>
+                <div className="pb-2.5 text-sm">
+                    <Label>{label}</Label>
+                </div>
+
                 <button
                     type="button"
                     onClick={toggleDropdown}

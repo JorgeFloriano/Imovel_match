@@ -273,7 +273,6 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                 value={data.profession}
                                 onChange={(value) => handleSetData('profession', value)}
                                 error={errors.profession}
-                                required
                             />
 
                             <div className="grid grid-cols-2 gap-4">
@@ -286,7 +285,6 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                     value={data.revenue}
                                     onChange={(value) => handleSetData('revenue', value)}
                                     error={errors.revenue}
-                                    required
                                 />
 
                                 <FormInput
@@ -315,7 +313,6 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                     value={data.dependents}
                                     onChange={(value) => handleSetData('dependents', value)}
                                     error={errors.dependents}
-                                    required
                                 />
 
                                 <FormInput
@@ -326,7 +323,6 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                     value={data.compromised_income}
                                     onChange={(value) => handleSetData('compromised_income', value)}
                                     error={errors.compromised_income}
-                                    required
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
@@ -339,7 +335,6 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                     value={data.capital}
                                     onChange={(value) => handleSetData('capital', value)}
                                     error={errors.capital}
-                                    required
                                 />
 
                                 <FormSelect
