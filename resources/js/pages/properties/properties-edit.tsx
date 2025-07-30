@@ -207,6 +207,7 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
                             label="Preço (R$)"
                             type="number"
                             min={0}
+                            max={9999999999}
                             step={0.01}
                             value={data.price}
                             onChange={(value) => handleSetData('price', value)}
@@ -218,6 +219,8 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
                             label="IPTU (R$)"
                             type="number"
                             min={0}
+                            max={9999999999}
+                            step={0.01}
                             value={data.iptu}
                             onChange={(value) => handleSetData('iptu', value)}
                             error={errors.iptu}
@@ -228,6 +231,7 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
                             label="Área do Terreno (m²)"
                             type="number"
                             min={0}
+                            max={9999999999}
                             step={0.01}
                             value={data.land_area}
                             onChange={(value) => handleSetData('land_area', value)}
@@ -238,6 +242,7 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
                             label="Área Construída (m²)"
                             type="number"
                             min={0}
+                            max={99999}
                             step={0.01}
                             value={data.building_area}
                             onChange={(value) => handleSetData('building_area', value)}
@@ -319,6 +324,8 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
                             label="Ato Mínimo"
                             type="number"
                             min={0}
+                            max={9999999999}
+                            step={0.01}
                             value={data.min_act ?? 0}
                             onChange={(value) => handleSetData('min_act', value)}
                             error={errors.min_act}

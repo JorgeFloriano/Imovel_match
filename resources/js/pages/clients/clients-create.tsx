@@ -236,7 +236,6 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                                     value={data.phone}
                                     onChange={(value) => handleSetData('phone', value)}
                                     error={errors.phone}
-                                    required
                                 />
 
                                 <FormSelect

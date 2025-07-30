@@ -162,7 +162,6 @@ const [selectedRegions, setSelectedRegions] = useState<Record<string, boolean>>(
                                     value={data.phone}
                                     onChange={(value) => handleSetData('phone', value)}
                                     error={errors.phone}
-                                    required
                                 />
 
                                 <FormSelect

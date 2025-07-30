@@ -31,7 +31,7 @@ class ClientRequest extends FormRequest
         return [
             // Client validation rules
             'name' => 'required|string|max:40',
-            'phone' => 'required|string|max:20',
+            'phone' => 'nullable|string|max:20',
             'email' => [
                 'nullable',
                 'string',

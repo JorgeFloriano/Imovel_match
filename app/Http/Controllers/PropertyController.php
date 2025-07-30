@@ -23,8 +23,8 @@ class PropertyController extends Controller
 
         foreach ($properties as $property) {
             $property->typ = $property->typ();
-        }
-
+        }      
+        
         return Inertia::render('properties/properties-index', [
             'properties' => $properties,
         ]);
@@ -48,6 +48,8 @@ class PropertyController extends Controller
         session()->forget('compatibleObjects');
         $validated = $request->validated();
         $validated['user_id'] = Auth::user()->id;
+
+        //dd($validated); 
 
         $property = Property::create($validated);
 

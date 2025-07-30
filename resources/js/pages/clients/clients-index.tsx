@@ -84,7 +84,10 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                     Renda
                                 </th>
                                 <th scope="col" className="hidden px-6 py-3 md:table-cell">
-                                    Tel./Whatsapp
+                                    Capital
+                                </th>
+                                <th scope="col" className="hidden px-6 py-3 md:table-cell">
+                                    FGTS
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-center">
                                     <span>Ações</span>
@@ -104,14 +107,29 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                             {client.name}
                                         </a>
                                     </th>
+
                                     <td className="hidden px-6 py-3 md:table-cell">{client.profession}</td>
+
                                     <td className="hidden px-6 py-3 md:table-cell">
                                         {new Intl.NumberFormat('pt-BR', {
                                             style: 'currency',
                                             currency: 'BRL',
                                         }).format(client.revenue)}
                                     </td>
-                                    <td className="hidden px-6 py-3 md:table-cell">{client.phone}</td>
+
+                                    <td className="hidden px-6 py-3 md:table-cell">
+                                        {new Intl.NumberFormat('pt-BR', {
+                                            style: 'currency',
+                                            currency: 'BRL',
+                                        }).format(client.capital)}
+                                    </td>
+
+                                    <td className="hidden px-6 py-3 md:table-cell">
+                                        {new Intl.NumberFormat('pt-BR', {
+                                            style: 'currency',
+                                            currency: 'BRL',
+                                        }).format(client.fgts)}
+                                    </td>
 
                                     <td className="px-6 py-3 text-center align-middle">
                                         <div className="inline-flex items-center gap-2">

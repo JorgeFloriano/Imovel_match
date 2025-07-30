@@ -34,7 +34,7 @@ class PropertyRequest extends FormRequest
             'type' => 'nullable|in:casa,casa (condom.),sobrado,apartamento,apart. c/ elevad.,terreno,loja,garagem,sala,outros',
             'iptu' => 'nullable|numeric|min:0|max:9999999999',
             'description' => 'required|string|max:100',
-            'price' => 'required|integer|min:0|max:9999999999',
+            'price' => 'required|numeric|min:0|max:9999999999',
             'land_area' => 'nullable|numeric|min:0|max:9999999999',
             'building_area' => 'nullable|numeric|min:0|max:99999',
             'image' => 'nullable|string',

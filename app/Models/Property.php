@@ -67,7 +67,7 @@ class Property extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'price' => 'integer',
+        'price' => 'double',
         'land_area' => 'float',
         'building_area' => 'float',
         'delivery_key' => 'date',

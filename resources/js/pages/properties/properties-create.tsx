@@ -104,10 +104,10 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
         // place_link: 'https://www.mylink.com.br',
         // region_id: 1,
         // type: 'casa',
-        // iptu: 12000,
-        // price: 500000,
-        // land_area: 250,
-        // building_area: 50,
+        // iptu: 12000.93,
+        // price: 500000.45,
+        // land_area: 250.23,
+        // building_area: 50.23,
         // image: null,
         // address: 'Rua Latanjeira, 123',
         // rooms: 4,
@@ -118,7 +118,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
         // building_floors: 12,
         // property_floors: 2,
         // delivery_key: '2023-01-01',
-        // min_act: 10000,
+        // min_act: 10000.34,
         // installment_payment: false,
         // incc_financing: true,
         // documents: true,
@@ -252,6 +252,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             type="number"
                             min={0}
                             max={9999999999}
+                            step={0.01}
                             value={data.iptu}
                             onChange={(value) => handleSetData('iptu', value)}
                             error={errors.iptu}
@@ -363,6 +364,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             type="number"
                             min={0}
                             max={9999999999}
+                            step={0.01}
                             value={data.min_act ?? 0}
                             onChange={(value) => handleSetData('min_act', value)}
                             error={errors.min_act}

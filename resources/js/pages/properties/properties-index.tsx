@@ -177,7 +177,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                     <td className="px-6 hidden md:table-cell">
                                         {new Intl.NumberFormat('pt-BR', {
                                             minimumFractionDigits: 0,
-                                            maximumFractionDigits: 0,
+                                            maximumFractionDigits: 2,
                                         }).format(property.price)}
                                     </td>
                                     <td className="px-6 text-center hidden md:table-cell">
