@@ -11,7 +11,7 @@ import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { HeartHandshake, House, Menu, User } from 'lucide-react';
+import { HeartHandshake, House, Menu, MessageCircle, User } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
@@ -30,6 +30,11 @@ const mainNavItems: NavItem[] = [
         title: 'Imóveis',
         href: '/properties',
         icon: House,
+    },
+    {
+        title: 'Notificar',
+        href: '/notify',
+        icon: MessageCircle,
     },
 ];
 

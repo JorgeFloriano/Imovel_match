@@ -3,6 +3,7 @@
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\ClientPropertyController;
+use App\Http\Controllers\NotifyController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -24,6 +25,8 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
     ->middleware('can:show,client');
     
     Route::resource('/properties', PropertyController::class);
+
+    Route::get('notify', [NotifyController::class, 'index'])->name('notify');
 });
 
 require __DIR__ . '/settings.php';
