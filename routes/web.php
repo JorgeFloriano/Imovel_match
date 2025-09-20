@@ -23,6 +23,8 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
     Route::get('/clients/{client}/properties', [ClientController::class, 'properties'])
     ->name('clients.properties')
     ->middleware('can:show,client');
+    Route::post('/clients/{client}/generate-marketing-text', [ClientController::class, 'generateMarketingText'])
+    ->name('clients.generate-marketing-text');
     
     Route::resource('/properties', PropertyController::class);
 

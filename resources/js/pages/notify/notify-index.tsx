@@ -44,9 +44,12 @@ interface Client {
     wishe: Wishe | null;
 }
 
+
+
 export default function Clients({ clients }: { clients: Client[] }) {
     const [copiedId, setCopiedId] = useState<number | null>(null);
     const [copiedTextType, setCopiedTextType] = useState<'name' | 'marketing' | null>(null);
+    const [isLoading, setIsLoading] = useState<number | null>(null); // Track loading state per client
 
     // Copy client name to clipboard
     const copyNameToClipboard = (client: Client) => {
@@ -58,31 +61,49 @@ export default function Clients({ clients }: { clients: Client[] }) {
                 setTimeout(() => {
                     setCopiedId(null);
                     setCopiedTextType(null);
-                }, 1500); // Reset after 1.5 seconds
+                }, 1500);
             })
             .catch((err) => {
                 console.error('Failed to copy: ', err);
             });
     };
 
-    // Copy marketing text to clipboard
-    const copyMarketingTextToClipboard = (client: Client, e: React.MouseEvent) => {
-        e.preventDefault(); // Prevent navigation
-        const marketingText = client.wishe?.obs || 'Nenhuma';
+    // Copy marketing text to clipboard via API
+    const copyMarketingTextToClipboard = async (client: Client, e: React.MouseEvent) => {
+        e.preventDefault();
+        setIsLoading(client.id);
 
-        navigator.clipboard
-            .writeText(marketingText)
-            .then(() => {
-                setCopiedId(client.id);
-                setCopiedTextType('marketing');
-                setTimeout(() => {
-                    setCopiedId(null);
-                    setCopiedTextType(null);
-                }, 1500); // Reset after 1.5 seconds
-            })
-            .catch((err) => {
-                console.error('Failed to copy: ', err);
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            const response = await fetch(route('clients.generate-marketing-text', client.id), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken!, // Now properly typed as string
+                    'X-Requested-With': 'XMLHttpRequest', // Add this for Laravel to recognize as AJAX
+                },
             });
+
+            if (!response.ok) {
+                throw new Error('Falha ao gerar o texto de marketing.');
+            }
+
+            const data = await response.json();
+            const marketingText = data.marketingText;
+
+            await navigator.clipboard.writeText(marketingText);
+
+            setCopiedId(client.id);
+            setCopiedTextType('marketing');
+            setTimeout(() => {
+                setCopiedId(null);
+                setCopiedTextType(null);
+            }, 1500);
+        } catch (err) {
+            console.error('Failed to generate/copy marketing text: ', err);
+        } finally {
+            setIsLoading(null);
+        }
     };
 
     return (
@@ -178,14 +199,19 @@ export default function Clients({ clients }: { clients: Client[] }) {
                                                 href={route('clients.show', client.id)}
                                                 className="relative font-medium text-blue-500 hover:underline"
                                                 onClick={(e) => copyMarketingTextToClipboard(client, e)}
-                                                title="Copiar texto de marketing"
+                                                title="Gerar e copiar texto de marketing"
                                             >
-                                                {Copy && <Icon iconNode={Copy} />}
-                                                {copiedId === client.id && copiedTextType === 'marketing' && (
+                                                {isLoading === client.id ? (
+                                                    <span className="absolute -top-7 -right-4 flex items-center rounded bg-white px-2 py-1 text-xs whitespace-nowrap text-gray-600 shadow-md">
+                                                        Gerando...
+                                                    </span>
+                                                ) : copiedId === client.id && copiedTextType === 'marketing' ? (
                                                     <span className="absolute -top-7 -right-4 flex items-center rounded bg-white px-2 py-1 text-xs whitespace-nowrap text-green-600 shadow-md">
                                                         <Check size={12} className="mr-1" />
                                                         Texto copiado!
                                                     </span>
+                                                ) : (
+                                                    <Icon iconNode={Copy} />
                                                 )}
                                             </a>
 
