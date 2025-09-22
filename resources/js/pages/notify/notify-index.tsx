@@ -1,10 +1,15 @@
+import { FormSelect } from '@/components/form-select';
 import { Icon } from '@/components/icon';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Status } from '@/components/ui/status';
 import AppLayout from '@/layouts/app-layout';
-import { Head } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { Check, Copy, Expand, HeartHandshake, House, User } from 'lucide-react';
-import { useState } from 'react';
+import React, { FormEventHandler, useState } from 'react';
+
+type FilterForm = {
+    property_id?: string;
+};
 
 interface Wishe {
     id: number;
@@ -44,12 +49,23 @@ interface Client {
     wishe: Wishe | null;
 }
 
-
-
-export default function Clients({ clients }: { clients: Client[] }) {
+export default function Clients({
+    clients,
+    propertyOptions,
+}: {
+    clients: Client[];
+    propertyOptions: Array<{ value: string; label: string }>;
+}) {
     const [copiedId, setCopiedId] = useState<number | null>(null);
     const [copiedTextType, setCopiedTextType] = useState<'name' | 'marketing' | null>(null);
     const [isLoading, setIsLoading] = useState<number | null>(null); // Track loading state per client
+    const { data, setData, post, errors } = useForm<FilterForm>({
+        property_id: undefined,
+    });
+
+    const handleSetData = (field: keyof FilterForm, value: string | number | undefined | boolean) => {
+        setData(field, value?.toString());
+    };
 
     // Copy client name to clipboard
     const copyNameToClipboard = (client: Client) => {
@@ -106,6 +122,11 @@ export default function Clients({ clients }: { clients: Client[] }) {
         }
     };
 
+    const submit: FormEventHandler = (e) => {
+        e.preventDefault();
+        post(route('dashboard.filter'));
+    };
+
     return (
         <AppLayout>
             <Head title="Clientes" />
@@ -114,9 +135,21 @@ export default function Clients({ clients }: { clients: Client[] }) {
                     <h1 className="text-xl font-semibold">Notificar clientes sobre as melhores oportunidades</h1>
                 </div>
 
+                <form onSubmit={submit} className="space-y-6 pt-4 pb-6">
+                    <div className="grid items-end gap-4 md:grid-cols-2">
+                        <FormSelect
+                            label="Tipo de texto de marketing (customizado para cada cliente ou específico de um imóvel)"
+                            value={data.property_id || '0'}
+                            onValueChange={(value) => handleSetData('property_id', value)}
+                            customOptions={propertyOptions}
+                            error={errors.property_id}
+                        />
+                    </div>
+                </form>
+
                 <p className="py-3 text-sm">
                     Clique no nome do cliente para copiá-lo para a área de transferência. Clique no ícone de cópia{' '}
-                    <Copy size={14} className="inline" /> para copiar o texto de marketing.
+                    <Copy size={14} className="inline" /> para copiar o texto.
                 </p>
 
                 <div className="relative overflow-x-auto overflow-y-hidden shadow-md sm:rounded-lg">

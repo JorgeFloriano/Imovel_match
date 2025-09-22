@@ -288,7 +288,7 @@ class ClientController extends Controller
 
         $text .= "💬 Fale comigo, te mostro as novidades e detalhes sobre esses e outros lançamentos! 📲💬 \n\n";
 
-        $text .= "Adquirir um imóvel é mais que um investimento: é o começo de uma nova história. ❤️🏡\n\n";
+        $text .= "Adquirir um imóvel é mais que um investimento, é o começo de uma nova história. ❤️🏡\n\n";
 
         $text .= "Aguardo o seu retorno 😊";
         return $text;
