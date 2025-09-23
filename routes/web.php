@@ -29,6 +29,9 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
     Route::resource('/properties', PropertyController::class);
 
     Route::get('notify', [NotifyController::class, 'index'])->name('notify');
+    Route::get('notify/{property}/property', [NotifyController::class, 'property'])
+    ->name('notify.property')
+    ->middleware('can:show,property');
 });
 
 require __DIR__ . '/settings.php';
