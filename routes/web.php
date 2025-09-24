@@ -23,12 +23,20 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
     Route::get('/clients/{client}/properties', [ClientController::class, 'properties'])
     ->name('clients.properties')
     ->middleware('can:show,client');
-    Route::post('/clients/{client}/generate-marketing-text', [ClientController::class, 'generateMarketingText'])
-    ->name('clients.generate-marketing-text');
     
     Route::resource('/properties', PropertyController::class);
 
     Route::get('notify', [NotifyController::class, 'index'])->name('notify');
+
+    Route::post('/notify/{client}/generate-marketing-text', [NotifyController::class, 'generateMarketingText'])
+    ->name('notify.generate-marketing-text')
+    ->middleware('can:show,client');
+
+    Route::post('/notify/{client}/{property}/generate-property-marketing-text', [NotifyController::class, 'generatePropertyMarketingText'])
+    ->name('notify.generate-property-marketing-text')
+    ->middleware('can:show,client')
+    ->middleware('can:show,property');
+
     Route::get('notify/{property}/property', [NotifyController::class, 'property'])
     ->name('notify.property')
     ->middleware('can:show,property');

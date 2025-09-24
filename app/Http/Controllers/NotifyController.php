@@ -89,4 +89,104 @@ class NotifyController extends Controller
             'property' => $property
         ]);
     }
+
+    public function generateMarketingText(Client $client)
+    {
+        // Generate marketing text based on client data
+        $marketingText = $this->generateCustomMarketingText($client);
+
+        return response()->json([
+            'marketingText' => $marketingText
+        ]);
+    }
+
+    private function generateCustomMarketingText(Client $client)
+    {
+        Gate::authorize('show', $client);
+
+        $name = explode(' ', $client->name)[0];
+
+        $properties = Property::with(['user', 'region'])->where('user_id', Auth::user()->id)->get();
+
+        foreach ($properties as $property) {
+
+            $compatible = new Compatible($client, $property); // calss to compare client and property
+
+            $property->pts = $compatible->pts;
+        }
+
+        // Convert to array after sorting and taking only first 3
+        $sortedProperties = $properties->sortBy([ // Multi-level sorting
+            ['pts', 'desc'], // Primary sort by pts descending
+            ['description', 'asc'] // Secondary sort by client name ascending
+        ])->take(3)->values()->all();
+
+        // Customize this function to generate the marketing text as needed
+        $text = "🌟 *SEU FUTURO EM SOROCABA ESTÁ SENDO CONSTRUÍDO AGORA!* 🌟\n\n";
+        $text .= "Olá " . $name . ", tudo bem! 😊\n";
+        $text .= "Que tal conhecer as *melhores oportunidades* para morar ou investir na cidade?\n";
+        $text .= "🎯 *Temos ótimas opções que combinam perfeitamente com seu perfil!*\n\n";
+
+        foreach ($sortedProperties as $index => $property) {
+            $text .= "🏡 *" . $property->description . "*\n";
+            $text .= $property->obs . "\n\n";
+        }
+
+        $text .= "✅ *VANTAGENS EXCLUSIVAS:*\n";
+        $text .= "• Valorização garantida 📈\n";
+        $text .= "• Condições que cabem no seu bolso 💳\n";
+        $text .= "• Localização privilegiada 📍\n";
+        $text .= "• Plantas inteligentes e modernas 🏗️\n\n";
+
+        $text .= "⏳ *Não deixe o tempo passar!*\n";
+        $text .= "Sonhar alto também começa com um bom planejamento! 💭🔑\n\n";
+
+        $text .= "💬 Fale comigo, te mostro as novidades e detalhes sobre esses e outros lançamentos! 📲💬 \n\n";
+
+        $text .= "Adquirir um imóvel é mais que um investimento, é o começo de uma nova história. ❤️🏡\n\n";
+
+        $text .= "Aguardo o seu retorno 😊";
+        return $text;
+    }
+
+    public function generatePropertyMarketingText(Client $client, Property $property)
+    {
+        // Generate marketing text based on client data
+        $marketingText = $this->generateSpecificPropertyMarketingText($client, $property);
+
+        return response()->json([
+            'marketingText' => $marketingText
+        ]);
+    }
+
+    private function generateSpecificPropertyMarketingText(Client $client, Property $property)
+    {
+        Gate::authorize('show', $client);
+        Gate::authorize('show', $property);
+
+        $name = explode(' ', $client->name)[0];
+
+        // Customize this function to generate the marketing text as needed
+        $text = "Olá " . $name . ", tudo bem! 😊\n";
+        $text .= "🌟 *QUE TAL CONHECER UMA ÓTIMA OPORTUNIDADE PARA MORAR OU INVESTIR EM SOROCABA?!* 🌟\n\n";
+
+        $text .= "🏡 *" . $property->description . "*\n";
+        $text .= $property->obs . "\n\n";
+
+        $text .= "✅ *VANTAGENS EXCLUSIVAS:*\n";
+        $text .= "• Valorização garantida 📈\n";
+        $text .= "• Condições que cabem no seu bolso 💳\n";
+        $text .= "• Localização privilegiada 📍\n";
+        $text .= "• Planta inteligente e moderna 🏗️\n\n";
+
+        $text .= "⏳ *Não deixe o tempo passar!*\n";
+        $text .= "Sonhar alto também começa com um bom planejamento! 💭🔑\n\n";
+
+        $text .= "💬 Fale comigo, te mostro as novidades e detalhes sobre esse e outros lançamentos! 📲💬 \n\n";
+
+        $text .= "Adquirir um imóvel é mais que um investimento, é o começo de uma nova história. ❤️🏡\n\n";
+
+        $text .= "Aguardo o seu retorno 😊";
+        return $text;
+    }
 }

@@ -4,7 +4,8 @@ import IconTooltip from '@/components/ui/icon-tooltip';
 import { StatusIcon } from '@/components/ui/status-icon';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, Bath, Bed, Calendar, Car, Copy, KeyRound, MessageCircle } from 'lucide-react';
+import { ArrowRight, Bath, Bed, Calendar, Car, Check, Copy, KeyRound, MessageCircle } from 'lucide-react';
+import React, { useState } from 'react';
 
 interface NotifyPropertyProps {
     clients: {
@@ -40,7 +41,7 @@ interface NotifyPropertyProps {
         building_area: number;
         image: string;
         rooms: number;
-        region: string;
+        region: { name: string };
         region_c: string;
         range_c: string;
         bathrooms: number;
@@ -58,6 +59,65 @@ interface NotifyPropertyProps {
 }
 
 export default function ClientProperties({ property, clients }: NotifyPropertyProps) {
+    const [copiedId, setCopiedId] = useState<number | null>(null);
+    const [copiedTextType, setCopiedTextType] = useState<'name' | 'marketing' | null>(null);
+    const [isLoading, setIsLoading] = useState<number | null>(null); // Track loading state per client
+
+    // Copy client name to clipboard
+    const copyNameToClipboard = (client: NotifyPropertyProps['clients']) => {
+        navigator.clipboard
+            .writeText(client.name)
+            .then(() => {
+                setCopiedId(client.id);
+                setCopiedTextType('name');
+                setTimeout(() => {
+                    setCopiedId(null);
+                    setCopiedTextType(null);
+                }, 1500);
+            })
+            .catch((err) => {
+                console.error('Failed to copy: ', err);
+            });
+    };
+
+    // Copy marketing text to clipboard via API
+    const copyMarketingTextToClipboard = async (client: NotifyPropertyProps['clients'], e: React.MouseEvent) => {
+        e.preventDefault();
+        setIsLoading(client.id);
+
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            const response = await fetch(route('notify.generate-property-marketing-text', [client.id, property.id]), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken!, // Now properly typed as string
+                    'X-Requested-With': 'XMLHttpRequest', // Add this for Laravel to recognize as AJAX
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Falha ao gerar o texto de marketing.');
+            }
+
+            const data = await response.json();
+            const marketingText = data.marketingText;
+
+            await navigator.clipboard.writeText(marketingText);
+
+            setCopiedId(client.id);
+            setCopiedTextType('marketing');
+            setTimeout(() => {
+                setCopiedId(null);
+                setCopiedTextType(null);
+            }, 1500);
+        } catch (err) {
+            console.error('Failed to generate/copy marketing text: ', err);
+        } finally {
+            setIsLoading(null);
+        }
+    };
+
     return (
         <AppLayout>
             <Head title="Cliente / Imóveis" />
@@ -118,26 +178,21 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                                 <th>
                                     <div className="px-5">Região</div>
                                 </th>
-                                <th className="px-5 text-center text-green-600">
-                                    <IconTooltip
-                                        iconNode={MessageCircle && <Icon className="inline h-4 w-4" iconNode={MessageCircle} />}
-                                        tooltipText="Vagas"
-                                    />
-                                </th>
+                                <th className="px-5"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr className="border-b border-gray-200 font-medium text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-white">
                                 <th className="px-5 py-3 text-left">{property.description}</th>
                                 <th className="px-5 text-left">{property?.typ}</th>
-                                <td className="px-5">
+                                <th className="px-5">
                                     <div className="px-2">
                                         {new Intl.NumberFormat('pt-BR', {
                                             minimumFractionDigits: 0,
                                             maximumFractionDigits: 0,
                                         }).format(property.price)}
                                     </div>
-                                </td>
+                                </th>
                                 <th className="px-5">
                                     <div className="py-1">
                                         {property?.delivery_key ? new Date(property.delivery_key).toLocaleDateString('pt-BR') : null}
@@ -158,7 +213,7 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                                 <th className="px-5 text-center">
                                     <StatusIcon value={property?.balcony} />
                                 </th>
-                                <td className="px-5 text-center">
+                                <th className="px-5 text-center">
                                     {property.address ? (
                                         <IconTooltip
                                             tooltipClassName="right-full"
@@ -169,7 +224,7 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                                     ) : (
                                         property.region?.name
                                     )}
-                                </td>
+                                </th>
                             </tr>
 
                             <tr className="m-1 bg-[#D8D8D8] text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
@@ -214,40 +269,44 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                                 <th>
                                     <div className="px-5">Região</div>
                                 </th>
-                                <th className="px-5 text-center text-green-600">
-                                    <IconTooltip
-                                        iconNode={MessageCircle && <Icon className="inline h-4 w-4" iconNode={MessageCircle} />}
-                                        tooltipText="Vagas"
-                                    />
-                                </th>
+                                <th className="px-5 text-center text-green-600">{MessageCircle && <Icon iconNode={MessageCircle} />}</th>
                             </tr>
 
                             {Array.isArray(clients) &&
                                 clients.map((client, index) => (
                                     <tr
-                                        key={property.id}
+                                        key={client.id}
                                         className={`border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950 ${
                                             index !== clients.length - 1 ? 'border-b' : ''
                                         }`}
                                     >
-                                        <th className="px-5 py-3 text-left font-medium text-gray-900 dark:text-white">
-                                            <a href={route('dashboard.details', [client.id, property.id])} className="font-medium hover:underline">
-                                                <div className="inline-flex gap-2">{client.name}</div>
-                                            </a>
+                                        <th scope="row" className="px-6 py-3 font-medium whitespace-normal text-gray-900 dark:text-white">
+                                            <button
+                                                onClick={() => copyNameToClipboard(client)}
+                                                className="flex items-center gap-2 text-left transition-colors hover:text-blue-600"
+                                            >
+                                                {client.name}
+                                                {copiedId === client.id && copiedTextType === 'name' && (
+                                                    <span className="flex items-center text-sm text-green-600">
+                                                        <Copy size={16} className="mr-1" />
+                                                        <Check size={16} className="mr-1" />
+                                                    </span>
+                                                )}
+                                            </button>
                                         </th>
                                         <td className="px-5 py-3 text-left">
                                             <div className={client.wishe.typ_c}>
                                                 {client.wishe.typ ? client.wishe.typ.charAt(0).toUpperCase() + client.wishe.typ.slice(1) : ' '}
                                             </div>
                                         </td>
-                                        <th className="px-5 text-left">
+                                        <td className="px-5 text-left">
                                             <div className={client.wishe.range_c}>
                                                 {new Intl.NumberFormat('pt-BR', {
                                                     minimumFractionDigits: 0,
                                                     maximumFractionDigits: 0,
                                                 }).format(client.revenue)}
                                             </div>
-                                        </th>
+                                        </td>
                                         <td className="px-5">
                                             <div className={client.wishe.delivery_key_c}>
                                                 {client.wishe?.delivery_key ? new Date(client.wishe.delivery_key).toLocaleDateString('pt-BR') : null}
@@ -270,7 +329,7 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                                                 <StatusIcon value={client.wishe.balcony} />
                                             </div>
                                         </td>
-                                        <th className="px-5">
+                                        <td className="px-5">
                                             <div className={client.wishe.region_c}>
                                                 {client.wishe?.regions_descr ? (
                                                     <IconTooltip
@@ -283,13 +342,28 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                                                     client.wishe?.regions_msg
                                                 )}
                                             </div>
-                                        </th>
-                                        <th className="px-5 text-center text-blue-400">
-                                            <IconTooltip
-                                                iconNode={Copy && <Icon className="inline h-4 w-4" iconNode={Copy} />}
-                                                tooltipText="Vagas"
-                                            />
-                                        </th>
+                                        </td>
+                                        <td className="px-5 text-center text-blue-400">
+                                            <a
+                                                href={route('clients.show', client.id)}
+                                                className="relative font-medium text-blue-500 hover:underline"
+                                                onClick={(e) => copyMarketingTextToClipboard(client, e)}
+                                                title="Gerar e copiar texto de marketing"
+                                            >
+                                                {isLoading === client.id ? (
+                                                    <span className="absolute -top-7 -right-4 flex items-center rounded bg-white px-2 py-1 text-xs whitespace-nowrap text-gray-600 shadow-md">
+                                                        Gerando...
+                                                    </span>
+                                                ) : copiedId === client.id && copiedTextType === 'marketing' ? (
+                                                    <span className="absolute -top-7 -right-4 flex items-center rounded bg-white px-2 py-1 text-xs whitespace-nowrap text-green-600 shadow-md">
+                                                        <Check size={12} className="mr-1" />
+                                                        Texto copiado!
+                                                    </span>
+                                                ) : (
+                                                    <Icon iconNode={Copy} />
+                                                )}
+                                            </a>
+                                        </td>
                                     </tr>
                                 ))}
                         </tbody>

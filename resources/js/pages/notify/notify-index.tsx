@@ -3,9 +3,9 @@ import { Icon } from '@/components/icon';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Status } from '@/components/ui/status';
 import AppLayout from '@/layouts/app-layout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, router } from '@inertiajs/react'; // Import router from Inertia
 import { Check, Copy, Expand, HeartHandshake, House, User } from 'lucide-react';
-import React, { FormEventHandler, useState } from 'react';
+import React, { useEffect, useState } from 'react'; // Add useEffect
 
 type FilterForm = {
     property_id?: string;
@@ -59,13 +59,23 @@ export default function Clients({
     const [copiedId, setCopiedId] = useState<number | null>(null);
     const [copiedTextType, setCopiedTextType] = useState<'name' | 'marketing' | null>(null);
     const [isLoading, setIsLoading] = useState<number | null>(null); // Track loading state per client
-    const { data, setData, post, errors } = useForm<FilterForm>({
+    const { data, setData, errors } = useForm<FilterForm>({
         property_id: undefined,
     });
 
     const handleSetData = (field: keyof FilterForm, value: string | number | undefined | boolean) => {
         setData(field, value?.toString());
     };
+
+    // Use useEffect to watch for changes in property_id
+    useEffect(() => {
+        // Only trigger when property_id has a value and it's not the initial undefined
+        if (data.property_id && data.property_id !== '0') {
+            // Navigate to the notify route with the selected property
+            router.get(route('notify.property', { property: data.property_id }));
+        }
+    }, [data.property_id]); // This effect runs when data.property_id changes
+
 
     // Copy client name to clipboard
     const copyNameToClipboard = (client: Client) => {
@@ -91,7 +101,7 @@ export default function Clients({
 
         try {
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            const response = await fetch(route('clients.generate-marketing-text', client.id), {
+            const response = await fetch(route('notify.generate-marketing-text', client.id), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -122,11 +132,6 @@ export default function Clients({
         }
     };
 
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
-        post(route('dashboard.filter'));
-    };
-
     return (
         <AppLayout>
             <Head title="Clientes" />
@@ -135,7 +140,7 @@ export default function Clients({
                     <h1 className="text-xl font-semibold">Notificar clientes sobre as melhores oportunidades</h1>
                 </div>
 
-                <form onSubmit={submit} className="space-y-6 pt-4 pb-6">
+                <form className="space-y-6 pt-4 pb-6">
                     <div className="grid items-end gap-4 md:grid-cols-2">
                         <FormSelect
                             label="Tipo de texto de marketing (customizado para cada cliente ou específico de um imóvel)"
