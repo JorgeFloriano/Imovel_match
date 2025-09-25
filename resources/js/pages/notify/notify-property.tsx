@@ -138,9 +138,9 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                         <thead className="m-1 bg-[#D8D8D8] text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
                                 <th className="px-5 py-3 text-left">Descrição do imóvel</th>
-                                <th className="px-5 text-left">Tipo</th>
-                                <th className="px-5 text-left">Preço(R$)</th>
-                                <th>
+                                <th className="hidden px-5 text-left sm:table-cell">Tipo</th>
+                                <th className="hidden px-5 text-left sm:table-cell">Preço(R$)</th>
+                                <th className="hidden sm:table-cell">
                                     <IconTooltip
                                         iconNode={
                                             <div className="inline-flex gap-2 text-left">
@@ -152,19 +152,19 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                                         tooltipText="Previsão de entrega das chaves"
                                     />
                                 </th>
-                                <th className="text-center">
+                                <th className="hidden text-center sm:table-cell">
                                     <IconTooltip iconNode="M²" tooltipText="Área construída" />
                                 </th>
-                                <th>
+                                <th className="hidden sm:table-cell">
                                     <IconTooltip iconNode={Bed && <Icon className="inline h-4 w-4" iconNode={Bed} />} tooltipText="Quartos" />
                                 </th>
-                                <th>
+                                <th className="hidden sm:table-cell">
                                     <IconTooltip iconNode={Bath && <Icon className="inline h-4 w-4" iconNode={Bath} />} tooltipText="Suítes" />
                                 </th>
-                                <th>
+                                <th className="hidden sm:table-cell">
                                     <IconTooltip iconNode={Car && <Icon className="inline h-4 w-4" iconNode={Car} />} tooltipText="Vagas" />
                                 </th>
-                                <th>
+                                <th className="hidden sm:table-cell">
                                     <IconTooltip
                                         iconNode={
                                             <>
@@ -175,7 +175,7 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                                         tooltipText="Varanda"
                                     />
                                 </th>
-                                <th>
+                                <th className="hidden sm:table-cell">
                                     <div className="px-5">Região</div>
                                 </th>
                                 <th className="px-5"></th>
@@ -184,8 +184,8 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                         <tbody>
                             <tr className="border-b border-gray-200 font-medium text-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-white">
                                 <th className="px-5 py-3 text-left">{property.description}</th>
-                                <th className="px-5 text-left">{property?.typ}</th>
-                                <th className="px-5">
+                                <th className="hidden px-5 text-left sm:table-cell">{property?.typ}</th>
+                                <th className="hidden px-5 sm:table-cell">
                                     <div className="px-2">
                                         {new Intl.NumberFormat('pt-BR', {
                                             minimumFractionDigits: 0,
@@ -193,27 +193,27 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                                         }).format(property.price)}
                                     </div>
                                 </th>
-                                <th className="px-5">
+                                <th className="hidden px-5 sm:table-cell">
                                     <div className="py-1">
                                         {property?.delivery_key ? new Date(property.delivery_key).toLocaleDateString('pt-BR') : null}
                                     </div>
                                 </th>
-                                <th className="px-5">
+                                <th className="hidden px-5 sm:table-cell">
                                     <div className="p-1 text-center">{property?.building_area}</div>
                                 </th>
-                                <th className="px-5">
+                                <th className="hidden px-5 sm:table-cell">
                                     <div className="p-1 text-center">{property?.rooms}</div>
                                 </th>
-                                <th className="px-5">
+                                <th className="hidden px-5 sm:table-cell">
                                     <div className="p-1 text-center">{property?.suites}</div>
                                 </th>
-                                <th className="px-5">
+                                <th className="hidden px-5 sm:table-cell">
                                     <div className="p-1 text-center">{property?.garages}</div>
                                 </th>
-                                <th className="px-5 text-center">
+                                <th className="hidden px-5 text-center sm:table-cell">
                                     <StatusIcon value={property?.balcony} />
                                 </th>
-                                <th className="px-5 text-center">
+                                <th className="hidden px-5 text-center sm:table-cell">
                                     {property.address ? (
                                         <IconTooltip
                                             tooltipClassName="right-full"
@@ -229,9 +229,9 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
 
                             <tr className="m-1 bg-[#D8D8D8] text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                                 <th className="px-5 py-3 text-left">Cliente</th>
-                                <th className="px-5 text-left">Tipo</th>
-                                <th className="px-5 text-left">Renda (R$)</th>
-                                <th className="px-5 text-left">
+                                <th className="hidden px-5 text-left sm:table-cell">Tipo</th>
+                                <th className="hidden px-5 text-left sm:table-cell">Renda (R$)</th>
+                                <th className="hidden px-5 text-left sm:table-cell">
                                     <IconTooltip
                                         iconNode={
                                             <div className="inline-flex gap-2 text-left">
@@ -243,19 +243,19 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                                         tooltipText="Previsão de entrega das chaves"
                                     />
                                 </th>
-                                <th className="text-center">
+                                <th className="hidden text-center sm:table-cell">
                                     <IconTooltip iconNode="M²" tooltipText="Área construída" />
                                 </th>
-                                <th>
+                                <th className="hidden sm:table-cell">
                                     <IconTooltip iconNode={Bed && <Icon className="inline h-4 w-4" iconNode={Bed} />} tooltipText="Quartos" />
                                 </th>
-                                <th>
+                                <th className="hidden sm:table-cell">
                                     <IconTooltip iconNode={Bath && <Icon className="inline h-4 w-4" iconNode={Bath} />} tooltipText="Suítes" />
                                 </th>
-                                <th>
+                                <th className="hidden sm:table-cell">
                                     <IconTooltip iconNode={Car && <Icon className="inline h-4 w-4" iconNode={Car} />} tooltipText="Vagas" />
                                 </th>
-                                <th>
+                                <th className="hidden sm:table-cell">
                                     <IconTooltip
                                         iconNode={
                                             <>
@@ -266,7 +266,7 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                                         tooltipText="Varanda"
                                     />
                                 </th>
-                                <th>
+                                <th className="hidden sm:table-cell">
                                     <div className="px-5">Região</div>
                                 </th>
                                 <th className="px-5 text-center text-green-600">{MessageCircle && <Icon iconNode={MessageCircle} />}</th>
@@ -294,12 +294,12 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                                                 )}
                                             </button>
                                         </th>
-                                        <td className="px-5 py-3 text-left">
+                                        <td className="hidden px-5 py-3 text-left sm:table-cell">
                                             <div className={client.wishe.typ_c}>
                                                 {client.wishe.typ ? client.wishe.typ.charAt(0).toUpperCase() + client.wishe.typ.slice(1) : ' '}
                                             </div>
                                         </td>
-                                        <td className="px-5 text-left">
+                                        <td className="hidden px-5 text-left sm:table-cell">
                                             <div className={client.wishe.range_c}>
                                                 {new Intl.NumberFormat('pt-BR', {
                                                     minimumFractionDigits: 0,
@@ -307,29 +307,29 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                                                 }).format(client.revenue)}
                                             </div>
                                         </td>
-                                        <td className="px-5">
+                                        <td className="hidden px-5 sm:table-cell">
                                             <div className={client.wishe.delivery_key_c}>
                                                 {client.wishe?.delivery_key ? new Date(client.wishe.delivery_key).toLocaleDateString('pt-BR') : null}
                                             </div>
                                         </td>
-                                        <td className="px-5">
+                                        <td className="hidden px-5 sm:table-cell">
                                             <div className={client.wishe.building_area_c}>{client.wishe.building_area}</div>
                                         </td>
-                                        <td className="px-5">
+                                        <td className="hidden px-5 sm:table-cell">
                                             <div className={client.wishe.rooms_c}>{client.wishe.rooms}</div>
                                         </td>
-                                        <td className="px-5">
+                                        <td className="hidden px-5 sm:table-cell">
                                             <div className={client.wishe.suites_c}>{client.wishe.suites}</div>
                                         </td>
-                                        <td className="px-5">
+                                        <td className="hidden px-5 sm:table-cell">
                                             <div className={client.wishe.garages_c}>{client.wishe.garages}</div>
                                         </td>
-                                        <td className="px-5">
+                                        <td className="hidden px-5 sm:table-cell">
                                             <div className={client.wishe.balcony_c}>
                                                 <StatusIcon value={client.wishe.balcony} />
                                             </div>
                                         </td>
-                                        <td className="px-5">
+                                        <td className="hidden px-5 sm:table-cell">
                                             <div className={client.wishe.region_c}>
                                                 {client.wishe?.regions_descr ? (
                                                     <IconTooltip

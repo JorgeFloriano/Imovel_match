@@ -33,17 +33,17 @@ class NotifyController extends Controller
         ]);
     }
 
-    public function property( Property $property)
+    public function property(Property $property)
     {
         Gate::authorize('show', $property);
-        
+
         //$client = Client::find($client->id)->load('wishe.regions');
         $property = Property::find($property->id)->load('region');
 
         $property->typ = $property->typ();
 
         $clients = Client::with(['wishe.regions', 'user'])->where('user_id', Auth::user()->id)->get();
-        
+
         foreach ($clients as $client) {
 
             $compatible = new Compatible($client, $property); // calss to compare client and property
@@ -168,25 +168,50 @@ class NotifyController extends Controller
 
         // Customize this function to generate the marketing text as needed
         $text = "Olá " . $name . ", tudo bem! 😊\n";
-        $text .= "🌟 *QUE TAL CONHECER UMA ÓTIMA OPORTUNIDADE PARA MORAR OU INVESTIR EM SOROCABA?!* 🌟\n\n";
+        $text .= "✨ *QUE TAL CONHECER UMA ÓTIMA OPORTUNIDADE PARA MORAR OU INVESTIR EM SOROCABA?!* \n\n";
 
         $text .= "🏡 *" . $property->description . "*\n";
         $text .= $property->obs . "\n\n";
 
-        $text .= "✅ *VANTAGENS EXCLUSIVAS:*\n";
+        if (isset($property->delivery_key)) {
+            $text .= "🔑 Previsão de entrega das chaves para " .
+                ($property->delivery_key ? date('d/m/Y', strtotime($property->delivery_key)) : 'Não definida') .
+                "\n";
+        }
+
+        if (isset($property->building_area ) && $property->building_area > 0) {
+            $text .= "📐 " . $property->building_area . " m² de área construída\n";
+        }
+
+        if (isset($property->rooms ) && $property->rooms > 0) {
+            $text .= "🛏️ " . $property->rooms . " dormitório".($property->rooms > 1 ? "s" : "")."\n";
+        }
+
+        if (isset($property->suites) && $property->suites > 0) {
+            $text .= "🛁 " . $property->suites . " suíte".($property->suites > 1 ? "s" : "")."\n";
+        }
+
+        if (isset($property->garages) && $property->garages > 0) {
+            $text .= "🚗 " . $property->garages . " vaga".($property->garages > 1 ? "s" : "")." de garagem\n";
+        }
+
+        if (isset($property->balcony) && $property->balcony) {
+            $text .= "🌇 Com varanda\n";
+        }
+
+        $text .= "\n✅ *VANTAGENS EXCLUSIVAS:*\n";
         $text .= "• Valorização garantida 📈\n";
         $text .= "• Condições que cabem no seu bolso 💳\n";
         $text .= "• Localização privilegiada 📍\n";
         $text .= "• Planta inteligente e moderna 🏗️\n\n";
 
         $text .= "⏳ *Não deixe o tempo passar!*\n";
-        $text .= "Sonhar alto também começa com um bom planejamento! 💭🔑\n\n";
+        $text .= "Sonhar alto também começa com um bom planejamento! 💭\n\n";
 
         $text .= "💬 Fale comigo, te mostro as novidades e detalhes sobre esse e outros lançamentos! 📲💬 \n\n";
 
-        $text .= "Adquirir um imóvel é mais que um investimento, é o começo de uma nova história. ❤️🏡\n\n";
+        $text .= "Adquirir um imóvel é mais que um investimento, é o começo de uma nova história. 🏡❤️\n\n";
 
-        $text .= "Aguardo o seu retorno 😊";
         return $text;
     }
 }
