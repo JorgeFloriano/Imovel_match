@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Class\Compatible;
 use App\Models\Property;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Gate;
 
@@ -106,7 +107,7 @@ class ClientController extends Controller
     {
         Gate::authorize('edit', $client);
 
-        $encryptedId = Crypt::encrypt($client->id);
+        $encryptedId = Crypt::encryptString($client->id);
 
         return Inertia::render('clients/clients-edit', [
             'client' => $client->load('wishe.regions'),
@@ -241,12 +242,18 @@ class ClientController extends Controller
         ]);
     }
 
-    public function selfEdit(Client $client)
+    public function selfEdit($encryptedId)
     {
-        Gate::authorize('edit', $client);
+        try {
+            $clientId = Client::find(Crypt::decryptString($encryptedId));
+        } catch (DecryptException $e) {
+            die;
+        }
+
+        Gate::authorize('edit', $clientId);
 
         return Inertia::render('clients/clients-self-edit', [
-            'client' => $client->load('wishe.regions'),
+            'client' => $clientId->load('wishe.regions'),
             'maritalStatusOptions' => $this->client->maritalStatOpt(),
             'booleanOptions' => $this->client->boolOpt(),
             'regionOptions' => Region::orderBy('name')->get()->map(fn($region) => [

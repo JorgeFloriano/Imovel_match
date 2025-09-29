@@ -6,7 +6,7 @@ import ChecksDropdown from '@/components/ui/checks-dropdown';
 import AppLayout from '@/layouts/app-layout';
 import { Transition } from '@headlessui/react';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Loader2 } from 'lucide-react';
+import { Check, Copy, Loader2 } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
 type ClientEditForm = {
@@ -85,16 +85,18 @@ export default function EditClient({ client, encryptedId, maritalStatusOptions, 
         has_property: client.has_property ?? false,
     });
 
+    console.log('client', client);
+
+    const [copiedId, setCopiedId] = useState<string | null>(null);
+
     // Copy client name to clipboard
     const copyEditLinkToClipboard = (encryptedId: string) => {
         navigator.clipboard
-            .writeText(client.name)
+            .writeText(window.location.origin + '/clients/' + encryptedId + '/self-edit')
             .then(() => {
                 setCopiedId(encryptedId);
-                setCopiedTextType('name');
                 setTimeout(() => {
                     setCopiedId(null);
-                    setCopiedTextType(null);
                 }, 1500);
             })
             .catch((err) => {
@@ -150,8 +152,14 @@ export default function EditClient({ client, encryptedId, maritalStatusOptions, 
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Editar do Cliente</h1>
                     <div className="flex gap-2">
-                        <Button onClick={() => copyEditLinkToClipboard(encryptedId)} asChild variant="outline">
+                        <Button onClick={() => copyEditLinkToClipboard(encryptedId)}>
                             Gerar Link
+                            {copiedId === encryptedId && (
+                                <span className="flex items-center text-sm text-green-600">
+                                    <Copy size={16} className="mr-1" />
+                                    <Check size={16} className="mr-1" />
+                                </span>
+                            )}
                         </Button>
                         <Button asChild>
                             <Link href={route('clients.index')}>Voltar</Link>

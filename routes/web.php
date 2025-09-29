@@ -40,13 +40,13 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
     Route::get('notify/{property}/property', [NotifyController::class, 'property'])
         ->name('notify.property')
         ->middleware('can:show,property');
+});
 
-    Route::get('/clients/{client}/self-edit', [ClientController::class, 'selfEdit'])
-        ->name('clients.clients-self-edit')
-        ->middleware('can:show,client');
+Route::middleware(['verified'])->group(function () {
+    Route::get('/clients/{encryptedId}/self-edit', [ClientController::class, 'selfEdit'])
+        ->name('clients.clients-self-edit');
     Route::post('/clients/{encryptedId}/self-update', [ClientController::class, 'selfUpdate'])
-        ->name('clients.clients-self-update')
-        ->middleware('can:show,client');
+        ->name('clients.clients-self-update');
 });
 
 require __DIR__ . '/settings.php';

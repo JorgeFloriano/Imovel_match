@@ -61,19 +61,19 @@ const typeOptions = [
     { value: 'outros', label: 'Outros' },
 ];
 
-const airConditioningOptions = [
-    { value: 'incluso', label: 'Incluso' },
-    { value: 'somente infra', label: 'Somente Infra' },
-    { value: 'não incluso', label: 'Não incluso' },
-];
+// const airConditioningOptions = [
+//     { value: 'incluso', label: 'Incluso' },
+//     { value: 'somente infra', label: 'Somente Infra' },
+//     { value: 'não incluso', label: 'Não incluso' },
+// ];
 
-const booleanFeatureLabels = {
-    garden: 'Jardim',
-    pool: 'Piscina',
-    balcony: 'Varanda',
-    acept_pets: 'Aceita Pets',
-    acessibility: 'Acessibilidade',
-};
+// const booleanFeatureLabels = {
+//     garden: 'Jardim',
+//     pool: 'Piscina',
+//     balcony: 'Varanda',
+//     acept_pets: 'Aceita Pets',
+//     acessibility: 'Acessibilidade',
+// };
 
 // ClientPublicUpdate.tsx - Simplified version for clients
 export default function ClientPublicUpdate({ client, encryptedId, maritalStatusOptions, booleanOptions, regionOptions }: EditClientProps) {
