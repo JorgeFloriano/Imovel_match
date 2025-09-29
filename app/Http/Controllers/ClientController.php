@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Class\Compatible;
 use App\Models\Property;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Gate;
 
 class ClientController extends Controller
@@ -104,8 +105,12 @@ class ClientController extends Controller
     public function edit(Client $client)
     {
         Gate::authorize('edit', $client);
+
+        $encryptedId = Crypt::encrypt($client->id);
+
         return Inertia::render('clients/clients-edit', [
             'client' => $client->load('wishe.regions'),
+            'encryptedId' => $encryptedId,
             'maritalStatusOptions' => $this->client->maritalStatOpt(),
             'booleanOptions' => $this->client->boolOpt(),
             'regionOptions' => Region::orderBy('name')->get()->map(fn($region) => [
@@ -233,6 +238,21 @@ class ClientController extends Controller
         return Inertia::render('clients/client-properties', [
             'properties' => $sortedProperties,
             'client' => $client
+        ]);
+    }
+
+    public function selfEdit(Client $client)
+    {
+        Gate::authorize('edit', $client);
+
+        return Inertia::render('clients/clients-self-edit', [
+            'client' => $client->load('wishe.regions'),
+            'maritalStatusOptions' => $this->client->maritalStatOpt(),
+            'booleanOptions' => $this->client->boolOpt(),
+            'regionOptions' => Region::orderBy('name')->get()->map(fn($region) => [
+                'value' => $region->id,
+                'label' => $region->name,
+            ])->all(),
         ]);
     }
 }

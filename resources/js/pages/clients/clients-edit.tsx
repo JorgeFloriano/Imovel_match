@@ -44,6 +44,7 @@ type ClientEditForm = {
 
 interface EditClientProps {
     client: ClientEditForm & { id: number; wishe: { regions?: { id: number }[] } };
+    encryptedId: string;
     maritalStatusOptions: Record<string, string>;
     booleanOptions: Record<string, string>;
     regionOptions: Array<{ value: string; label: string }>;
@@ -76,7 +77,7 @@ const booleanFeatureLabels = {
     acessibility: 'Acessibilidade',
 };
 
-export default function EditClient({ client, maritalStatusOptions, booleanOptions, regionOptions }: EditClientProps) {
+export default function EditClient({ client, encryptedId, maritalStatusOptions, booleanOptions, regionOptions }: EditClientProps) {
     const { data, setData, put, processing, errors, transform, recentlySuccessful } = useForm<ClientEditForm>({
         ...client,
         ...(client.wishe ?? {}),
@@ -84,25 +85,42 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
         has_property: client.has_property ?? false,
     });
 
+    // Copy client name to clipboard
+    const copyEditLinkToClipboard = (encryptedId: string) => {
+        navigator.clipboard
+            .writeText(client.name)
+            .then(() => {
+                setCopiedId(encryptedId);
+                setCopiedTextType('name');
+                setTimeout(() => {
+                    setCopiedId(null);
+                    setCopiedTextType(null);
+                }, 1500);
+            })
+            .catch((err) => {
+                console.error('Failed to copy: ', err);
+            });
+    };
+
     // In your EditClient component, modify the selectedRegions initialization:
-const [selectedRegions, setSelectedRegions] = useState<Record<string, boolean>>(() => {
-    const initialState: Record<string, boolean> = {};
-    
-    // Initialize all regions as false first
-    regionOptions.forEach((option) => {
-        initialState[option.value] = false;
+    const [selectedRegions, setSelectedRegions] = useState<Record<string, boolean>>(() => {
+        const initialState: Record<string, boolean> = {};
+
+        // Initialize all regions as false first
+        regionOptions.forEach((option) => {
+            initialState[option.value] = false;
+        });
+
+        // Mark the initially selected regions as true
+        client.wishe?.regions?.forEach((region: { id: number }) => {
+            const regionId = region.id.toString();
+            if (regionId in initialState) {
+                initialState[regionId] = true;
+            }
+        });
+
+        return initialState;
     });
-    
-    // Mark the initially selected regions as true
-    client.wishe?.regions?.forEach((region: { id: number }) => {
-        const regionId = region.id.toString();
-        if (regionId in initialState) {
-            initialState[regionId] = true;
-        }
-    });
-    
-    return initialState;
-});
 
     const handleSetData = (field: keyof ClientEditForm, value: string | number | undefined | boolean) => {
         setData(field, value);
@@ -132,7 +150,10 @@ const [selectedRegions, setSelectedRegions] = useState<Record<string, boolean>>(
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Editar do Cliente</h1>
                     <div className="flex gap-2">
-                        <Button asChild variant="outline">
+                        <Button onClick={() => copyEditLinkToClipboard(encryptedId)} asChild variant="outline">
+                            Gerar Link
+                        </Button>
+                        <Button asChild>
                             <Link href={route('clients.index')}>Voltar</Link>
                         </Button>
                     </div>

@@ -171,7 +171,12 @@ class NotifyController extends Controller
         $text .= "✨ *QUE TAL CONHECER UMA ÓTIMA OPORTUNIDADE PARA MORAR OU INVESTIR EM SOROCABA?!* \n\n";
 
         $text .= "🏡 *" . $property->description . "*\n";
-        $text .= $property->obs . "\n\n";
+
+        if (isset($property->obs)) {
+            $text .= $property->obs . "\n";
+        }
+
+        $text .= "\n";
 
         if (isset($property->delivery_key)) {
             $text .= "🔑 Previsão de entrega das chaves para " .
@@ -197,6 +202,10 @@ class NotifyController extends Controller
 
         if (isset($property->balcony) && $property->balcony) {
             $text .= "🌇 Com varanda\n";
+        }
+
+        if (isset($property->region)) {
+            $text .= "📍 Localizado na região " . $property->region->name . "\n";
         }
 
         $text .= "\n✅ *VANTAGENS EXCLUSIVAS:*\n";
