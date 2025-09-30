@@ -93,6 +93,7 @@ export default function EditClient({ client, encryptedId, maritalStatusOptions, 
     const copyEditLinkToClipboard = (encryptedId: string) => {
         navigator.clipboard
             .writeText(window.location.origin + '/clients/' + encryptedId + '/self-edit')
+            //.writeText('https://tinderhome.jldev.app.br/clients/54/edit')
             .then(() => {
                 setCopiedId(encryptedId);
                 setTimeout(() => {
@@ -307,20 +308,20 @@ export default function EditClient({ client, encryptedId, maritalStatusOptions, 
                     <div className="space-y-4">
                         <h2 className="text-lg font-semibold">Informações do Imóvel Desejado</h2>
                         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                            <ChecksDropdown
-                                label="Possíveis regiões"
-                                placeholder="Selecionar regiões"
-                                customOptions={regionOptions}
-                                value={selectedRegions}
-                                onChange={(newSelections) => setSelectedRegions(newSelections)}
-                            />
-
                             <FormSelect
                                 label="Tipo de Imóvel"
                                 value={data.type || ''}
                                 onValueChange={(value) => handleSetData('type', value)}
                                 customOptions={typeOptions}
                                 error={errors.type}
+                            />
+
+                            <ChecksDropdown
+                                label="Possíveis regiões"
+                                placeholder="Selecionar regiões"
+                                customOptions={regionOptions}
+                                value={selectedRegions}
+                                onChange={(newSelections) => setSelectedRegions(newSelections)}
                             />
 
                             <FormInput

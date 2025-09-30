@@ -3,6 +3,7 @@ import { FormSelect } from '@/components/form-select';
 import { FormTextarea } from '@/components/form-textarea';
 import { Button } from '@/components/ui/button';
 import ChecksDropdown from '@/components/ui/checks-dropdown';
+import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
@@ -61,19 +62,19 @@ const typeOptions = [
     { value: 'outros', label: 'Outros' },
 ];
 
-// const airConditioningOptions = [
-//     { value: 'incluso', label: 'Incluso' },
-//     { value: 'somente infra', label: 'Somente Infra' },
-//     { value: 'não incluso', label: 'Não incluso' },
-// ];
+const airConditioningOptions = [
+    { value: 'incluso', label: 'Incluso' },
+    { value: 'somente infra', label: 'Somente Infra' },
+    { value: 'não incluso', label: 'Não incluso' },
+];
 
-// const booleanFeatureLabels = {
-//     garden: 'Jardim',
-//     pool: 'Piscina',
-//     balcony: 'Varanda',
-//     acept_pets: 'Aceita Pets',
-//     acessibility: 'Acessibilidade',
-// };
+const booleanFeatureLabels = {
+    garden: 'Jardim',
+    pool: 'Piscina',
+    balcony: 'Varanda',
+    acept_pets: 'Aceita Pets',
+    acessibility: 'Acessibilidade',
+};
 
 // ClientPublicUpdate.tsx - Simplified version for clients
 export default function ClientPublicUpdate({ client, encryptedId, maritalStatusOptions, booleanOptions, regionOptions }: EditClientProps) {
@@ -122,41 +123,51 @@ export default function ClientPublicUpdate({ client, encryptedId, maritalStatusO
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gray-50 py-6">
             <Head title="Atualizar Meus Dados" />
 
-            <div className="mx-auto max-w-2xl px-4">
+            <div className="mx-auto max-w-4xl px-4">
                 {/* Client-focused header */}
                 <div className="mb-8 text-center">
                     <h1 className="text-2xl font-bold text-gray-900">Atualize Seus Dados</h1>
                     <p className="mt-2 text-gray-600">Mantenha suas informações atualizadas para receber as melhores oportunidades de imóveis</p>
                 </div>
 
-                <form onSubmit={submit} className="space-y-6 rounded-lg border bg-white p-6 shadow-sm">
-                    {/* Simplified Personal Information */}
-                    <div>
-                        <h2 className="mb-4 text-lg font-semibold">Seus Dados Pessoais</h2>
-                        <div className="grid grid-cols-1 gap-4">
-                            <FormInput
-                                label="Nome Completo"
-                                placeholder="Ex.: João Paulo Pereira Mendonsa"
-                                maxLength={40}
-                                value={data.name}
-                                onChange={(value) => handleSetData('name', value)}
-                                error={errors.name}
-                                required
-                            />
-
+                <div className="h-full gap-4 space-y-6 rounded-xl p-1">
+                    <form onSubmit={submit} className="space-y-6 rounded-lg border bg-white p-4 shadow-sm">
+                        {/* Personal Information Section */}
+                        <h2 className="text-lg font-semibold mt-4">Informações Pessoais</h2>
+                        <div>
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <FormInput
-                                    label="Telefone"
-                                    placeholder="(99) 99999-9999"
-                                    maxLength={20}
-                                    type="tel"
-                                    value={data.phone}
-                                    onChange={(value) => handleSetData('phone', value)}
-                                    error={errors.phone}
+                                    label="Nome Completo"
+                                    placeholder="Ex.: João Paulo Pereira Mendonsa"
+                                    maxLength={40}
+                                    value={data.name}
+                                    onChange={(value) => handleSetData('name', value)}
+                                    error={errors.name}
+                                    required
                                 />
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <FormInput
+                                        label="Telefone"
+                                        placeholder="(99) 99999-9999"
+                                        maxLength={20}
+                                        type="tel"
+                                        value={data.phone}
+                                        onChange={(value) => handleSetData('phone', value)}
+                                        error={errors.phone}
+                                    />
+
+                                    <FormSelect
+                                        label="Estado Civil"
+                                        value={data.marital_status}
+                                        onValueChange={(value) => handleSetData('marital_status', value)}
+                                        options={maritalStatusOptions}
+                                        error={errors.marital_status}
+                                    />
+                                </div>
 
                                 <FormInput
                                     label="E-mail"
@@ -167,187 +178,246 @@ export default function ClientPublicUpdate({ client, encryptedId, maritalStatusO
                                     onChange={(value) => handleSetData('email', value)}
                                     error={errors.email}
                                 />
-                            </div>
 
-                            <FormInput
-                                label="Profissão"
-                                placeholder="Ex.: Desenvolvedor"
-                                maxLength={60}
-                                value={data.profession}
-                                onChange={(value) => handleSetData('profession', value)}
-                                error={errors.profession}
-                            />
-
-                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <FormInput
-                                    label="Renda Mensal (R$)"
+                                    label="Endereço"
+                                    placeholder="Ex.: Rua João Paulo, 123"
+                                    maxLength={100}
+                                    value={data.address || ''}
+                                    onChange={(value) => handleSetData('address', value)}
+                                    error={errors.address}
+                                />
+
+                                <h2 className="text-lg font-semibold mt-4">Dados para análise financeira</h2>
+
+                                <FormInput
+                                    label="Profissão"
+                                    placeholder="Ex.: Desenvolvedor"
+                                    maxLength={60}
+                                    value={data.profession}
+                                    onChange={(value) => handleSetData('profession', value)}
+                                    error={errors.profession}
+                                />
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <FormInput
+                                        label="Renda Mensal (R$)"
+                                        type="number"
+                                        min={0}
+                                        step={0.01}
+                                        max={9999999999}
+                                        value={data.revenue}
+                                        onChange={(value) => handleSetData('revenue', value)}
+                                        error={errors.revenue}
+                                    />
+
+                                    <FormInput
+                                        label="Saldo de FGTS (R$)"
+                                        type="number"
+                                        min={0}
+                                        step={0.01}
+                                        max={9999999999}
+                                        value={data.fgts || ''}
+                                        onChange={(value) => handleSetData('fgts', value)}
+                                        error={errors.fgts}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Financial Information Section */}
+                        <div>
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <FormInput
+                                        label="Nº de Dependentes"
+                                        type="number"
+                                        min={0}
+                                        max={99}
+                                        value={data.dependents}
+                                        onChange={(value) => handleSetData('dependents', value)}
+                                        error={errors.dependents}
+                                    />
+
+                                    <FormInput
+                                        label="Compr. de Renda (%)"
+                                        type="number"
+                                        min={0}
+                                        max={100}
+                                        value={data.compromised_income}
+                                        onChange={(value) => handleSetData('compromised_income', value)}
+                                        error={errors.compromised_income}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <FormInput
+                                        label="Capital Disponível (R$)"
+                                        type="number"
+                                        min={0}
+                                        step={0.01}
+                                        max={9999999999}
+                                        value={data.capital}
+                                        onChange={(value) => handleSetData('capital', value)}
+                                        error={errors.capital}
+                                    />
+
+                                    <FormSelect
+                                        label="Já possúi propriedade?"
+                                        value={data.has_property.toString()}
+                                        onValueChange={(value) => handleSetData('has_property', value === 'true')}
+                                        options={booleanOptions}
+                                        error={errors.has_property}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Desired Property Section */}
+                        <div className="space-y-4">
+                            <h2 className="text-lg font-semibold mt-8">Características do imóvel desejado</h2>
+                            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                                <FormSelect
+                                    label="Tipo de Imóvel"
+                                    value={data.type || ''}
+                                    onValueChange={(value) => handleSetData('type', value)}
+                                    customOptions={typeOptions}
+                                    error={errors.type}
+                                />
+
+                                <ChecksDropdown
+                                    label="Regiões preferidas"
+                                    placeholder="Selecionar regiões"
+                                    customOptions={regionOptions}
+                                    value={selectedRegions}
+                                    onChange={(newSelections) => setSelectedRegions(newSelections)}
+                                />
+
+                                <FormInput
+                                    label="Número de quartos"
                                     type="number"
                                     min={0}
-                                    step={0.01}
+                                    max={99}
+                                    value={data.rooms || ''}
+                                    onChange={(value) => handleSetData('rooms', value ? value : undefined)}
+                                    error={errors.rooms}
+                                />
+
+                                <FormInput
+                                    label="Número de banheiros"
+                                    type="number"
+                                    min={0}
+                                    max={99}
+                                    value={data.bathrooms || ''}
+                                    onChange={(value) => handleSetData('bathrooms', value ? value : undefined)}
+                                    error={errors.bathrooms}
+                                />
+
+                                <FormInput
+                                    label="Número de suítes"
+                                    type="number"
+                                    min={0}
+                                    max={99}
+                                    value={data.suites || ''}
+                                    onChange={(value) => handleSetData('suites', value ? value : undefined)}
+                                    error={errors.suites}
+                                />
+
+                                <FormInput
+                                    label="Vagas de garagem"
+                                    type="number"
+                                    min={0}
+                                    max={99}
+                                    value={data.garages || ''}
+                                    onChange={(value) => handleSetData('garages', value ? value : undefined)}
+                                    error={errors.garages}
+                                />
+
+                                <FormInput
+                                    label="Previsão Entrega"
+                                    type="date"
+                                    value={data.delivery_key || ''}
+                                    onChange={(value) => handleSetData('delivery_key', value || '')}
+                                    error={errors.delivery_key}
+                                />
+
+                                <FormInput
+                                    label="Área construida (m²)"
+                                    type="number"
+                                    min={0}
                                     max={9999999999}
-                                    value={data.revenue}
-                                    onChange={(value) => handleSetData('revenue', value)}
-                                    error={errors.revenue}
-                                    //helperText="Nos ajuda a encontrar imóveis dentro do seu orçamento"
+                                    step={0.01}
+                                    value={data.building_area || ''}
+                                    onChange={(value) => handleSetData('building_area', value ? value : undefined)}
+                                    error={errors.building_area}
                                 />
 
                                 <FormSelect
-                                    label="Estado Civil"
-                                    value={data.marital_status}
-                                    onValueChange={(value) => setData('marital_status', value)}
-                                    options={maritalStatusOptions}
-                                    error={errors.marital_status}
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Enhanced Financial Section with Help Text */}
-                    <div>
-                        <h2 className="mb-4 text-lg font-semibold">Situação Financeira</h2>
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <FormInput
-                                label="Capital Disponível para Entrada (R$)"
-                                type="number"
-                                value={data.capital}
-                                onChange={(value) => handleSetData('capital', value)}
-                                error={errors.capital}
-                                //helperText="Valor disponível para entrada"
-                            />
-
-                            <FormInput
-                                label="Saldo do FGTS (R$)"
-                                type="number"
-                                value={data.fgts || ''}
-                                onChange={(value) => handleSetData('fgts', value)}
-                                error={errors.fgts}
-                            />
-
-                            <FormSelect
-                                label="Precisa de Financiamento?"
-                                value={data.need_financing.toString()}
-                                onValueChange={(value) => handleSetData('need_financing', value === 'true')}
-                                options={booleanOptions}
-                                error={errors.need_financing}
-                            />
-
-                            <FormInput
-                                label="Comprometimento da Renda (%)"
-                                type="number"
-                                value={data.compromised_income}
-                                onChange={(value) => handleSetData('compromised_income', value)}
-                                error={errors.compromised_income}
-                                //helperText="Percentual da renda já comprometido com outras despesas"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Improved Property Desires Section */}
-                    <div>
-                        <h2 className="mb-4 text-lg font-semibold">O Que Você Está Procurando</h2>
-
-                        <div className="mb-4">
-                            <ChecksDropdown
-                                label="Regiões de Interesse"
-                                placeholder="Selecione as regiões que te interessam"
-                                customOptions={regionOptions}
-                                value={selectedRegions}
-                                onChange={(newSelections) => setSelectedRegions(newSelections)}
-                            />
-                            <p className="mt-1 text-sm text-gray-500">Selecione uma ou mais regiões onde gostaria de morar</p>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-                            <FormSelect
-                                label="Tipo do Imóvel"
-                                value={data.type || ''}
-                                onValueChange={(value) => setData('type', value)}
-                                customOptions={typeOptions}
-                                error={errors.type}
-                            />
-
-                            <FormInput
-                                label="Quartos"
-                                type="number"
-                                value={data.rooms || ''}
-                                onChange={(value) => handleSetData('rooms', value)}
-                                error={errors.rooms}
-                            />
-
-                            <FormInput
-                                label="Banheiros"
-                                type="number"
-                                value={data.bathrooms || ''}
-                                onChange={(value) => handleSetData('bathrooms', value)}
-                                error={errors.bathrooms}
-                            />
-                        </div>
-
-                        {/* Features with better labels for clients */}
-                        <div className="mt-4">
-                            <label className="mb-2 block text-sm font-medium text-gray-700">Características Desejadas</label>
-                            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                                <FormSelect
-                                    label="Piscina"
-                                    value={data.pool?.toString() || ''}
-                                    onValueChange={(value) => setData('pool', value === 'true')}
+                                    label="Precisa de financiamento"
+                                    value={data.need_financing.toString()}
+                                    onValueChange={(value) => handleSetData('need_financing', value === 'true')}
                                     options={booleanOptions}
+                                    error={errors.need_financing}
                                 />
 
                                 <FormSelect
-                                    label="Aceita Pets"
-                                    value={data.acept_pets?.toString() || ''}
-                                    onValueChange={(value) => setData('acept_pets', value === 'true')}
+                                    label="Entrada parcelada"
+                                    value={data.installment_payment?.toString() || ''}
+                                    onValueChange={(value) => handleSetData('installment_payment', value === 'true')}
                                     options={booleanOptions}
+                                    error={errors.installment_payment}
                                 />
 
                                 <FormSelect
-                                    label="Jardim"
-                                    value={data.garden?.toString() || ''}
-                                    onValueChange={(value) => setData('garden', value === 'true')}
-                                    options={booleanOptions}
+                                    label="Ar condicionado"
+                                    value={data.air_conditioning || ''}
+                                    onValueChange={(value) => handleSetData('air_conditioning', value)}
+                                    customOptions={airConditioningOptions}
+                                    error={errors.air_conditioning}
                                 />
 
-                                <FormSelect
-                                    label="Acessibilidade"
-                                    value={data.acessibility?.toString() || ''}
-                                    onValueChange={(value) => setData('acessibility', value === 'true')}
-                                    options={booleanOptions}
+                                {/* Boolean Features */}
+                                {Object.entries(booleanFeatureLabels).map(([field, label]) => (
+                                    <FormSelect
+                                        key={field}
+                                        label={label}
+                                        value={data[field as keyof ClientEditForm]?.toString() || ''}
+                                        onValueChange={(value) => handleSetData(field as keyof ClientEditForm, value === 'true')}
+                                        options={booleanOptions}
+                                        error={(errors as Record<string, string>)[field]}
+                                    />
+                                ))}
+
+                                <FormTextarea
+                                    label="Observações"
+                                    rows={1}
+                                    value={data.obs || ''}
+                                    maxLength={300}
+                                    placeholder="Ex.: Casa com vista para o por do sol."
+                                    onChange={(value) => handleSetData('obs', value)}
+                                    error={errors.obs}
+                                    className="col-span-full"
                                 />
                             </div>
                         </div>
 
-                        <FormTextarea
-                            label="Observações ou Requisitos Especiais"
-                            value={data.obs || ''}
-                            onChange={(value) => setData('obs', value)}
-                            error={errors.obs}
-                            placeholder="Ex.: Preciso de garagem para 2 carros, preferência por andar alto..."
-                            //helperText="Conte mais sobre o que é importante para você no seu novo imóvel"
-                        />
-                    </div>
-
-                    {/* Submission */}
-                    <div className="border-t pt-6">
-                        <div className="flex items-center justify-between">
-                            <p className="text-sm text-gray-600">
-                                Ao atualizar seus dados, você ajuda nosso corretor a encontrar as melhores opções para você
-                            </p>
-                            <Button disabled={processing} type="submit" size="lg">
+                        <div className="flex items-center gap-4">
+                            <Button disabled={processing} type="submit">
                                 {processing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                Atualizar Meus Dados
+                                Atualizar
                             </Button>
-                        </div>
 
-                        {recentlySuccessful && (
-                            <div className="mt-4 rounded-md border border-green-200 bg-green-50 p-3">
-                                <p className="text-sm text-green-800">
-                                    ✅ Dados atualizados com sucesso! Obrigado por manter suas informações em dia.
-                                </p>
-                            </div>
-                        )}
-                    </div>
-                </form>
+                            <Transition
+                                show={recentlySuccessful}
+                                enter="transition ease-in-out"
+                                enterFrom="opacity-0"
+                                leave="transition ease-in-out"
+                                leaveTo="opacity-0"
+                            >
+                                <p className="text-sm text-neutral-600">Alterações salvas</p>
+                            </Transition>
+                        </div>
+                    </form>
+                </div>
 
                 {/* Security notice */}
                 <div className="mt-4 text-center">

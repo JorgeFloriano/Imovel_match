@@ -352,20 +352,20 @@ export default function CreateClient({ maritalStatusOptions, booleanOptions, reg
                     <div className="space-y-4">
                         <h2 className="text-lg font-semibold">Informações do Imóvel Desejado</h2>
                         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                            <ChecksDropdown
-                                label="Possíveis regiões"
-                                placeholder="Selecionar regiões"
-                                customOptions={regionOptions}
-                                value={selectedRegions}
-                                onChange={(newSelections) => setSelectedRegions(newSelections)}
-                            />
-
                             <FormSelect
                                 label="Tipo de Imóvel"
                                 value={data.type ?? ''} // Provide an empty string as a fallback value
                                 onValueChange={(value) => handleSetData('type', value)}
                                 customOptions={typeOptions}
                                 error={errors.type}
+                            />
+                            
+                            <ChecksDropdown
+                                label="Possíveis regiões"
+                                placeholder="Selecionar regiões"
+                                customOptions={regionOptions}
+                                value={selectedRegions}
+                                onChange={(newSelections) => setSelectedRegions(newSelections)}
                             />
 
                             <FormInput
