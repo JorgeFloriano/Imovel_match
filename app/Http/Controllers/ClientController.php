@@ -13,6 +13,7 @@ use App\Models\Property;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\URL;
 
 class ClientController extends Controller
 {
@@ -107,11 +108,8 @@ class ClientController extends Controller
     {
         Gate::authorize('edit', $client);
 
-        $encryptedId = Crypt::encryptString($client->id);
-
         return Inertia::render('clients/clients-edit', [
             'client' => $client->load('wishe.regions'),
-            'encryptedId' => $encryptedId,
             'maritalStatusOptions' => $this->client->maritalStatOpt(),
             'booleanOptions' => $this->client->boolOpt(),
             'regionOptions' => Region::orderBy('name')->get()->map(fn($region) => [
@@ -242,18 +240,31 @@ class ClientController extends Controller
         ]);
     }
 
+    public function generateTemporaryLink(Client $client)
+    {
+        $encryptedId = Crypt::encryptString($client->id);
+
+        // This creates a signed URL that expires automatically
+        $url = URL::temporarySignedRoute(
+            'clients.clients-self-edit',
+            now()->addMinutes(1),
+            ['encryptedId' => $encryptedId]
+        );
+
+        return response()->json(['url' => $url]);
+    }
+
     public function selfEdit($encryptedId)
     {
         try {
-            $clientId = Client::find(Crypt::decryptString($encryptedId));
+            $clientId = Crypt::decryptString($encryptedId);
+            $client = Client::withoutGlobalScopes()->find($clientId);
         } catch (DecryptException $e) {
-            die;
+            abort(404);
         }
 
-        Gate::authorize('edit', $clientId);
-
         return Inertia::render('clients/clients-self-edit', [
-            'client' => $clientId->load('wishe.regions'),
+            'client' => $client->load('wishe.regions'),
             'maritalStatusOptions' => $this->client->maritalStatOpt(),
             'booleanOptions' => $this->client->boolOpt(),
             'regionOptions' => Region::orderBy('name')->get()->map(fn($region) => [

@@ -40,14 +40,17 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
     Route::get('notify/{property}/property', [NotifyController::class, 'property'])
         ->name('notify.property')
         ->middleware('can:show,property');
+
+    Route::post('/clients/{client}/generate-update-link', [ClientController::class, 'generateTemporaryLink']);
 });
 
-Route::middleware(['verified'])->group(function () {
-    Route::get('/clients/{encryptedId}/self-edit', [ClientController::class, 'selfEdit'])
-        ->name('clients.clients-self-edit');
-    Route::post('/clients/{encryptedId}/self-update', [ClientController::class, 'selfUpdate'])
-        ->name('clients.clients-self-update');
-});
+
+Route::get('/clients/{encryptedId}/self-edit', [ClientController::class, 'selfEdit'])
+    ->name('clients.clients-self-edit')
+    ->middleware('signed'); // This validates the signature and expiration automatically
+Route::post('/clients/{encryptedId}/self-update', [ClientController::class, 'selfUpdate'])
+    ->name('clients.clients-self-update');
+
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

@@ -77,7 +77,7 @@ const booleanFeatureLabels = {
     acessibility: 'Acessibilidade',
 };
 
-export default function EditClient({ client, encryptedId, maritalStatusOptions, booleanOptions, regionOptions }: EditClientProps) {
+export default function EditClient({ client, maritalStatusOptions, booleanOptions, regionOptions }: EditClientProps) {
     const { data, setData, put, processing, errors, transform, recentlySuccessful } = useForm<ClientEditForm>({
         ...client,
         ...(client.wishe ?? {}),
@@ -85,19 +85,43 @@ export default function EditClient({ client, encryptedId, maritalStatusOptions, 
         has_property: client.has_property ?? false,
     });
 
-    console.log('client', client);
+    const [updateLink, setUpdateLink] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [copied, setCopied] = useState(false);
 
-    const [copiedId, setCopiedId] = useState<string | null>(null);
+    // Generate update link
+    const generateLink = async () => {
+        setLoading(true);
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            const response = await fetch(`/clients/${client.id}/generate-update-link`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken!, // Now properly typed as string
+                    'X-Requested-With': 'XMLHttpRequest', // Add this for Laravel to recognize as AJAX
+                },
+            });
 
-    // Copy client name to clipboard
-    const copyEditLinkToClipboard = (encryptedId: string) => {
+            const data = await response.json();
+            copyToClipboard(data.url);
+            setUpdateLink(data.url);
+            
+        } catch (error) {
+            console.error('Error generating link:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Copy update link to clipboard
+    const copyToClipboard = (updateLink: string) => {
         navigator.clipboard
-            .writeText(window.location.origin + '/clients/' + encryptedId + '/self-edit')
-            //.writeText('https://tinderhome.jldev.app.br/clients/54/edit')
+            .writeText(updateLink)
             .then(() => {
-                setCopiedId(encryptedId);
+                setCopied(true);
                 setTimeout(() => {
-                    setCopiedId(null);
+                    setCopied(false);
                 }, 1500);
             })
             .catch((err) => {
@@ -153,14 +177,15 @@ export default function EditClient({ client, encryptedId, maritalStatusOptions, 
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Editar do Cliente</h1>
                     <div className="flex gap-2">
-                        <Button onClick={() => copyEditLinkToClipboard(encryptedId)}>
-                            Gerar Link
-                            {copiedId === encryptedId && (
+                        <Button onClick={() => generateLink()}>
+                            
+                            {copied === true && !updateLink && (
                                 <span className="flex items-center text-sm text-green-600">
                                     <Copy size={16} className="mr-1" />
                                     <Check size={16} className="mr-1" />
                                 </span>
                             )}
+                            {loading ? 'Generando...' : 'Gerar Link'}
                         </Button>
                         <Button asChild>
                             <Link href={route('clients.index')}>Voltar</Link>
