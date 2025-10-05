@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade')    ;
             $table->string('name')->default('Sem nome');
+            $table->date('birth_date')->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->unique()->nullable();
             $table->string('address')->nullable();
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->integer('dependents')->default(0)->nullable();
             $table->string('profession')->default('autônomo')->nullable();
             $table->double('revenue')->default(0)->nullable();
+            $table->boolean('has_three_years_regist')->nullable();
             $table->double('capital')->default(0)->nullable();
             $table->double('fgts')->nullable()->default(0);
             $table->boolean('has_property')->default(false)->nullable();
