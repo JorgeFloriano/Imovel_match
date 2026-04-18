@@ -4,7 +4,7 @@ import IconTooltip from '@/components/ui/icon-tooltip';
 import { StatusIcon } from '@/components/ui/status-icon';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, Bath, Bed, Calendar, Car, Check, Copy, KeyRound, MessageCircle } from 'lucide-react';
+import { ArrowRight, Bath, Bed, Calendar, Car, Check, KeyRound, MessageCircle } from 'lucide-react';
 import React, { useState } from 'react';
 
 interface NotifyPropertyProps {
@@ -63,25 +63,8 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
     const [copiedTextType, setCopiedTextType] = useState<'name' | 'marketing' | null>(null);
     const [isLoading, setIsLoading] = useState<number | null>(null); // Track loading state per client
 
-    // Copy client name to clipboard
-    const copyNameToClipboard = (client: NotifyPropertyProps['clients']) => {
-        navigator.clipboard
-            .writeText(client.name)
-            .then(() => {
-                setCopiedId(client.id);
-                setCopiedTextType('name');
-                setTimeout(() => {
-                    setCopiedId(null);
-                    setCopiedTextType(null);
-                }, 1500);
-            })
-            .catch((err) => {
-                console.error('Failed to copy: ', err);
-            });
-    };
-
     // Copy marketing text to clipboard via API
-    const copyMarketingTextToClipboard = async (client: NotifyPropertyProps['clients'], e: React.MouseEvent) => {
+    const sendMarketingText = async (client: NotifyPropertyProps['clients'], e: React.MouseEvent) => {
         e.preventDefault();
         setIsLoading(client.id);
 
@@ -102,15 +85,20 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
 
             const data = await response.json();
             const marketingText = data.marketingText;
+            const whatsappLink = data.whatsappLink;
 
-            await navigator.clipboard.writeText(marketingText);
+            // await navigator.clipboard.writeText(marketingText);
 
-            setCopiedId(client.id);
-            setCopiedTextType('marketing');
-            setTimeout(() => {
-                setCopiedId(null);
-                setCopiedTextType(null);
-            }, 1500);
+            if (whatsappLink) {
+                window.open(whatsappLink, '_blank');
+            }
+
+            // setCopiedId(client.id);
+            // setCopiedTextType('marketing');
+            // setTimeout(() => {
+            //     setCopiedId(null);
+            //     setCopiedTextType(null);
+            // }, 1500);
         } catch (err) {
             console.error('Failed to generate/copy marketing text: ', err);
         } finally {
@@ -269,30 +257,24 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                                 <th className="hidden sm:table-cell">
                                     <div className="px-5">Região</div>
                                 </th>
-                                <th className="px-5 text-center text-green-600">{MessageCircle && <Icon iconNode={MessageCircle} />}</th>
+                                <th className="px-3 text-center text-green-600">{MessageCircle && <Icon iconNode={MessageCircle} />}</th>
                             </tr>
 
                             {Array.isArray(clients) &&
                                 clients.map((client, index) => (
                                     <tr
                                         key={client.id}
-                                        className={`border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950 ${
-                                            index !== clients.length - 1 ? 'border-b' : ''
-                                        }`}
+                                        className={`border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950 ${index !== clients.length - 1 ? 'border-b' : ''
+                                            }`}
                                     >
-                                        <th scope="row" className="px-6 py-3 font-medium whitespace-normal text-gray-900 dark:text-white">
-                                            <button
-                                                onClick={() => copyNameToClipboard(client)}
-                                                className="flex items-center gap-2 text-left transition-colors hover:text-blue-600"
-                                            >
-                                                {client.name}
-                                                {copiedId === client.id && copiedTextType === 'name' && (
-                                                    <span className="flex items-center text-sm text-green-600">
-                                                        <Copy size={16} className="mr-1" />
-                                                        <Check size={16} className="mr-1" />
-                                                    </span>
-                                                )}
-                                            </button>
+                                        <th scope="row" className="px-5 py-3 font-medium whitespace-normal text-gray-900 dark:text-white flex items-center gap-2 text-left">
+                                            {client.name}
+                                            {copiedId === client.id && copiedTextType === 'name' && (
+                                                <span className="flex items-center text-sm text-green-600">
+                                                    <MessageCircle size={16} className="mr-1" />
+                                                    <Check size={16} className="mr-1" />
+                                                </span>
+                                            )}
                                         </th>
                                         <td className="hidden px-5 py-3 text-left sm:table-cell">
                                             <div className={client.wishe.typ_c}>
@@ -343,26 +325,14 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="px-5 text-center text-blue-400">
-                                            <a
-                                                href={route('clients.show', client.id)}
-                                                className="relative font-medium text-blue-500 hover:underline"
-                                                onClick={(e) => copyMarketingTextToClipboard(client, e)}
-                                                title="Gerar e copiar texto de marketing"
+                                        <td className="px-3 text-green-400">
+                                            <button
+                                                onClick={(e) => sendMarketingText(client, e)}
+                                                title="Gerar texto de marketing via whatsapp"
+                                                className="cursor-pointer hover:opacity-80 transition-opacity"
                                             >
-                                                {isLoading === client.id ? (
-                                                    <span className="absolute -top-7 -right-4 flex items-center rounded bg-white px-2 py-1 text-xs whitespace-nowrap text-gray-600 shadow-md">
-                                                        Gerando...
-                                                    </span>
-                                                ) : copiedId === client.id && copiedTextType === 'marketing' ? (
-                                                    <span className="absolute -top-7 -right-4 flex items-center rounded bg-white px-2 py-1 text-xs whitespace-nowrap text-green-600 shadow-md">
-                                                        <Check size={12} className="mr-1" />
-                                                        Texto copiado!
-                                                    </span>
-                                                ) : (
-                                                    <Icon iconNode={Copy} />
-                                                )}
-                                            </a>
+                                                <Icon iconNode={MessageCircle} />
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}

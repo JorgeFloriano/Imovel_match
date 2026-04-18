@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/
 import { Status } from '@/components/ui/status';
 import AppLayout from '@/layouts/app-layout';
 import { Head, useForm, router } from '@inertiajs/react'; // Import router from Inertia
-import { Check, Copy, Expand, HeartHandshake, House, User } from 'lucide-react';
+import { Check, MessageCircle, Expand, HeartHandshake, House, User } from 'lucide-react';
 import React, { useEffect, useState } from 'react'; // Add useEffect
 
 type FilterForm = {
@@ -76,26 +76,8 @@ export default function Clients({
         }
     }, [data.property_id]); // This effect runs when data.property_id changes
 
-
-    // Copy client name to clipboard
-    const copyNameToClipboard = (client: Client) => {
-        navigator.clipboard
-            .writeText(client.name)
-            .then(() => {
-                setCopiedId(client.id);
-                setCopiedTextType('name');
-                setTimeout(() => {
-                    setCopiedId(null);
-                    setCopiedTextType(null);
-                }, 1500);
-            })
-            .catch((err) => {
-                console.error('Failed to copy: ', err);
-            });
-    };
-
-    // Copy marketing text to clipboard via API
-    const copyMarketingTextToClipboard = async (client: Client, e: React.MouseEvent) => {
+    // Copy marketing text to send with whatsapp via API
+    const sendMarketingText = async (client: Client, e: React.MouseEvent) => {
         e.preventDefault();
         setIsLoading(client.id);
 
@@ -115,16 +97,21 @@ export default function Clients({
             }
 
             const data = await response.json();
-            const marketingText = data.marketingText;
+            // const marketingText = data.marketingText;
+            const whatsappLink = data.whatsappLink;
 
-            await navigator.clipboard.writeText(marketingText);
+            // await navigator.clipboard.writeText(marketingText);
 
-            setCopiedId(client.id);
-            setCopiedTextType('marketing');
-            setTimeout(() => {
-                setCopiedId(null);
-                setCopiedTextType(null);
-            }, 1500);
+            if (whatsappLink) {
+                window.open(whatsappLink, '_blank');
+            }
+
+            // setCopiedId(client.id);
+            // setCopiedTextType('marketing');
+            // setTimeout(() => {
+            //     setCopiedId(null);
+            //     setCopiedTextType(null);
+            // }, 1500);
         } catch (err) {
             console.error('Failed to generate/copy marketing text: ', err);
         } finally {
@@ -152,16 +139,11 @@ export default function Clients({
                     </div>
                 </form>
 
-                <p className="py-3 text-sm">
-                    Clique no nome do cliente para copiá-lo para a área de transferência. Clique no ícone de cópia{' '}
-                    <Copy size={14} className="inline" /> para copiar o texto.
-                </p>
-
                 <div className="relative overflow-x-auto overflow-y-hidden shadow-md sm:rounded-lg">
                     <table className="h-full w-full text-left text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
                         <thead className="bg-[#D8D8D8] text-xs text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
-                                <th className="px-6 py-3 align-middle text-[#BF9447]">
+                                <th className="px-6 py-3 text-[#BF9447]">
                                     <div className="inline-flex items-center gap-2">
                                         {User && <Icon iconNode={User} />}
                                         {HeartHandshake && <Icon iconNode={HeartHandshake} />}
@@ -180,8 +162,8 @@ export default function Clients({
                                 <th scope="col" className="hidden px-6 py-3 md:table-cell">
                                     FGTS
                                 </th>
-                                <th scope="col" className="px-6 py-3 text-center">
-                                    <span>Ações</span>
+                                <th scope="col" className="px-3 py-3 text-center text-green-500">
+                                    <Icon iconNode={MessageCircle} />
                                 </th>
                             </tr>
                         </thead>
@@ -189,23 +171,94 @@ export default function Clients({
                             {clients.map((client, index) => (
                                 <tr
                                     key={client.id}
-                                    className={`border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950 ${
-                                        index !== clients.length - 1 ? 'border-b' : ''
-                                    }`}
+                                    className={`border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950 ${index !== clients.length - 1 ? 'border-b' : ''
+                                        }`}
                                 >
-                                    <th scope="row" className="px-6 py-3 font-medium whitespace-normal text-gray-900 dark:text-white">
-                                        <button
-                                            onClick={() => copyNameToClipboard(client)}
-                                            className="flex items-center gap-2 text-left transition-colors hover:text-blue-600"
-                                        >
-                                            {client.name}
-                                            {copiedId === client.id && copiedTextType === 'name' && (
-                                                <span className="flex items-center text-sm text-green-600">
-                                                    <Copy size={16} className="mr-1" />
-                                                    <Check size={16} className="mr-1" />
-                                                </span>
-                                            )}
-                                        </button>
+                                    <th scope="row" className="px-3 py-3 font-medium text-gray-900 dark:text-white">
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <button className="cursor-pointer hover:opacity-80 transition-opacity">{client.name}</button>
+                                            </DialogTrigger>
+                                            <DialogContent>
+                                                <DialogTitle>{client.name}</DialogTitle>
+                                                <p>
+                                                    <strong>Telefone: </strong> {client.phone}
+                                                    <br />
+                                                    <strong>Email: </strong> {client.email}
+                                                    <br />
+                                                    <strong>Endereço: </strong> {client.address}
+                                                    <br />
+                                                    <strong>Estado Civil: </strong> {client.marital_status}
+                                                    <br />
+                                                    <strong>Precisa de Financiamento: </strong>
+                                                    <Status value={client.need_financing} />
+                                                    <br />
+                                                    <strong>Número de Dependentes: </strong> {client.dependents}
+                                                    <br />
+                                                    <strong>Profissão: </strong> {client.profession}
+                                                    <br />
+                                                    <strong>Renda (R$): </strong> {client.revenue}
+                                                    <br />
+                                                    <strong>Capital Disponível(R$): </strong> {client.capital}
+                                                    <br />
+                                                    <strong>FGTS (R$): </strong> {client.fgts}
+                                                    <br />
+                                                    <strong>Possúi Propriedade: </strong>
+                                                    <Status value={client.has_property} />
+                                                    <br />
+                                                    <strong>Renda Comprometida (%): </strong> {client.compromised_income}
+                                                    <br />
+                                                </p>
+
+                                                {client.wishe && (
+                                                    <div className="mt-4">
+                                                        <h2 className="pb-3 text-lg font-semibold">Caracteristicas do imóvel desejado:</h2>
+                                                        <p>
+                                                            <strong>Regiões preferidas:</strong>{' '}
+                                                            {client.wishe?.regions_descr || 'Não especificadas'}
+                                                            <br />
+                                                            <strong>Número de Quartos: </strong> {client.wishe.rooms || 'Não especificado'}
+                                                            <br />
+                                                            <strong>Banheiros: </strong> {client.wishe.bathrooms || 'Não especificado'}
+                                                            <br />
+                                                            <strong>Suítes: </strong> {client.wishe.suites || 'Não especificado'}
+                                                            <br />
+                                                            <strong>Vagas de Garagem: </strong> {client.wishe.garages || 'Não especificado'}
+                                                            <br />
+                                                            <strong>Data prevista de Entrega: </strong>
+                                                            {client.wishe?.delivery_key
+                                                                ? new Date(client.wishe.delivery_key).toLocaleDateString('pt-BR')
+                                                                : 'Não especificada'}
+                                                            <br />
+                                                            <strong>Área construída: </strong> {client.wishe.building_area || 'Não especificado'}
+                                                            <br />
+                                                            <strong>Entrada Parcelada: </strong>{' '}
+                                                            <Status value={client.wishe.installment_payment} />
+                                                            <br />
+                                                            <strong>Ar Condicionado: </strong> {client.wishe.air_conditioning}
+                                                            <br />
+                                                            <strong>Jardim: </strong>
+                                                            <Status value={client.wishe.garden} />
+                                                            <br />
+                                                            <strong>Piscina: </strong>
+                                                            <Status value={client.wishe.pool} />
+                                                            <br />
+                                                            <strong>Varanda: </strong>
+                                                            <Status value={client.wishe.balcony} />
+                                                            <br />
+                                                            <strong>Aceita Pets: </strong>
+                                                            <Status value={client.wishe.acept_pets} />
+                                                            <br />
+                                                            <strong>Acessibilidade: </strong>
+                                                            <Status value={client.wishe.acessibility} />
+                                                            <br />
+                                                            <strong>Observações: </strong> {client.wishe.obs || 'Nenhuma'}
+                                                            <br />
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </DialogContent>
+                                        </Dialog>
                                     </th>
 
                                     <td className="hidden px-6 py-3 md:table-cell">{client.profession}</td>
@@ -231,113 +284,14 @@ export default function Clients({
                                         }).format(client.fgts)}
                                     </td>
 
-                                    <td className="px-6 py-3 text-center align-middle">
-                                        <div className="inline-flex items-center gap-2">
-                                            <a
-                                                href={route('clients.show', client.id)}
-                                                className="relative font-medium text-blue-500 hover:underline"
-                                                onClick={(e) => copyMarketingTextToClipboard(client, e)}
-                                                title="Gerar e copiar texto de marketing"
-                                            >
-                                                {isLoading === client.id ? (
-                                                    <span className="absolute -top-7 -right-4 flex items-center rounded bg-white px-2 py-1 text-xs whitespace-nowrap text-gray-600 shadow-md">
-                                                        Gerando...
-                                                    </span>
-                                                ) : copiedId === client.id && copiedTextType === 'marketing' ? (
-                                                    <span className="absolute -top-7 -right-4 flex items-center rounded bg-white px-2 py-1 text-xs whitespace-nowrap text-green-600 shadow-md">
-                                                        <Check size={12} className="mr-1" />
-                                                        Texto copiado!
-                                                    </span>
-                                                ) : (
-                                                    <Icon iconNode={Copy} />
-                                                )}
-                                            </a>
-
-                                            <Dialog>
-                                                <DialogTrigger asChild>
-                                                    <button>{Expand && <Icon iconNode={Expand} />}</button>
-                                                </DialogTrigger>
-                                                <DialogContent>
-                                                    <DialogTitle>{client.name}</DialogTitle>
-                                                    <p>
-                                                        <strong>Telefone: </strong> {client.phone}
-                                                        <br />
-                                                        <strong>Email: </strong> {client.email}
-                                                        <br />
-                                                        <strong>Endereço: </strong> {client.address}
-                                                        <br />
-                                                        <strong>Estado Civil: </strong> {client.marital_status}
-                                                        <br />
-                                                        <strong>Precisa de Financiamento: </strong>
-                                                        <Status value={client.need_financing} />
-                                                        <br />
-                                                        <strong>Número de Dependentes: </strong> {client.dependents}
-                                                        <br />
-                                                        <strong>Profissão: </strong> {client.profession}
-                                                        <br />
-                                                        <strong>Renda (R$): </strong> {client.revenue}
-                                                        <br />
-                                                        <strong>Capital Disponível(R$): </strong> {client.capital}
-                                                        <br />
-                                                        <strong>FGTS (R$): </strong> {client.fgts}
-                                                        <br />
-                                                        <strong>Possúi Propriedade: </strong>
-                                                        <Status value={client.has_property} />
-                                                        <br />
-                                                        <strong>Renda Comprometida (%): </strong> {client.compromised_income}
-                                                        <br />
-                                                    </p>
-
-                                                    {client.wishe && (
-                                                        <div className="mt-4">
-                                                            <h2 className="pb-3 text-lg font-semibold">Caracteristicas do imóvel desejado:</h2>
-                                                            <p>
-                                                                <strong>Regiões preferidas:</strong>{' '}
-                                                                {client.wishe?.regions_descr || 'Não especificadas'}
-                                                                <br />
-                                                                <strong>Número de Quartos: </strong> {client.wishe.rooms || 'Não especificado'}
-                                                                <br />
-                                                                <strong>Banheiros: </strong> {client.wishe.bathrooms || 'Não especificado'}
-                                                                <br />
-                                                                <strong>Suítes: </strong> {client.wishe.suites || 'Não especificado'}
-                                                                <br />
-                                                                <strong>Vagas de Garagem: </strong> {client.wishe.garages || 'Não especificado'}
-                                                                <br />
-                                                                <strong>Data prevista de Entrega: </strong>
-                                                                {client.wishe?.delivery_key
-                                                                    ? new Date(client.wishe.delivery_key).toLocaleDateString('pt-BR')
-                                                                    : 'Não especificada'}
-                                                                <br />
-                                                                <strong>Área construída: </strong> {client.wishe.building_area || 'Não especificado'}
-                                                                <br />
-                                                                <strong>Entrada Parcelada: </strong>{' '}
-                                                                <Status value={client.wishe.installment_payment} />
-                                                                <br />
-                                                                <strong>Ar Condicionado: </strong> {client.wishe.air_conditioning}
-                                                                <br />
-                                                                <strong>Jardim: </strong>
-                                                                <Status value={client.wishe.garden} />
-                                                                <br />
-                                                                <strong>Piscina: </strong>
-                                                                <Status value={client.wishe.pool} />
-                                                                <br />
-                                                                <strong>Varanda: </strong>
-                                                                <Status value={client.wishe.balcony} />
-                                                                <br />
-                                                                <strong>Aceita Pets: </strong>
-                                                                <Status value={client.wishe.acept_pets} />
-                                                                <br />
-                                                                <strong>Acessibilidade: </strong>
-                                                                <Status value={client.wishe.acessibility} />
-                                                                <br />
-                                                                <strong>Observações: </strong> {client.wishe.obs || 'Nenhuma'}
-                                                                <br />
-                                                            </p>
-                                                        </div>
-                                                    )}
-                                                </DialogContent>
-                                            </Dialog>
-                                        </div>
+                                    <td className="px-3 py-3 text-green-500">
+                                        <button
+                                            onClick={(e) => sendMarketingText(client, e)}
+                                            title="Gerar texto de marketing e enviar via Whatsapp"
+                                            className="cursor-pointer hover:opacity-80 transition-opacity"
+                                        >
+                                            <Icon iconNode={MessageCircle} />
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

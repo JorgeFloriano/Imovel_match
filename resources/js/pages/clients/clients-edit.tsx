@@ -175,7 +175,7 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
             <Head title="Editar Cliente" />
             <div className="h-full gap-4 space-y-6 rounded-xl p-4">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Editar do Cliente</h1>
+                    <h1 className="text-2xl font-bold">Editar Cliente</h1>
                     <div className="flex gap-2">
                         <Button onClick={() => generateLink()}>
                             

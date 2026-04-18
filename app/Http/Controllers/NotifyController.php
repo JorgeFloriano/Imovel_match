@@ -19,9 +19,9 @@ class NotifyController extends Controller
             'value' => strval($property->id), // Convert to string
             'label' => $property->description,
         ])->prepend([
-            'value' => '0',
-            'label' => 'Customizado para o cliente',
-        ])->all();
+                    'value' => '0',
+                    'label' => 'Customizado para o cliente',
+                ])->all();
 
         foreach ($clients as $client) {
             $client->wishe->regions_descr = $client->wishe->regionsDescr();
@@ -94,10 +94,22 @@ class NotifyController extends Controller
     {
         // Generate marketing text based on client data
         $marketingText = $this->generateCustomMarketingText($client);
+        $whatsappLink = $this->generateWhatsAppLink($client->phone, $marketingText);
 
         return response()->json([
-            'marketingText' => $marketingText
+            'marketingText' => $marketingText,
+            'whatsappLink' => $whatsappLink
         ]);
+    }
+
+    private function generateWhatsAppLink($phone, $message)
+    {
+        $client_phone = preg_replace('/[^0-9]/', '', $phone);
+        // Add country code 55 (Brazil) if it is 10 or 11 digits
+        if (strlen($client_phone) == 10 || strlen($client_phone) == 11) {
+            $client_phone = '55' . $client_phone;
+        }
+        return "https://api.whatsapp.com/send?phone={$client_phone}&text=" . rawurlencode($message);
     }
 
     private function generateCustomMarketingText(Client $client)
@@ -122,30 +134,30 @@ class NotifyController extends Controller
         ])->take(3)->values()->all();
 
         // Customize this function to generate the marketing text as needed
-        $text = "🌟 *SEU FUTURO EM SOROCABA ESTÁ SENDO CONSTRUÍDO AGORA!* 🌟\n\n";
-        $text .= "Olá " . $name . ", tudo bem! 😊\n";
+        $text = "\u{1f31f} *SEU FUTURO EM SOROCABA ESTÁ SENDO CONSTRUÍDO AGORA!* \u{1f31f}\n\n";
+        $text .= "Olá " . $name . ", tudo bem! \u{1f60a}\n";
         $text .= "Que tal conhecer as *melhores oportunidades* para morar ou investir na cidade?\n";
-        $text .= "🎯 *Temos ótimas opções que combinam perfeitamente com seu perfil!*\n\n";
+        $text .= "\u{1f3af} *Temos ótimas opções que combinam perfeitamente com seu perfil!*\n\n";
 
         foreach ($sortedProperties as $index => $property) {
-            $text .= "🏡 *" . $property->description . "*\n";
+            $text .= "\u{1f3e1} *" . $property->description . "*\n";
             $text .= $property->obs . "\n\n";
         }
 
-        $text .= "✅ *VANTAGENS EXCLUSIVAS:*\n";
-        $text .= "• Valorização garantida 📈\n";
-        $text .= "• Condições que cabem no seu bolso 💳\n";
-        $text .= "• Localização privilegiada 📍\n";
-        $text .= "• Plantas inteligentes e modernas 🏗️\n\n";
+        $text .= "\u{2705} *VANTAGENS EXCLUSIVAS:*\n";
+        $text .= "• Valorização garantida \u{1f4c8}\n";
+        $text .= "• Condições que cabem no seu bolso \u{1f4b3}\n";
+        $text .= "• Localização privilegiada \u{1f4cd}\n";
+        $text .= "• Plantas inteligentes e modernas \u{1f3d7}\u{fe0f}\n\n";
 
-        $text .= "⏳ *Não deixe o tempo passar!*\n";
-        $text .= "Sonhar alto também começa com um bom planejamento! 💭🔑\n\n";
+        $text .= "\u{23f3} *Não deixe o tempo passar!*\n";
+        $text .= "Sonhar alto também começa com um bom planejamento! \u{1f4ad}\u{1f511}\n\n";
 
-        $text .= "💬 Fale comigo, te mostro as novidades e detalhes sobre esses e outros lançamentos! 📲💬 \n\n";
+        $text .= "\u{1f4ac} Fale comigo, te mostro as novidades e detalhes sobre esses e outros lançamentos! \u{1f4f2}\u{1f4ac} \n\n";
 
-        $text .= "Adquirir um imóvel é mais que um investimento, é o começo de uma nova história. ❤️🏡\n\n";
+        $text .= "Adquirir um imóvel é mais que um investimento, é o começo de uma nova história. \u{2764}\u{fe0f}\u{1f3e1}\n\n";
 
-        $text .= "Aguardo o seu retorno 😊";
+        $text .= "Aguardo o seu retorno \u{1f60a}";
         return $text;
     }
 
@@ -153,9 +165,11 @@ class NotifyController extends Controller
     {
         // Generate marketing text based on client data
         $marketingText = $this->generateSpecificPropertyMarketingText($client, $property);
+        $whatsappLink = $this->generateWhatsAppLink($client->phone, $marketingText);
 
         return response()->json([
-            'marketingText' => $marketingText
+            'marketingText' => $marketingText,
+            'whatsappLink' => $whatsappLink
         ]);
     }
 
@@ -167,10 +181,10 @@ class NotifyController extends Controller
         $name = explode(' ', $client->name)[0];
 
         // Customize this function to generate the marketing text as needed
-        $text = "Olá " . $name . ", tudo bem! 😊\n";
-        $text .= "✨ *QUE TAL CONHECER UMA ÓTIMA OPORTUNIDADE PARA MORAR OU INVESTIR EM SOROCABA?!* \n\n";
+        $text = "Olá " . $name . ", tudo bem! \u{1f60a}\n";
+        $text .= "\u{2728} *QUE TAL CONHECER UMA ÓTIMA OPORTUNIDADE PARA MORAR OU INVESTIR EM SOROCABA?!* \n\n";
 
-        $text .= "🏡 *" . $property->description . "*\n";
+        $text .= "\u{1f3e1} *" . $property->description . "*\n";
 
         if (isset($property->obs)) {
             $text .= $property->obs . "\n";
@@ -179,47 +193,47 @@ class NotifyController extends Controller
         $text .= "\n";
 
         if (isset($property->delivery_key)) {
-            $text .= "🔑 Previsão de entrega das chaves para " .
+            $text .= "\u{1f511} Previsão de entrega das chaves para " .
                 ($property->delivery_key ? date('d/m/Y', strtotime($property->delivery_key)) : 'Não definida') .
                 "\n";
         }
 
-        if (isset($property->building_area ) && $property->building_area > 0) {
-            $text .= "📐 " . $property->building_area . " m² de área construída\n";
+        if (isset($property->building_area) && $property->building_area > 0) {
+            $text .= "\u{1f4d0} " . $property->building_area . " m² de área construída\n";
         }
 
-        if (isset($property->rooms ) && $property->rooms > 0) {
-            $text .= "🛏️ " . $property->rooms . " dormitório".($property->rooms > 1 ? "s" : "")."\n";
+        if (isset($property->rooms) && $property->rooms > 0) {
+            $text .= "\u{1f6cf}\u{fe0f} " . $property->rooms . " dormitório" . ($property->rooms > 1 ? "s" : "") . "\n";
         }
 
         if (isset($property->suites) && $property->suites > 0) {
-            $text .= "🛁 " . $property->suites . " suíte".($property->suites > 1 ? "s" : "")."\n";
+            $text .= "\u{1f6c1} " . $property->suites . " suíte" . ($property->suites > 1 ? "s" : "") . "\n";
         }
 
         if (isset($property->garages) && $property->garages > 0) {
-            $text .= "🚗 " . $property->garages . " vaga".($property->garages > 1 ? "s" : "")." de garagem\n";
+            $text .= "\u{1f697} " . $property->garages . " vaga" . ($property->garages > 1 ? "s" : "") . " de garagem\n";
         }
 
         if (isset($property->balcony) && $property->balcony) {
-            $text .= "🌇 Com varanda\n";
+            $text .= "\u{1f307} Com varanda\n";
         }
 
         if (isset($property->region)) {
-            $text .= "📍 Localizado na região " . $property->region->name . "\n";
+            $text .= "\u{1f4cd} Localizado na região " . $property->region->name . "\n";
         }
 
-        $text .= "\n✅ *VANTAGENS EXCLUSIVAS:*\n";
-        $text .= "• Valorização garantida 📈\n";
-        $text .= "• Condições que cabem no seu bolso 💳\n";
-        $text .= "• Localização privilegiada 📍\n";
-        $text .= "• Planta inteligente e moderna 🏗️\n\n";
+        $text .= "\n\u{2705} *VANTAGENS EXCLUSIVAS:*\n";
+        $text .= "• Valorização garantida \u{1f4c8}\n";
+        $text .= "• Condições que cabem no seu bolso \u{1f4b3}\n";
+        $text .= "• Localização privilegiada \u{1f4cd}\n";
+        $text .= "• Planta inteligente e moderna \u{1f3d7}\u{fe0f}\n\n";
 
-        $text .= "⏳ *Não deixe o tempo passar!*\n";
-        $text .= "Sonhar alto também começa com um bom planejamento! 💭\n\n";
+        $text .= "\u{23f3} *Não deixe o tempo passar!*\n";
+        $text .= "Sonhar alto também começa com um bom planejamento! \u{1f4ad}\n\n";
 
-        $text .= "💬 Fale comigo, te mostro as novidades e detalhes sobre esse e outros lançamentos! 📲💬 \n\n";
+        $text .= "\u{1f4ac} Fale comigo, te mostro as novidades e detalhes sobre esse e outros lançamentos! \u{1f4f2}\u{1f4ac} \n\n";
 
-        $text .= "Adquirir um imóvel é mais que um investimento, é o começo de uma nova história. 🏡❤️\n\n";
+        $text .= "Adquirir um imóvel é mais que um investimento, é o começo de uma nova história. \u{1f3e1}\u{2764}\u{fe0f}\n\n";
 
         return $text;
     }
