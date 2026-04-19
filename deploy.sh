@@ -14,14 +14,11 @@ git clean -fd
 # 3. Instalar dependências do PHP (sem mexer nas pastas de upload)
 composer install --no-dev --optimize-autoloader
 
-# 4. Executar migrações do banco de dados (se houver alguma nova)
-php artisan migrate --force
-
-# 5. Limpar e Otimizar Caches
+# 4. Limpar e Otimizar Caches
 php artisan optimize:clear
 php artisan optimize
 
-# 6. Sair do modo de manutenção
+# 5. Sair do modo de manutenção
 php artisan up
 
 echo "✅ Deploy de código finalizado com sucesso!"
