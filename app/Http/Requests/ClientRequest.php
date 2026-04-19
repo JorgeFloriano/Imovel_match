@@ -31,7 +31,12 @@ class ClientRequest extends FormRequest
         return [
             // Client validation rules
             'name' => 'required|string|max:40',
-            'phone' => 'nullable|string|max:20',
+            'phone' => [
+                'required',
+                'string',
+                'max:15',
+                Rule::unique(Client::class)->ignore($clientId),
+            ],
             'email' => [
                 'nullable',
                 'string',

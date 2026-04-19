@@ -137,7 +137,7 @@ class NotifyController extends Controller
         $text = "\u{1f31f} *SEU FUTURO EM SOROCABA ESTÁ SENDO CONSTRUÍDO AGORA!* \u{1f31f}\n\n";
         $text .= "Olá " . $name . ", tudo bem! \u{1f60a}\n";
         $text .= "Que tal conhecer as *melhores oportunidades* para morar ou investir na cidade?\n";
-        $text .= "\u{1f3af} *Temos ótimas opções que combinam perfeitamente com seu perfil!*\n\n";
+        $text .= "\u{1f3af} *Temos ótimas opções que podem combinar perfeitamente com seu perfil!*\n\n";
 
         foreach ($sortedProperties as $index => $property) {
             $text .= "\u{1f3e1} *" . $property->description . "*\n";

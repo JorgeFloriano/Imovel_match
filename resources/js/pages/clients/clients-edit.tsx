@@ -9,6 +9,14 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { Check, Copy, Loader2 } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
+const formatPhone = (value: string) => {
+    if (!value) return '';
+    value = value.replace(/\D/g, '');
+    value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
+    value = value.replace(/(\d)(\d{4})$/, '$1-$2');
+    return value;
+};
+
 type ClientEditForm = {
     name: string;
     phone: string;
@@ -212,11 +220,12 @@ export default function EditClient({ client, maritalStatusOptions, booleanOption
                                 <FormInput
                                     label="Telefone"
                                     placeholder="(99) 99999-9999"
-                                    maxLength={20}
+                                    maxLength={15}
                                     type="tel"
                                     value={data.phone}
-                                    onChange={(value) => handleSetData('phone', value)}
+                                    onChange={(value) => handleSetData('phone', formatPhone(String(value)))}
                                     error={errors.phone}
+                                    required
                                 />
 
                                 <FormSelect
