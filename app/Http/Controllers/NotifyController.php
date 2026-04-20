@@ -19,12 +19,14 @@ class NotifyController extends Controller
             'value' => strval($property->id), // Convert to string
             'label' => $property->description,
         ])->prepend([
-                    'value' => '0',
-                    'label' => 'Customizado para o cliente',
-                ])->all();
+            'value' => '0',
+            'label' => 'Customizado para o cliente',
+        ])->all();
 
         foreach ($clients as $client) {
-            $client->wishe->regions_descr = $client->wishe->regionsDescr();
+            if ($client->wishe) {
+                $client->wishe->regions_descr = $client->wishe->regionsDescr() ?? '';
+            }
         }
 
         return Inertia::render('notify/notify-index', [
@@ -45,14 +47,44 @@ class NotifyController extends Controller
         $clients = Client::with(['wishe.regions', 'user'])->where('user_id', Auth::user()->id)->get();
 
         foreach ($clients as $client) {
+            if (!$client->wishe) {
+                $wishe_fields = [
+                    'client_id' => $client->id,
+                    'district_id' => null,
+                    'type' => 'apartamento',
+                    'delivery_key' => null,
+                    'building_area' => null,
+                    'rooms' => 2,
+                    'suites' => 0,
+                    'garages' => 1,
+                    'balcony' => null,
+                    'bathrooms' => 1,
+                    'air_conditioning' => null,
+                    'garden' => null,
+                    'pool' => null,
+                    'acept_pets' => null,
+                    'acessibility' => null,
+                    'installment_payment' => null,
+                    'min_act' => null,
+                    'region_id' => null,
+                    'obs' => null,
+                ];
+
+                // Set the relationship manually (Most efficient)
+                $newWishe = $client->wishe()->create($wishe_fields);
+                $client->setRelation('wishe', $newWishe);
+            }
 
             $compatible = new Compatible($client, $property); // calss to compare client and property
 
             $client->wishe->typ = $client->wishe->typ();
 
+
             $client->wishe->regions_msg = $client->wishe->regionsMsg();
 
-            $client->wishe->regions_descr = $client->wishe->regionsDescr();
+            if ($client->wishe) {
+                $client->wishe->regions_descr = $client->wishe->regionsDescr() ?? '';
+            }
 
             // Array of client region options ids
             $cli_reg_ids = $client->wishe->regions()->get()->pluck('id')->toArray();

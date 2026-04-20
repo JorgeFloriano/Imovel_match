@@ -19,10 +19,29 @@ class ClientPropertyController extends Controller
             redirect()->route('dashboard.filter');
         }
 
-        // Get clients with their wishes and wish regions
+        // Get ONLY clients who have at least one whishe
         $clients = Client::where('user_id', Auth::id())
+            ->whereHas('wishe') // This filters out clients with no wishes
             ->with(['wishe' => function ($query) {
-                $query->select('id', 'client_id', 'type', 'delivery_key', 'building_area', 'rooms', 'suites', 'garages', 'balcony', 'bathrooms', 'air_conditioning', 'garden', 'pool', 'acept_pets', 'acessibility', 'installment_payment', 'min_act')
+                $query->select(
+                    'id',
+                    'client_id',
+                    'type',
+                    'delivery_key',
+                    'building_area',
+                    'rooms',
+                    'suites',
+                    'garages',
+                    'balcony',
+                    'bathrooms',
+                    'air_conditioning',
+                    'garden',
+                    'pool',
+                    'acept_pets',
+                    'acessibility',
+                    'installment_payment',
+                    'min_act'
+                )
                     ->with(['regions' => function ($q) {
                         $q->select('regions.id', 'regions.name');
                     }]);
@@ -100,7 +119,7 @@ class ClientPropertyController extends Controller
     {
         Gate::authorize('show', $client);
         Gate::authorize('show', $property);
-    
+
         $comp = new Compatible();
         return Inertia::render('clients/client-property', $comp->detailsData($client, $property));
     }

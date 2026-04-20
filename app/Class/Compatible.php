@@ -40,7 +40,7 @@ class Compatible
 
     public function calculateCompatibility($client, $property)
     {
-        if (!isset($client) || !isset($property)) {
+        if (!isset($client) || !isset($property) || !$client->wishe) {
             return 0;
         }
         $this->client = $client;
@@ -91,7 +91,9 @@ class Compatible
 
         $client->wishe->regions_msg = $client->wishe->regionsMsg();
 
-        $client->wishe->regions_descr = $client->wishe->regionsDescr();
+        if ($client->wishe) {
+            $client->wishe->regions_descr = $client->wishe->regionsDescr() ?? '';
+        }
 
         $property = Property::with(['user', 'region'])->find($property->id);
 

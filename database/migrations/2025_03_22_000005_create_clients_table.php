@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade')    ;
             $table->string('name')->default('Sem nome');
             $table->date('birth_date')->nullable();
-            $table->string('phone')->nullable();
+            $table->string('phone')->unique()->nullable();
             $table->string('email')->unique()->nullable();
             $table->string('address')->nullable();
             $table->enum('marital_status', ['solteiro', 'casado', 'viúvo', 'divorciado'])->nullable();
@@ -29,6 +29,7 @@ return new class extends Migration
             $table->double('fgts')->nullable()->default(0);
             $table->boolean('has_property')->default(false)->nullable();
             $table->integer('compromised_income')->nullable()->default(0);
+            $table->string('origin', 20)->nullable();
             $table->timestamps();
         });
     }
