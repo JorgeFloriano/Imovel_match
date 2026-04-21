@@ -122,10 +122,17 @@ class NotifyController extends Controller
         ]);
     }
 
-    public function generateMarketingText(Client $client)
+    public function generateMarketingText(\Illuminate\Http\Request $request, Client $client)
     {
+        $type = $request->query('type');
+        
         // Generate marketing text based on client data
-        $marketingText = $this->generateCustomMarketingText($client);
+        if ($type === 'mrv') {
+            $marketingText = $this->generateCustomMarketingTextMrv($client);
+        } else {
+            $marketingText = $this->generateCustomMarketingText($client);
+        }
+
         $whatsappLink = $this->generateWhatsAppLink($client->phone, $marketingText);
 
         return response()->json([
@@ -166,9 +173,10 @@ class NotifyController extends Controller
         ])->take(3)->values()->all();
 
         // Customize this function to generate the marketing text as needed
-        $text = "\u{1f31f} *SEU FUTURO EM SOROCABA ESTÁ SENDO CONSTRUÍDO AGORA!* \u{1f31f}\n\n";
+        $text = "\u{1f31f} *SEU FUTURO ESTÁ SENDO CONSTRUÍDO AGORA!* \u{1f31f}\n\n";
         $text .= "Olá " . $name . ", tudo bem! \u{1f60a}\n";
-        $text .= "Que tal conhecer as *melhores oportunidades* para morar ou investir na cidade?\n";
+        $text .= "Sou *Marta de Souza*, consultora imobiliária.\n";
+        $text .= "Que tal conhecer as *melhores oportunidades* para morar ou investir na região de Sorocaba?\n";
         $text .= "\u{1f3af} *Temos ótimas opções que podem combinar perfeitamente com seu perfil!*\n\n";
 
         foreach ($sortedProperties as $index => $property) {
@@ -188,6 +196,35 @@ class NotifyController extends Controller
         $text .= "\u{1f4ac} Fale comigo, te mostro as novidades e detalhes sobre esses e outros lançamentos! \u{1f4f2}\u{1f4ac} \n\n";
 
         $text .= "Adquirir um imóvel é mais que um investimento, é o começo de uma nova história. \u{2764}\u{fe0f}\u{1f3e1}\n\n";
+
+        $text .= "Aguardo o seu retorno \u{1f60a}";
+        return $text;
+    }
+
+    private function generateCustomMarketingTextMrv(Client $client)
+    {
+        Gate::authorize('show', $client);
+
+        $name = explode(' ', $client->name)[0];
+
+        // Customize this function to generate the marketing text as needed
+        $text = "\u{1f31f} *SEU NOVO APÊ ESTÁ AQUI!* \u{1f31f}\n\n";
+        $text .= "Olá " . $name . ", tudo bem? \u{1f60a}\n";
+        $text .= "Sou *Marta de Souza*, consultora imobiliária.\n";
+
+        $text .= "Que tal conhecer as melhores oportunidades para investir ou morar na região de Sorocaba?\n\n";
+        $text .= "\u{1f3af} *Trabalhamos com as melhores opções MRV, entre diversos empreendimentos, um deles será perfeito para o seu perfil.*\n\n";
+
+        $text .= "\u{2705} *Destaques para você:*\n";
+        $text .= "• Entrada facilitada em até 60x \u{1f4b3}\n";
+        $text .= "• Subsídios do Minha Casa Minha Vida \u{1f3e0}\n";
+        $text .= "• Lazer completo e equipado \u{1f3ca}\u{200d}\u{2642}\u{fe0f}\n";
+        $text .= "• Garantia e segurança de entrega \u{1f512}\n\n";
+
+        $text .= "\u{23f3} *O apê dos seus sonhos está mais perto do que você imagina!*\n\n";
+        // $text .= "Sonhar alto começa com um bom planejamento! \u{1f4ad}\u{1f511}\n\n";
+
+        $text .= "\u{1f4ac} Me chame para simularmos as condições e conhecermos os decorados! \u{1f4f2}\u{1f4ac} \n\n";
 
         $text .= "Aguardo o seu retorno \u{1f60a}";
         return $text;

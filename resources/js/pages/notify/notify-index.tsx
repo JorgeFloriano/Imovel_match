@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react'; // Add useEffect
 
 type FilterForm = {
     property_id?: string;
+    contact_origin: string;
 };
 
 interface Wishe {
@@ -47,6 +48,7 @@ interface Client {
     has_property: boolean;
     compromised_income: number;
     wishe: Wishe | null;
+    origin: string | null;
 }
 
 export default function Clients({
@@ -61,6 +63,7 @@ export default function Clients({
     const [isLoading, setIsLoading] = useState<number | null>(null); // Track loading state per client
     const { data, setData, errors } = useForm<FilterForm>({
         property_id: undefined,
+        contact_origin: 'todos',
     });
 
     const handleSetData = (field: keyof FilterForm, value: string | number | undefined | boolean) => {
@@ -83,7 +86,7 @@ export default function Clients({
 
         try {
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            const response = await fetch(route('notify.generate-marketing-text', client.id), {
+            const response = await fetch(`${route('notify.generate-marketing-text', client.id)}?type=${data.contact_origin}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -96,9 +99,9 @@ export default function Clients({
                 throw new Error('Falha ao gerar o texto de marketing.');
             }
 
-            const data = await response.json();
-            // const marketingText = data.marketingText;
-            const whatsappLink = data.whatsappLink;
+            const responseData = await response.json();
+            // const marketingText = responseData.marketingText;
+            const whatsappLink = responseData.whatsappLink;
 
             // await navigator.clipboard.writeText(marketingText);
 
@@ -119,6 +122,16 @@ export default function Clients({
         }
     };
 
+    const filteredClients = clients.filter((client) => {
+        if (data.contact_origin === 'mrv') {
+            return client.origin && client.origin.toLowerCase().includes('mrv');
+        }
+        if (data.contact_origin === 'desconhecido') {
+            return !client.origin || client.origin === '' || client.origin === '0';
+        }
+        return true; // 'todos'
+    });
+
     return (
         <AppLayout>
             <Head title="Clientes" />
@@ -135,6 +148,17 @@ export default function Clients({
                             onValueChange={(value) => handleSetData('property_id', value)}
                             customOptions={propertyOptions}
                             error={errors.property_id}
+                        />
+                        <FormSelect
+                            label="Origem do Cliente"
+                            value={data.contact_origin}
+                            onValueChange={(value) => handleSetData('contact_origin', value)}
+                            customOptions={[
+                                { value: 'todos', label: 'Todos' },
+                                { value: 'desconhecido', label: 'Desconhecido' },
+                                { value: 'mrv', label: 'MRV' },
+                            ]}
+                            error={errors.contact_origin}
                         />
                     </div>
                 </form>
@@ -168,10 +192,10 @@ export default function Clients({
                             </tr>
                         </thead>
                         <tbody>
-                            {clients.map((client, index) => (
+                            {filteredClients.map((client, index) => (
                                 <tr
                                     key={client.id}
-                                    className={`border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950 ${index !== clients.length - 1 ? 'border-b' : ''
+                                    className={`border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950 ${index !== filteredClients.length - 1 ? 'border-b' : ''
                                         }`}
                                 >
                                     <th scope="row" className="px-3 py-3 font-medium text-gray-900 dark:text-white">
