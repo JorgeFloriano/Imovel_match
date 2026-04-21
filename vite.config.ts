@@ -13,6 +13,7 @@ export default defineConfig({
     tailwindcss(),
   ],
   build: {
+    chunkSizeWarningLimit: 1500, // Increase warning limit to hide the 500kb warning
     manifest: true, // Ensure this is enabled
     outDir: 'public/build', // Laravel expects assets here
     rollupOptions: {
