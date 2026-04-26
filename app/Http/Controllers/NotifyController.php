@@ -19,9 +19,9 @@ class NotifyController extends Controller
             'value' => strval($property->id), // Convert to string
             'label' => $property->description,
         ])->prepend([
-            'value' => '0',
-            'label' => 'Customizado para o cliente',
-        ])->all();
+                    'value' => '0',
+                    'label' => 'Customizado para o cliente',
+                ])->all();
 
         foreach ($clients as $client) {
             if ($client->wishe) {
@@ -125,7 +125,7 @@ class NotifyController extends Controller
     public function generateMarketingText(\Illuminate\Http\Request $request, Client $client)
     {
         $type = $request->query('type');
-        
+
         // Generate marketing text based on client data
         if ($type === 'mrv') {
             $marketingText = $this->generateCustomMarketingTextMrv($client);
@@ -209,20 +209,18 @@ class NotifyController extends Controller
 
         // Customize this function to generate the marketing text as needed
         $text = "\u{1f31f} *SEU NOVO APÊ ESTÁ AQUI!* \u{1f31f}\n\n";
-        $text .= "Olá " . $name . ", tudo bem? \u{1f60a}\n";
+        $text .= "Olá " . $name . ", tudo bem? \u{1f44b}\u{1f3fc}\n";
         $text .= "Sou *Marta de Souza*, consultora imobiliária.\n";
 
-        $text .= "Que tal conhecer as melhores oportunidades para investir ou morar na região de Sorocaba?\n\n";
-        $text .= "\u{1f3af} *Trabalhamos com as melhores opções MRV, entre diversos empreendimentos, um deles será perfeito para o seu perfil.*\n\n";
+        $text .= "Passando para avisar que as condições para financiar seu imóvel em Sorocaba melhoraram ainda mais com as novas regras do *Minha Casa Minha Vida!* \u{1f680}\n";
+        $text .= "Parcelamos sua entrada e garantimos as melhores condições nos nossos apartamentos na planta. \u{1f511} \n";
+        $text .= "Temos 6 empreendimentos *MRV* em andamento entre diversas opções na região:\n\n";
+        $text .= "\u{2b05}\u{fe0f} Região Oeste: *Campos Dourados* e *Veredas* (Bairro planejado, próximo ao Supermercado Lopes na Av. Américo de Figueiredo). \u{1f6d2}\n";
+        $text .= "\u{2b07}\u{fe0f} Zona Sul: *Gran Campolim* (na Rua Augusto Lippel) e *Don Pagliato* (pertinho do Campolim). \u{1f3e2}\n";
+        $text .= "\u{27a1}\u{fe0f} Zona Leste: *Scarpone*, torre única e exclusiva, bem próximo ao Parque das Águas. \u{1f333}\n";
+        $text .= "\u{2b06}\u{fe0f} Zona Norte: *Solar dos Eucaliptos*, o melhor custo-benefício da região. \u{1f4b0}\n\n";
 
-        $text .= "\u{2705} *Destaques para você:*\n";
-        $text .= "• Entrada facilitada em até 60x \u{1f4b3}\n";
-        $text .= "• Subsídios do Minha Casa Minha Vida \u{1f3e0}\n";
-        $text .= "• Lazer completo e equipado \u{1f3ca}\u{200d}\u{2642}\u{fe0f}\n";
-        $text .= "• Garantia e segurança de entrega \u{1f512}\n\n";
-
-        $text .= "\u{23f3} *O apê dos seus sonhos está mais perto do que você imagina!*\n\n";
-        // $text .= "Sonhar alto começa com um bom planejamento! \u{1f4ad}\u{1f511}\n\n";
+        $text .= "\u{1f91d}\u{1f3fc} Aproveite a mudanças atuais e feche o melhor negócio para investir ou morar!!\n\n";
 
         $text .= "\u{1f4ac} Me chame para simularmos as condições e conhecermos os decorados! \u{1f4f2}\u{1f4ac} \n\n";
 
