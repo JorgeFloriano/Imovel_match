@@ -102,6 +102,14 @@ class Client extends Model
             return 5;
         }
     }
+    public function firtsName() : string
+    {
+        if (!$this->name) return '';
+
+        $name = explode(' ', $this->name)[0];
+        if ($name == 'Nome') $name = '';
+        return $name;
+    }
 
     // blocks access to other users' clients
     protected static function booted()

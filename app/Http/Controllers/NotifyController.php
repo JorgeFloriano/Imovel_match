@@ -154,9 +154,7 @@ class NotifyController extends Controller
     private function generateCustomMarketingText(Client $client)
     {
         Gate::authorize('show', $client);
-
-        $name = explode(' ', $client->name)[0];
-
+        
         $properties = Property::with(['user', 'region'])->where('user_id', Auth::user()->id)->get();
 
         foreach ($properties as $property) {
@@ -174,7 +172,7 @@ class NotifyController extends Controller
 
         // Customize this function to generate the marketing text as needed
         $text = "\u{1f31f} *SEU FUTURO ESTÁ SENDO CONSTRUÍDO AGORA!* \u{1f31f}\n\n";
-        $text .= "Olá " . $name . ", tudo bem! \u{1f60a}\n";
+        $text .= "Olá " . $client->firtsName() . ", tudo bem! \u{1f60a}\n";
         $text .= "Sou *Marta de Souza*, consultora imobiliária.\n";
         $text .= "Que tal conhecer as *melhores oportunidades* para morar ou investir na região de Sorocaba?\n";
         $text .= "\u{1f3af} *Temos ótimas opções que podem combinar perfeitamente com seu perfil!*\n\n";
@@ -197,34 +195,28 @@ class NotifyController extends Controller
 
         $text .= "Adquirir um imóvel é mais que um investimento, é o começo de uma nova história. \u{2764}\u{fe0f}\u{1f3e1}\n\n";
 
-        $text .= "Aguardo o seu retorno \u{1f60a}";
+        $text .= "Vamos simular as condições e conhecer os decorados? \u{1f60a} \n";
         return $text;
     }
 
     private function generateCustomMarketingTextMrv(Client $client)
     {
         Gate::authorize('show', $client);
-
-        $name = explode(' ', $client->name)[0];
-
+        
         // Customize this function to generate the marketing text as needed
         $text = "\u{1f31f} *SEU NOVO APÊ ESTÁ AQUI!* \u{1f31f}\n\n";
-        $text .= "Olá " . $name . ", tudo bem? \u{1f44b}\u{1f3fc}\n";
+        $text .= "Olá " . $client->firtsName() . ", tudo bem? \u{1f44b}\u{1f3fc}\n";
         $text .= "Sou *Marta de Souza*, consultora imobiliária.\n";
 
-        $text .= "Passando para avisar que as condições para financiar seu imóvel em Sorocaba melhoraram ainda mais com as novas regras do *Minha Casa Minha Vida!* \u{1f680}\n";
-        $text .= "Parcelamos sua entrada e garantimos as melhores condições nos nossos apartamentos na planta. \u{1f511} \n";
-        $text .= "Temos 6 empreendimentos *MRV* em andamento entre diversas opções na região:\n\n";
+        $text .= "Financiar seu imóvel na região de Sorocaba ficou ainda mais fácil com as novas regras do *Minha Casa Minha Vida!* \u{1f680}\n";
+        $text .= "Entrada parcelada e as melhores condições em 6 empreendimentos *MRV* em andamento entre diversas opções:\n\n";
         $text .= "\u{2b05}\u{fe0f} Região Oeste: *Campos Dourados* e *Veredas* (Bairro planejado, próximo ao Supermercado Lopes na Av. Américo de Figueiredo). \u{1f6d2}\n";
         $text .= "\u{2b07}\u{fe0f} Zona Sul: *Gran Campolim* (na Rua Augusto Lippel) e *Don Pagliato* (pertinho do Campolim). \u{1f3e2}\n";
-        $text .= "\u{27a1}\u{fe0f} Zona Leste: *Scarpone*, torre única e exclusiva, bem próximo ao Parque das Águas. \u{1f333}\n";
-        $text .= "\u{2b06}\u{fe0f} Zona Norte: *Solar dos Eucaliptos*, o melhor custo-benefício da região. \u{1f4b0}\n\n";
+        $text .= "\u{27a1}\u{fe0f} Zona Leste: *Scarpone*, torre única e exclusiva, próximo ao Parque das Águas. \u{1f333}\n";
+        $text .= "\u{2b06}\u{fe0f} Zona Norte: *Solar dos Eucaliptos*, o melhor custo-benefício da região. \u{1f4b0}\n";
 
-        $text .= "\u{1f91d}\u{1f3fc} Aproveite a mudanças atuais e feche o melhor negócio para investir ou morar!!\n\n";
+        $text .= "Vamos simular as condições e conhecer os decorados? \u{1f60a} \n";
 
-        $text .= "\u{1f4ac} Me chame para simularmos as condições e conhecermos os decorados! \u{1f4f2}\u{1f4ac} \n\n";
-
-        $text .= "Aguardo o seu retorno \u{1f60a}";
         return $text;
     }
 
@@ -245,10 +237,8 @@ class NotifyController extends Controller
         Gate::authorize('show', $client);
         Gate::authorize('show', $property);
 
-        $name = explode(' ', $client->name)[0];
-
         // Customize this function to generate the marketing text as needed
-        $text = "Olá " . $name . ", tudo bem! \u{1f60a}\n";
+        $text = "Olá " . $client->firtsName() . ", tudo bem! \u{1f60a}\n";
         $text .= "\u{2728} *QUE TAL CONHECER UMA ÓTIMA OPORTUNIDADE PARA MORAR OU INVESTIR EM SOROCABA?!* \n\n";
 
         $text .= "\u{1f3e1} *" . $property->description . "*\n";
@@ -301,6 +291,8 @@ class NotifyController extends Controller
         $text .= "\u{1f4ac} Fale comigo, te mostro as novidades e detalhes sobre esse e outros lançamentos! \u{1f4f2}\u{1f4ac} \n\n";
 
         $text .= "Adquirir um imóvel é mais que um investimento, é o começo de uma nova história. \u{1f3e1}\u{2764}\u{fe0f}\n\n";
+
+        $text .= "Vamos simular as condições e conhecer os decorados? \u{1f60a} \n";
 
         return $text;
     }
