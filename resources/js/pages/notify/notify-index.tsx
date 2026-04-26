@@ -1,3 +1,4 @@
+import { FormInput } from '@/components/form-input';
 import { FormSelect } from '@/components/form-select';
 import { Icon } from '@/components/icon';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -10,6 +11,8 @@ import React, { useEffect, useState } from 'react'; // Add useEffect
 type FilterForm = {
     property_id?: string;
     contact_origin: string;
+    initial_date?: string;
+    final_date?: string;
 };
 
 interface Wishe {
@@ -49,6 +52,7 @@ interface Client {
     compromised_income: number;
     wishe: Wishe | null;
     origin: string | null;
+    created_at?: string;
 }
 
 export default function Clients({
@@ -61,9 +65,12 @@ export default function Clients({
     const [copiedId, setCopiedId] = useState<number | null>(null);
     const [copiedTextType, setCopiedTextType] = useState<'name' | 'marketing' | null>(null);
     const [isLoading, setIsLoading] = useState<number | null>(null); // Track loading state per client
+    const [clickedClients, setClickedClients] = useState<number[]>([]);
     const { data, setData, errors } = useForm<FilterForm>({
         property_id: undefined,
         contact_origin: 'todos',
+        initial_date: '',
+        final_date: '',
     });
 
     const handleSetData = (field: keyof FilterForm, value: string | number | undefined | boolean) => {
@@ -107,6 +114,7 @@ export default function Clients({
 
             if (whatsappLink) {
                 window.open(whatsappLink, '_blank');
+                setClickedClients(prev => Array.from(new Set([...prev, client.id])));
             }
 
             // setCopiedId(client.id);
@@ -124,12 +132,25 @@ export default function Clients({
 
     const filteredClients = clients.filter((client) => {
         if (data.contact_origin === 'mrv') {
-            return client.origin && client.origin.toLowerCase().includes('mrv');
+            if (!(client.origin && client.origin.toLowerCase().includes('mrv'))) return false;
         }
         if (data.contact_origin === 'desconhecido') {
-            return !client.origin || client.origin === '' || client.origin === '0';
+            if (!(!client.origin || client.origin === '' || client.origin === '0')) return false;
         }
-        return true; // 'todos'
+
+        if (data.initial_date && client.created_at) {
+            const initialDate = new Date(data.initial_date + 'T00:00:00').getTime();
+            const cDate = new Date(client.created_at).getTime();
+            if (cDate < initialDate) return false;
+        }
+
+        if (data.final_date && client.created_at) {
+            const finalDate = new Date(data.final_date + 'T23:59:59').getTime();
+            const cDate = new Date(client.created_at).getTime();
+            if (cDate > finalDate) return false;
+        }
+
+        return true; 
     });
 
     return (
@@ -160,6 +181,24 @@ export default function Clients({
                             ]}
                             error={errors.contact_origin}
                         />
+                    </div>
+                    <div className="grid items-end gap-4 md:grid-cols-2">
+                        <div className="flex gap-4">
+                            <FormInput
+                                type="date"
+                                label="Cadastrado de:"
+                                value={data.initial_date || ''}
+                                onChange={(value) => handleSetData('initial_date', value as string)}
+                                className="w-full"
+                            />
+                            <FormInput
+                                type="date"
+                                label="Até:"
+                                value={data.final_date || ''}
+                                onChange={(value) => handleSetData('final_date', value as string)}
+                                className="w-full"
+                            />
+                        </div>
                     </div>
                 </form>
 
@@ -308,13 +347,20 @@ export default function Clients({
                                         }).format(client.fgts)}
                                     </td>
 
-                                    <td className="px-3 py-3 text-green-500">
+                                    <td className={`px-3 py-3 ${clickedClients.includes(client.id) ? 'text-gray-400' : 'text-green-500'}`}>
                                         <button
                                             onClick={(e) => sendMarketingText(client, e)}
                                             title="Gerar texto de marketing e enviar via Whatsapp"
                                             className="cursor-pointer hover:opacity-80 transition-opacity"
+                                            disabled={isLoading === client.id}
                                         >
-                                            <Icon iconNode={MessageCircle} />
+                                            {clickedClients.includes(client.id) ? (
+                                                <Icon iconNode={Check} />
+                                            ) : isLoading === client.id ? (
+                                                <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                                            ) : (
+                                                <Icon iconNode={MessageCircle} />
+                                            )}
                                         </button>
                                     </td>
                                 </tr>
