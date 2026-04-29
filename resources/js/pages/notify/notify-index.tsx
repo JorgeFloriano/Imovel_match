@@ -13,6 +13,7 @@ type FilterForm = {
     contact_origin: string;
     initial_date?: string;
     final_date?: string;
+    list_index?: string;
 };
 
 interface Wishe {
@@ -71,6 +72,7 @@ export default function Clients({
         contact_origin: 'todos',
         initial_date: '',
         final_date: '',
+        list_index: '0',
     });
 
     const handleSetData = (field: keyof FilterForm, value: string | number | undefined | boolean) => {
@@ -130,7 +132,7 @@ export default function Clients({
         }
     };
 
-    const filteredClients = clients.filter((client) => {
+    const baseFilteredClients = clients.filter((client) => {
         if (data.contact_origin === 'mrv') {
             if (!(client.origin && client.origin.toLowerCase().includes('mrv'))) return false;
         }
@@ -150,7 +152,28 @@ export default function Clients({
             if (cDate > finalDate) return false;
         }
 
-        return true; 
+        return true;
+    });
+
+    const uniqueCreatedAts = Array.from(new Set(baseFilteredClients.filter(c => c.created_at).map(c => c.created_at!)))
+        .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+
+    const listaOptions = [
+        { value: '0', label: 'Todas' },
+        ...uniqueCreatedAts.map((_, index) => ({
+            value: (index + 1).toString(),
+            label: (index + 1).toString(),
+        }))
+    ];
+
+    const filteredClients = baseFilteredClients.filter((client) => {
+        if (data.list_index && data.list_index !== '0') {
+            const index = parseInt(data.list_index) - 1;
+            if (uniqueCreatedAts[index] && client.created_at !== uniqueCreatedAts[index]) {
+                return false;
+            }
+        }
+        return true;
     });
 
     return (
@@ -170,17 +193,28 @@ export default function Clients({
                             customOptions={propertyOptions}
                             error={errors.property_id}
                         />
-                        <FormSelect
-                            label="Origem do Cliente"
-                            value={data.contact_origin}
-                            onValueChange={(value) => handleSetData('contact_origin', value)}
-                            customOptions={[
-                                { value: 'todos', label: 'Todos' },
-                                { value: 'desconhecido', label: 'Desconhecido' },
-                                { value: 'mrv', label: 'MRV' },
-                            ]}
-                            error={errors.contact_origin}
-                        />
+                        <div className="flex gap-4">
+                            <FormSelect
+                                label="Origem do Cliente"
+                                value={data.contact_origin}
+                                onValueChange={(value) => handleSetData('contact_origin', value)}
+                                customOptions={[
+                                    { value: 'todos', label: 'Todos' },
+                                    { value: 'desconhecido', label: 'Desconhecido' },
+                                    { value: 'mrv', label: 'MRV' },
+                                ]}
+                                error={errors.contact_origin}
+                                className="w-full"
+                            />
+                            <FormSelect
+                                label="Lista"
+                                value={data.list_index || '0'}
+                                onValueChange={(value) => handleSetData('list_index', value)}
+                                customOptions={listaOptions}
+                                error={errors.list_index}
+                                className="w-full"
+                            />
+                        </div>
                     </div>
                     <div className="grid items-end gap-4 md:grid-cols-2">
                         <div className="flex gap-4">
