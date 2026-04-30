@@ -154,7 +154,7 @@ class NotifyController extends Controller
     private function generateCustomMarketingText(Client $client)
     {
         Gate::authorize('show', $client);
-        
+
         $properties = Property::with(['user', 'region'])->where('user_id', Auth::user()->id)->get();
 
         foreach ($properties as $property) {
@@ -202,20 +202,105 @@ class NotifyController extends Controller
     private function generateCustomMarketingTextMrv(Client $client)
     {
         Gate::authorize('show', $client);
-        
-        // Customize this function to generate the marketing text as needed
-        $text = "\u{1f31f} *SEU NOVO APÊ ESTÁ AQUI!* \u{1f31f}\n\n";
-        $text .= "Olá " . $client->firtsName() . ", tudo bem? \u{1f44b}\u{1f3fc}\n";
-        $text .= "Sou *Marta de Souza*, consultora imobiliária.\n";
 
-        $text .= "Financiar seu imóvel na região de Sorocaba ficou ainda mais fácil com as novas regras do *Minha Casa Minha Vida!* \u{1f680}\n";
+        // Array de títulos variados para "driblar" o filtro de repetição
+        $titles = [
+            "\u{1f31f} *SEU NOVO APÊ ESTÁ AQUI!* \u{1f31f}\n\n",
+            "\u{1f3e0} *OPORTUNIDADE: CONQUISTE SEU IMÓVEL!* \u{1f3e0}\n\n",
+            "\u{1f680} *O SONHO DA CASA PRÓPRIA ESTÁ PERTO!* \u{1f680}\n\n",
+            "\u{2728} *NOVIDADES SOBRE SEU NOVO APARTAMENTO* \u{2728}\n\n",
+            "\u{1f511} *CHEGOU A HORA DE SAIR DO ALUGUEL!* \u{1f511}\n\n",
+            "\u{1f4ca} *CONDIÇÕES EXCLUSIVAS PARA VOCÊ!* \u{1f4ca}\n\n"
+        ];
+
+        // Escolhe um título aleatório do array
+        $randomTitle = $titles[array_rand($titles)];
+
+        // 1. Define a saudação baseada no horário (Horário de Sorocaba/Brasil)
+        $hour = now()->hour;
+        if ($hour >= 5 && $hour < 12) {
+            $timeGreeting = "Bom dia ";
+        } elseif ($hour >= 12 && $hour < 18) {
+            $timeGreeting = "Boa tarde ";
+        } else {
+            $timeGreeting = "Boa noite ";
+        }
+
+        // Você também pode fazer o mesmo para a saudação inicial
+        $greetings = [
+            "Olá " . $client->firtsName() . ", tudo bem? \u{1f44b}\u{1f3fc}\n",
+            $timeGreeting . $client->firtsName() . ", tudo bem? \u{1f44b}\u{1f3fc}\n",
+            "Oi " . $client->firtsName() . ", como vai você? \u{1f60a}\n",
+            $timeGreeting . $client->firtsName() . ", como vai você? \u{1f60a}\n",
+            "Olá " . $client->firtsName() . ", prazer em falar com você! \u{1f44b}\n",
+            $timeGreeting . $client->firtsName() . ", prazer em falar com você! \u{1f44b}\n"
+        ];
+        $randomGreeting = $greetings[array_rand($greetings)];
+
+        $functions = [
+            "consultora imobiliária.",
+            "especialista em imóveis.",
+            "corretora imobiliária.",
+            "corretora de imóveis.",
+            "consultora de imóveis."
+        ];
+
+        $randomFunction = $functions[array_rand($functions)];
+
+        $properties = [
+            'apê',
+            'apartamento',
+            'imóvel',
+        ];
+
+        $randomProperty = $properties[array_rand($properties)];
+
+        $locations = [
+            'Zona',
+            'Região',
+        ];
+
+        $near = [
+            "pertinho do ",
+            "perto do ",
+            "próximo ao ",
+            "bem próximo do ",
+            "ao lado do "
+        ];
+
+        // Criamos um array com as linhas das localizações
+        $neighborhoods = [
+            "\u{2b05}\u{fe0f} " . $locations[array_rand($locations)] . " Oeste: *Campos Dourados* e *Veredas* (Bairro planejado, " . $near[array_rand($near)] . "Supermercado Lopes na Av. Américo de Figueiredo). \u{1f6d2}\n",
+            "\u{2b07}\u{fe0f} " . $locations[array_rand($locations)] . " Sul: *Gran Campolim* (na Rua Augusto Lippel) e *Don Pagliato* (" . $near[array_rand($near)] . "Campolim). \u{1f3e2}\n",
+            "\u{27a1}\u{fe0f} " . $locations[array_rand($locations)] . " Leste: *Scarpone*, torre única e exclusiva, " . $near[array_rand($near)] . "Parque das Águas. \u{1f333}\n",
+            "\u{2b06}\u{fe0f} " . $locations[array_rand($locations)] . " Norte: *Solar dos Eucaliptos*, " . $near[array_rand($near)] . "SENAI Luiz Pagliato, o melhor custo-benefício da região. \u{1f4b0}\n"
+        ];
+
+        // Embaralha a ordem do array aleatoriamente
+        shuffle($neighborhoods);
+
+        // Montagem do texto final
+        $text = $randomTitle;
+        $text .= $randomGreeting;
+        $text .= "Sou *Marta de Souza*, " . $randomFunction . "\n";
+        $text .= "Financiar seu " . $randomProperty . " na região de Sorocaba ficou ainda mais fácil com as novas regras do *Minha Casa Minha Vida!* \u{1f680}\n";
         $text .= "Entrada parcelada e as melhores condições em 6 empreendimentos *MRV* em andamento entre diversas opções:\n\n";
-        $text .= "\u{2b05}\u{fe0f} Região Oeste: *Campos Dourados* e *Veredas* (Bairro planejado, próximo ao Supermercado Lopes na Av. Américo de Figueiredo). \u{1f6d2}\n";
-        $text .= "\u{2b07}\u{fe0f} Zona Sul: *Gran Campolim* (na Rua Augusto Lippel) e *Don Pagliato* (pertinho do Campolim). \u{1f3e2}\n";
-        $text .= "\u{27a1}\u{fe0f} Zona Leste: *Scarpone*, torre única e exclusiva, próximo ao Parque das Águas. \u{1f333}\n";
-        $text .= "\u{2b06}\u{fe0f} Zona Norte: *Solar dos Eucaliptos*, o melhor custo-benefício da região. \u{1f4b0}\n";
 
-        $text .= "Vamos simular as condições e conhecer os decorados? \u{1f60a} \n";
+        // Adiciona as localizações já embaralhadas
+        foreach ($neighborhoods as $line) {
+            $text .= $line;
+        }
+
+        $text .= "\n"; // Espaço extra antes do fechamento
+
+        // 4. Variação no fechamento (mais uma camada de segurança)
+        $closings = [
+            "Vamos simular as condições e conhecer os decorados? \u{1f60a}",
+            "Posso te ajudar com uma simulação sem compromisso? \u{1f4d1}",
+            "Que tal agendarmos uma visita aos decorados? \u{1f6aa}",
+            "Quer saber como ficariam as parcelas para o seu perfil? \u{1f4b9}"
+        ];
+        $text .= $closings[array_rand($closings)];
 
         return $text;
     }
@@ -238,7 +323,7 @@ class NotifyController extends Controller
         Gate::authorize('show', $property);
 
         // Customize this function to generate the marketing text as needed
-        $text = "Olá " . $client->firtsName() . ", tudo bem! \u{1f60a}\n";
+        $text = "Olá " . $client->firtsName() . ", tudo bem? \u{1f60a}\n";
         $text .= "\u{2728} *QUE TAL CONHECER UMA ÓTIMA OPORTUNIDADE PARA MORAR OU INVESTIR EM SOROCABA?!* \n\n";
 
         $text .= "\u{1f3e1} *" . $property->description . "*\n";
