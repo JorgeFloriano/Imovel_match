@@ -30,6 +30,8 @@ return new class extends Migration
             $table->boolean('has_property')->default(false)->nullable();
             $table->integer('compromised_income')->nullable()->default(0);
             $table->string('origin', 20)->nullable();
+            $table->enum('temperature', ['gelado', 'frio', 'morno', 'quente'])->default('frio')->nullable();
+            $table->datetime('last_contact_at')->nullable();
             $table->timestamps();
         });
     }

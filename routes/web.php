@@ -20,6 +20,12 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
         ->middleware('can:show,property');
 
     Route::resource('/clients', ClientController::class);
+    Route::patch('/clients/{client}/temperature', [ClientController::class, 'updateTemperature'])
+        ->name('clients.temperature')
+        ->middleware('can:edit,client');
+    Route::patch('/clients/{client}/contacted', [ClientController::class, 'updateLastContact'])
+        ->name('clients.contacted')
+        ->middleware('can:edit,client');
     Route::get('/clients/{client}/properties', [ClientController::class, 'properties'])
         ->name('clients.properties')
         ->middleware('can:show,client');

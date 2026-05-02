@@ -24,7 +24,7 @@ class ClientController extends Controller
     }
     public function index()
     {
-        $clients = Client::with('wishe.regions')->where('user_id', Auth::user()->id)->orderBy('name')->get();
+        $clients = Client::with('wishe.regions')->where('user_id', Auth::user()->id)->orderBy('temperature', 'desc')->orderBy('name', 'asc')->get();
 
         foreach ($clients as $client) {
             if ($client->wishe) {
@@ -176,6 +176,31 @@ class ClientController extends Controller
 
         return back()->with('success', 'Client updated successfully');
     }
+
+    public function updateTemperature(\Illuminate\Http\Request $request, Client $client): RedirectResponse
+    {
+        Gate::authorize('update', $client);
+
+        $validated = $request->validate([
+            'temperature' => 'nullable|in:gelado,frio,morno,quente'
+        ]);
+
+        $client->update($validated);
+
+        return back()->with('success', 'Temperatura atualizada com sucesso');
+    }
+
+    public function updateLastContact(\Illuminate\Http\Request $request, Client $client): RedirectResponse
+    {
+        Gate::authorize('update', $client);
+
+        $client->update([
+            'last_contact_at' => now(),
+        ]);
+
+        return back()->with('success', 'Data de contato atualizada com sucesso');
+    }
+
     public function destroy(Client $client): RedirectResponse
     {
         Gate::authorize('delete', $client);

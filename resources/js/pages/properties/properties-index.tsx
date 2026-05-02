@@ -1,12 +1,14 @@
 import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import IconTooltip from '@/components/ui/icon-tooltip';
 import { Status } from '@/components/ui/status';
 import { StatusIcon } from '@/components/ui/status-icon';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { ArrowRight, Bath, Bed, Calendar, Car, Delete, Edit, Expand, KeyRound } from 'lucide-react';
+import { useSortableTable } from '@/hooks/useSortableTable';
+import { SortableTableHeader } from '@/components/ui/sortable-table-header';
 
 interface Region {
     id: number;
@@ -59,6 +61,8 @@ interface Property {
 }
 
 export default function Properties({ properties }: { properties: Property[] }) {
+    const { items: sortedProperties, requestSort, sortConfig } = useSortableTable(properties);
+
     return (
         <AppLayout>
             <Head title="Propriedades" />
@@ -87,13 +91,13 @@ export default function Properties({ properties }: { properties: Property[] }) {
                             </DialogContent>
                         </Dialog>
                     ) : ( */}
-                        <Button asChild>
-                            <a href={route('properties.create')}>
-                                <span className="flex items-center gap-2">
-                                    <span>Cadastrar</span>
-                                </span>
-                            </a>
-                        </Button>
+                    <Button asChild>
+                        <a href={route('properties.create')}>
+                            <span className="flex items-center gap-2">
+                                <span>Cadastrar</span>
+                            </span>
+                        </a>
+                    </Button>
                     {/* ) */}
                 </div>
 
@@ -105,14 +109,36 @@ export default function Properties({ properties }: { properties: Property[] }) {
                     <table className="w-full text-left text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
                         <thead className="bg-[#D8D8D8] text-xs text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
-                                <th scope="col" className="px-6 py-3">
+                                <SortableTableHeader
+                                    sortKey="description"
+                                    currentSortConfig={sortConfig}
+                                    requestSort={requestSort}
+                                    className="px-6 py-3"
+                                >
                                     Descrição/Link
-                                </th>
-                                <th className='hidden md:table-cell'>
-                                    <div className="px-6">Tipo</div>
-                                </th>
-                                <th className="px-6 hidden md:table-cell">Preço(R$)</th>
-                                <th className="px-6 hidden md:table-cell">
+                                </SortableTableHeader>
+                                <SortableTableHeader
+                                    sortKey="typ"
+                                    currentSortConfig={sortConfig}
+                                    requestSort={requestSort}
+                                    className="hidden md:table-cell px-6"
+                                >
+                                    Tipo
+                                </SortableTableHeader>
+                                <SortableTableHeader
+                                    sortKey="price"
+                                    currentSortConfig={sortConfig}
+                                    requestSort={requestSort}
+                                    className="px-6 hidden md:table-cell"
+                                >
+                                    Preço(R$)
+                                </SortableTableHeader>
+                                <SortableTableHeader
+                                    sortKey="delivery_key"
+                                    currentSortConfig={sortConfig}
+                                    requestSort={requestSort}
+                                    className="px-6 hidden md:table-cell"
+                                >
                                     <IconTooltip
                                         iconNode={
                                             <div className="inline-flex gap-2">
@@ -123,45 +149,74 @@ export default function Properties({ properties }: { properties: Property[] }) {
                                         }
                                         tooltipText="Previsão de entrega das chaves"
                                     />
-                                </th>
-                                <th className="text-center hidden md:table-cell">
+                                </SortableTableHeader>
+                                <SortableTableHeader
+                                    sortKey="building_area"
+                                    currentSortConfig={sortConfig}
+                                    requestSort={requestSort}
+                                    className="px-6 text-center hidden md:table-cell"
+                                >
                                     <IconTooltip iconNode="M²" tooltipText="Área construída" />
-                                </th>
-                                <th className='hidden md:table-cell'>
+                                </SortableTableHeader>
+                                <SortableTableHeader
+                                    sortKey="rooms"
+                                    currentSortConfig={sortConfig}
+                                    requestSort={requestSort}
+                                    className="px-6 hidden md:table-cell"
+                                >
                                     <IconTooltip iconNode={Bed && <Icon className="inline h-4 w-4" iconNode={Bed} />} tooltipText="Quartos" />
-                                </th>
-                                <th className='hidden md:table-cell'>
+                                </SortableTableHeader>
+                                <SortableTableHeader
+                                    sortKey="suites"
+                                    currentSortConfig={sortConfig}
+                                    requestSort={requestSort}
+                                    className="px-6 hidden md:table-cell"
+                                >
                                     <IconTooltip iconNode={Bath && <Icon className="inline h-4 w-4" iconNode={Bath} />} tooltipText="Suítes" />
-                                </th>
-                                <th className='hidden md:table-cell'>
+                                </SortableTableHeader>
+                                <SortableTableHeader
+                                    sortKey="garages"
+                                    currentSortConfig={sortConfig}
+                                    requestSort={requestSort}
+                                    className="px-6 hidden md:table-cell"
+                                >
                                     <IconTooltip iconNode={Car && <Icon className="inline h-4 w-4" iconNode={Car} />} tooltipText="Vagas" />
-                                </th>
-                                <th className='hidden md:table-cell'>
+                                </SortableTableHeader>
+                                <SortableTableHeader
+                                    sortKey="balcony"
+                                    currentSortConfig={sortConfig}
+                                    requestSort={requestSort}
+                                    className="px-6 hidden md:table-cell"
+                                >
                                     <IconTooltip
                                         iconNode={
                                             <>
-                                                <img src="/balcony.png" className="inline dark:hidden" width={16} alt="Varanda" />
-                                                <img src="/balcony_dark.png" className="hidden dark:inline" width={16} alt="Varanda" />
+                                                <img src="/balcony.png" className="inline dark:hidden" width={80} height={80} alt="Varanda" />
+                                                <img src="/balcony_dark.png" className="hidden dark:inline" width={80} height={80} alt="Varanda" />
                                             </>
                                         }
                                         tooltipText="Varanda"
                                     />
-                                </th>
-                                <th className='hidden md:table-cell'>
-                                    <div className="px-6">Região</div>
-                                </th>
+                                </SortableTableHeader>
+                                <SortableTableHeader
+                                    sortKey="region.name"
+                                    currentSortConfig={sortConfig}
+                                    requestSort={requestSort}
+                                    className="px-6 hidden md:table-cell"
+                                >
+                                    Região
+                                </SortableTableHeader>
                                 <th scope="col" className="px-6 py-3 text-center">
                                     <span>Ações</span>
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            {properties.map((property, index) => (
+                            {sortedProperties.map((property, index) => (
                                 <tr
                                     key={property.id}
-                                    className={`border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950 ${
-                                        index !== properties.length - 1 ? 'border-b' : ''
-                                    }`}
+                                    className={`border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950 ${index !== sortedProperties.length - 1 ? 'border-b' : ''
+                                        }`}
                                 >
                                     <th scope="row" className="px-6 py-3 font-medium whitespace-normal text-gray-900 dark:text-white">
                                         <a

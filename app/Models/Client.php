@@ -41,6 +41,8 @@ class Client extends Model
         'fgts',
         'has_property',
         'compromised_income',
+        'temperature',
+        'last_contact_at',
     ];
 
     /**

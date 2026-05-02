@@ -5,8 +5,11 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/
 import { Status } from '@/components/ui/status';
 import AppLayout from '@/layouts/app-layout';
 import { Head, useForm, router } from '@inertiajs/react'; // Import router from Inertia
-import { Check, MessageCircle, Expand, HeartHandshake, House, User } from 'lucide-react';
-import React, { useEffect, useState } from 'react'; // Add useEffect
+import { Check, MessageCircle, Expand, HeartHandshake, House, User, CheckCircle } from 'lucide-react';
+import React, { useEffect, useState, useMemo } from 'react'; // Add useEffect
+import { useSortableTable } from '@/hooks/useSortableTable';
+import { SortableTableHeader } from '@/components/ui/sortable-table-header';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 type FilterForm = {
     property_id?: string;
@@ -54,6 +57,7 @@ interface Client {
     wishe: Wishe | null;
     origin: string | null;
     created_at?: string;
+    last_contact_at?: string | null;
 }
 
 export default function Clients({
@@ -67,6 +71,7 @@ export default function Clients({
     const [copiedTextType, setCopiedTextType] = useState<'name' | 'marketing' | null>(null);
     const [isLoading, setIsLoading] = useState<number | null>(null); // Track loading state per client
     const [clickedClients, setClickedClients] = useState<number[]>([]);
+    const [optimisticContacts, setOptimisticContacts] = useState<Record<number, string>>({});
     const { data, setData, errors } = useForm<FilterForm>({
         property_id: undefined,
         contact_origin: 'todos',
@@ -132,6 +137,21 @@ export default function Clients({
         }
     };
 
+    const confirmSendText = (client: Client, e: React.MouseEvent) => {
+        e.preventDefault();
+
+        // Optimistic update
+        setOptimisticContacts(prev => ({ ...prev, [client.id]: new Date().toISOString() }));
+
+        router.patch(route('clients.contacted', client.id), {}, {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                // Success
+            }
+        });
+    };
+
     const baseFilteredClients = clients.filter((client) => {
         if (data.contact_origin === 'mrv') {
             if (!(client.origin && client.origin.toLowerCase().includes('mrv'))) return false;
@@ -175,6 +195,15 @@ export default function Clients({
         }
         return true;
     });
+
+    const clientsWithOptimistic = useMemo(() => {
+        return filteredClients.map(client => ({
+            ...client,
+            last_contact_at: optimisticContacts[client.id] || client.last_contact_at
+        }));
+    }, [filteredClients, optimisticContacts]);
+
+    const { items: sortedClients, requestSort, sortConfig } = useSortableTable(clientsWithOptimistic, { key: 'last_contact_at', direction: 'asc' });
 
     return (
         <AppLayout>
@@ -240,35 +269,68 @@ export default function Clients({
                     <table className="h-full w-full text-left text-[#123251] rtl:text-right dark:text-[#B8B8B8]">
                         <thead className="bg-[#D8D8D8] text-xs text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
-                                <th className="px-6 py-3 text-[#BF9447]">
+                                <SortableTableHeader
+                                    sortKey="name"
+                                    currentSortConfig={sortConfig}
+                                    requestSort={requestSort}
+                                    className="px-6 py-3 text-[#BF9447]"
+                                >
                                     <div className="inline-flex items-center gap-2">
                                         {User && <Icon iconNode={User} />}
                                         {HeartHandshake && <Icon iconNode={HeartHandshake} />}
                                         {House && <Icon iconNode={House} />}
                                     </div>
-                                </th>
-                                <th scope="col" className="hidden px-6 py-3 md:table-cell">
+                                </SortableTableHeader>
+                                <SortableTableHeader
+                                    sortKey="profession"
+                                    currentSortConfig={sortConfig}
+                                    requestSort={requestSort}
+                                    className="hidden px-6 py-3 md:table-cell"
+                                >
                                     Profissão
-                                </th>
-                                <th scope="col" className="hidden px-6 py-3 md:table-cell">
+                                </SortableTableHeader>
+                                <SortableTableHeader
+                                    sortKey="revenue"
+                                    currentSortConfig={sortConfig}
+                                    requestSort={requestSort}
+                                    className="hidden px-6 py-3 md:table-cell"
+                                >
                                     Renda
-                                </th>
-                                <th scope="col" className="hidden px-6 py-3 md:table-cell">
+                                </SortableTableHeader>
+                                <SortableTableHeader
+                                    sortKey="capital"
+                                    currentSortConfig={sortConfig}
+                                    requestSort={requestSort}
+                                    className="hidden px-6 py-3 md:table-cell"
+                                >
                                     Capital
-                                </th>
-                                <th scope="col" className="hidden px-6 py-3 md:table-cell">
+                                </SortableTableHeader>
+                                <SortableTableHeader
+                                    sortKey="fgts"
+                                    currentSortConfig={sortConfig}
+                                    requestSort={requestSort}
+                                    className="hidden px-6 py-3 md:table-cell"
+                                >
                                     FGTS
-                                </th>
+                                </SortableTableHeader>
+                                <SortableTableHeader
+                                    sortKey="last_contact_at"
+                                    currentSortConfig={sortConfig}
+                                    requestSort={requestSort}
+                                    className="hidden px-6 py-3 sm:table-cell"
+                                >
+                                    Notificado
+                                </SortableTableHeader>
                                 <th scope="col" className="px-3 py-3 text-center text-green-500">
                                     <Icon iconNode={MessageCircle} />
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredClients.map((client, index) => (
+                            {sortedClients.map((client, index) => (
                                 <tr
                                     key={client.id}
-                                    className={`border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950 ${index !== filteredClients.length - 1 ? 'border-b' : ''
+                                    className={`border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950 ${index !== sortedClients.length - 1 ? 'border-b' : ''
                                         }`}
                                 >
                                     <th scope="row" className="px-3 py-3 font-medium text-gray-900 dark:text-white">
@@ -381,21 +443,56 @@ export default function Clients({
                                         }).format(client.fgts)}
                                     </td>
 
+                                    <td className="hidden px-6 py-3 sm:table-cell">
+                                        {(() => {
+                                            const contactDate = optimisticContacts[client.id] || client.last_contact_at;
+                                            if (!contactDate) return <span className="text-gray-400">-</span>;
+                                            return new Date(contactDate).toLocaleDateString('pt-BR');
+                                        })()}
+                                    </td>
+
                                     <td className={`px-3 py-3 ${clickedClients.includes(client.id) ? 'text-gray-400' : 'text-green-500'}`}>
-                                        <button
-                                            onClick={(e) => sendMarketingText(client, e)}
-                                            title="Gerar texto de marketing e enviar via Whatsapp"
-                                            className="cursor-pointer hover:opacity-80 transition-opacity"
-                                            disabled={isLoading === client.id}
-                                        >
-                                            {clickedClients.includes(client.id) ? (
-                                                <Icon iconNode={Check} />
-                                            ) : isLoading === client.id ? (
-                                                <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                                            ) : (
-                                                <Icon iconNode={MessageCircle} />
-                                            )}
-                                        </button>
+
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger className="outline-none cursor-pointer">
+                                                <button
+                                                    title="Gerar texto de marketing e enviar via Whatsapp"
+                                                    className="cursor-pointer hover:opacity-80 transition-opacity"
+                                                    disabled={isLoading === client.id}
+                                                >
+                                                    {clickedClients.includes(client.id) ? (
+                                                        <Icon iconNode={Check} />
+                                                    ) : isLoading === client.id ? (
+                                                        <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                                                    ) : (
+                                                        <Icon iconNode={MessageCircle} />
+                                                    )}
+                                                </button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem asChild className="cursor-pointer gap-2">
+                                                    <button
+                                                        onClick={(e) => sendMarketingText(client, e)}
+                                                        title="Chamar no Whatsapp"
+                                                        className="w-full flex items-center hover:opacity-80 transition-opacity"
+                                                    >
+                                                        <Icon className={`h-4 w-4 text-green-600 dark:text-green-500`} iconNode={MessageCircle} />
+                                                        <span className="font-medium text-green-600 dark:text-green-500">Enviar</span>
+                                                    </button>
+                                                </DropdownMenuItem>
+
+                                                <DropdownMenuItem asChild className="cursor-pointer gap-2">
+                                                    <button
+                                                        onClick={(e) => confirmSendText(client, e)}
+                                                        title="Confirmar envio do texto de marketing"
+                                                        className="w-full flex items-center hover:opacity-80 transition-opacity"
+                                                    >
+                                                        <Icon className={`h-4 w-4 text-blue-600 dark:text-blue-500`} iconNode={CheckCircle} />
+                                                        <span className="font-medium text-blue-600 dark:text-blue-500">Registrar</span>
+                                                    </button>
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </td>
                                 </tr>
                             ))}
