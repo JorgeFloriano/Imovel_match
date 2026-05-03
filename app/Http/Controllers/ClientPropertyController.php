@@ -21,6 +21,8 @@ class ClientPropertyController extends Controller
 
         // Get ONLY clients who have at least one whishe
         $clients = Client::where('user_id', Auth::id())
+            ->where('temperature', 'quente')
+            ->orWhere('temperature', 'morno')
             ->whereHas('wishe') // This filters out clients with no wishes
             ->with(['wishe' => function ($query) {
                 $query->select(

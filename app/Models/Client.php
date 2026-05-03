@@ -104,7 +104,7 @@ class Client extends Model
             return 5;
         }
     }
-    public function firtsName() : string
+    public function firstName(): string
     {
         if (!$this->name) return '';
 

@@ -19,9 +19,9 @@ class NotifyController extends Controller
             'value' => strval($property->id), // Convert to string
             'label' => $property->description,
         ])->prepend([
-                    'value' => '0',
-                    'label' => 'Customizado para o cliente',
-                ])->all();
+            'value' => '0',
+            'label' => 'Customizado para o cliente',
+        ])->all();
 
         foreach ($clients as $client) {
             if ($client->wishe) {
@@ -151,6 +151,108 @@ class NotifyController extends Controller
         return "https://api.whatsapp.com/send?phone={$client_phone}&text=" . rawurlencode($message);
     }
 
+    private function randomTitle()
+    {
+        // Array de títulos variados para "driblar" o filtro de repetição
+        $titles = [
+            "\u{1f31f} *SEU NOVO APÊ ESTÁ AQUI!* \u{1f31f}\n\n",
+            "\u{1f3e0} *OPORTUNIDADE: CONQUISTE SEU IMÓVEL!* \u{1f3e0}\n\n",
+            "\u{1f680} *O SONHO DA CASA PRÓPRIA ESTÁ PERTO!* \u{1f680}\n\n",
+            "\u{2728} *NOVIDADES SOBRE SEU NOVO APARTAMENTO* \u{2728}\n\n",
+            "\u{1f511} *CHEGOU A HORA DE SAIR DO ALUGUEL!* \u{1f511}\n\n",
+            "\u{1f4ca} *CONDIÇÕES EXCLUSIVAS PARA VOCÊ!* \u{1f4ca}\n\n",
+            "\u{1f31f} *SEU FUTURO ESTÁ SENDO CONSTRUÍDO AGORA!* \u{1f31f}\n\n",
+        ];
+
+        return $titles[array_rand($titles)];
+    }
+
+    private function randomGreeting($client)
+    {
+        // 1. Define a saudação baseada no horário (Horário de Sorocaba/Brasil)
+        $hour = now()->hour;
+        if ($hour >= 5 && $hour < 12) {
+            $timeGreeting = "Bom dia ";
+        } elseif ($hour >= 12 && $hour < 18) {
+            $timeGreeting = "Boa tarde ";
+        } else {
+            $timeGreeting = "Boa noite ";
+        }
+
+        // Você também pode fazer o mesmo para a saudação inicial
+        $greetings = [
+            "Olá " . $client->firstName() . ", tudo bem? \u{1f44b}\u{1f3fc}\n",
+            $timeGreeting . $client->firstName() . ", tudo bem? \u{1f44b}\u{1f3fc}\n",
+            "Oi " . $client->firstName() . ", como vai você? \u{1f60a}\n",
+            $timeGreeting . $client->firstName() . ", como vai você? \u{1f60a}\n",
+            "Olá " . $client->firstName() . ", prazer em falar com você! \u{1f44b}\n",
+            $timeGreeting . $client->firstName() . ", prazer em falar com você! \u{1f44b}\n"
+        ];
+
+        return $greetings[array_rand($greetings)];
+    }
+
+    private function randomProfession()
+    {
+        // Array de profissões
+        $professions = [
+            "consultora imobiliária.",
+            "especialista em imóveis.",
+            "corretora imobiliária.",
+            "corretora de imóveis.",
+            "consultora de imóveis."
+        ];
+
+        return $professions[array_rand($professions)];
+    }
+
+    private function randomProperty()
+    {
+        // Array de propriedades
+        $properties = [
+            "apê",
+            "apartamento",
+            "imóvel",
+        ];
+
+        return $properties[array_rand($properties)];
+    }
+
+    private function randomClosing()
+    {
+        // Array de saudações
+        $closings = [
+            "Vamos simular as condições e conhecer os decorados? \u{1f60a}",
+            "Posso te ajudar com uma simulação sem compromisso? \u{1f4d1}",
+            "Que tal agendarmos uma visita aos decorados? \u{1f6aa}",
+            "Quer saber como ficariam as parcelas para o seu perfil? \u{1f4b9}"
+        ];
+
+        return $closings[array_rand($closings)];
+    }
+
+    public function shuffleExclusiveAdvantages()
+    {
+        $message = "\u{2705} *VANTAGENS EXCLUSIVAS:*\n";
+        // Array de vantagens únicas
+        $exclusiveAdvantages = [
+            "• Valorização garantida \u{1f4c8}\n",
+            "• Condições que cabem no seu bolso \u{1f4b3}\n",
+            "• Localização privilegiada \u{1f4cd}\n",
+            "• Plantas inteligentes e modernas \u{1f3d7}\u{fe0f}\n",
+        ];
+
+        shuffle($exclusiveAdvantages);  // Embaralha o array
+
+        foreach ($exclusiveAdvantages as $advantage) {
+            $message .= $advantage;
+        }
+
+        $message .= "\n";
+
+        return $message;
+    }
+
     private function generateCustomMarketingText(Client $client)
     {
         Gate::authorize('show', $client);
@@ -170,10 +272,12 @@ class NotifyController extends Controller
             ['description', 'asc'] // Secondary sort by client name ascending
         ])->take(3)->values()->all();
 
+        shuffle($sortedProperties);  // Embaralha o array
+
         // Customize this function to generate the marketing text as needed
-        $text = "\u{1f31f} *SEU FUTURO ESTÁ SENDO CONSTRUÍDO AGORA!* \u{1f31f}\n\n";
-        $text .= "Olá " . $client->firtsName() . ", tudo bem! \u{1f60a}\n";
-        $text .= "Sou *Marta de Souza*, consultora imobiliária.\n";
+        $text = $this->randomTitle();
+        $text .= $this->randomGreeting($client);
+        $text .= "Sou *Marta de Souza*, " . $this->randomProfession() . "\n";
         $text .= "Que tal conhecer as *melhores oportunidades* para morar ou investir na região de Sorocaba?\n";
         $text .= "\u{1f3af} *Temos ótimas opções que podem combinar perfeitamente com seu perfil!*\n\n";
 
@@ -182,78 +286,23 @@ class NotifyController extends Controller
             $text .= $property->obs . "\n\n";
         }
 
-        $text .= "\u{2705} *VANTAGENS EXCLUSIVAS:*\n";
-        $text .= "• Valorização garantida \u{1f4c8}\n";
-        $text .= "• Condições que cabem no seu bolso \u{1f4b3}\n";
-        $text .= "• Localização privilegiada \u{1f4cd}\n";
-        $text .= "• Plantas inteligentes e modernas \u{1f3d7}\u{fe0f}\n\n";
+        $text .= $this->shuffleExclusiveAdvantages();
 
         $text .= "\u{23f3} *Não deixe o tempo passar!*\n";
-        $text .= "Sonhar alto também começa com um bom planejamento! \u{1f4ad}\u{1f511}\n\n";
+        $text .= "Sonhar alto também começa com um bom planejamento! \u{1f4ad}\u{1f511}\n";
 
-        $text .= "\u{1f4ac} Fale comigo, te mostro as novidades e detalhes sobre esses e outros lançamentos! \u{1f4f2}\u{1f4ac} \n\n";
+        $text .= "\u{1f4ac} Fale comigo, te mostro as novidades e detalhes sobre esses e outros lançamentos! \u{1f4f2}\u{1f4ac} \n";
 
-        $text .= "Adquirir um imóvel é mais que um investimento, é o começo de uma nova história. \u{2764}\u{fe0f}\u{1f3e1}\n\n";
+        $text .= "Adquirir um " . $this->randomProperty() . " é mais que um investimento, é o começo de uma nova história. \u{2764}\u{fe0f}\u{1f3e1}\n";
 
-        $text .= "Vamos simular as condições e conhecer os decorados? \u{1f60a} \n";
+        $text .= $this->randomClosing();
+
         return $text;
     }
 
     private function generateCustomMarketingTextMrv(Client $client)
     {
         Gate::authorize('show', $client);
-
-        // Array de títulos variados para "driblar" o filtro de repetição
-        $titles = [
-            "\u{1f31f} *SEU NOVO APÊ ESTÁ AQUI!* \u{1f31f}\n\n",
-            "\u{1f3e0} *OPORTUNIDADE: CONQUISTE SEU IMÓVEL!* \u{1f3e0}\n\n",
-            "\u{1f680} *O SONHO DA CASA PRÓPRIA ESTÁ PERTO!* \u{1f680}\n\n",
-            "\u{2728} *NOVIDADES SOBRE SEU NOVO APARTAMENTO* \u{2728}\n\n",
-            "\u{1f511} *CHEGOU A HORA DE SAIR DO ALUGUEL!* \u{1f511}\n\n",
-            "\u{1f4ca} *CONDIÇÕES EXCLUSIVAS PARA VOCÊ!* \u{1f4ca}\n\n"
-        ];
-
-        // Escolhe um título aleatório do array
-        $randomTitle = $titles[array_rand($titles)];
-
-        // 1. Define a saudação baseada no horário (Horário de Sorocaba/Brasil)
-        $hour = now()->hour;
-        if ($hour >= 5 && $hour < 12) {
-            $timeGreeting = "Bom dia ";
-        } elseif ($hour >= 12 && $hour < 18) {
-            $timeGreeting = "Boa tarde ";
-        } else {
-            $timeGreeting = "Boa noite ";
-        }
-
-        // Você também pode fazer o mesmo para a saudação inicial
-        $greetings = [
-            "Olá " . $client->firtsName() . ", tudo bem? \u{1f44b}\u{1f3fc}\n",
-            $timeGreeting . $client->firtsName() . ", tudo bem? \u{1f44b}\u{1f3fc}\n",
-            "Oi " . $client->firtsName() . ", como vai você? \u{1f60a}\n",
-            $timeGreeting . $client->firtsName() . ", como vai você? \u{1f60a}\n",
-            "Olá " . $client->firtsName() . ", prazer em falar com você! \u{1f44b}\n",
-            $timeGreeting . $client->firtsName() . ", prazer em falar com você! \u{1f44b}\n"
-        ];
-        $randomGreeting = $greetings[array_rand($greetings)];
-
-        $functions = [
-            "consultora imobiliária.",
-            "especialista em imóveis.",
-            "corretora imobiliária.",
-            "corretora de imóveis.",
-            "consultora de imóveis."
-        ];
-
-        $randomFunction = $functions[array_rand($functions)];
-
-        $properties = [
-            'apê',
-            'apartamento',
-            'imóvel',
-        ];
-
-        $randomProperty = $properties[array_rand($properties)];
 
         $locations = [
             'Zona',
@@ -280,10 +329,10 @@ class NotifyController extends Controller
         shuffle($neighborhoods);
 
         // Montagem do texto final
-        $text = $randomTitle;
-        $text .= $randomGreeting;
-        $text .= "Sou *Marta de Souza*, " . $randomFunction . "\n";
-        $text .= "Financiar seu " . $randomProperty . " na região de Sorocaba ficou ainda mais fácil com as novas regras do *Minha Casa Minha Vida!* \u{1f680}\n";
+        $text = $this->randomTitle();
+        $text .= $this->randomGreeting($client);
+        $text .= "Sou *Marta de Souza*, " . $this->randomProfession() . "\n";
+        $text .= "Financiar seu " . $this->randomProperty() . " na região de Sorocaba ficou ainda mais fácil com as novas regras do *Minha Casa Minha Vida!* \u{1f680}\n";
         $text .= "Entrada parcelada e as melhores condições em 6 empreendimentos *MRV* em andamento entre diversas opções:\n\n";
 
         // Adiciona as localizações já embaralhadas
@@ -293,14 +342,7 @@ class NotifyController extends Controller
 
         $text .= "\n"; // Espaço extra antes do fechamento
 
-        // 4. Variação no fechamento (mais uma camada de segurança)
-        $closings = [
-            "Vamos simular as condições e conhecer os decorados? \u{1f60a}",
-            "Posso te ajudar com uma simulação sem compromisso? \u{1f4d1}",
-            "Que tal agendarmos uma visita aos decorados? \u{1f6aa}",
-            "Quer saber como ficariam as parcelas para o seu perfil? \u{1f4b9}"
-        ];
-        $text .= $closings[array_rand($closings)];
+        $text .= $this->randomClosing();
 
         return $text;
     }
@@ -323,7 +365,9 @@ class NotifyController extends Controller
         Gate::authorize('show', $property);
 
         // Customize this function to generate the marketing text as needed
-        $text = "Olá " . $client->firtsName() . ", tudo bem? \u{1f60a}\n";
+        $text = $this->randomTitle();
+        $text .= $this->randomGreeting($client);
+        $text .= "Sou *Marta de Souza*, " . $this->randomProfession() . "\n";
         $text .= "\u{2728} *QUE TAL CONHECER UMA ÓTIMA OPORTUNIDADE PARA MORAR OU INVESTIR EM SOROCABA?!* \n\n";
 
         $text .= "\u{1f3e1} *" . $property->description . "*\n";
@@ -364,20 +408,16 @@ class NotifyController extends Controller
             $text .= "\u{1f4cd} Localizado na região " . $property->region->name . "\n";
         }
 
-        $text .= "\n\u{2705} *VANTAGENS EXCLUSIVAS:*\n";
-        $text .= "• Valorização garantida \u{1f4c8}\n";
-        $text .= "• Condições que cabem no seu bolso \u{1f4b3}\n";
-        $text .= "• Localização privilegiada \u{1f4cd}\n";
-        $text .= "• Planta inteligente e moderna \u{1f3d7}\u{fe0f}\n\n";
+        $text .= $this->shuffleExclusiveAdvantages();
 
         $text .= "\u{23f3} *Não deixe o tempo passar!*\n";
-        $text .= "Sonhar alto também começa com um bom planejamento! \u{1f4ad}\n\n";
+        $text .= "Sonhar alto também começa com um bom planejamento! \u{1f4ad}\n";
 
-        $text .= "\u{1f4ac} Fale comigo, te mostro as novidades e detalhes sobre esse e outros lançamentos! \u{1f4f2}\u{1f4ac} \n\n";
+        $text .= "\u{1f4ac} Fale comigo, te mostro as novidades e detalhes sobre esse e outros lançamentos! \u{1f4f2}\u{1f4ac} \n";
 
-        $text .= "Adquirir um imóvel é mais que um investimento, é o começo de uma nova história. \u{1f3e1}\u{2764}\u{fe0f}\n\n";
+        $text .= "Adquirir um " . $property->description . " é mais que um investimento, é o começo de uma nova história. \u{1f3e1}\u{2764}\u{fe0f}\n";
 
-        $text .= "Vamos simular as condições e conhecer os decorados? \u{1f60a} \n";
+        $text .= $this->randomClosing();
 
         return $text;
     }

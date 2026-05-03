@@ -252,7 +252,10 @@ class Compatible
                     )['result'],
                 ];
             })->toArray(),
-            'clientOptions' => Client::where('user_id', Auth::id())->orderBy('name')->get()->map(fn($client) => [
+            'clientOptions' => Client::where('user_id', Auth::id())
+                ->where('temperature', 'quente')
+                ->orWhere('temperature', 'morno')
+                ->orderBy('name')->get()->map(fn($client) => [
                 'value' => strval($client->id), // Convert to string
                 'label' => $client->name,
             ])->prepend([
