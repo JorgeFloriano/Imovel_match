@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/
 import { Status } from '@/components/ui/status';
 import AppLayout from '@/layouts/app-layout';
 import { Head, useForm, router } from '@inertiajs/react'; // Import router from Inertia
-import { Check, MessageCircle, Expand, HeartHandshake, House, User, CheckCircle } from 'lucide-react';
+import { Check, MessageCircle, HeartHandshake, House, User, CheckCircle, Send } from 'lucide-react';
 import React, { useEffect, useState, useMemo } from 'react'; // Add useEffect
 import { useSortableTable } from '@/hooks/useSortableTable';
 import { SortableTableHeader } from '@/components/ui/sortable-table-header';
@@ -317,9 +317,12 @@ export default function Clients({
                                     sortKey="last_contact_at"
                                     currentSortConfig={sortConfig}
                                     requestSort={requestSort}
-                                    className="hidden px-6 py-3 sm:table-cell"
+                                    className="px-3 py-3 sm:px-6"
                                 >
-                                    Notificado
+                                    <span className="hidden sm:inline">Notificado</span>
+                                    <div className="sm:hidden text-blue-500" title="Notificado">
+                                        <Icon iconNode={Send} />
+                                    </div>
                                 </SortableTableHeader>
                                 <th scope="col" className="px-3 py-3 text-center text-green-500">
                                     <Icon iconNode={MessageCircle} />
@@ -443,12 +446,21 @@ export default function Clients({
                                         }).format(client.fgts)}
                                     </td>
 
-                                    <td className="hidden px-6 py-3 sm:table-cell">
-                                        {(() => {
-                                            const contactDate = optimisticContacts[client.id] || client.last_contact_at;
-                                            if (!contactDate) return <span className="text-gray-400">-</span>;
-                                            return new Date(contactDate).toLocaleDateString('pt-BR');
-                                        })()}
+                                    <td className="px-3 py-3 sm:px-6">
+                                        <div className="hidden sm:block">
+                                            {(() => {
+                                                const contactDate = optimisticContacts[client.id] || client.last_contact_at;
+                                                if (!contactDate) return <span className="text-gray-400">-</span>;
+                                                return new Date(contactDate).toLocaleDateString('pt-BR');
+                                            })()}
+                                        </div>
+                                        <div className="sm:hidden flex justify-center">
+                                            {(() => {
+                                                const contactDate = optimisticContacts[client.id] || client.last_contact_at;
+                                                if (!contactDate) return null;
+                                                return <Icon className="text-blue-500" iconNode={CheckCircle} />;
+                                            })()}
+                                        </div>
                                     </td>
 
                                     <td className={`px-3 py-3 ${clickedClients.includes(client.id) ? 'text-gray-400' : 'text-green-500'}`}>
