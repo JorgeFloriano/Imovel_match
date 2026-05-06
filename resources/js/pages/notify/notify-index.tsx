@@ -137,19 +137,25 @@ export default function Clients({
         }
     };
 
-    const confirmSendText = (client: Client, e: React.MouseEvent) => {
+    const confirmSendText = async (client: Client, e: React.MouseEvent) => {
         e.preventDefault();
 
         // Optimistic update
         setOptimisticContacts(prev => ({ ...prev, [client.id]: new Date().toISOString() }));
 
-        router.patch(route('clients.contacted', client.id), {}, {
-            preserveScroll: true,
-            preserveState: true,
-            onSuccess: () => {
-                // Success
-            }
-        });
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            await fetch(route('clients.contacted', client.id), {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken || '',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            });
+        } catch (err) {
+            console.error('Failed to register contact: ', err);
+        }
     };
 
     const baseFilteredClients = clients.filter((client) => {
@@ -481,7 +487,7 @@ export default function Clients({
                                                     )}
                                                 </button>
                                             </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
+                                            <DropdownMenuContent align="end" onCloseAutoFocus={(e) => e.preventDefault()}>
                                                 <DropdownMenuItem asChild className="cursor-pointer gap-2">
                                                     <button
                                                         onClick={(e) => sendMarketingText(client, e)}
