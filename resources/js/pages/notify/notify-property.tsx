@@ -6,6 +6,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowRight, Bath, Bed, Calendar, Car, Check, KeyRound, MessageCircle } from 'lucide-react';
 import React, { useState } from 'react';
+import { generateSpecificPropertyMarketingText } from '@/utils/marketing';
 
 interface NotifyPropertyProps {
     clients: {
@@ -62,47 +63,19 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
     const [copiedId, setCopiedId] = useState<number | null>(null);
     const [copiedTextType, setCopiedTextType] = useState<'name' | 'marketing' | null>(null);
     const [isLoading, setIsLoading] = useState<number | null>(null); // Track loading state per client
+    const [copiedPhoneClients, setCopiedPhoneClients] = useState<number[]>([]);
+    const [clickedClients, setClickedClients] = useState<number[]>([]);
 
-    // Copy marketing text to clipboard via API
+    // Generate marketing text locally and copy to clipboard
     const sendMarketingText = async (client: NotifyPropertyProps['clients'], e: React.MouseEvent) => {
         e.preventDefault();
-        setIsLoading(client.id);
-
+        
         try {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            const response = await fetch(route('notify.generate-property-marketing-text', [client.id, property.id]), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken!, // Now properly typed as string
-                    'X-Requested-With': 'XMLHttpRequest', // Add this for Laravel to recognize as AJAX
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error('Falha ao gerar o texto de marketing.');
-            }
-
-            const data = await response.json();
-            const marketingText = data.marketingText;
-            const whatsappLink = data.whatsappLink;
-
-            // await navigator.clipboard.writeText(marketingText);
-
-            if (whatsappLink) {
-                window.open(whatsappLink, '_blank');
-            }
-
-            // setCopiedId(client.id);
-            // setCopiedTextType('marketing');
-            // setTimeout(() => {
-            //     setCopiedId(null);
-            //     setCopiedTextType(null);
-            // }, 1500);
+            const marketingText = generateSpecificPropertyMarketingText(client, property);
+            await navigator.clipboard.writeText(marketingText);
+            setClickedClients(prev => Array.from(new Set([...prev, client.id])));
         } catch (err) {
             console.error('Failed to generate/copy marketing text: ', err);
-        } finally {
-            setIsLoading(null);
         }
     };
 
@@ -267,14 +240,18 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                                         className={`border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950 ${index !== clients.length - 1 ? 'border-b' : ''
                                             }`}
                                     >
-                                        <th scope="row" className="px-5 py-3 font-medium whitespace-normal text-gray-900 dark:text-white flex items-center gap-2 text-left">
+                                        <th scope="row" className={`px-5 py-3 font-medium whitespace-normal dark:text-white flex items-center gap-2 text-left cursor-pointer hover:opacity-80 transition-opacity ${copiedPhoneClients.includes(client.id) ? 'text-blue-600 dark:text-blue-500' : 'text-gray-900'}`}
+                                            onClick={() => {
+                                                const phone = (client as any).phone;
+                                                if (phone) {
+                                                    const formattedPhone = phone.replace(/\D/g, '');
+                                                    const phoneToCopy = (formattedPhone.length <= 11) ? `55${formattedPhone}` : formattedPhone;
+                                                    navigator.clipboard.writeText(phoneToCopy);
+                                                    setCopiedPhoneClients(prev => Array.from(new Set([...prev, client.id])));
+                                                }
+                                            }}
+                                        >
                                             {client.name}
-                                            {copiedId === client.id && copiedTextType === 'name' && (
-                                                <span className="flex items-center text-sm text-green-600">
-                                                    <MessageCircle size={16} className="mr-1" />
-                                                    <Check size={16} className="mr-1" />
-                                                </span>
-                                            )}
                                         </th>
                                         <td className="hidden px-5 py-3 text-left sm:table-cell">
                                             <div className={client.wishe.typ_c}>
@@ -328,10 +305,14 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                                         <td className="px-3 text-green-400">
                                             <button
                                                 onClick={(e) => sendMarketingText(client, e)}
-                                                title="Gerar texto de marketing via whatsapp"
+                                                title="Gerar/Copiar texto de marketing"
                                                 className="cursor-pointer hover:opacity-80 transition-opacity"
                                             >
-                                                <Icon iconNode={MessageCircle} />
+                                                {clickedClients.includes(client.id) ? (
+                                                    <Icon className="text-green-500" iconNode={Check} />
+                                                ) : (
+                                                    <Icon className="text-green-500" iconNode={MessageCircle} />
+                                                )}
                                             </button>
                                         </td>
                                     </tr>

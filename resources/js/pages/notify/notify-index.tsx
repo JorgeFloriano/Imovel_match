@@ -1,15 +1,14 @@
 import { FormInput } from '@/components/form-input';
 import { FormSelect } from '@/components/form-select';
 import { Icon } from '@/components/icon';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Status } from '@/components/ui/status';
+import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { Head, useForm, router } from '@inertiajs/react'; // Import router from Inertia
-import { Check, MessageCircle, HeartHandshake, House, User, CheckCircle, Send } from 'lucide-react';
+import { Check, MessageCircle, HeartHandshake, House, User, CheckCircle, Send, Circle } from 'lucide-react';
 import React, { useEffect, useState, useMemo } from 'react'; // Add useEffect
 import { useSortableTable } from '@/hooks/useSortableTable';
 import { SortableTableHeader } from '@/components/ui/sortable-table-header';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { generateCustomMarketingText, generateCustomMarketingTextMrv } from '@/utils/marketing';
 
 type FilterForm = {
     property_id?: string;
@@ -63,25 +62,41 @@ interface Client {
 export default function Clients({
     clients,
     propertyOptions,
+    filters,
 }: {
     clients: Client[];
     propertyOptions: Array<{ value: string; label: string }>;
+    filters: {
+        initial_date: string;
+        final_date: string;
+        contact_origin: string;
+    };
 }) {
     const [copiedId, setCopiedId] = useState<number | null>(null);
     const [copiedTextType, setCopiedTextType] = useState<'name' | 'marketing' | null>(null);
     const [isLoading, setIsLoading] = useState<number | null>(null); // Track loading state per client
     const [clickedClients, setClickedClients] = useState<number[]>([]);
+    const [copiedPhoneClients, setCopiedPhoneClients] = useState<number[]>([]);
     const [optimisticContacts, setOptimisticContacts] = useState<Record<number, string>>({});
     const { data, setData, errors } = useForm<FilterForm>({
         property_id: undefined,
-        contact_origin: 'todos',
-        initial_date: '',
-        final_date: '',
+        contact_origin: filters?.contact_origin || 'todos',
+        initial_date: filters?.initial_date || '',
+        final_date: filters?.final_date || '',
         list_index: '0',
     });
 
     const handleSetData = (field: keyof FilterForm, value: string | number | undefined | boolean) => {
         setData(field, value?.toString());
+    };
+
+    const handleFilter = (e: React.FormEvent) => {
+        e.preventDefault();
+        router.get(route('notify'), {
+            initial_date: data.initial_date,
+            final_date: data.final_date,
+            contact_origin: data.contact_origin,
+        }, { preserveState: true, preserveScroll: true });
     };
 
     // Use useEffect to watch for changes in property_id
@@ -93,47 +108,22 @@ export default function Clients({
         }
     }, [data.property_id]); // This effect runs when data.property_id changes
 
-    // Copy marketing text to send with whatsapp via API
+    // Generate marketing text locally and copy to clipboard
     const sendMarketingText = async (client: Client, e: React.MouseEvent) => {
         e.preventDefault();
-        setIsLoading(client.id);
+
+        let marketingText = '';
+        if (data.contact_origin === 'mrv') {
+            marketingText = generateCustomMarketingTextMrv(client);
+        } else {
+            marketingText = generateCustomMarketingText(client);
+        }
 
         try {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            const response = await fetch(`${route('notify.generate-marketing-text', client.id)}?type=${data.contact_origin}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken!, // Now properly typed as string
-                    'X-Requested-With': 'XMLHttpRequest', // Add this for Laravel to recognize as AJAX
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error('Falha ao gerar o texto de marketing.');
-            }
-
-            const responseData = await response.json();
-            // const marketingText = responseData.marketingText;
-            const whatsappLink = responseData.whatsappLink;
-
-            // await navigator.clipboard.writeText(marketingText);
-
-            if (whatsappLink) {
-                window.open(whatsappLink, '_blank');
-                setClickedClients(prev => Array.from(new Set([...prev, client.id])));
-            }
-
-            // setCopiedId(client.id);
-            // setCopiedTextType('marketing');
-            // setTimeout(() => {
-            //     setCopiedId(null);
-            //     setCopiedTextType(null);
-            // }, 1500);
+            await navigator.clipboard.writeText(marketingText);
+            setClickedClients(prev => Array.from(new Set([...prev, client.id])));
         } catch (err) {
-            console.error('Failed to generate/copy marketing text: ', err);
-        } finally {
-            setIsLoading(null);
+            console.error('Failed to copy marketing text: ', err);
         }
     };
 
@@ -158,41 +148,21 @@ export default function Clients({
         }
     };
 
-    const baseFilteredClients = clients.filter((client) => {
-        if (data.contact_origin === 'mrv') {
-            if (!(client.origin && client.origin.toLowerCase().includes('mrv'))) return false;
-        }
-        if (data.contact_origin === 'desconhecido') {
-            if (!(!client.origin || client.origin === '' || client.origin === '0')) return false;
-        }
-
-        if (data.initial_date && client.created_at) {
-            const initialDate = new Date(data.initial_date + 'T00:00:00').getTime();
-            const cDate = new Date(client.created_at).getTime();
-            if (cDate < initialDate) return false;
-        }
-
-        if (data.final_date && client.created_at) {
-            const finalDate = new Date(data.final_date + 'T23:59:59').getTime();
-            const cDate = new Date(client.created_at).getTime();
-            if (cDate > finalDate) return false;
-        }
-
-        return true;
-    });
-
-    const uniqueCreatedAts = Array.from(new Set(baseFilteredClients.filter(c => c.created_at).map(c => c.created_at!)))
+    const uniqueCreatedAts = Array.from(new Set(clients.filter(c => c.created_at).map(c => c.created_at!)))
         .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
 
     const listaOptions = [
         { value: '0', label: 'Todas' },
-        ...uniqueCreatedAts.map((_, index) => ({
-            value: (index + 1).toString(),
-            label: (index + 1).toString(),
-        }))
+        ...uniqueCreatedAts.map((createdAt, index) => {
+            const formattedDate = new Date(createdAt).toLocaleDateString('pt-BR');
+            return {
+                value: (index + 1).toString(),
+                label: `${index + 1} - ${formattedDate}`,
+            };
+        })
     ];
 
-    const filteredClients = baseFilteredClients.filter((client) => {
+    const filteredClients = clients.filter((client) => {
         if (data.list_index && data.list_index !== '0') {
             const index = parseInt(data.list_index) - 1;
             if (uniqueCreatedAts[index] && client.created_at !== uniqueCreatedAts[index]) {
@@ -219,16 +189,24 @@ export default function Clients({
                     <h1 className="text-xl font-semibold">Notificar clientes sobre as melhores oportunidades</h1>
                 </div>
 
-                <form className="space-y-6 pt-4 pb-6">
-                    <div className="grid items-end gap-4 md:grid-cols-2">
+                <form className="space-y-6 pt-4 pb-6" onSubmit={handleFilter}>
+                    {/* Ação Principal: Seleção de Imóvel */}
+                    <div className="md:w-1/2">
                         <FormSelect
-                            label="Tipo de texto de marketing (customizado para cada cliente ou específico de um imóvel)"
+                            label="Gerar texto para imóvel específico:"
                             value={data.property_id || '0'}
                             onValueChange={(value) => handleSetData('property_id', value)}
                             customOptions={propertyOptions}
                             error={errors.property_id}
                         />
-                        <div className="flex gap-4">
+                    </div>
+
+                    {/* Filtros da Lista de Clientes */}
+                    <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                        <div className="mb-4 text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Filtros da Tabela
+                        </div>
+                        <div className="grid items-end gap-4 sm:grid-cols-2 lg:grid-cols-5">
                             <FormSelect
                                 label="Origem do Cliente"
                                 value={data.contact_origin}
@@ -249,10 +227,6 @@ export default function Clients({
                                 error={errors.list_index}
                                 className="w-full"
                             />
-                        </div>
-                    </div>
-                    <div className="grid items-end gap-4 md:grid-cols-2">
-                        <div className="flex gap-4">
                             <FormInput
                                 type="date"
                                 label="Cadastrado de:"
@@ -267,6 +241,9 @@ export default function Clients({
                                 onChange={(value) => handleSetData('final_date', value as string)}
                                 className="w-full"
                             />
+                            <Button type="submit" className="w-full">
+                                Filtrar
+                            </Button>
                         </div>
                     </div>
                 </form>
@@ -343,90 +320,17 @@ export default function Clients({
                                         }`}
                                 >
                                     <th scope="row" className="px-3 py-3 font-medium text-gray-900 dark:text-white">
-                                        <Dialog>
-                                            <DialogTrigger asChild>
-                                                <button className="cursor-pointer hover:opacity-80 transition-opacity">{client.name}</button>
-                                            </DialogTrigger>
-                                            <DialogContent>
-                                                <DialogTitle>{client.name}</DialogTitle>
-                                                <p>
-                                                    <strong>Telefone: </strong> {client.phone}
-                                                    <br />
-                                                    <strong>Email: </strong> {client.email}
-                                                    <br />
-                                                    <strong>Endereço: </strong> {client.address}
-                                                    <br />
-                                                    <strong>Estado Civil: </strong> {client.marital_status}
-                                                    <br />
-                                                    <strong>Precisa de Financiamento: </strong>
-                                                    <Status value={client.need_financing} />
-                                                    <br />
-                                                    <strong>Número de Dependentes: </strong> {client.dependents}
-                                                    <br />
-                                                    <strong>Profissão: </strong> {client.profession}
-                                                    <br />
-                                                    <strong>Renda (R$): </strong> {client.revenue}
-                                                    <br />
-                                                    <strong>Capital Disponível(R$): </strong> {client.capital}
-                                                    <br />
-                                                    <strong>FGTS (R$): </strong> {client.fgts}
-                                                    <br />
-                                                    <strong>Possúi Propriedade: </strong>
-                                                    <Status value={client.has_property} />
-                                                    <br />
-                                                    <strong>Renda Comprometida (%): </strong> {client.compromised_income}
-                                                    <br />
-                                                </p>
-
-                                                {client.wishe && (
-                                                    <div className="mt-4">
-                                                        <h2 className="pb-3 text-lg font-semibold">Caracteristicas do imóvel desejado:</h2>
-                                                        <p>
-                                                            <strong>Regiões preferidas:</strong>{' '}
-                                                            {client.wishe?.regions_descr || 'Não especificadas'}
-                                                            <br />
-                                                            <strong>Número de Quartos: </strong> {client.wishe.rooms || 'Não especificado'}
-                                                            <br />
-                                                            <strong>Banheiros: </strong> {client.wishe.bathrooms || 'Não especificado'}
-                                                            <br />
-                                                            <strong>Suítes: </strong> {client.wishe.suites || 'Não especificado'}
-                                                            <br />
-                                                            <strong>Vagas de Garagem: </strong> {client.wishe.garages || 'Não especificado'}
-                                                            <br />
-                                                            <strong>Data prevista de Entrega: </strong>
-                                                            {client.wishe?.delivery_key
-                                                                ? new Date(client.wishe.delivery_key).toLocaleDateString('pt-BR')
-                                                                : 'Não especificada'}
-                                                            <br />
-                                                            <strong>Área construída: </strong> {client.wishe.building_area || 'Não especificado'}
-                                                            <br />
-                                                            <strong>Entrada Parcelada: </strong>{' '}
-                                                            <Status value={client.wishe.installment_payment} />
-                                                            <br />
-                                                            <strong>Ar Condicionado: </strong> {client.wishe.air_conditioning}
-                                                            <br />
-                                                            <strong>Jardim: </strong>
-                                                            <Status value={client.wishe.garden} />
-                                                            <br />
-                                                            <strong>Piscina: </strong>
-                                                            <Status value={client.wishe.pool} />
-                                                            <br />
-                                                            <strong>Varanda: </strong>
-                                                            <Status value={client.wishe.balcony} />
-                                                            <br />
-                                                            <strong>Aceita Pets: </strong>
-                                                            <Status value={client.wishe.acept_pets} />
-                                                            <br />
-                                                            <strong>Acessibilidade: </strong>
-                                                            <Status value={client.wishe.acessibility} />
-                                                            <br />
-                                                            <strong>Observações: </strong> {client.wishe.obs || 'Nenhuma'}
-                                                            <br />
-                                                        </p>
-                                                    </div>
-                                                )}
-                                            </DialogContent>
-                                        </Dialog>
+                                        <button
+                                            onClick={() => {
+                                                const formattedPhone = client.phone.replace(/\D/g, '');
+                                                const phoneToCopy = (formattedPhone.length <= 11) ? `55${formattedPhone}` : formattedPhone;
+                                                navigator.clipboard.writeText(phoneToCopy);
+                                                setCopiedPhoneClients(prev => Array.from(new Set([...prev, client.id])));
+                                            }}
+                                            className={`cursor-pointer hover:opacity-80 transition-opacity flex items-center gap-2 ${copiedPhoneClients.includes(client.id) ? 'text-blue-600 dark:text-blue-500' : ''}`}
+                                        >
+                                            {client.name}
+                                        </button>
                                     </th>
 
                                     <td className="hidden px-6 py-3 md:table-cell">{client.profession}</td>
@@ -453,64 +357,45 @@ export default function Clients({
                                     </td>
 
                                     <td className="px-3 py-3 sm:px-6">
-                                        <div className="hidden sm:block">
-                                            {(() => {
-                                                const contactDate = optimisticContacts[client.id] || client.last_contact_at;
-                                                if (!contactDate) return <span className="text-gray-400">-</span>;
-                                                return new Date(contactDate).toLocaleDateString('pt-BR');
-                                            })()}
-                                        </div>
-                                        <div className="sm:hidden flex justify-center">
-                                            {(() => {
-                                                const contactDate = optimisticContacts[client.id] || client.last_contact_at;
-                                                if (!contactDate) return null;
-                                                return <Icon className="text-blue-500" iconNode={CheckCircle} />;
-                                            })()}
-                                        </div>
+                                        <button 
+                                            onClick={(e) => confirmSendText(client, e)}
+                                            title="Registrar / Atualizar contato"
+                                            className="cursor-pointer hover:opacity-80 transition-opacity"
+                                        >
+                                            <div className="hidden sm:flex items-center gap-2">
+                                                {(() => {
+                                                    const contactDate = optimisticContacts[client.id] || client.last_contact_at;
+                                                    if (!contactDate) return <Icon className="text-gray-400" iconNode={Circle} />;
+                                                    return (
+                                                        <>
+                                                            <Icon className="text-blue-500" iconNode={CheckCircle} />
+                                                            <span className="text-blue-500">{new Date(contactDate).toLocaleDateString('pt-BR')}</span>
+                                                        </>
+                                                    );
+                                                })()}
+                                            </div>
+                                            <div className="sm:hidden flex justify-center">
+                                                {(() => {
+                                                    const contactDate = optimisticContacts[client.id] || client.last_contact_at;
+                                                    if (!contactDate) return <Icon className="text-gray-400" iconNode={Circle} />;
+                                                    return <Icon className="text-blue-500" iconNode={CheckCircle} />;
+                                                })()}
+                                            </div>
+                                        </button>
                                     </td>
 
-                                    <td className={`px-3 py-3 ${clickedClients.includes(client.id) ? 'text-gray-400' : 'text-green-500'}`}>
-
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger className="outline-none cursor-pointer">
-                                                <button
-                                                    title="Gerar texto de marketing e enviar via Whatsapp"
-                                                    className="cursor-pointer hover:opacity-80 transition-opacity"
-                                                    disabled={isLoading === client.id}
-                                                >
-                                                    {clickedClients.includes(client.id) ? (
-                                                        <Icon iconNode={Check} />
-                                                    ) : isLoading === client.id ? (
-                                                        <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                                                    ) : (
-                                                        <Icon iconNode={MessageCircle} />
-                                                    )}
-                                                </button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end" onCloseAutoFocus={(e) => e.preventDefault()}>
-                                                <DropdownMenuItem asChild className="cursor-pointer gap-2">
-                                                    <button
-                                                        onClick={(e) => sendMarketingText(client, e)}
-                                                        title="Chamar no Whatsapp"
-                                                        className="w-full flex items-center hover:opacity-80 transition-opacity"
-                                                    >
-                                                        <Icon className={`h-4 w-4 text-green-600 dark:text-green-500`} iconNode={MessageCircle} />
-                                                        <span className="font-medium text-green-600 dark:text-green-500">Enviar</span>
-                                                    </button>
-                                                </DropdownMenuItem>
-
-                                                <DropdownMenuItem asChild className="cursor-pointer gap-2">
-                                                    <button
-                                                        onClick={(e) => confirmSendText(client, e)}
-                                                        title="Confirmar envio do texto de marketing"
-                                                        className="w-full flex items-center hover:opacity-80 transition-opacity"
-                                                    >
-                                                        <Icon className={`h-4 w-4 text-blue-600 dark:text-blue-500`} iconNode={CheckCircle} />
-                                                        <span className="font-medium text-blue-600 dark:text-blue-500">Registrar</span>
-                                                    </button>
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
+                                    <td className="px-3 py-3 text-center">
+                                        <button
+                                            onClick={(e) => sendMarketingText(client, e)}
+                                            title="Gerar/Copiar texto de marketing"
+                                            className="cursor-pointer hover:opacity-80 transition-opacity"
+                                        >
+                                            {clickedClients.includes(client.id) ? (
+                                                <Icon className="text-green-500" iconNode={Check} />
+                                            ) : (
+                                                <Icon className="text-green-500" iconNode={MessageCircle} />
+                                            )}
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

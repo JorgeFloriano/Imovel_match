@@ -8,7 +8,13 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('welcome');
+    return Inertia::render('welcome', [
+        'properties' => \App\Models\Property::withoutGlobalScope('user')
+            ->with(['district', 'region'])
+            ->latest()
+            ->take(6)
+            ->get()
+    ]);
 })->name('home');
 
 Route::middleware(['auth', 'web', 'verified'])->group(function () {
@@ -33,15 +39,6 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
     Route::resource('/properties', PropertyController::class);
 
     Route::get('notify', [NotifyController::class, 'index'])->name('notify');
-
-    Route::post('/notify/{client}/generate-marketing-text', [NotifyController::class, 'generateMarketingText'])
-        ->name('notify.generate-marketing-text')
-        ->middleware('can:show,client');
-
-    Route::post('/notify/{client}/{property}/generate-property-marketing-text', [NotifyController::class, 'generatePropertyMarketingText'])
-        ->name('notify.generate-property-marketing-text')
-        ->middleware('can:show,client')
-        ->middleware('can:show,property');
 
     Route::get('notify/{property}/property', [NotifyController::class, 'property'])
         ->name('notify.property')

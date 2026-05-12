@@ -63,7 +63,7 @@ class Compatible
 
         $this->pts += $this->bool($client->wishe->balcony, $property->balcony)['count'];
 
-        $this->pts += $this->inArray($property->region_id, $client->wishe->regions()->get()->pluck('id')->toArray())['count'];
+        $this->pts += $this->inArray($property->region_id, $client->wishe->regions->pluck('id')->toArray())['count'];
 
         $this->pts += $this->number($client->wishe->bathrooms, $property->bathrooms)['count'] - 1;
 
@@ -99,7 +99,7 @@ class Compatible
 
         $compatible = new Compatible($client, $property); // calss to compare client and property
 
-        $property->region_bool_c = $compatible->inArray($property->region->id ?? '', $client->wishe->regions()->get()->pluck('id')->toArray())['class'];
+        $property->region_bool_c = $compatible->inArray($property->region->id ?? '', $client->wishe->regions->pluck('id')->toArray())['class'];
 
         return [
             'client' => $client,
@@ -147,8 +147,8 @@ class Compatible
 
                 'region' => $compatible->inArray(
                     $property->region->id ?? '',
-                    $client->wishe->regions()
-                        ->get()->pluck('id')->toArray()
+                    $client->wishe->regions
+                        ->pluck('id')->toArray()
                 )['result'],
 
                 'bathrooms' => $compatible->number(
@@ -247,8 +247,8 @@ class Compatible
 
                     'region' => $compatible->inArray(
                         $compatible->property->region->id ?? '',
-                        $compatible->client->wishe->regions()
-                            ->get()->pluck('id')->toArray()
+                        $compatible->client->wishe->regions
+                            ->pluck('id')->toArray()
                     )['result'],
                 ];
             })->toArray(),

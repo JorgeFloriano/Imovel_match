@@ -26,11 +26,6 @@ class ClientController extends Controller
     {
         $clients = Client::with('wishe.regions')->where('user_id', Auth::user()->id)->orderBy('temperature', 'desc')->orderBy('name', 'asc')->get();
 
-        foreach ($clients as $client) {
-            if ($client->wishe) {
-                $client->wishe->regions_descr = $client->wishe->regionsDescr() ?? '';
-            }
-        }
 
         return Inertia::render('clients/clients-index', [
             'clients' => $clients
@@ -97,9 +92,6 @@ class ClientController extends Controller
     {
         Gate::authorize('show', $client);
         $client->load('wishe.regions');
-        if ($client->wishe) {
-            $client->wishe->regions_descr = $client->wishe->regionsDescr() ?? '';
-        }
 
         return Inertia::render('clients/clients-show', [
             'client' => $client,
@@ -190,13 +182,20 @@ class ClientController extends Controller
         return back()->with('success', 'Temperatura atualizada com sucesso');
     }
 
-    public function updateLastContact(\Illuminate\Http\Request $request, Client $client): RedirectResponse
+    public function updateLastContact(\Illuminate\Http\Request $request, Client $client)
     {
         Gate::authorize('update', $client);
 
         $client->update([
             'last_contact_at' => now(),
         ]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'last_contact_at' => $client->last_contact_at
+            ]);
+        }
 
         return back()->with('success', 'Data de contato atualizada com sucesso');
     }
@@ -226,19 +225,12 @@ class ClientController extends Controller
             
         $client = Client::find($client->id)->load('wishe.regions');
         if ($client->wishe) {
-            $client->wishe->typ = $client->wishe->typ() ?? '';
-
-            $client->wishe->regions_msg = $client->wishe->regionsMsg() ?? '';
-
-            $client->wishe->regions_descr = $client->wishe->regionsDescr() ?? '';
+            // Array of client region options ids
+            $cli_reg_ids = $client->wishe->regions->pluck('id')->toArray();
         }
 
         $properties = Property::with(['user', 'region'])->where('user_id', Auth::user()->id)->get();
 
-        // Array of client region options ids
-        if ($client->wishe) {
-            $cli_reg_ids = $client->wishe->regions()->get()->pluck('id')->toArray();
-        }
         foreach ($properties as $property) {
 
             $compatible = new Compatible($client, $property); // calss to compare client and property

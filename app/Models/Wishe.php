@@ -42,6 +42,13 @@ class Wishe extends Model
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['regions_descr', 'regions_msg'];
+
+    /**
      * The attributes that should be cast.
      *
      * @var array<string, string>
@@ -105,11 +112,12 @@ class Wishe extends Model
 
     public function regionsMsg()
     {
-        $reg_num = count($this->regions()->get());
+        $regions = $this->regions;
+        $reg_num = count($regions);
         if ($reg_num == 0) {
             return 'Ñ espec.';
         } elseif ($reg_num == 1) {
-            return $this->regions()->get()[0]->name;
+            return $regions[0]->name;
         } else {
             return $reg_num . ' opções';
         };
@@ -117,7 +125,7 @@ class Wishe extends Model
 
     public function regionsDescr()
     {
-        $regions = $this->regions()->get()->pluck('name')->toArray();
+        $regions = $this->regions->pluck('name')->toArray();
         if (count($regions) > 1) {
             $last = array_pop($regions);
             return implode(', ', $regions) . ' ou ' . $last;
@@ -125,5 +133,15 @@ class Wishe extends Model
             // Handle cases with 0 or 1 region
             return implode('', $regions);
         }
+    }
+
+    public function getRegionsDescrAttribute()
+    {
+        return $this->regionsDescr();
+    }
+
+    public function getRegionsMsgAttribute()
+    {
+        return $this->regionsMsg();
     }
 }
