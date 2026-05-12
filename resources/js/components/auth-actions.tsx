@@ -11,9 +11,9 @@ export default function AuthActions({ auth }: AuthActionsProps) {
     if (auth.user) {
         return (
             <div className="flex items-center gap-3">
-                <Link href={route('dashboard')}>
+                <Link href={route('clients.index')}>
                     <NavButton variant="primary">
-                        Meu Painel
+                        Clientes
                     </NavButton>
                 </Link>
             </div>

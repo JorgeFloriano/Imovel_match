@@ -246,7 +246,8 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
                                                 if (phone) {
                                                     const formattedPhone = phone.replace(/\D/g, '');
                                                     const phoneToCopy = (formattedPhone.length <= 11) ? `55${formattedPhone}` : formattedPhone;
-                                                    navigator.clipboard.writeText(phoneToCopy);
+                                                    const urlToCopy = `https://web.whatsapp.com/send?phone=${phoneToCopy}`;
+                                                    navigator.clipboard.writeText(urlToCopy);
                                                     setCopiedPhoneClients(prev => Array.from(new Set([...prev, client.id])));
                                                 }
                                             }}

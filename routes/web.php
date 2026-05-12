@@ -45,6 +45,7 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
         ->middleware('can:show,property');
 
     Route::post('/clients/{client}/generate-update-link', [ClientController::class, 'generateTemporaryLink']);
+    Route::post('/notify/batch-contacted', [NotifyController::class, 'batchContacted'])->name('notify.batch-contacted');
 });
 
 

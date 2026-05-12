@@ -31,7 +31,7 @@ export class WhatsAppService {
         }
 
         const formattedPhone = this.formatPhone(phone);
-        let url = `https://wa.me/${formattedPhone}`;
+        let url = `https://web.whatsapp.com/send?phone=${formattedPhone}`;
 
         if (message) {
             url += `?text=${encodeURIComponent(message)}`;

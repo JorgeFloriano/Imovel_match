@@ -118,4 +118,19 @@ class NotifyController extends Controller
             'property' => $property
         ]);
     }
+
+    public function batchContacted(\Illuminate\Http\Request $request)
+    {
+        $clientIds = $request->input('ids', []);
+        
+        if (empty($clientIds)) {
+            return response()->json(['message' => 'Nenhum cliente selecionado.'], 400);
+        }
+
+        Client::whereIn('id', $clientIds)
+            ->where('user_id', Auth::id())
+            ->update(['last_contact_at' => now()]);
+
+        return response()->json(['message' => 'Contatos registrados com sucesso!']);
+    }
 }

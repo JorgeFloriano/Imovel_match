@@ -4,7 +4,7 @@ import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { Head, useForm, router } from '@inertiajs/react'; // Import router from Inertia
-import { Check, MessageCircle, HeartHandshake, House, User, CheckCircle, Send, Circle } from 'lucide-react';
+import { Check, MessageCircle, HeartHandshake, House, User, CheckCircle, Send, Circle, SaveAll } from 'lucide-react';
 import React, { useEffect, useState, useMemo } from 'react'; // Add useEffect
 import { useSortableTable } from '@/hooks/useSortableTable';
 import { SortableTableHeader } from '@/components/ui/sortable-table-header';
@@ -72,11 +72,10 @@ export default function Clients({
         contact_origin: string;
     };
 }) {
-    const [copiedId, setCopiedId] = useState<number | null>(null);
-    const [copiedTextType, setCopiedTextType] = useState<'name' | 'marketing' | null>(null);
-    const [isLoading, setIsLoading] = useState<number | null>(null); // Track loading state per client
     const [clickedClients, setClickedClients] = useState<number[]>([]);
     const [copiedPhoneClients, setCopiedPhoneClients] = useState<number[]>([]);
+    const [pendingNotifiedClients, setPendingNotifiedClients] = useState<number[]>([]);
+    const [isSavingBatch, setIsSavingBatch] = useState(false);
     const [optimisticContacts, setOptimisticContacts] = useState<Record<number, string>>({});
     const { data, setData, errors } = useForm<FilterForm>({
         property_id: undefined,
@@ -122,6 +121,7 @@ export default function Clients({
         try {
             await navigator.clipboard.writeText(marketingText);
             setClickedClients(prev => Array.from(new Set([...prev, client.id])));
+            setPendingNotifiedClients(prev => Array.from(new Set([...prev, client.id])));
         } catch (err) {
             console.error('Failed to copy marketing text: ', err);
         }
@@ -145,6 +145,38 @@ export default function Clients({
             });
         } catch (err) {
             console.error('Failed to register contact: ', err);
+        }
+    };
+
+    const handleBatchSave = async () => {
+        if (pendingNotifiedClients.length === 0) return;
+        
+        setIsSavingBatch(true);
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            const response = await fetch(route('notify.batch-contacted'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken || '',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify({ ids: pendingNotifiedClients }),
+            });
+
+            if (response.ok) {
+                const now = new Date().toISOString();
+                const newOptimistic = { ...optimisticContacts };
+                pendingNotifiedClients.forEach(id => {
+                    newOptimistic[id] = now;
+                });
+                setOptimisticContacts(newOptimistic);
+                setPendingNotifiedClients([]);
+            }
+        } catch (err) {
+            console.error('Failed to save batch: ', err);
+        } finally {
+            setIsSavingBatch(false);
         }
     };
 
@@ -307,8 +339,23 @@ export default function Clients({
                                         <Icon iconNode={Send} />
                                     </div>
                                 </SortableTableHeader>
-                                <th scope="col" className="px-3 py-3 text-center text-green-500">
-                                    <Icon iconNode={MessageCircle} />
+                                <th scope="col" className="px-3 py-3 text-center">
+                                    <button
+                                        type="button"
+                                        onClick={handleBatchSave}
+                                        disabled={isSavingBatch || pendingNotifiedClients.length === 0}
+                                        className={`flex items-center justify-center gap-1 w-full transition-all ${pendingNotifiedClients.length > 0 ? 'text-green-600 dark:text-green-500 cursor-pointer hover:scale-110' : 'text-gray-400 opacity-50 cursor-default'}`}
+                                        title={pendingNotifiedClients.length > 0 ? `Registrar ${pendingNotifiedClients.length} contatos pendentes` : 'Sem notificações para salvar'}
+                                    >
+                                        {isSavingBatch ? (
+                                            <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                                        ) : (
+                                            <Icon iconNode={SaveAll} />
+                                        )}
+                                        {pendingNotifiedClients.length > 0 && !isSavingBatch && (
+                                            <span className="text-[10px] font-bold bg-green-100 dark:bg-green-900/30 px-1 rounded-full">{pendingNotifiedClients.length}</span>
+                                        )}
+                                    </button>
                                 </th>
                             </tr>
                         </thead>
@@ -316,6 +363,7 @@ export default function Clients({
                             {sortedClients.map((client, index) => (
                                 <tr
                                     key={client.id}
+                                    data-id={client.id}
                                     className={`border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950 ${index !== sortedClients.length - 1 ? 'border-b' : ''
                                         }`}
                                 >
@@ -324,7 +372,8 @@ export default function Clients({
                                             onClick={() => {
                                                 const formattedPhone = client.phone.replace(/\D/g, '');
                                                 const phoneToCopy = (formattedPhone.length <= 11) ? `55${formattedPhone}` : formattedPhone;
-                                                navigator.clipboard.writeText(phoneToCopy);
+                                                const urlToCopy = `https://web.whatsapp.com/send?phone=${phoneToCopy}`;
+                                                navigator.clipboard.writeText(urlToCopy);
                                                 setCopiedPhoneClients(prev => Array.from(new Set([...prev, client.id])));
                                             }}
                                             className={`cursor-pointer hover:opacity-80 transition-opacity flex items-center gap-2 ${copiedPhoneClients.includes(client.id) ? 'text-blue-600 dark:text-blue-500' : ''}`}
