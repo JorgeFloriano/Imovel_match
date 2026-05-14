@@ -12,8 +12,8 @@ Route::get('/', function () {
         'properties' => \App\Models\Property::withoutGlobalScope('user')
             ->with(['district', 'region'])
             ->latest()
-            ->take(6)
-            ->get()
+            ->paginate(8),
+        'regions' => \App\Models\Region::all()
     ]);
 })->name('home');
 

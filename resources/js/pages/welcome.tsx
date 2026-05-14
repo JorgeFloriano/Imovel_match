@@ -5,6 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import PropertyCard from '@/components/property-card';
 import AuthActions from '@/components/auth-actions';
+import Pagination from '@/components/pagination';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 interface Property {
     id: number;
@@ -17,13 +25,30 @@ interface Property {
     image: string | null;
     district?: { name: string };
     region?: { name: string };
+    address: string;
+    obs?: string;
+}
+
+interface Region {
+    id: number;
+    name: string;
+}
+
+interface PaginatedProperties {
+    data: Property[];
+    links: {
+        url: string | null;
+        label: string;
+        active: boolean;
+    }[];
 }
 
 interface WelcomeProps {
-    properties: Property[];
+    properties: PaginatedProperties;
+    regions: Region[];
 }
 
-export default function Welcome({ properties }: WelcomeProps) {
+export default function Welcome({ properties, regions }: WelcomeProps) {
     const { auth } = usePage<SharedData>().props;
 
     return (
@@ -69,19 +94,30 @@ export default function Welcome({ properties }: WelcomeProps) {
                     <div className="max-w-4xl mx-auto bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl rounded-[2.5rem] shadow-3xl p-3 flex flex-col md:flex-row gap-2">
                         <div className="flex-1 flex items-center px-6 border-b md:border-b-0 md:border-r border-zinc-200 dark:border-zinc-800">
                             <Search className="text-pc-blue mr-3 h-5 w-5" />
-                            <input
-                                type="text"
-                                placeholder="Em qual bairro você quer morar?"
-                                className="w-full h-16 bg-transparent border-none focus:ring-0 text-zinc-900 dark:text-white placeholder:text-zinc-400 font-medium"
-                            />
+                            <Select>
+                                <SelectTrigger className="w-full h-16 bg-transparent border-none focus:ring-0 focus:outline-none text-zinc-900 dark:text-white font-semibold cursor-pointer shadow-none ring-0">
+                                    <SelectValue placeholder="Em qual região você gostaria de morar?" />
+                                </SelectTrigger>
+                                <SelectContent className="rounded-2xl border-none shadow-2xl p-2 bg-white/95 backdrop-blur-xl">
+                                    {regions && regions.map((region) => (
+                                        <SelectItem key={region.id} value={region.id.toString()} className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">
+                                            {region.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
-                        <div className="w-full md:w-56 flex items-center px-6 border-b md:border-b-0 md:border-r border-zinc-200 dark:border-zinc-800">
-                            <select className="w-full h-16 bg-transparent border-none focus:ring-0 text-zinc-900 dark:text-white appearance-none font-semibold cursor-pointer">
-                                <option>Tipo de Imóvel</option>
-                                <option>Casa</option>
-                                <option>Apartamento</option>
-                                <option>Terreno</option>
-                            </select>
+                        <div className="w-full md:w-64 flex items-center px-6 border-b md:border-b-0 md:border-r dark:border-zinc-800">
+                            <Select>
+                                <SelectTrigger className="w-full h-16 bg-transparent border-none focus:ring-0 focus:outline-none text-zinc-900 dark:text-white font-semibold cursor-pointer shadow-none ring-0">
+                                    <SelectValue placeholder="Tipo de Imóvel" />
+                                </SelectTrigger>
+                                <SelectContent className="rounded-2xl border-none shadow-2xl p-2 bg-white/95 backdrop-blur-xl">
+                                    <SelectItem value="casa" className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">Casa</SelectItem>
+                                    <SelectItem value="apartamento" className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">Apartamento</SelectItem>
+                                    <SelectItem value="terreno" className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">Terreno</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                         <Button className="bg-pc-blue hover:bg-pc-blue/90 text-white h-16 px-12 rounded-[1.8rem] font-bold text-lg shadow-xl shadow-pc-blue/20 transition-all hover:scale-105 active:scale-95">
                             Explorar
@@ -91,34 +127,41 @@ export default function Welcome({ properties }: WelcomeProps) {
             </section>
 
             {/* Featured Properties */}
-            <section className="py-20 md:py-32 container mx-auto px-4 bg-white dark:bg-[#0a0a0a]">
-                <div className="flex flex-col md:flex-row items-center md:items-end justify-between mb-16 gap-6 text-center md:text-left">
-                    <div>
-                        <Badge variant="outline" className="mb-4 text-pc-blue border-pc-blue/20 px-3 py-1 rounded-full uppercase tracking-widest text-[10px] font-bold">
-                            Seleção Exclusiva
-                        </Badge>
-                        <h2 className="text-4xl md:text-5xl font-black text-zinc-900 dark:text-white mb-4 tracking-tighter">
-                            Oportunidades Únicas
-                        </h2>
-                        <p className="text-zinc-500 dark:text-zinc-400 text-lg max-w-xl font-medium">
-                            Conheça as propriedades que estão definindo novos padrões de morar bem.
-                        </p>
-                    </div>
-                    <Link href="#" className="group flex items-center text-pc-blue font-black hover:text-pc-blue/80 transition-colors text-lg">
-                        Ver catálogo completo <ChevronRight className="ml-1 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                </div>
+            <section className="relative py-20 md:py-32 bg-white dark:bg-[#0a0a0a] overflow-hidden">
+                {/* Decorative Gradient Glow - Forced to the top with z-20 */}
+                <div className="absolute inset-0 bg-gradient-to-r from-pc-blue/[0.1] via-white to-transparent" />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                    {properties && properties.length > 0 ? (
-                        properties.map((property) => (
-                            <PropertyCard key={property.id} property={property} />
-                        ))
-                    ) : (
-                        <div className="col-span-full text-center py-32 bg-zinc-50 dark:bg-zinc-900/50 rounded-[3rem] border-2 border-dashed border-zinc-200 dark:border-zinc-800">
-                            <p className="text-zinc-400 font-bold text-xl">Preparando novidades exclusivas para você.</p>
+                <div className="container mx-auto px-4 relative z-30">
+                    <div className="flex flex-col md:flex-row items-center md:items-end justify-between mb-16 gap-6 text-center md:text-left">
+                        <div>
+                            <Badge variant="outline" className="mb-4 text-pc-blue border-pc-blue/20 px-3 py-1 rounded-full uppercase tracking-widest text-[10px] font-bold">
+                                Seleção Exclusiva
+                            </Badge>
+                            <h2 className="text-4xl md:text-5xl font-black text-zinc-900 dark:text-white mb-4 tracking-tighter">
+                                Oportunidades Únicas
+                            </h2>
+                            <p className="text-zinc-500 dark:text-zinc-400 text-lg max-w-xl font-medium">
+                                Conheça as propriedades que estão definindo novos padrões de morar bem.
+                            </p>
                         </div>
-                    )}
+                        <Link href="#" className="group flex items-center text-pc-blue font-black hover:text-pc-blue/80 transition-colors text-lg">
+                            Ver catálogo completo <ChevronRight className="ml-1 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                        {properties.data && properties.data.length > 0 ? (
+                            properties.data.map((property) => (
+                                <PropertyCard key={property.id} property={property} />
+                            ))
+                        ) : (
+                            <div className="col-span-full text-center py-32 bg-white dark:bg-zinc-900/50 rounded-[3rem] border-2 border-dashed border-zinc-200 dark:border-zinc-800">
+                                <p className="text-zinc-400 font-bold text-xl">Preparando novidades exclusivas para você.</p>
+                            </div>
+                        )}
+                    </div>
+
+                    <Pagination links={properties.links} className="mt-8" />
                 </div>
             </section>
 

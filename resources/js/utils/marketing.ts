@@ -57,15 +57,21 @@ const randomGreeting = (client: Client): string => {
         timeGreeting = "Boa tarde ";
     }
 
-    const firstName = client.name ? client.name.split(' ')[0] : '';
+    let firstName = client.name ? client.name.split(' ')[0] : '';
+    // Se o nome for "Nome", "NOME" ou "nome", deixamos vazio para evitar "Bom dia Nome"
+    if (firstName.toLowerCase() === 'nome') {
+        firstName = '';
+    }
+
+    const namePart = firstName ? ` ${firstName}` : '';
     
     const greetings = [
-        `Olá ${firstName}, tudo bem? 👋🏼\n`,
-        `${timeGreeting}${firstName}, tudo bem? 👋🏼\n`,
-        `Oi ${firstName}, como vai você? 😊\n`,
-        `${timeGreeting}${firstName}, como vai você? 😊\n`,
-        `Olá ${firstName}, prazer em falar com você! 👋\n`,
-        `${timeGreeting}${firstName}, prazer em falar com você! 👋\n`
+        `Olá${namePart}, tudo bem? 👋🏼\n`,
+        `${timeGreeting.trim()}${namePart}, tudo bem? 👋🏼\n`,
+        `Oi${namePart}, como vai você? 😊\n`,
+        `${timeGreeting.trim()}${namePart}, como vai você? 😊\n`,
+        `Olá${namePart}, prazer em falar com você! 👋\n`,
+        `${timeGreeting.trim()}${namePart}, prazer em falar com você! 👋\n`
     ];
 
     return greetings[Math.floor(Math.random() * greetings.length)];

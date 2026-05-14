@@ -28,7 +28,7 @@ async def bot_marta():
                 return
 
             print("🤖 Robô Marta (Multi-tarefa) iniciado.")
-            print("Tarefa: Analisar lista, colar mensagens (modo teste) e mapear números inválidos.")
+            print("Tarefa: Analisar lista, enviar mensagens e mapear números inválidos.")
             
             invalid_ids = []
             processed_count = 0
@@ -70,7 +70,7 @@ async def bot_marta():
 
                 # 2. Clica no nome para copiar a URL do WhatsApp
                 await target_name_btn.click()
-                await asyncio.sleep(0.6)
+                await asyncio.sleep(0.8)
                 wa_link = await page_sistema.evaluate("navigator.clipboard.readText()")
                 
                 if "web.whatsapp.com/send" not in wa_link:
@@ -83,73 +83,95 @@ async def bot_marta():
                 
                 is_invalid = False
                 try:
-                    # Espera o erro ou a caixa de texto
-                    await page_wa.wait_for_selector('div[data-animate-modal-body="true"], div[contenteditable="true"][data-tab="10"]', timeout=18000)
-                    await asyncio.sleep(1.5)
+                    # ESPERA INTELIGENTE: Aguarda o ERRO, a CAIXA DE MENSAGEM ou o BOTÃO OK
+                    await page_wa.wait_for_selector('div[data-animate-modal-body="true"], div[contenteditable="true"][data-tab="10"], div[role="button"]', timeout=25000)
+                    
+                    # Pausa essencial para carregar o modal de erro ou o histórico de mensagens
+                    await asyncio.sleep(3.5)
 
-                    # CHECA SE O NÚMERO É INVÁLIDO
+                    # CHECAGEM DE NÚMERO INVÁLIDO
                     modal_body = await page_wa.query_selector('div[data-animate-modal-body="true"]')
-                    if modal_body:
-                        alert_text = await modal_body.inner_text()
-                        if any(msg in alert_text.lower() for msg in ["isn't on", "not on", "não está no", "inválido", "invalid", "ok"]):
-                            is_invalid = True
+                    ok_btn = await page_wa.query_selector('div[role="button"] >> text="OK"')
+                    chat_input_check = await page_wa.query_selector('div[contenteditable="true"][data-tab="10"]')
 
-                    if not is_invalid:
-                        # Prova real: tem botão OK mas não tem campo de chat?
-                        ok_btn = await page_wa.query_selector('div[role="button"] >> text="OK"')
-                        chat_input = await page_wa.query_selector('div[contenteditable="true"][data-tab="10"]')
-                        if ok_btn and not chat_input:
+                    if ok_btn and not chat_input_check:
+                        is_invalid = True
+                    elif modal_body:
+                        alert_text = await modal_body.inner_text()
+                        if any(msg in alert_text.lower() for msg in ["isn't on", "not on", "não está no", "inválido", "invalid"]):
                             is_invalid = True
 
                     if is_invalid:
-                        print(f"❌ NÚMERO INVÁLIDO: {client_name} (Adicionado à lista de limpeza)")
+                        print(f"❌ NÚMERO INVÁLIDO: {client_name} (ID: {client_id})")
                         invalid_ids.append(client_id)
                         await page_wa.keyboard.press("Escape")
-                        await asyncio.sleep(1)
-                        continue # Pula para o próximo cliente
+                        await asyncio.sleep(1.5)
+                        continue 
+
+                    # AGUARDA O CHAT ABRIR COMPLETAMENTE (Espera pelo Header/Nome do contato)
+                    try:
+                        await page_wa.wait_for_selector('header', timeout=10000)
+                        # Pausa extra para o WhatsApp carregar mensagens antigas do servidor
+                        await asyncio.sleep(2.5)
+                    except:
+                        pass
 
                     # CHECA SE JÁ EXISTE CONVERSA (Se o número for válido)
-                    msg_input = await page_wa.query_selector('div[contenteditable="true"][data-tab="10"]')
+                    # Usamos seletores de balão de mensagem para garantir
                     previous_messages = await page_wa.query_selector_all(".message-in, .message-out")
+                    
                     if len(previous_messages) > 0:
-                        print(f"⏭️ {client_name} já possui histórico. Pulando para o próximo.")
+                        print(f"⏭️ {client_name} já possui histórico ({len(previous_messages)} mensagens). Pulando.")
                         continue
 
                     # SE CHEGOU AQUI: Número é válido e é o primeiro contato
-                    print(f"✨ Preparando primeiro contato para {client_name}...")
+                    print(f"✨ Primeiro contato detectado para {client_name}. Buscando texto...")
                     
                     # 4. Volta ao sistema para pegar o texto de marketing
                     await page_sistema.bring_to_front()
                     marketing_btn = await target_row.query_selector("td button[title*='marketing']")
                     if marketing_btn:
                         await marketing_btn.click()
-                        await asyncio.sleep(0.6)
-                        # O texto já está no clipboard agora
+                        await asyncio.sleep(0.8)
                         
-                        # 5. Volta ao WA para colar (Modo Teste)
+                        # 5. Volta ao WA para colar
                         await page_wa.bring_to_front()
-                        await msg_input.focus()
                         
-                        # Simula Ctrl+V
-                        await page_wa.keyboard.down("Control")
-                        await page_wa.keyboard.press("v")
-                        await page_wa.keyboard.up("Control")
-                        
-                        await asyncio.sleep(1)
-                        # await page_wa.keyboard.press("Enter") # DESATIVADO CONFORME PEDIDO
-                        print(f"✅ Mensagem colada para {client_name} (Aguardando envio manual)")
+                        # RE-VERIFICAÇÃO DE SEGURANÇA FINAL
+                        try:
+                            msg_input = await page_wa.wait_for_selector('div[contenteditable="true"][data-tab="10"]', timeout=12000)
+                            if msg_input:
+                                # Última checagem de histórico antes de colar (segurança tripla)
+                                await asyncio.sleep(1)
+                                final_check = await page_wa.query_selector_all(".message-in, .message-out")
+                                if len(final_check) > 0:
+                                    print(f"⏭️ {client_name} carregou histórico agora. Cancelando envio.")
+                                    continue
+
+                                await msg_input.focus()
+                                await page_wa.keyboard.down("Control")
+                                await page_wa.keyboard.press("v")
+                                await page_wa.keyboard.up("Control")
+                                
+                                await asyncio.sleep(1.5)
+                                await page_wa.keyboard.press("Enter") 
+                                print(f"✅ Mensagem enviada para {client_name}")
+                            else:
+                                print(f"⚠️ Campo de chat sumiu para {client_name}. Pulando.")
+                        except Exception as e:
+                            print(f"⚠️ Erro ao focar no chat de {client_name}: {e}")
 
                 except Exception as e:
-                    print(f"⚠️ Erro ao processar {client_name}: {e}")
+                    print(f"⚠️ Erro ao processar WhatsApp para {client_name}: {e}")
                 
                 processed_count += 1
-                wait_time = random.uniform(2.0, 4.5)
+                wait_time = random.uniform(3.0, 6.0)
                 await asyncio.sleep(wait_time)
 
-            # RELATÓRIO FINAL E SCRIPT DE LIMPEZA
+            # RELATÓRIO FINAL
             if invalid_ids:
                 print("\n" + "="*60)
-                print("📝 SCRIPT SQL DE LIMPEZA (IDs Inválidos):")
+                print("📝 SCRIPT SQL DE LIMPEZA:")
                 print("="*60)
                 ids_str = ", ".join(invalid_ids)
                 sql_command = f"DELETE FROM clients WHERE id IN ({ids_str});"
@@ -160,7 +182,7 @@ async def bot_marta():
                     f.write(sql_command)
                 print(f"Arquivo 'limpeza_automatica.sql' gerado com sucesso.")
             else:
-                print("\n✅ Processamento concluído. Nenhum número inválido detectado.")
+                print("\n✅ Processamento concluído. Nenhum número inválido.")
 
         except Exception as e:
             print(f"❌ Erro crítico: {e}")
