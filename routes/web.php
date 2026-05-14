@@ -7,13 +7,29 @@ use App\Http\Controllers\NotifyController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
+Route::get('/', function (\Illuminate\Http\Request $request) {
+    $query = \App\Models\Property::withoutGlobalScope('user')
+        ->with(['district', 'region']);
+
+    if ($request->filled('region') && $request->region !== 'all') {
+        $query->where('region_id', $request->region);
+    }
+
+    if ($request->filled('type') && $request->type !== 'all') {
+        $type = $request->type;
+        if ($type === '1') {
+            $query->whereIn(\Illuminate\Support\Facades\DB::raw('LOWER(type)'), ['apartamento', 'apart. c/ elevad.']);
+        } elseif ($type === '2') {
+            $query->whereIn(\Illuminate\Support\Facades\DB::raw('LOWER(type)'), ['casa', 'casa (condom.)', 'sobrado']);
+        } elseif ($type === '3') {
+            $query->whereNotIn(\Illuminate\Support\Facades\DB::raw('LOWER(type)'), ['apartamento', 'apart. c/ elevad.', 'casa', 'casa (condom.)', 'sobrado']);
+        }
+    }
+
     return Inertia::render('welcome', [
-        'properties' => \App\Models\Property::withoutGlobalScope('user')
-            ->with(['district', 'region'])
-            ->latest()
-            ->paginate(8),
-        'regions' => \App\Models\Region::all()
+        'properties' => $query->latest()->paginate(8)->withQueryString(),
+        'regions' => \App\Models\Region::all(),
+        'filters' => $request->only(['region', 'type'])
     ]);
 })->name('home');
 

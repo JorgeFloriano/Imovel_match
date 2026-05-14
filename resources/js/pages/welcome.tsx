@@ -1,11 +1,14 @@
 import { type SharedData } from '@/types';
-import { Head, Link, usePage } from '@inertiajs/react';
-import { Search, ChevronRight } from 'lucide-react';
+import { Head, Link, usePage, router } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
+import { Search, ChevronRight, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import PropertyCard from '@/components/property-card';
 import AuthActions from '@/components/auth-actions';
 import Pagination from '@/components/pagination';
+import NavButton from '../components/nav-button';
+
 import {
     Select,
     SelectContent,
@@ -21,10 +24,11 @@ interface Property {
     building_area: number;
     rooms: number;
     bathrooms: number;
+    suites: number;
     garages: number;
     image: string | null;
     district?: { name: string };
-    region?: { name: string };
+    region?: { id: number; name: string };
     address: string;
     obs?: string;
 }
@@ -46,10 +50,52 @@ interface PaginatedProperties {
 interface WelcomeProps {
     properties: PaginatedProperties;
     regions: Region[];
+    filters: {
+        region?: string;
+        type?: string;
+    };
 }
 
-export default function Welcome({ properties, regions }: WelcomeProps) {
+export default function Welcome({ properties, regions, filters }: WelcomeProps) {
     const { auth } = usePage<SharedData>().props;
+    const [selectedRegion, setSelectedRegion] = useState<string>(filters?.region || 'all');
+    const [selectedType, setSelectedType] = useState<string>(filters?.type || 'all');
+    const [displayProperties, setDisplayProperties] = useState(properties.data);
+
+    // Sync state with props when filters or data change
+    useEffect(() => {
+        setSelectedRegion(filters?.region || 'all');
+        setSelectedType(filters?.type || 'all');
+        setDisplayProperties(properties.data);
+    }, [filters, properties.data]);
+
+    const handleExplore = () => {
+        const params: any = {};
+        if (selectedRegion !== 'all') params.region = selectedRegion;
+        if (selectedType !== 'all') params.type = selectedType;
+
+        router.get(route('home'), params, {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                const element = document.getElementById('featured-properties');
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    };
+
+    const handleNavImoveis = () => {
+        router.get(route('home'), {}, {
+            onSuccess: () => {
+                const element = document.getElementById('featured-properties');
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    };
 
     return (
         <div className="min-h-screen bg-[#FDFDFC] dark:bg-[#0a0a0a]">
@@ -57,19 +103,18 @@ export default function Welcome({ properties, regions }: WelcomeProps) {
 
             {/* Navbar */}
             <header className="sticky top-0 z-50 w-full border-b bg-[#123251] backdrop-blur-xl dark:bg-black/90 dark:border-zinc-800 transition-all duration-300">
-                <div className="w-full mx-auto flex h-24 items-center justify-between px-4 lg:px-6">
-                    <div className="flex items-center gap-8 hover:scale-105 transition-transform cursor-pointer p-6">
+                <div className="w-full mx-auto flex h-24 items-center justify-between pl-40 pr-6">
+                    <div className="flex items-center gap-8 hover:scale-105 transition-transform cursor-pointer">
                         <img src="/logo_build.png" alt="Logo" className="h-18 w-auto " />
                         <img src="/logo_text.png" alt="Logo" className="h-12 md:h-14 w-auto" />
                     </div>
 
-                    <nav className="hidden lg:flex items-center gap-10 text-sm font-bold text-zinc-200 dark:text-zinc-400">
-                        <Link href="/" className="text-pc-blue dark:text-white relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-full after:bg-pc-blue">Início</Link>
-                        <a href="#" className="hover:text-pc-blue transition-colors tracking-tight">Imóveis</a>
-                        <a href="#" className="hover:text-pc-blue transition-colors tracking-tight">Lançamentos</a>
-                        <a href="#" className="hover:text-pc-blue transition-colors tracking-tight">Sobre Nós</a>
+                    <nav className="hidden lg:flex items-center text-sm font-bold text-zinc-200 dark:text-zinc-400">
+                        <NavButton variant="primary">Início</NavButton>
+                        <NavButton variant="primary" onClick={handleNavImoveis}>Imóveis</NavButton>
+                        <NavButton variant="primary">Lançamentos</NavButton>
+                        <NavButton variant="primary">Sobre Nós</NavButton>
                     </nav>
-
                     <AuthActions auth={auth} />
                 </div>
             </header>
@@ -87,18 +132,19 @@ export default function Welcome({ properties, regions }: WelcomeProps) {
                     <h1 className="text-4xl md:text-7xl font-extrabold text-white mb-6 tracking-tight leading-none">
                         Seu novo capítulo <br /> <span className="text-pc-gold">começa agora</span>
                     </h1>
-                    <p className="text-lg md:text-2xl text-zinc-200 mb-12 max-w-3xl mx-auto px-4 font-light leading-relaxed">
+                    <p className="text-lg md:text-2xl text-zinc-200 mb-12 mx-auto px-4 font-light leading-relaxed">
                         Curadoria exclusiva de imóveis que combinam com seu estilo de vida. <br className="hidden md:block" /> Descubra o lar dos seus sonhos com a Marta de Souza Imobiliária.
                     </p>
 
                     <div className="max-w-4xl mx-auto bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl rounded-[2.5rem] shadow-3xl p-3 flex flex-col md:flex-row gap-2">
                         <div className="flex-1 flex items-center px-6 border-b md:border-b-0 md:border-r border-zinc-200 dark:border-zinc-800">
                             <Search className="text-pc-blue mr-3 h-5 w-5" />
-                            <Select>
+                            <Select onValueChange={setSelectedRegion} value={selectedRegion}>
                                 <SelectTrigger className="w-full h-16 bg-transparent border-none focus:ring-0 focus:outline-none text-zinc-900 dark:text-white font-semibold cursor-pointer shadow-none ring-0">
                                     <SelectValue placeholder="Em qual região você gostaria de morar?" />
                                 </SelectTrigger>
                                 <SelectContent className="rounded-2xl border-none shadow-2xl p-2 bg-white/95 backdrop-blur-xl">
+                                    <SelectItem value="all" className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">Todas as Regiões</SelectItem>
                                     {regions && regions.map((region) => (
                                         <SelectItem key={region.id} value={region.id.toString()} className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">
                                             {region.name}
@@ -108,18 +154,22 @@ export default function Welcome({ properties, regions }: WelcomeProps) {
                             </Select>
                         </div>
                         <div className="w-full md:w-64 flex items-center px-6 border-b md:border-b-0 md:border-r dark:border-zinc-800">
-                            <Select>
+                            <Select onValueChange={setSelectedType} value={selectedType}>
                                 <SelectTrigger className="w-full h-16 bg-transparent border-none focus:ring-0 focus:outline-none text-zinc-900 dark:text-white font-semibold cursor-pointer shadow-none ring-0">
                                     <SelectValue placeholder="Tipo de Imóvel" />
                                 </SelectTrigger>
                                 <SelectContent className="rounded-2xl border-none shadow-2xl p-2 bg-white/95 backdrop-blur-xl">
-                                    <SelectItem value="casa" className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">Casa</SelectItem>
-                                    <SelectItem value="apartamento" className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">Apartamento</SelectItem>
-                                    <SelectItem value="terreno" className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">Terreno</SelectItem>
+                                    <SelectItem value="all" className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">Todos os Tipos</SelectItem>
+                                    <SelectItem value="1" className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">Apartamento</SelectItem>
+                                    <SelectItem value="2" className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">Casa</SelectItem>
+                                    <SelectItem value="3" className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">Outros</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
-                        <Button className="bg-pc-blue hover:bg-pc-blue/90 text-white h-16 px-12 rounded-[1.8rem] font-bold text-lg shadow-xl shadow-pc-blue/20 transition-all hover:scale-105 active:scale-95">
+                        <Button 
+                            onClick={handleExplore}
+                            className="bg-pc-blue hover:bg-pc-blue/90 text-white h-16 px-12 rounded-[1.8rem] font-bold text-lg shadow-xl shadow-pc-blue/20 transition-all hover:scale-105 active:scale-95"
+                        >
                             Explorar
                         </Button>
                     </div>
@@ -127,9 +177,16 @@ export default function Welcome({ properties, regions }: WelcomeProps) {
             </section>
 
             {/* Featured Properties */}
-            <section className="relative py-20 md:py-32 bg-white dark:bg-[#0a0a0a] overflow-hidden">
-                {/* Decorative Gradient Glow - Forced to the top with z-20 */}
-                <div className="absolute inset-0 bg-gradient-to-r from-pc-blue/[0.1] via-white to-transparent" />
+            <section id="featured-properties" className="relative py-20 md:py-32 bg-white dark:bg-[#0a0a0a] overflow-hidden">
+                {/* Brand Background Image with Center Fade */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                    <div 
+                        className="absolute inset-0 bg-cover bg-center opacity-[0.3] dark:opacity-[0.1]" 
+                        style={{ backgroundImage: "url('/bg_image.png')" }} 
+                    />
+                    {/* Custom Double Fade Mask - Defined in app.css */}
+                    <div className="absolute inset-0 bg-property-mask" />
+                </div>
 
                 <div className="container mx-auto px-4 relative z-30">
                     <div className="flex flex-col md:flex-row items-center md:items-end justify-between mb-16 gap-6 text-center md:text-left">
@@ -145,13 +202,13 @@ export default function Welcome({ properties, regions }: WelcomeProps) {
                             </p>
                         </div>
                         <Link href="#" className="group flex items-center text-pc-blue font-black hover:text-pc-blue/80 transition-colors text-lg">
-                            Ver catálogo completo <ChevronRight className="ml-1 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                            Exploração detalhada <Search className="ml-1 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-                        {properties.data && properties.data.length > 0 ? (
-                            properties.data.map((property) => (
+                        {displayProperties && displayProperties.length > 0 ? (
+                            displayProperties.map((property) => (
                                 <PropertyCard key={property.id} property={property} />
                             ))
                         ) : (

@@ -36,6 +36,12 @@ export default function Pagination({ links, className }: PaginationProps) {
                         key={index}
                         href={link.url || '#'}
                         preserveScroll
+                        onSuccess={() => {
+                            const element = document.getElementById('featured-properties');
+                            if (element) {
+                                element.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        }}
                         className={cn(
                             "flex items-center justify-center w-8 h-8 rounded-full font-bold transition-all duration-300",
                             "border-none text-sm",

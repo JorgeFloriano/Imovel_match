@@ -1,4 +1,4 @@
-import { MapPin, Bed, Bath, Square, Car, ChevronRight } from 'lucide-react';
+import { MapPin, Bed, Bath, Square, Car, ChevronRight, ShowerHead } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,6 +10,7 @@ interface Property {
     building_area: number;
     rooms: number;
     bathrooms: number;
+    suites: number;
     garages: number;
     image: string | null;
     district?: { name: string };
@@ -68,39 +69,59 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                     {property.description}
                 </h3>
 
-                <div className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400 mb-2 text-[14px] font-semibold tracking-tight">
-                    <MapPin className="h-3.5 w-3.5 text-pc-gold" />
+                <p className="text-zinc-600 dark:text-zinc-400 text-[14px] leading-relaxed line-clamp-2 mb-4 min-h-[2.5rem]">
+                    {property.obs || ''}
+                </p>
+
+                <div className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400 mb-2 text-[14px] tracking-tight">
+                    <MapPin className="h-5 w-5 text-pc-gold shrink-0" />
                     <span className="line-clamp-1">
                         {property.district?.name ? ` ${property.district.name}` : ` ${property.address}`}
                     </span>
                 </div>
 
-                <p className="text-zinc-600 dark:text-zinc-400 text-[14px] leading-relaxed line-clamp-2 mb-4 min-h-[2.5rem]">
-                    {property.obs || ''}
-                </p>
-
-                <div className="grid grid-cols-4 gap-2 pt-4 border-t border-zinc-100 dark:border-zinc-800">
-                    <div className="flex flex-col items-center justify-center gap-1 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl py-2">
-                        <Bed className="h-3.5 w-3.5 text-pc-blue dark:text-pc-gold" />
-                        <span className="text-[9px] font-bold uppercase text-zinc-400">Dorm.</span>
-                        <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">{property.rooms}</span>
-                    </div>
-                    <div className="flex flex-col items-center justify-center gap-1 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl py-2">
-                        <Bath className="h-3.5 w-3.5 text-pc-blue dark:text-pc-gold" />
-                        <span className="text-[9px] font-bold uppercase text-zinc-400">Banh.</span>
-                        <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">{property.bathrooms}</span>
-                    </div>
-                    <div className="flex flex-col items-center justify-center gap-1 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl py-2">
-                        <Square className="h-3.5 w-3.5 text-pc-blue dark:text-pc-gold" />
-                        <span className="text-[9px] font-bold uppercase text-zinc-400">Área</span>
-                        <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">{Math.round(property.building_area)}m²</span>
-                    </div>
-                    <div className="flex flex-col items-center justify-center gap-1 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl py-2">
-                        <Car className="h-3.5 w-3.5 text-pc-blue dark:text-pc-gold" />
-                        <span className="text-[9px] font-bold uppercase text-zinc-400">Vagas</span>
-                        <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">{property.garages}</span>
-                    </div>
+                <div className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400 mb-2 text-[14px] tracking-tight">
+                    <Bed className="h-5 w-5 text-pc-gold shrink-0" />
+                    <span className="line-clamp-1">
+                        <span className="font-semibold">{property.rooms}</span> {property.rooms === 1 ? 'dormitório' : 'dormitórios'}
+                    </span>
                 </div>
+
+                {property.building_area > 0 && (
+                    <div className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400 mb-2 text-[14px] tracking-tight">
+                        <Square className="h-5 w-5 text-pc-gold shrink-0" />
+                        <span className="line-clamp-1">
+                            A partir de <span className="font-semibold">{property.building_area}</span> m² de área privativa
+                        </span>
+                    </div>
+                )}
+
+                {property.bathrooms > 1 && (
+                    <div className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400 mb-2 text-[14px] tracking-tight">
+                        <ShowerHead className="h-5 w-5 text-pc-gold shrink-0" />
+                        <span className="line-clamp-1">
+                            <span className="font-semibold">{property.bathrooms}</span> banheiros
+                        </span>
+                    </div>
+                )}
+
+                {property.suites > 0 && (
+                    <div className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400 mb-2 text-[14px] tracking-tight">
+                        <Bath className="h-5 w-5 text-pc-gold shrink-0" />
+                        <span className="line-clamp-1">
+                            <span className="font-semibold">{property.suites}</span> {property.suites === 1 ? 'suíte' : 'suítes'}
+                        </span>
+                    </div>
+                )}
+
+                {property.garages > 1 && (
+                    <div className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400 mb-2 text-[14px] tracking-tight">
+                        <Car className="h-5 w-5 text-pc-gold shrink-0" />
+                        <span className="line-clamp-1">
+                            <span className="font-semibold">{property.garages}</span> Vagas
+                        </span>
+                    </div>
+                )}
             </CardContent>
         </Card>
     );

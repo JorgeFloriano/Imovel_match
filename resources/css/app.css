@@ -160,6 +160,27 @@
     border-color: var(--pc-blue);
 }
 
+.bg-property-mask {
+    background: linear-gradient(
+        to bottom, 
+        transparent 1%, 
+        white 30%, 
+        white 70%, 
+        transparent 100%
+    );
+}
+
+.dark .bg-property-mask {
+    background: linear-gradient(
+        to bottom, 
+        transparent 0%, 
+        transparent 5%, 
+        #0a0a0a 25%, 
+        #0a0a0a 85%, 
+        transparent 100%
+    );
+}
+
 .bc-pc-gold {
     border-color: var(--pc-gold);
 }
