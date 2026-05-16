@@ -171,6 +171,43 @@ export const generateCustomMarketingTextMrv = (client: Client): string => {
     return text;
 };
 
+export const generateCustomMarketingTextAccess = (client: Client): string => {
+    const near = [
+        "pertinho do ",
+        "perto do ",
+        "próximo ao ",
+        "bem próximo do ",
+        "ao lado do "
+    ];
+
+    const getRandomElement = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
+
+    const neighborhoods = [
+        `*Parque Verano* - Jardim Gutierres.\nLocalização privilegiada ${getRandomElement(near)}acesso à Rodovia Raposo Tavares, ${getRandomElement(near)}Zoológico e Iperatriz Cervejaria 🦁 🍻\n`,
+        `*Parque Lobato* - Parque Santa Isabel.\nEstrategicamente localizado ${getRandomElement(near)}cruzamento entre as Rodovias Armando Panunzio e Raposo Tavares, ${getRandomElement(near)}Hospital Unimed e Sorocaba refrescos (Coca-Cola) 🍹 🏥\n`,
+    ];
+
+    // Shuffle array
+    for (let i = neighborhoods.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [neighborhoods[i], neighborhoods[j]] = [neighborhoods[j], neighborhoods[i]];
+    }
+
+    let text = randomGreeting(client);
+    text += `Sou *Marta de Souza*, ${randomProfession()}\n`;
+    text += `Financiar seu ${randomProperty()} na região de Sorocaba ficou ainda mais fácil com as novas regras do *Minha Casa Minha Vida!* 🚀\n`;
+    text += "Entrada parcelada e as melhores condições nos empreendimentos *ACCESS* em andamento entre diversas opções:\n\n";
+
+    neighborhoods.forEach(line => {
+        text += line;
+    });
+
+    text += "\n";
+    text += randomClosing();
+
+    return text;
+};
+
 // Fallback for default marketing text (without properties for now)
 export const generateCustomMarketingText = (client: Client): string => {
     let text = randomTitle();

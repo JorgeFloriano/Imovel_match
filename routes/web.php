@@ -26,10 +26,44 @@ Route::get('/', function (\Illuminate\Http\Request $request) {
         }
     }
 
+    if ($request->filled('rooms') && $request->rooms !== 'all') {
+        $query->where('rooms', $request->rooms);
+    }
+
+    if ($request->filled('building_area') && $request->building_area !== 'all') {
+        $query->where('building_area', '>=', $request->building_area);
+    }
+
+    if ($request->filled('bathrooms') && $request->bathrooms !== 'all') {
+        $query->where('bathrooms', $request->bathrooms);
+    }
+
+    if ($request->filled('garages') && $request->garages !== 'all') {
+        $query->where('garages', $request->garages);
+    }
+
+    if ($request->filled('suites') && $request->suites !== 'all') {
+        $query->where('suites', $request->suites);
+    }
+
+    if ($request->filled('balcony') && $request->balcony !== 'all') {
+        $query->where('balcony', $request->balcony === 'yes' ? 1 : 0);
+    }
+
+    if ($request->filled('status') && $request->status !== 'all') {
+        if ($request->status === 'pronto') {
+            $query->where('delivery_key', '<=', now());
+        } elseif ($request->status === 'planta') {
+            $query->where('delivery_key', '>', now());
+        }
+    }
+
     return Inertia::render('welcome', [
         'properties' => $query->latest()->paginate(8)->withQueryString(),
         'regions' => \App\Models\Region::all(),
-        'filters' => $request->only(['region', 'type'])
+        'filters' => $request->only([
+            'region', 'type', 'rooms', 'building_area', 'bathrooms', 'garages', 'suites', 'balcony', 'status'
+        ])
     ]);
 })->name('home');
 

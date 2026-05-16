@@ -1,7 +1,7 @@
 import { type SharedData } from '@/types';
 import { Head, Link, usePage, router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
-import { Search, ChevronRight, Filter } from 'lucide-react';
+import { Search, FilterX, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import PropertyCard from '@/components/property-card';
@@ -16,6 +16,17 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogFooter,
+    DialogClose,
+} from "@/components/ui/dialog";
 
 interface Property {
     id: number;
@@ -53,19 +64,66 @@ interface WelcomeProps {
     filters: {
         region?: string;
         type?: string;
+        rooms?: string;
+        building_area?: string;
+        bathrooms?: string;
+        garages?: string;
+        suites?: string;
+        balcony?: string;
+        status?: string;
     };
 }
+
+const FilterRadioGroup = ({ label, value, onChange, options }: { label: string, value: string, onChange: (v: string) => void, options: {label: React.ReactNode, value: string}[] }) => (
+    <div className="flex flex-col gap-2">
+        <label className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">{label}</label>
+        <div className="flex flex-wrap gap-2">
+            {options.map((opt) => (
+                <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => onChange(opt.value)}
+                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center justify-center min-h-[36px] ${
+                        value === opt.value
+                            ? 'bg-pc-blue text-white shadow-md'
+                            : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700'
+                    }`}
+                >
+                    {opt.label}
+                </button>
+            ))}
+        </div>
+    </div>
+);
 
 export default function Welcome({ properties, regions, filters }: WelcomeProps) {
     const { auth } = usePage<SharedData>().props;
     const [selectedRegion, setSelectedRegion] = useState<string>(filters?.region || 'all');
     const [selectedType, setSelectedType] = useState<string>(filters?.type || 'all');
+    
+    // Novas opções de filtro
+    const [selectedRooms, setSelectedRooms] = useState<string>(filters?.rooms || 'all');
+    const [selectedBuildingArea, setSelectedBuildingArea] = useState<string>(filters?.building_area || 'all');
+    const [selectedBathrooms, setSelectedBathrooms] = useState<string>(filters?.bathrooms || 'all');
+    const [selectedGarages, setSelectedGarages] = useState<string>(filters?.garages || 'all');
+    const [selectedSuites, setSelectedSuites] = useState<string>(filters?.suites || 'all');
+    const [selectedBalcony, setSelectedBalcony] = useState<string>(filters?.balcony || 'all');
+    const [selectedStatus, setSelectedStatus] = useState<string>(filters?.status || 'all');
+
     const [displayProperties, setDisplayProperties] = useState(properties.data);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     // Sync state with props when filters or data change
     useEffect(() => {
         setSelectedRegion(filters?.region || 'all');
         setSelectedType(filters?.type || 'all');
+        setSelectedRooms(filters?.rooms || 'all');
+        setSelectedBuildingArea(filters?.building_area || 'all');
+        setSelectedBathrooms(filters?.bathrooms || 'all');
+        setSelectedGarages(filters?.garages || 'all');
+        setSelectedSuites(filters?.suites || 'all');
+        setSelectedBalcony(filters?.balcony || 'all');
+        setSelectedStatus(filters?.status || 'all');
         setDisplayProperties(properties.data);
     }, [filters, properties.data]);
 
@@ -73,6 +131,15 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
         const params: any = {};
         if (selectedRegion !== 'all') params.region = selectedRegion;
         if (selectedType !== 'all') params.type = selectedType;
+        if (selectedRooms !== 'all') params.rooms = selectedRooms;
+        if (selectedBuildingArea !== 'all') params.building_area = selectedBuildingArea;
+        if (selectedBathrooms !== 'all') params.bathrooms = selectedBathrooms;
+        if (selectedGarages !== 'all') params.garages = selectedGarages;
+        if (selectedSuites !== 'all') params.suites = selectedSuites;
+        if (selectedBalcony !== 'all') params.balcony = selectedBalcony;
+        if (selectedStatus !== 'all') params.status = selectedStatus;
+
+        setIsModalOpen(false); // Close modal when exploring
 
         router.get(route('home'), params, {
             preserveState: true,
@@ -201,9 +268,137 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
                                 Conheça as propriedades que estão definindo novos padrões de morar bem.
                             </p>
                         </div>
-                        <Link href="#" className="group flex items-center text-pc-blue font-black hover:text-pc-blue/80 transition-colors text-lg">
-                            Exploração detalhada <Search className="ml-1 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                        </Link>
+                        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                            <DialogTrigger asChild>
+                                <button className="group flex items-center text-pc-blue font-black hover:text-pc-blue/80 transition-colors text-lg cursor-pointer">
+                                    Busca Personalizada <Filter className="ml-1 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                                </button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                                <DialogHeader>
+                                    <DialogTitle className="text-2xl font-bold text-left">Busca Personalizada</DialogTitle>
+                                    <DialogDescription className="text-left">
+                                        Refine sua busca para encontrar o imóvel perfeito.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-6 text-left">
+                                    <FilterRadioGroup 
+                                        label="Dormitórios" 
+                                        value={selectedRooms} 
+                                        onChange={setSelectedRooms} 
+                                        options={[
+                                            { label: <FilterX className="h-4 w-4" />, value: 'all' },
+                                            { label: '1', value: '1' },
+                                            { label: '2', value: '2' },
+                                            { label: '3', value: '3' },
+                                            { label: '4', value: '4' },
+                                            { label: '5', value: '5' }
+                                        ]} 
+                                    />
+
+                                    <FilterRadioGroup 
+                                        label="Área Construída Mínima (m²)" 
+                                        value={selectedBuildingArea} 
+                                        onChange={setSelectedBuildingArea} 
+                                        options={[
+                                            { label: <FilterX className="h-4 w-4" />, value: 'all' },
+                                            { label: '50+', value: '50' },
+                                            { label: '100+', value: '100' },
+                                            { label: '150+', value: '150' },
+                                            { label: '200+', value: '200' },
+                                            { label: '300+', value: '300' }
+                                        ]} 
+                                    />
+
+                                    <FilterRadioGroup 
+                                        label="Banheiros" 
+                                        value={selectedBathrooms} 
+                                        onChange={setSelectedBathrooms} 
+                                        options={[
+                                            { label: <FilterX className="h-4 w-4" />, value: 'all' },
+                                            { label: '1', value: '1' },
+                                            { label: '2', value: '2' },
+                                            { label: '3', value: '3' },
+                                            { label: '4', value: '4' }
+                                        ]} 
+                                    />
+
+                                    <FilterRadioGroup 
+                                        label="Vagas de Garagem" 
+                                        value={selectedGarages} 
+                                        onChange={setSelectedGarages} 
+                                        options={[
+                                            { label: <FilterX className="h-4 w-4" />, value: 'all' },
+                                            { label: '1', value: '1' },
+                                            { label: '2', value: '2' },
+                                            { label: '3', value: '3' },
+                                            { label: '4', value: '4' }
+                                        ]} 
+                                    />
+
+                                    <FilterRadioGroup 
+                                        label="Suítes" 
+                                        value={selectedSuites} 
+                                        onChange={setSelectedSuites} 
+                                        options={[
+                                            { label: <FilterX className="h-4 w-4" />, value: 'all' },
+                                            { label: '1', value: '1' },
+                                            { label: '2', value: '2' },
+                                            { label: '3', value: '3' },
+                                            { label: '4', value: '4' }
+                                        ]} 
+                                    />
+
+                                    <FilterRadioGroup 
+                                        label="Varanda" 
+                                        value={selectedBalcony} 
+                                        onChange={setSelectedBalcony} 
+                                        options={[
+                                            { label: <FilterX className="h-4 w-4" />, value: 'all' },
+                                            { label: 'Sim', value: 'yes' },
+                                            { label: 'Não', value: 'no' }
+                                        ]} 
+                                    />
+
+                                    <div className="col-span-1 md:col-span-2">
+                                        <FilterRadioGroup 
+                                            label="Status do Imóvel" 
+                                            value={selectedStatus} 
+                                            onChange={setSelectedStatus} 
+                                            options={[
+                                                { label: <FilterX className="h-4 w-4" />, value: 'all' },
+                                                { label: 'Pronto para morar', value: 'pronto' },
+                                                { label: 'Na Planta', value: 'planta' }
+                                            ]} 
+                                        />
+                                    </div>
+                                </div>
+
+                                <DialogFooter className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4 mt-6 border-t border-zinc-100 dark:border-zinc-800 pt-6">
+                                    <div className="flex items-center text-zinc-500 text-sm gap-2">
+                                        <div className="px-3 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg flex items-center justify-center">
+                                            <FilterX className="h-4 w-4" />
+                                        </div>
+                                        <span>Desconsiderar este filtro</span>
+                                    </div>
+                                    <div className="flex justify-end gap-3 w-full sm:w-auto">
+                                        <Button variant="outline" onClick={() => {
+                                            setSelectedRooms('all');
+                                            setSelectedBuildingArea('all');
+                                            setSelectedBathrooms('all');
+                                            setSelectedGarages('all');
+                                            setSelectedSuites('all');
+                                            setSelectedBalcony('all');
+                                            setSelectedStatus('all');
+                                        }}>Limpar</Button>
+                                        <Button className="bg-pc-blue hover:bg-pc-blue/90 text-white font-bold" onClick={handleExplore}>
+                                            Aplicar Filtros
+                                        </Button>
+                                    </div>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">

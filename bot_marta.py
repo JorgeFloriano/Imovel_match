@@ -41,17 +41,19 @@ async def bot_marta():
                 rows = await page_sistema.query_selector_all("tbody tr")
                 
                 target_row = None
-                target_name_btn = None
+                target_phone_btn = None
                 
                 for row in rows:
-                    name_btn = await row.query_selector("th button")
-                    if not name_btn: continue
+                    # O botão do WhatsApp agora está em um TH
+                    phone_btn = await row.query_selector("th button")
+                    if not phone_btn: continue
                     
-                    is_clicked = await name_btn.evaluate("el => el.classList.contains('text-blue-600') || el.classList.contains('text-blue-500')")
+                    # Verifica se já foi clicado (cor azul)
+                    is_clicked = await phone_btn.evaluate("el => el.classList.contains('text-blue-600') || el.classList.contains('text-blue-500')")
                     
                     if not is_clicked:
                         target_row = row
-                        target_name_btn = name_btn
+                        target_phone_btn = phone_btn
                         break
                 
                 if not target_row:
@@ -65,11 +67,13 @@ async def bot_marta():
                     break
 
                 client_id = await target_row.get_attribute("data-id")
-                client_name = (await target_name_btn.inner_text()).strip()
+                # Busca o nome na segunda coluna (td:nth-child(2))
+                name_cell = await target_row.query_selector("td:nth-child(2)")
+                client_name = (await name_cell.inner_text()).strip()
                 print(f"\n👤 [{processed_count + 1}] Analisando: {client_name} (ID: {client_id})")
 
                 # 2. Clica no nome para copiar a URL do WhatsApp
-                await target_name_btn.click()
+                await target_phone_btn.click()
                 await asyncio.sleep(0.8)
                 wa_link = await page_sistema.evaluate("navigator.clipboard.readText()")
                 

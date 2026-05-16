@@ -27,6 +27,8 @@ class NotifyController extends Controller
         // Filtro de Origem
         if ($contactOrigin === 'mrv') {
             $query->where('origin', 'LIKE', '%mrv%');
+        } elseif ($contactOrigin === 'access') {
+            $query->where('origin', 'LIKE', '%access%');
         } elseif ($contactOrigin === 'desconhecido') {
             $query->where(function ($q) {
                 $q->whereNull('origin')

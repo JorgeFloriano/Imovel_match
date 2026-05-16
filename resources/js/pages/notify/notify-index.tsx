@@ -4,11 +4,11 @@ import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { Head, useForm, router } from '@inertiajs/react'; // Import router from Inertia
-import { Check, MessageCircle, HeartHandshake, House, User, CheckCircle, Send, Circle, SaveAll } from 'lucide-react';
+import { Check, MessageCircle, CheckCircle, Send, Circle, SaveAll } from 'lucide-react';
 import React, { useEffect, useState, useMemo } from 'react'; // Add useEffect
 import { useSortableTable } from '@/hooks/useSortableTable';
 import { SortableTableHeader } from '@/components/ui/sortable-table-header';
-import { generateCustomMarketingText, generateCustomMarketingTextMrv } from '@/utils/marketing';
+import { generateCustomMarketingText, generateCustomMarketingTextAccess, generateCustomMarketingTextMrv } from '@/utils/marketing';
 
 type FilterForm = {
     property_id?: string;
@@ -114,6 +114,8 @@ export default function Clients({
         let marketingText = '';
         if (data.contact_origin === 'mrv') {
             marketingText = generateCustomMarketingTextMrv(client);
+        } else if (data.contact_origin === 'access') {
+            marketingText = generateCustomMarketingTextAccess(client);
         } else {
             marketingText = generateCustomMarketingText(client);
         }
@@ -247,6 +249,7 @@ export default function Clients({
                                     { value: 'todos', label: 'Todos' },
                                     { value: 'desconhecido', label: 'Desconhecido' },
                                     { value: 'mrv', label: 'MRV' },
+                                    { value: 'access', label: 'ACCESS' }
                                 ]}
                                 error={errors.contact_origin}
                                 className="w-full"
@@ -285,16 +288,20 @@ export default function Clients({
                         <thead className="bg-[#D8D8D8] text-xs text-[#123251] uppercase dark:bg-[#123251] dark:text-[#B8B8B8]">
                             <tr>
                                 <SortableTableHeader
+                                    sortKey="id"
+                                    currentSortConfig={sortConfig}
+                                    requestSort={requestSort}
+                                    className="hidden px-6 py-3 md:table-cell"
+                                >
+                                    ID
+                                </SortableTableHeader>
+                                <SortableTableHeader
                                     sortKey="name"
                                     currentSortConfig={sortConfig}
                                     requestSort={requestSort}
-                                    className="px-6 py-3 text-[#BF9447]"
+                                    className="px-3 py-3 sm:px-6"
                                 >
-                                    <div className="inline-flex items-center gap-2">
-                                        {User && <Icon iconNode={User} />}
-                                        {HeartHandshake && <Icon iconNode={HeartHandshake} />}
-                                        {House && <Icon iconNode={House} />}
-                                    </div>
+                                    Nome
                                 </SortableTableHeader>
                                 <SortableTableHeader
                                     sortKey="profession"
@@ -313,20 +320,20 @@ export default function Clients({
                                     Renda
                                 </SortableTableHeader>
                                 <SortableTableHeader
-                                    sortKey="capital"
+                                    sortKey="phone"
                                     currentSortConfig={sortConfig}
                                     requestSort={requestSort}
-                                    className="hidden px-6 py-3 md:table-cell"
+                                    className="px-3 py-3 sm:px-6"
                                 >
-                                    Capital
+                                    Whatsapp
                                 </SortableTableHeader>
                                 <SortableTableHeader
-                                    sortKey="fgts"
+                                    sortKey="origin"
                                     currentSortConfig={sortConfig}
                                     requestSort={requestSort}
                                     className="hidden px-6 py-3 md:table-cell"
                                 >
-                                    FGTS
+                                    Fonte
                                 </SortableTableHeader>
                                 <SortableTableHeader
                                     sortKey="last_contact_at"
@@ -367,20 +374,9 @@ export default function Clients({
                                     className={`border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950 ${index !== sortedClients.length - 1 ? 'border-b' : ''
                                         }`}
                                 >
-                                    <th scope="row" className="px-3 py-3 font-medium text-gray-900 dark:text-white">
-                                        <button
-                                            onClick={() => {
-                                                const formattedPhone = client.phone.replace(/\D/g, '');
-                                                const phoneToCopy = (formattedPhone.length <= 11) ? `55${formattedPhone}` : formattedPhone;
-                                                const urlToCopy = `https://web.whatsapp.com/send?phone=${phoneToCopy}`;
-                                                navigator.clipboard.writeText(urlToCopy);
-                                                setCopiedPhoneClients(prev => Array.from(new Set([...prev, client.id])));
-                                            }}
-                                            className={`cursor-pointer hover:opacity-80 transition-opacity flex items-center gap-2 ${copiedPhoneClients.includes(client.id) ? 'text-blue-600 dark:text-blue-500' : ''}`}
-                                        >
-                                            {client.name}
-                                        </button>
-                                    </th>
+                                    <td className="hidden px-6 py-3 md:table-cell">{client.id}</td>
+
+                                    <td className="px-3 py-3 sm:px-6">{client.name}</td>
 
                                     <td className="hidden px-6 py-3 md:table-cell">{client.profession}</td>
 
@@ -391,19 +387,22 @@ export default function Clients({
                                         }).format(client.revenue)}
                                     </td>
 
-                                    <td className="hidden px-6 py-3 md:table-cell">
-                                        {new Intl.NumberFormat('pt-BR', {
-                                            style: 'currency',
-                                            currency: 'BRL',
-                                        }).format(client.capital)}
-                                    </td>
+                                    <th scope="row" className="px-3 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <button
+                                            onClick={() => {
+                                                const formattedPhone = client.phone.replace(/\D/g, '');
+                                                const phoneToCopy = (formattedPhone.length <= 11) ? `55${formattedPhone}` : formattedPhone;
+                                                const urlToCopy = `https://web.whatsapp.com/send?phone=${phoneToCopy}`;
+                                                navigator.clipboard.writeText(urlToCopy);
+                                                setCopiedPhoneClients(prev => Array.from(new Set([...prev, client.id])));
+                                            }}
+                                            className={`cursor-pointer hover:opacity-80 transition-opacity flex items-center gap-2 ${copiedPhoneClients.includes(client.id) ? 'text-blue-600 dark:text-blue-500' : ''}`}
+                                        >
+                                            {client.phone}
+                                        </button>
+                                    </th>
 
-                                    <td className="hidden px-6 py-3 md:table-cell">
-                                        {new Intl.NumberFormat('pt-BR', {
-                                            style: 'currency',
-                                            currency: 'BRL',
-                                        }).format(client.fgts)}
-                                    </td>
+                                    <td className="hidden px-6 py-3 md:table-cell">{client.origin}</td>
 
                                     <td className="px-3 py-3 sm:px-6">
                                         <button 
