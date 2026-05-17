@@ -7,6 +7,7 @@ use App\Models\Property;
 use App\Models\Region;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Gate;
 
@@ -48,6 +49,11 @@ class PropertyController extends Controller
         session()->forget('compatibleObjects');
         $validated = $request->validated();
         $validated['user_id'] = Auth::user()->id;
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('properties', 'public');
+            $validated['image'] = $path;
+        }
 
         //dd($validated); 
 
@@ -93,6 +99,16 @@ class PropertyController extends Controller
         $validated = $request->validated();
         $validated['user_id'] = Auth::user()->id;
 
+        if ($request->hasFile('image')) {
+            if ($property->image && Storage::disk('public')->exists($property->image)) {
+                Storage::disk('public')->delete($property->image);
+            }
+            $path = $request->file('image')->store('properties', 'public');
+            $validated['image'] = $path;
+        } else {
+            unset($validated['image']);
+        }
+
         $property->update($validated);
 
         return back()->with('success', 'Property updated successfully');
@@ -102,6 +118,11 @@ class PropertyController extends Controller
     {
         Gate::authorize('delete', $property);
         session()->forget('compatibleObjects');
+        
+        if ($property->image && Storage::disk('public')->exists($property->image)) {
+            Storage::disk('public')->delete($property->image);
+        }
+
         $property->delete();
         return to_route('properties.index')->with('success', 'Property deleted successfully');
     }

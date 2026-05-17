@@ -8,6 +8,7 @@ import { Loader2 } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 type PropertyEditForm = {
+    _method: string;
     id: number;
     description: string | null;
     contact_name: string | null;
@@ -20,7 +21,7 @@ type PropertyEditForm = {
     price: number;
     land_area: number;
     building_area: number;
-    image: string | null;
+    image: File | string | null;
     address: string | null;
     rooms?: number;
     bathrooms: number | null;
@@ -64,7 +65,8 @@ const booleanFeatureLabels = {
 };
 
 export default function EditProperty({ property, typeOptions, airConditioningOptions, booleanOptions, regionOptions }: EditPropertyProps) {
-    const { data, setData, put, processing, errors, recentlySuccessful } = useForm<PropertyEditForm>({
+    const { data, setData, post, processing, errors, recentlySuccessful } = useForm<PropertyEditForm>({
+        _method: 'put',
         id: property.id,
         description: property.description || null,
         contact_name: property.contact_name || null,
@@ -101,13 +103,15 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
         obs: property.obs || '',
     });
 
-    const handleSetData = (field: keyof PropertyEditForm, value: string | number | boolean | null) => {
-        setData(field, value);
+    const handleSetData = (field: keyof PropertyEditForm, value: string | number | boolean | File | null) => {
+        setData(field, value as any);
     };
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        put(route('properties.update', property.id));
+        post(route('properties.update', property.id), {
+            forceFormData: true,
+        });
     };
 
     // Converting delivery_key to date
@@ -174,6 +178,22 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
                                 onChange={(value) => handleSetData('place_link', value)}
                                 error={errors.place_link}
                             />
+                        </div>
+
+                        <div className="mb-3 grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-sm font-medium text-zinc-700">Imagem Principal</label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => handleSetData('image', e.target.files ? e.target.files[0] : null)}
+                                    className="block w-full text-sm text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pc-blue/10 file:text-pc-blue hover:file:bg-pc-blue/20 focus:outline-none focus:ring-2 focus:ring-pc-blue/20 cursor-pointer"
+                                />
+                                {errors.image && <p className="text-sm text-red-500">{errors.image}</p>}
+                                {typeof property.image === 'string' && (
+                                    <p className="text-xs text-zinc-500 mt-1">Já possui imagem. Envie uma nova para substituir.</p>
+                                )}
+                            </div>
                         </div>
                     </div>
 

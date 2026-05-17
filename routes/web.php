@@ -27,7 +27,11 @@ Route::get('/', function (\Illuminate\Http\Request $request) {
     }
 
     if ($request->filled('rooms') && $request->rooms !== 'all') {
-        $query->where('rooms', $request->rooms);
+        if (str_ends_with($request->rooms, '+')) {
+            $query->where('rooms', '>=', rtrim($request->rooms, '+'));
+        } else {
+            $query->where('rooms', $request->rooms);
+        }
     }
 
     if ($request->filled('building_area') && $request->building_area !== 'all') {
@@ -35,19 +39,27 @@ Route::get('/', function (\Illuminate\Http\Request $request) {
     }
 
     if ($request->filled('bathrooms') && $request->bathrooms !== 'all') {
-        $query->where('bathrooms', $request->bathrooms);
+        if (str_ends_with($request->bathrooms, '+')) {
+            $query->where('bathrooms', '>=', rtrim($request->bathrooms, '+'));
+        } else {
+            $query->where('bathrooms', $request->bathrooms);
+        }
     }
 
     if ($request->filled('garages') && $request->garages !== 'all') {
-        $query->where('garages', $request->garages);
+        if (str_ends_with($request->garages, '+')) {
+            $query->where('garages', '>=', rtrim($request->garages, '+'));
+        } else {
+            $query->where('garages', $request->garages);
+        }
     }
 
     if ($request->filled('suites') && $request->suites !== 'all') {
-        $query->where('suites', $request->suites);
-    }
-
-    if ($request->filled('balcony') && $request->balcony !== 'all') {
-        $query->where('balcony', $request->balcony === 'yes' ? 1 : 0);
+        if (str_ends_with($request->suites, '+')) {
+            $query->where('suites', '>=', rtrim($request->suites, '+'));
+        } else {
+            $query->where('suites', $request->suites);
+        }
     }
 
     if ($request->filled('status') && $request->status !== 'all') {
@@ -62,7 +74,7 @@ Route::get('/', function (\Illuminate\Http\Request $request) {
         'properties' => $query->latest()->paginate(8)->withQueryString(),
         'regions' => \App\Models\Region::all(),
         'filters' => $request->only([
-            'region', 'type', 'rooms', 'building_area', 'bathrooms', 'garages', 'suites', 'balcony', 'status'
+            'region', 'type', 'rooms', 'building_area', 'bathrooms', 'garages', 'suites', 'status'
         ])
     ]);
 })->name('home');

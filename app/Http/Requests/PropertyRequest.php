@@ -36,7 +36,7 @@ class PropertyRequest extends FormRequest
             'price' => 'nullable|numeric|min:0|max:9999999999',
             'land_area' => 'nullable|numeric|min:0|max:9999999999',
             'building_area' => 'nullable|numeric|min:0|max:99999',
-            'image' => 'nullable|string',
+            'image' => 'nullable',
             'address' => 'nullable|string|max:100',
             'rooms' => 'nullable|integer|min:0|max:99',
             'bathrooms' => 'nullable|integer|min:0|max:99',

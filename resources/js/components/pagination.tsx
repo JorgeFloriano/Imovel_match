@@ -18,7 +18,7 @@ export default function Pagination({ links, className }: PaginationProps) {
     if (links.length <= 3) return null;
 
     return (
-        <div className={cn("flex flex-wrap items-center justify-center gap-8", className)}>
+        <div className={cn("flex items-center justify-between px-4 md:justify-center md:gap-8 w-full max-w-sm md:max-w-none mx-auto md:flex-wrap", className)}>
             {links.map((link, index) => {
                 const isFirst = index === 0;
                 const isLast = index === links.length - 1;
@@ -43,15 +43,17 @@ export default function Pagination({ links, className }: PaginationProps) {
                             }
                         }}
                         className={cn(
-                            "flex items-center justify-center w-8 h-8 rounded-full font-bold transition-all duration-300",
+                            "flex shrink-0 items-center justify-center font-bold transition-all duration-300",
                             "border-none text-sm",
+                            isFirst || isLast ? "h-12 w-12 rounded-full md:h-8 md:w-8 shadow-sm md:shadow-none bg-white" : "h-8 w-8 rounded-full",
                             link.active 
                                 ? "bg-pc-blue text-white shadow-md shadow-pc-blue/20" 
-                                : "bg-white dark:bg-zinc-900 text-zinc-500 hover:bg-pc-blue/5 hover:text-pc-blue dark:hover:bg-zinc-800",
-                            !link.url && "opacity-50 cursor-not-allowed pointer-events-none"
+                                : "bg-white text-zinc-500 hover:bg-pc-blue/5 hover:text-pc-blue",
+                            !link.url && "opacity-50 cursor-not-allowed pointer-events-none",
+                            (!isFirst && !isLast) && "hidden md:flex"
                         )}
                     >
-                        {isFirst ? <ChevronLeft className="h-5 w-5" /> : isLast ? <ChevronRight className="h-5 w-5" /> : label}
+                        {isFirst ? <ChevronLeft className="h-6 w-6 md:h-5 md:w-5" /> : isLast ? <ChevronRight className="h-6 w-6 md:h-5 md:w-5" /> : label}
                     </Link>
                 );
             })}

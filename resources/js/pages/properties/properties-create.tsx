@@ -19,7 +19,7 @@ type PropertyCreateForm = {
     price: number;
     land_area: number;
     building_area: number;
-    image: string | null;
+    image: File | null;
     address: string | null;
     rooms?: number;
     bathrooms: number | null;
@@ -132,8 +132,8 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
         // obs: 'Empreendimento alto padrão e bem localizado',
     });
 
-    const handleSetData = (field: keyof PropertyCreateForm, value: string | number | boolean | null) => {
-        setData(field, value);
+    const handleSetData = (field: keyof PropertyCreateForm, value: string | number | boolean | File | null) => {
+        setData(field, value as any);
     };
 
     const submit: FormEventHandler = (e) => {
@@ -204,6 +204,19 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                                 onChange={(value) => handleSetData('place_link', value)}
                                 error={errors.place_link}
                             />
+                        </div>
+
+                        <div className="mb-3 grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-sm font-medium text-zinc-700">Imagem Principal</label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => handleSetData('image', e.target.files ? e.target.files[0] : null)}
+                                    className="block w-full text-sm text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pc-blue/10 file:text-pc-blue hover:file:bg-pc-blue/20 focus:outline-none focus:ring-2 focus:ring-pc-blue/20 cursor-pointer"
+                                />
+                                {errors.image && <p className="text-sm text-red-500">{errors.image}</p>}
+                            </div>
                         </div>
                     </div>
 

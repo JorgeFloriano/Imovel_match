@@ -73,6 +73,7 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+
     *,
     ::after,
     ::before,
@@ -161,24 +162,11 @@
 }
 
 .bg-property-mask {
-    background: linear-gradient(
-        to bottom, 
-        transparent 1%, 
-        white 30%, 
-        white 70%, 
-        transparent 100%
-    );
-}
-
-.dark .bg-property-mask {
-    background: linear-gradient(
-        to bottom, 
-        transparent 0%, 
-        transparent 5%, 
-        #0a0a0a 25%, 
-        #0a0a0a 85%, 
-        transparent 100%
-    );
+    background: linear-gradient(to bottom,
+            transparent 1%,
+            white 30%,
+            white 70%,
+            transparent 100%);
 }
 
 .bc-pc-gold {
@@ -253,5 +241,9 @@ input[type='date']::-moz-calendar-picker-indicator {
 
     body {
         @apply bg-background text-foreground;
+    }
+
+    a, button, [role="button"], input[type="button"], input[type="submit"], input[type="reset"], select, summary {
+        cursor: pointer;
     }
 }

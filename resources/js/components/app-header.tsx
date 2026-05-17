@@ -11,11 +11,16 @@ import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { HeartHandshake, House, Menu, MessageCircle, User } from 'lucide-react';
+import { HeartHandshake, House, Menu, MessageCircle, User, Heart } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
 const mainNavItems: NavItem[] = [
+    {
+        title: 'Inicial',
+        href: '/',
+        icon: Heart,
+    },
     {
         title: 'Painel',
         href: '/dashboard',
@@ -119,7 +124,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                             {item.icon && <Icon iconNode={item.icon} className="mr-2 h-4 w-4" />}
                                             {item.title}
                                         </Link>
-                                        {page.url.startsWith(item.href) && page.url !== '/' && (
+                                        {item.href !== '/' && page.url.startsWith(item.href) && (
                                             <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"></div>
                                         )}
                                     </NavigationMenuItem>
