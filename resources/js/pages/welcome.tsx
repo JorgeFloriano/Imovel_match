@@ -235,8 +235,8 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
             </header>
 
             {/* Hero Section */}
-            <section className="relative h-[450px] md:h-[900px] w-full overflow-hidden flex items-center justify-center">
-                <div className="absolute inset-0 bg-[url('/cozy-studio-apartment-with-bedroom-living-space.jpg')] bg-cover bg-center scale-105 animate-pulse-slow">
+            <section className="relative h-[300px] md:h-[900px] w-full overflow-hidden flex items-center justify-center">
+                <div className="absolute inset-0 bg-[url('/welcome_bg_mobile.jpg')] md:bg-[url('/welcome_bg.jpg')] bg-cover bg-center scale-105 animate-pulse-slow">
                     <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-transparent" />
                 </div>
 
@@ -255,7 +255,7 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
                         Curadoria exclusiva de imóveis que combinam com seu estilo de vida. <br className="hidden md:block" /> Descubra o lar dos seus sonhos com a Marta de Souza Imobiliária.
                     </p>
 
-                    <div className="max-w-2xl mx-auto bg-white/95 backdrop-blur-xl rounded-3xl md:rounded-[2.5rem] shadow-3xl p-3 flex flex-col md:flex-row gap-2">
+                    <div className="hidden md:flex max-w-2xl mx-auto bg-white/95 backdrop-blur-xl rounded-3xl md:rounded-[2.5rem] shadow-3xl p-3 flex-col md:flex-row gap-2">
                         <div className="flex-1 flex items-center px-4 md:px-6 py-2 md:py-0 border-b md:border-b-0 md:border-r border-zinc-200">
                             <Search className="text-pc-blue mr-3 h-5 w-5 flex-shrink-0" />
                             <Select onValueChange={setSelectedRegion} value={selectedRegion}>
@@ -284,12 +284,12 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
             </section>
 
             {/* Featured Properties */}
-            <section id="featured-properties" className="relative py-5 md:py-32 bg-white overflow-hidden">
+            <section id="featured-properties" className="relative py-5 md:py-32 bg-[#f5f9fc] md:bg-white overflow-hidden">
                 {/* Brand Background Image with Center Fade */}
                 <div className="absolute inset-0 pointer-events-none overflow-hidden">
                     <div
-                        className="absolute inset-0 bg-cover bg-center opacity-[0.2]"
-                        style={{ backgroundImage: "url('/bg_image.png')" }}
+                        className="hidden md:block absolute inset-0 bg-cover bg-center opacity-[0.2]"
+                        style={{ backgroundImage: "url('/bg_image.jpg')" }}
                     />
                     {/* Custom Double Fade Mask - Defined in app.css */}
                     <div className="absolute inset-0 bg-property-mask" />
@@ -469,7 +469,7 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
             </section>
 
             {/* Brands/CTA */}
-            <section className="bg-pc-blue py-16 text-white text-center">
+            {/* <section className="bg-pc-blue py-16 text-white text-center">
                 <div className="container mx-auto px-4">
                     <h3 className="text-2xl md:text-3xl font-bold mb-6">Quer vender ou alugar seu imóvel?</h3>
                     <p className="text-zinc-300 mb-10 max-w-xl mx-auto">
@@ -479,19 +479,19 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
                         Anunciar Agora
                     </Button>
                 </div>
-            </section>
+            </section> */}
 
             {/* Footer */}
             <footer className="bg-zinc-950 text-white pt-16 pb-8">
                 <div className="container mx-auto px-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-                        <div className="col-span-1">
+                    <div /*className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16"*/>
+                        <div /*className="col-span-1"*/>
                             <img src="/logo_text.png" alt="Logo" className="h-12 w-auto mb-6 brightness-0 invert" />
-                            <p className="text-zinc-400 text-sm leading-relaxed max-w-xs">
+                            <p className="text-zinc-400 text-sm leading-relaxed mb-10">
                                 Transformando o mercado imobiliário com transparência, tecnologia e atendimento humanizado em cada negociação.
                             </p>
                         </div>
-                        <div>
+                        {/* <div>
                             <h4 className="font-bold mb-6 text-lg">Links Rápidos</h4>
                             <ul className="space-y-4 text-sm text-zinc-400 font-medium">
                                 <li><a href="#" className="hover:text-white transition-colors">Comprar Imóveis</a></li>
@@ -516,7 +516,7 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
                                 Centro, Cidade - UF<br />
                                 CEP: 00000-000
                             </p>
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="pt-8 border-t border-zinc-900 flex flex-col md:flex-row items-center justify-between gap-4 text-zinc-500 text-xs font-medium">
