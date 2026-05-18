@@ -47,8 +47,8 @@ export function useSortableTable<T>(items: T[], config: SortConfig<T> | null = n
 
                     if (aEmpty && bEmpty) {
                         // Secondary sort by name if both are empty
-                        const nameA = a.name || '';
-                        const nameB = b.name || '';
+                        const nameA = (a as any).name || '';
+                        const nameB = (b as any).name || '';
                         const cmp = nameA.localeCompare(nameB, undefined, { sensitivity: 'base' });
                         return sortConfig.direction === 'asc' ? cmp : -cmp;
                     }

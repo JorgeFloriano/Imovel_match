@@ -130,7 +130,7 @@ export const shuffleExclusiveAdvantages = (): string => {
     return message;
 };
 
-export const generateCustomMarketingTextMrv = (client: Client): string => {
+export const generateCustomMarketingTextMrv = (client: Client, userName: string = 'Marta de Souza'): string => {
     const locations = ['Zona', 'Região'];
     const near = [
         "pertinho do ",
@@ -157,7 +157,7 @@ export const generateCustomMarketingTextMrv = (client: Client): string => {
 
     let text = randomTitle();
     text += randomGreeting(client);
-    text += `Sou *Marta de Souza*, ${randomProfession()}\n`;
+    text += `Sou *${userName}*, ${randomProfession()}\n`;
     text += `Financiar seu ${randomProperty()} na região de Sorocaba ficou ainda mais fácil com as novas regras do *Minha Casa Minha Vida!* 🚀\n`;
     text += "Entrada parcelada e as melhores condições em 6 empreendimentos *MRV* em andamento entre diversas opções:\n\n";
 
@@ -171,7 +171,7 @@ export const generateCustomMarketingTextMrv = (client: Client): string => {
     return text;
 };
 
-export const generateCustomMarketingTextAccess = (client: Client): string => {
+export const generateCustomMarketingTextAccess = (client: Client, userName: string = 'Marta de Souza'): string => {
     const near = [
         "pertinho do ",
         "perto do ",
@@ -194,7 +194,7 @@ export const generateCustomMarketingTextAccess = (client: Client): string => {
     }
 
     let text = randomGreeting(client);
-    text += `Sou *Marta de Souza*, ${randomProfession()}\n`;
+    text += `Sou *${userName}*, ${randomProfession()}\n`;
     text += `Financiar seu ${randomProperty()} na região de Sorocaba ficou ainda mais fácil com as novas regras do *Minha Casa Minha Vida!* 🚀\n`;
     text += "Entrada parcelada e as melhores condições nos empreendimentos *ACCESS* em andamento entre diversas opções:\n\n";
 
@@ -209,10 +209,10 @@ export const generateCustomMarketingTextAccess = (client: Client): string => {
 };
 
 // Fallback for default marketing text (without properties for now)
-export const generateCustomMarketingText = (client: Client): string => {
+export const generateCustomMarketingText = (client: Client, userName: string = 'Marta de Souza'): string => {
     let text = randomTitle();
     text += randomGreeting(client);
-    text += `Sou *Marta de Souza*, ${randomProfession()}\n`;
+    text += `Sou *${userName}*, ${randomProfession()}\n`;
     text += "Que tal conhecer as *melhores oportunidades* para morar ou investir na região de Sorocaba?\n";
     text += "🎯 *Temos ótimas opções que podem combinar perfeitamente com seu perfil!*\n\n";
     
@@ -227,10 +227,10 @@ export const generateCustomMarketingText = (client: Client): string => {
     return text;
 };
 
-export const generateSpecificPropertyMarketingText = (client: any, property: any): string => {
+export const generateSpecificPropertyMarketingText = (client: any, property: any, userName: string = 'Marta de Souza'): string => {
     let text = randomTitle();
     text += randomGreeting(client);
-    text += `Sou *Marta de Souza*, ${randomProfession()}\n`;
+    text += `Sou *${userName}*, ${randomProfession()}\n`;
     text += "✨ *QUE TAL CONHECER UMA ÓTIMA OPORTUNIDADE PARA MORAR OU INVESTIR EM SOROCABA?!* \n\n";
 
     text += `🏠 *${property.description}*\n`;

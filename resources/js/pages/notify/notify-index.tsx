@@ -3,7 +3,7 @@ import { FormSelect } from '@/components/form-select';
 import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { Head, useForm, router } from '@inertiajs/react'; // Import router from Inertia
+import { Head, useForm, router, usePage } from '@inertiajs/react'; // Import router from Inertia
 import { Check, MessageCircle, CheckCircle, Send, Circle, SaveAll } from 'lucide-react';
 import React, { useEffect, useState, useMemo } from 'react'; // Add useEffect
 import { useSortableTable } from '@/hooks/useSortableTable';
@@ -73,6 +73,8 @@ export default function Clients({
     };
 }) {
     const [clickedClients, setClickedClients] = useState<number[]>([]);
+    const { auth } = usePage<any>().props;
+    const userName = auth?.user?.name || 'Marta de Souza';
     const [copiedPhoneClients, setCopiedPhoneClients] = useState<number[]>([]);
     const [pendingNotifiedClients, setPendingNotifiedClients] = useState<number[]>([]);
     const [isSavingBatch, setIsSavingBatch] = useState(false);
@@ -113,11 +115,11 @@ export default function Clients({
 
         let marketingText = '';
         if (data.contact_origin === 'mrv') {
-            marketingText = generateCustomMarketingTextMrv(client);
+            marketingText = generateCustomMarketingTextMrv(client, userName);
         } else if (data.contact_origin === 'access') {
-            marketingText = generateCustomMarketingTextAccess(client);
+            marketingText = generateCustomMarketingTextAccess(client, userName);
         } else {
-            marketingText = generateCustomMarketingText(client);
+            marketingText = generateCustomMarketingText(client, userName);
         }
 
         try {

@@ -1,7 +1,7 @@
 import { type SharedData } from '@/types';
-import { Head, Link, usePage, router } from '@inertiajs/react';
+import { Head, usePage, router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
-import { Search, Filter, Menu } from 'lucide-react';
+import { Search, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import PropertyCard from '@/components/property-card';
@@ -309,7 +309,7 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
                             </p>
                         </div>
 
-                        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                        <Dialog disableDarkMode open={isModalOpen} onOpenChange={setIsModalOpen}>
                             <DialogTrigger asChild>
                                 <button className="group w-full md:w-auto justify-center flex items-center bg-white/60 backdrop-blur-md px-6 py-3 md:py-4 rounded-full border border-pc-blue/20 text-pc-blue font-black hover:bg-white/80 hover:shadow-md transition-all text-base md:text-lg cursor-pointer gap-3 shadow-sm">
                                     Busca Personalizada

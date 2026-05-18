@@ -4,10 +4,21 @@ import { XIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+const DialogContext = React.createContext<{ disableDarkMode?: boolean }>({
+  disableDarkMode: false,
+})
+
 function Dialog({
+  disableDarkMode = false,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Root>) {
-  return <DialogPrimitive.Root data-slot="dialog" {...props} />
+}: React.ComponentProps<typeof DialogPrimitive.Root> & {
+  disableDarkMode?: boolean
+}) {
+  return (
+    <DialogContext.Provider value={{ disableDarkMode }}>
+      <DialogPrimitive.Root data-slot="dialog" {...props} />
+    </DialogContext.Provider>
+  )
 }
 
 function DialogTrigger({
@@ -47,8 +58,31 @@ function DialogOverlay({
 function DialogContent({
   className,
   children,
+  disableDarkMode: localDisableDarkMode,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Content>) {
+}: React.ComponentProps<typeof DialogPrimitive.Content> & {
+  disableDarkMode?: boolean
+}) {
+  const { disableDarkMode: contextDisableDarkMode } = React.useContext(DialogContext)
+  const disableDarkMode = localDisableDarkMode ?? contextDisableDarkMode
+
+  React.useEffect(() => {
+    if (!disableDarkMode) return
+
+    const html = document.documentElement
+    const hadDark = html.classList.contains("dark")
+
+    if (hadDark) {
+      html.classList.remove("dark")
+    }
+
+    return () => {
+      if (hadDark) {
+        html.classList.add("dark")
+      }
+    }
+  }, [disableDarkMode])
+
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />

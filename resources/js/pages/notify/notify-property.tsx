@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import IconTooltip from '@/components/ui/icon-tooltip';
 import { StatusIcon } from '@/components/ui/status-icon';
 import AppLayout from '@/layouts/app-layout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowRight, Bath, Bed, Calendar, Car, Check, KeyRound, MessageCircle } from 'lucide-react';
 import React, { useState } from 'react';
 import { generateSpecificPropertyMarketingText } from '@/utils/marketing';
@@ -61,6 +61,8 @@ interface NotifyPropertyProps {
 
 export default function ClientProperties({ property, clients }: NotifyPropertyProps) {
     const [copiedId, setCopiedId] = useState<number | null>(null);
+    const { auth } = usePage<any>().props;
+    const userName = auth?.user?.name || 'Marta de Souza';
     const [copiedTextType, setCopiedTextType] = useState<'name' | 'marketing' | null>(null);
     const [isLoading, setIsLoading] = useState<number | null>(null); // Track loading state per client
     const [copiedPhoneClients, setCopiedPhoneClients] = useState<number[]>([]);
@@ -71,7 +73,7 @@ export default function ClientProperties({ property, clients }: NotifyPropertyPr
         e.preventDefault();
         
         try {
-            const marketingText = generateSpecificPropertyMarketingText(client, property);
+            const marketingText = generateSpecificPropertyMarketingText(client, property, userName);
             await navigator.clipboard.writeText(marketingText);
             setClickedClients(prev => Array.from(new Set([...prev, client.id])));
         } catch (err) {
