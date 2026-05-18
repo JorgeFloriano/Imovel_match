@@ -24,7 +24,11 @@ class ClientController extends Controller
     }
     public function index()
     {
-        $clients = Client::with('wishe.regions')->where('user_id', Auth::user()->id)->orderBy('temperature', 'desc')->orderBy('name', 'asc')->get();
+        $clients = Client::with('wishe.regions')
+        ->where('user_id', Auth::user()->id)
+        ->where('temperature', '!=', 'frio')
+        ->orderBy('temperature', 'desc')
+        ->orderBy('name', 'asc')->get();
 
 
         return Inertia::render('clients/clients-index', [

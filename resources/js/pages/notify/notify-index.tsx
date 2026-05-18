@@ -4,11 +4,14 @@ import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { Head, useForm, router, usePage } from '@inertiajs/react'; // Import router from Inertia
-import { Check, MessageCircle, CheckCircle, Send, Circle, SaveAll } from 'lucide-react';
+import { Check, MessageCircle, CheckCircle, Send, Circle, SaveAll, ThermometerSun, Trash, Flame, ThermometerSnowflake, Snowflake, Thermometer } from 'lucide-react';
 import React, { useEffect, useState, useMemo } from 'react'; // Add useEffect
 import { useSortableTable } from '@/hooks/useSortableTable';
 import { SortableTableHeader } from '@/components/ui/sortable-table-header';
 import { generateCustomMarketingText, generateCustomMarketingTextAccess, generateCustomMarketingTextMrv } from '@/utils/marketing';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import IconTooltip from '@/components/ui/icon-tooltip';
+import Pagination from '@/components/pagination';
 
 type FilterForm = {
     property_id?: string;
@@ -53,10 +56,20 @@ interface Client {
     fgts: number;
     has_property: boolean;
     compromised_income: number;
+    temperature?: 'gelado' | 'frio' | 'morno' | 'quente' | null;
     wishe: Wishe | null;
     origin: string | null;
     created_at?: string;
     last_contact_at?: string | null;
+}
+
+interface PaginatedClients {
+    data: Client[];
+    links: Array<{
+        url: string | null;
+        label: string;
+        active: boolean;
+    }>;
 }
 
 export default function Clients({
@@ -64,7 +77,7 @@ export default function Clients({
     propertyOptions,
     filters,
 }: {
-    clients: Client[];
+    clients: PaginatedClients;
     propertyOptions: Array<{ value: string; label: string }>;
     filters: {
         initial_date: string;
@@ -79,6 +92,7 @@ export default function Clients({
     const [pendingNotifiedClients, setPendingNotifiedClients] = useState<number[]>([]);
     const [isSavingBatch, setIsSavingBatch] = useState(false);
     const [optimisticContacts, setOptimisticContacts] = useState<Record<number, string>>({});
+    const [optimisticTemps, setOptimisticTemps] = useState<Record<number, Client['temperature']>>({});
     const { data, setData, errors } = useForm<FilterForm>({
         property_id: undefined,
         contact_origin: filters?.contact_origin || 'todos',
@@ -98,6 +112,49 @@ export default function Clients({
             final_date: data.final_date,
             contact_origin: data.contact_origin,
         }, { preserveState: true, preserveScroll: true });
+    };
+
+    const updateTemperature = (clientId: number, newTemp: Client['temperature']) => {
+        setOptimisticTemps(prev => ({ ...prev, [clientId]: newTemp }));
+
+        router.patch(
+            route('clients.temperature', clientId),
+            { temperature: newTemp },
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => {
+                    setOptimisticTemps(prev => {
+                        const newState = { ...prev };
+                        delete newState[clientId];
+                        return newState;
+                    });
+                }
+            }
+        );
+    };
+
+    const temperatureConfig = {
+        quente: {
+            icon: Flame,
+            color: 'text-red-500',
+            label: 'Quente'
+        },
+        morno: {
+            icon: ThermometerSun,
+            color: 'text-yellow-500',
+            label: 'Morno'
+        },
+        frio: {
+            icon: ThermometerSnowflake,
+            color: 'text-blue-300',
+            label: 'Frio'
+        },
+        gelado: {
+            icon: Snowflake,
+            color: 'text-blue-500',
+            label: 'Gelado'
+        }
     };
 
     // Use useEffect to watch for changes in property_id
@@ -184,7 +241,7 @@ export default function Clients({
         }
     };
 
-    const uniqueCreatedAts = Array.from(new Set(clients.filter(c => c.created_at).map(c => c.created_at!)))
+    const uniqueCreatedAts = Array.from(new Set(clients.data.filter(c => c.created_at).map(c => c.created_at!)))
         .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
 
     const listaOptions = [
@@ -198,7 +255,7 @@ export default function Clients({
         })
     ];
 
-    const filteredClients = clients.filter((client) => {
+    const filteredClients = clients.data.filter((client) => {
         if (data.list_index && data.list_index !== '0') {
             const index = parseInt(data.list_index) - 1;
             if (uniqueCreatedAts[index] && client.created_at !== uniqueCreatedAts[index]) {
@@ -211,9 +268,10 @@ export default function Clients({
     const clientsWithOptimistic = useMemo(() => {
         return filteredClients.map(client => ({
             ...client,
-            last_contact_at: optimisticContacts[client.id] || client.last_contact_at
+            last_contact_at: optimisticContacts[client.id] || client.last_contact_at,
+            temperature: client.id in optimisticTemps ? optimisticTemps[client.id] : client.temperature
         }));
-    }, [filteredClients, optimisticContacts]);
+    }, [filteredClients, optimisticContacts, optimisticTemps]);
 
     const { items: sortedClients, requestSort, sortConfig } = useSortableTable(clientsWithOptimistic, { key: 'last_contact_at', direction: 'asc' });
 
@@ -306,12 +364,12 @@ export default function Clients({
                                     Nome
                                 </SortableTableHeader>
                                 <SortableTableHeader
-                                    sortKey="profession"
+                                    sortKey="temperature"
                                     currentSortConfig={sortConfig}
                                     requestSort={requestSort}
-                                    className="hidden px-6 py-3 md:table-cell"
+                                    className="px-6 py-3"
                                 >
-                                    Profissão
+                                    <IconTooltip iconNode={Thermometer && <Icon className="inline h-4 w-4" iconNode={Thermometer} />} tooltipText="Temperatura (quanto mais quente, mais próximo de fechar negócio)" />
                                 </SortableTableHeader>
                                 <SortableTableHeader
                                     sortKey="revenue"
@@ -380,7 +438,40 @@ export default function Clients({
 
                                     <td className="px-3 py-3 sm:px-6">{client.name}</td>
 
-                                    <td className="hidden px-6 py-3 md:table-cell">{client.profession}</td>
+                                    <td className="px-6 py-3">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger className="outline-none cursor-pointer">
+                                                {client.temperature ? (
+                                                    <IconTooltip
+                                                        iconNode={
+                                                            <Icon
+                                                                className={`inline h-5 w-5 ${temperatureConfig[client.temperature as keyof typeof temperatureConfig].color} hover:opacity-80 transition-opacity`}
+                                                                iconNode={temperatureConfig[client.temperature as keyof typeof temperatureConfig].icon}
+                                                            />
+                                                        }
+                                                        tooltipText={temperatureConfig[client.temperature as keyof typeof temperatureConfig].label}
+                                                    />
+                                                ) : (
+                                                    <IconTooltip
+                                                        iconNode={<Icon className="inline h-5 w-5 text-gray-400 hover:opacity-80 transition-opacity" iconNode={ThermometerSnowflake} />}
+                                                        tooltipText="Frio"
+                                                    />
+                                                )}
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="center">
+                                                {(Object.entries(temperatureConfig) as [keyof typeof temperatureConfig, typeof temperatureConfig[keyof typeof temperatureConfig]][]).map(([key, config]) => (
+                                                    <DropdownMenuItem
+                                                        key={key}
+                                                        onClick={() => updateTemperature(client.id, key)}
+                                                        className="cursor-pointer gap-2"
+                                                    >
+                                                        <Icon className={`h-4 w-4 ${config.color}`} iconNode={config.icon} />
+                                                        <span>{config.label}</span>
+                                                    </DropdownMenuItem>
+                                                ))}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </td>
 
                                     <td className="hidden px-6 py-3 md:table-cell">
                                         {new Intl.NumberFormat('pt-BR', {
@@ -452,6 +543,7 @@ export default function Clients({
                         </tbody>
                     </table>
                 </div>
+                <Pagination links={clients.links} className="mt-8" />
             </div>
         </AppLayout>
     );
