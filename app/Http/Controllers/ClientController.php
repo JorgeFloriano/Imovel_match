@@ -28,7 +28,9 @@ class ClientController extends Controller
         ->where('user_id', Auth::user()->id)
         ->where('temperature', '!=', 'frio')
         ->orderBy('temperature', 'desc')
-        ->orderBy('name', 'asc')->get();
+        ->orderBy('name', 'asc')
+        ->paginate(50)
+        ->withQueryString();
 
 
         return Inertia::render('clients/clients-index', [

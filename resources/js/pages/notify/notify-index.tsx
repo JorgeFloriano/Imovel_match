@@ -93,11 +93,22 @@ export default function Clients({
     const [isSavingBatch, setIsSavingBatch] = useState(false);
     const [optimisticContacts, setOptimisticContacts] = useState<Record<number, string>>({});
     const [optimisticTemps, setOptimisticTemps] = useState<Record<number, Client['temperature']>>({});
+    const getSaoPauloDateStr = (date: Date) => {
+        const str = date.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+        const [day, month, year] = str.split('/');
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    };
+
+    const now = new Date();
+    const defaultFinalDate = getSaoPauloDateStr(now);
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const defaultInitialDate = getSaoPauloDateStr(oneWeekAgo);
+
     const { data, setData, errors } = useForm<FilterForm>({
         property_id: undefined,
         contact_origin: filters?.contact_origin || 'todos',
-        initial_date: filters?.initial_date || '',
-        final_date: filters?.final_date || '',
+        initial_date: filters?.initial_date || defaultInitialDate,
+        final_date: filters?.final_date || defaultFinalDate,
         list_index: '0',
     });
 

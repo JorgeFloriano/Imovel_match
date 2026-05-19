@@ -11,6 +11,7 @@ import { Edit, Expand, HeartHandshake, House, Thermometer, User, ThermometerSun,
 import { useSortableTable } from '@/hooks/useSortableTable';
 import { SortableTableHeader } from '@/components/ui/sortable-table-header';
 import IconTooltip from '@/components/ui/icon-tooltip';
+import Pagination from '@/components/pagination';
 
 interface Wishe {
     id: number;
@@ -51,15 +52,24 @@ interface Client {
     wishe: Wishe | null;
 }
 
-export default function Clients({ clients }: { clients: Client[] }) {
+interface PaginatedClients {
+    data: Client[];
+    links: Array<{
+        url: string | null;
+        label: string;
+        active: boolean;
+    }>;
+}
+
+export default function Clients({ clients }: { clients: PaginatedClients }) {
     const [optimisticTemps, setOptimisticTemps] = useState<Record<number, Client['temperature']>>({});
 
     const effectiveClients = useMemo(() => {
-        return clients.map(client => ({
+        return clients.data.map(client => ({
             ...client,
             temperature: client.id in optimisticTemps ? optimisticTemps[client.id] : client.temperature
         }));
-    }, [clients, optimisticTemps]);
+    }, [clients.data, optimisticTemps]);
 
     const { items: sortedClients, requestSort, sortConfig } = useSortableTable(effectiveClients);
 
@@ -392,6 +402,7 @@ export default function Clients({ clients }: { clients: Client[] }) {
                         </tbody>
                     </table>
                 </div>
+                <Pagination links={clients.links} className="mt-8" />
             </div>
         </AppLayout>
     );

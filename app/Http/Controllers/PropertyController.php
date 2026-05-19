@@ -20,11 +20,15 @@ class PropertyController extends Controller
     }
     public function index()
     {
-        $properties = Property::with(['user', 'region'])->orderBy('description')->get();
+        $properties = Property::with(['user', 'region'])
+            ->orderBy('description')
+            ->paginate(50)
+            ->withQueryString();
 
-        foreach ($properties as $property) {
+        $properties->through(function ($property) {
             $property->typ = $property->typ();
-        }      
+            return $property;
+        });      
         
         return Inertia::render('properties/properties-index', [
             'properties' => $properties,

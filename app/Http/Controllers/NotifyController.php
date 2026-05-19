@@ -16,8 +16,8 @@ class NotifyController extends Controller
         $query = Client::with('wishe.regions')->where('user_id', Auth::id());
 
         // Configuração de filtros e defaults
-        $initialDate = $request->query('initial_date', now()->format('Y-m-d'));
-        $finalDate = $request->query('final_date', now()->format('Y-m-d'));
+        $initialDate = $request->query('initial_date', now()->timezone('America/Sao_Paulo')->subWeek()->format('Y-m-d'));
+        $finalDate = $request->query('final_date', now()->timezone('America/Sao_Paulo')->format('Y-m-d'));
         $contactOrigin = $request->query('contact_origin', 'todos');
 
         // Filtro de Datas

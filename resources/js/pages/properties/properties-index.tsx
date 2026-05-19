@@ -9,6 +9,7 @@ import { Head } from '@inertiajs/react';
 import { ArrowRight, Bath, Bed, Calendar, Car, Delete, Edit, Expand, KeyRound } from 'lucide-react';
 import { useSortableTable } from '@/hooks/useSortableTable';
 import { SortableTableHeader } from '@/components/ui/sortable-table-header';
+import Pagination from '@/components/pagination';
 
 interface Region {
     id: number;
@@ -60,8 +61,17 @@ interface Property {
     region: Region;
 }
 
-export default function Properties({ properties }: { properties: Property[] }) {
-    const { items: sortedProperties, requestSort, sortConfig } = useSortableTable(properties);
+interface PaginatedProperties {
+    data: Property[];
+    links: Array<{
+        url: string | null;
+        label: string;
+        active: boolean;
+    }>;
+}
+
+export default function Properties({ properties }: { properties: PaginatedProperties }) {
+    const { items: sortedProperties, requestSort, sortConfig } = useSortableTable(properties.data);
 
     return (
         <AppLayout>
@@ -367,6 +377,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
                         </tbody>
                     </table>
                 </div>
+                <Pagination links={properties.links} className="mt-8" />
             </div>
         </AppLayout>
     );
