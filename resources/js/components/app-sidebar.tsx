@@ -24,7 +24,7 @@ const mainNavItems: NavItem[] = [
         icon: House,
     },
     {
-        title: 'Notificar',
+        title: 'Leads',
         href: '/notify',
         icon: MessageCircle,
     },

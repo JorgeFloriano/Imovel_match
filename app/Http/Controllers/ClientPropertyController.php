@@ -52,8 +52,7 @@ class ClientPropertyController extends Controller
             ->get();
 
         // Get properties with regions
-        $properties = Property::where('user_id', Auth::id())
-            ->with(['region'])
+        $properties = Property::with(['region'])
             ->select('id', 'description', 'price', 'type', 'delivery_key', 'building_area', 'rooms', 'suites', 'garages', 'balcony', 'region_id', 'bathrooms', 'air_conditioning', 'garden', 'pool', 'acept_pets', 'acessibility', 'installment_payment', 'min_act')
             ->get();
 
@@ -120,7 +119,7 @@ class ClientPropertyController extends Controller
     public function details(Client $client, Property $property)
     {
         Gate::authorize('show', $client);
-        Gate::authorize('show', $property);
+        //Gate::authorize('show', $property);
 
         $comp = new Compatible();
         return Inertia::render('clients/client-property', $comp->detailsData($client, $property));

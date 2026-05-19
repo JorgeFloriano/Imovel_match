@@ -36,10 +36,10 @@ class AppServiceProvider extends ServiceProvider
                 ->firstOrFail();
         });
 
-        Route::bind('property', function ($value) {
-            return Property::where('id', $value)
-                ->where('user_id', Auth::id())
-                ->firstOrFail();
-        });
+        // Route::bind('property', function ($value) {
+        //     return Property::where('id', $value)
+        //         ->where('user_id', Auth::id())
+        //         ->firstOrFail();
+        // });
     }
 }

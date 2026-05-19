@@ -84,8 +84,7 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
     Route::post('dashboard', [ClientPropertyController::class, 'filter'])->name('dashboard.filter');
     Route::get('dashboard/{client}/{property}/details', [ClientPropertyController::class, 'details'])
         ->name('dashboard.details')
-        ->middleware('can:show,client')
-        ->middleware('can:show,property');
+        ->middleware('can:show,client');
 
     Route::resource('/clients', ClientController::class);
     Route::patch('/clients/{client}/temperature', [ClientController::class, 'updateTemperature'])
@@ -103,8 +102,7 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
     Route::get('notify', [NotifyController::class, 'index'])->name('notify');
 
     Route::get('notify/{property}/property', [NotifyController::class, 'property'])
-        ->name('notify.property')
-        ->middleware('can:show,property');
+        ->name('notify.property');
 
     Route::post('/clients/{client}/generate-update-link', [ClientController::class, 'generateTemporaryLink']);
     Route::post('/notify/batch-contacted', [NotifyController::class, 'batchContacted'])->name('notify.batch-contacted');

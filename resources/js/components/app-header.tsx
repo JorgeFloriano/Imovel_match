@@ -17,7 +17,7 @@ import AppLogoIcon from './app-logo-icon';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Inicial',
+        title: 'Site',
         href: '/',
         icon: Heart,
     },
@@ -37,7 +37,7 @@ const mainNavItems: NavItem[] = [
         icon: House,
     },
     {
-        title: 'Notificar',
+        title: 'Leads',
         href: '/notify',
         icon: MessageCircle,
     },

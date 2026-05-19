@@ -85,7 +85,7 @@ class User extends Authenticatable implements MustVerifyEmail
         if ($this->isSuperAdmin()) {
             return true;
         }
-        $numberOfProperties = Property::where('user_id', $this->id)->count();
+        $numberOfProperties = Property::count();
         if ($numberOfProperties >= 5) {
             return false;
         }

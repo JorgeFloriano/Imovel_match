@@ -20,7 +20,7 @@ class PropertyController extends Controller
     }
     public function index()
     {
-        $properties = Property::with(['user', 'region'])->where('user_id', Auth::user()->id)->orderBy('description')->get();
+        $properties = Property::with(['user', 'region'])->orderBy('description')->get();
 
         foreach ($properties as $property) {
             $property->typ = $property->typ();
@@ -55,8 +55,6 @@ class PropertyController extends Controller
             $validated['image'] = $path;
         }
 
-        //dd($validated); 
-
         $property = Property::create($validated);
 
         if ($property) {
@@ -68,7 +66,7 @@ class PropertyController extends Controller
 
     public function show(Property $property)
     {
-        Gate::authorize('show', $property);
+        //Gate::authorize('show', $property);
         return Inertia::render('properties/properties-show', [
             'property' => $property->load(['user', 'region']),
             'typeOptions' => $this->property->typeOpt(),
@@ -79,7 +77,7 @@ class PropertyController extends Controller
 
     public function edit(Property $property)
     {
-        Gate::authorize('edit', $property);
+        //Gate::authorize('edit', $property);
         return Inertia::render('properties/properties-edit', [
             'property' => $property,
             'typeOptions' => $this->property->typeOpt(),
@@ -94,7 +92,7 @@ class PropertyController extends Controller
 
     public function update(PropertyRequest $request, Property $property): RedirectResponse
     {
-        Gate::authorize('update', $property);
+        //Gate::authorize('update', $property);
         session()->forget('compatibleObjects');
         $validated = $request->validated();
         $validated['user_id'] = Auth::user()->id;

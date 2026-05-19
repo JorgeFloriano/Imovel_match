@@ -262,7 +262,7 @@ class Compatible
                 'value' => '0',
                 'label' => 'Selecionar todos',
             ])->all(),
-            'propertyOptions' => Property::where('user_id', Auth::id())->orderBy('description')->get()->map(fn($property) => [
+            'propertyOptions' => Property::orderBy('description')->get()->map(fn($property) => [
                 'value' => strval($property->id), // Convert to string
                 'label' => $property->description,
             ])->prepend([

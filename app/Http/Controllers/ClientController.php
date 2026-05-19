@@ -53,6 +53,7 @@ class ClientController extends Controller
         session()->forget('compatibleObjects');
         $validated = $request->validated();
         $validated['user_id'] = Auth::user()->id;
+        $validated['temperature'] = 'morno';
 
         // Create client with user_id and all validated client data
         $client = Client::create($validated);
