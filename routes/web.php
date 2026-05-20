@@ -7,7 +7,11 @@ use App\Http\Controllers\NotifyController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function (\Illuminate\Http\Request $request) {
+Route::get('/', function () {
+    return Inertia::render('welcome');
+})->name('home');
+
+Route::get('/imoveis', function (\Illuminate\Http\Request $request) {
     $query = \App\Models\Property::withoutGlobalScope('user')
         ->with(['district', 'region']);
 
@@ -85,14 +89,16 @@ Route::get('/', function (\Illuminate\Http\Request $request) {
         $query->orderBy('price', 'desc');
     }
 
-    return Inertia::render('welcome', [
+    return Inertia::render('properties', [
         'properties' => ($request->filled('revenue') ? $query : $query->latest())->paginate(8)->withQueryString(),
         'regions' => \App\Models\Region::all(),
         'filters' => $request->only([
             'region', 'type', 'rooms', 'building_area', 'bathrooms', 'garages', 'suites', 'status', 'revenue'
         ])
     ]);
-})->name('home');
+})->name('public.properties');
+
+Route::get('/imovel/{property}', [PropertyController::class, 'publicShow'])->name('public.property.show');
 
 Route::middleware(['auth', 'web', 'verified'])->group(function () {
     Route::get('dashboard', [ClientPropertyController::class, 'index'])->name('dashboard');

@@ -1,3 +1,4 @@
+import { Link } from '@inertiajs/react';
 import { MapPin, Bed, Bath, Square, Car, ChevronRight, ShowerHead, Tag, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -58,88 +59,90 @@ export default function PropertyCard({ property }: PropertyCardProps) {
     const dynamicFallback = `https://images.unsplash.com/photo-${photoId}?q=80&w=1200`;
 
     return (
-        <Card className="group flex flex-col h-full overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 rounded-3xl bg-white p-0">
-            {/* Image Section */}
-            <div className="relative h-52 overflow-hidden">
-                <img
-                    src={property.image ? (property.image.startsWith('http') ? property.image : `/storage/${property.image}`) : dynamicFallback}
-                    alt={property.type}
-                    className="w-full h-full object-fill group-hover:scale-110 transition-transform duration-700 ease-in-out"
-                />
-                <div className="absolute top-4 left-4">
-                    <Badge className="bg-pc-blue/90 text-white hover:bg-pc-blue font-bold border-none shadow-lg px-4 py-1 rounded-full text-[10px]">
-                        {formatType(property.type)}
-                    </Badge>
-                </div>
-            </div>
-
-            {/* Content Section */}
-            <CardContent className="flex-1 px-5 pb-5">
-                <h3 className="text-zinc-900 font-bold text-base mb-1.5 line-clamp-1">
-                    {property.description}
-                </h3>
-
-                <p className="text-zinc-600 text-[14px] leading-relaxed line-clamp-2 mb-4 min-h-[2.5rem]">
-                    {property.obs || ''}
-                </p>
-
-                {property.price > 0 && (
-                    <div className="flex items-center gap-1.5 text-zinc-500 mb-2 text-[14px] tracking-tight">
-                        <DollarSign className="h-5 w-5 text-pc-gold shrink-0" />
-                        <span>A partir de <span className="text-pc-blue">{formatPrice(property.price)}</span></span>
+        <Link href={route('public.property.show', property.id)} className="block h-full cursor-pointer hover:no-underline">
+            <Card className="group flex flex-col h-full overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 rounded-3xl bg-white p-0">
+                {/* Image Section */}
+                <div className="relative h-52 overflow-hidden">
+                    <img
+                        src={property.image ? (property.image.startsWith('http') ? property.image : `/storage/${property.image}`) : dynamicFallback}
+                        alt={property.type}
+                        className="w-full h-full object-fill group-hover:scale-110 transition-transform duration-700 ease-in-out"
+                    />
+                    <div className="absolute top-4 left-4">
+                        <Badge className="bg-pc-blue/90 text-white hover:bg-pc-blue font-bold border-none shadow-lg px-4 py-1 rounded-full text-[10px]">
+                            {formatType(property.type)}
+                        </Badge>
                     </div>
-                )}
-
-                <div className="flex items-center gap-1.5 text-zinc-500 mb-2 text-[14px] tracking-tight">
-                    <MapPin className="h-5 w-5 text-pc-gold shrink-0" />
-                    <span className="line-clamp-1">
-                        {property.district?.name ? ` ${property.district.name}` : ` ${property.address}`}
-                    </span>
                 </div>
 
-                <div className="flex items-center gap-1.5 text-zinc-500 mb-2 text-[14px] tracking-tight">
-                    <Bed className="h-5 w-5 text-pc-gold shrink-0" />
-                    <span className="line-clamp-1">
-                        <span className="font-semibold">{property.rooms}</span> {property.rooms === 1 ? 'dormitório' : 'dormitórios'}
-                    </span>
-                </div>
+                {/* Content Section */}
+                <CardContent className="flex-1 px-5 pb-5">
+                    <h3 className="text-zinc-900 font-bold text-base mb-1.5 line-clamp-1">
+                        {property.description}
+                    </h3>
 
-                {property.building_area > 0 && (
+                    <p className="text-zinc-600 text-[14px] leading-relaxed line-clamp-2 mb-4 min-h-[2.5rem]">
+                        {property.obs || ''}
+                    </p>
+
+                    {property.price > 0 && (
+                        <div className="flex items-center gap-1.5 text-zinc-500 mb-2 text-[14px] tracking-tight">
+                            <DollarSign className="h-5 w-5 text-pc-gold shrink-0" />
+                            <span>A partir de <span className="text-pc-blue font-bold">{formatPrice(property.price)}</span></span>
+                        </div>
+                    )}
+
                     <div className="flex items-center gap-1.5 text-zinc-500 mb-2 text-[14px] tracking-tight">
-                        <Square className="h-5 w-5 text-pc-gold shrink-0" />
+                        <MapPin className="h-5 w-5 text-pc-gold shrink-0" />
                         <span className="line-clamp-1">
-                            A partir de <span className="font-semibold">{property.building_area}</span> m² de área privativa
+                            {property.district?.name ? ` ${property.district.name}` : ` ${property.address}`}
                         </span>
                     </div>
-                )}
 
-                {property.bathrooms > 1 && (
                     <div className="flex items-center gap-1.5 text-zinc-500 mb-2 text-[14px] tracking-tight">
-                        <ShowerHead className="h-5 w-5 text-pc-gold shrink-0" />
+                        <Bed className="h-5 w-5 text-pc-gold shrink-0" />
                         <span className="line-clamp-1">
-                            <span className="font-semibold">{property.bathrooms}</span> banheiros
+                            <span className="font-semibold">{property.rooms}</span> {property.rooms === 1 ? 'dormitório' : 'dormitórios'}
                         </span>
                     </div>
-                )}
 
-                {property.suites > 0 && (
-                    <div className="flex items-center gap-1.5 text-zinc-500 mb-2 text-[14px] tracking-tight">
-                        <Bath className="h-5 w-5 text-pc-gold shrink-0" />
-                        <span className="line-clamp-1">
-                            <span className="font-semibold">{property.suites}</span> {property.suites === 1 ? 'suíte' : 'suítes'}
-                        </span>
-                    </div>
-                )}
+                    {property.building_area > 0 && (
+                        <div className="flex items-center gap-1.5 text-zinc-500 mb-2 text-[14px] tracking-tight">
+                            <Square className="h-5 w-5 text-pc-gold shrink-0" />
+                            <span className="line-clamp-1">
+                                A partir de <span className="font-semibold">{property.building_area}</span> m² de área privativa
+                            </span>
+                        </div>
+                    )}
 
-                {property.garages > 1 && (
-                    <div className="flex items-center gap-1.5 text-zinc-500 mb-2 text-[14px] tracking-tight">
-                        <Car className="h-5 w-5 text-pc-gold shrink-0" />
-                        <span className="line-clamp-1">
-                            <span className="font-semibold">{property.garages}</span> Vagas
-                        </span>
-                    </div>
-                )}
-            </CardContent>
-        </Card>
+                    {property.bathrooms > 1 && (
+                        <div className="flex items-center gap-1.5 text-zinc-500 mb-2 text-[14px] tracking-tight">
+                            <ShowerHead className="h-5 w-5 text-pc-gold shrink-0" />
+                            <span className="line-clamp-1">
+                                <span className="font-semibold">{property.bathrooms}</span> banheiros
+                            </span>
+                        </div>
+                    )}
+
+                    {property.suites > 0 && (
+                        <div className="flex items-center gap-1.5 text-zinc-500 mb-2 text-[14px] tracking-tight">
+                            <Bath className="h-5 w-5 text-pc-gold shrink-0" />
+                            <span className="line-clamp-1">
+                                <span className="font-semibold">{property.suites}</span> {property.suites === 1 ? 'suíte' : 'suítes'}
+                            </span>
+                        </div>
+                    )}
+
+                    {property.garages > 1 && (
+                        <div className="flex items-center gap-1.5 text-zinc-500 mb-2 text-[14px] tracking-tight">
+                            <Car className="h-5 w-5 text-pc-gold shrink-0" />
+                            <span className="line-clamp-1">
+                                <span className="font-semibold">{property.garages}</span> Vagas
+                            </span>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+        </Link>
     );
 }

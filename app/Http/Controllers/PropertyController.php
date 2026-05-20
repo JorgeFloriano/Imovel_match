@@ -68,6 +68,13 @@ class PropertyController extends Controller
         return back()->with('error', 'Failed to create property');
     }
 
+    public function publicShow(Property $property)
+    {
+        return Inertia::render('property-details', [
+            'property' => $property->load(['region', 'district']),
+        ]);
+    }
+
     public function show(Property $property)
     {
         //Gate::authorize('show', $property);
