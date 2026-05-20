@@ -28,12 +28,12 @@ export default function AuthActions({ auth }: AuthActionsProps) {
                     Logar
                 </NavButton>
             </Link>
-            <Link href={route('register')}>
+            {/* <Link href={route('register')}>
                 <NavButton variant="primary">
                     <UserPlus className="mr-2 h-4 w-4 hidden md:block" />
                     Cadastro
                 </NavButton>
-            </Link>
+            </Link> */}
         </div>
     );
 }
