@@ -19,6 +19,8 @@ class NotifyController extends Controller
         $initialDate = $request->query('initial_date', now()->timezone('America/Sao_Paulo')->subWeek()->format('Y-m-d'));
         $finalDate = $request->query('final_date', now()->timezone('America/Sao_Paulo')->format('Y-m-d'));
         $contactOrigin = $request->query('contact_origin', 'todos');
+        $notifiedUntil = $request->query('notified_until', 'nulo');
+        $temperature = $request->query('temperature', 'todos');
 
         // Filtro de Datas
         $query->whereDate('created_at', '>=', $initialDate)
@@ -37,7 +39,34 @@ class NotifyController extends Controller
             });
         }
 
-        $clients = $query->orderBy('name')->paginate(50)->withQueryString();
+        // Filtro de Notificado Até (last_contact_at)
+        if ($notifiedUntil === 'nulo') {
+            $query->whereNull('last_contact_at');
+        } elseif ($notifiedUntil === 'todos') {
+            // Sem filtro, pega todos
+        } else {
+            $now = now()->timezone('America/Sao_Paulo');
+            if ($notifiedUntil === 'hoje') {
+                $query->whereDate('last_contact_at', '>=', $now->format('Y-m-d'));
+            } elseif ($notifiedUntil === 'ontem') {
+                $query->whereDate('last_contact_at', '>=', $now->subDay()->format('Y-m-d'));
+            } elseif ($notifiedUntil === '3_dias') {
+                $query->whereDate('last_contact_at', '>=', $now->subDays(3)->format('Y-m-d'));
+            } elseif ($notifiedUntil === '7_dias') {
+                $query->whereDate('last_contact_at', '>=', $now->subDays(7)->format('Y-m-d'));
+            } elseif ($notifiedUntil === '15_dias') {
+                $query->whereDate('last_contact_at', '>=', $now->subDays(15)->format('Y-m-d'));
+            } elseif ($notifiedUntil === '30_dias') {
+                $query->whereDate('last_contact_at', '>=', $now->subDays(30)->format('Y-m-d'));
+            }
+        }
+
+        // Filtro de Temperatura
+        if ($temperature && $temperature !== 'todos') {
+            $query->where('temperature', $temperature);
+        }
+
+        $clients = $query->orderBy('id', 'desc')->paginate(50)->withQueryString();
 
         $propertyOptions = Property::orderBy('description')->get()->map(fn($property) => [
             'value' => strval($property->id),
@@ -54,6 +83,8 @@ class NotifyController extends Controller
                 'initial_date' => $initialDate,
                 'final_date' => $finalDate,
                 'contact_origin' => $contactOrigin,
+                'notified_until' => $notifiedUntil,
+                'temperature' => $temperature,
             ]
         ]);
     }

@@ -70,11 +70,26 @@ Route::get('/', function (\Illuminate\Http\Request $request) {
         }
     }
 
+    if ($request->filled('revenue')) {
+        $revenue = (float) $request->revenue;
+        if ($revenue < 1800) {
+            $cheapestIds = (clone $query)->orderBy('price', 'asc')->limit(8)->pluck('id');
+            $query->whereIn('id', $cheapestIds);
+        } elseif ($revenue >= 1800 && $revenue <= 5000) {
+            $query->where('price', '<=', 264000);
+        } elseif ($revenue >= 5000.01 && $revenue <= 9599.00) {
+            $query->where('price', '<=', 400000);
+        } elseif ($revenue >= 9600 && $revenue <= 13000) {
+            $query->where('price', '<=', 600000);
+        }
+        $query->orderBy('price', 'desc');
+    }
+
     return Inertia::render('welcome', [
-        'properties' => $query->latest()->paginate(8)->withQueryString(),
+        'properties' => ($request->filled('revenue') ? $query : $query->latest())->paginate(8)->withQueryString(),
         'regions' => \App\Models\Region::all(),
         'filters' => $request->only([
-            'region', 'type', 'rooms', 'building_area', 'bathrooms', 'garages', 'suites', 'status'
+            'region', 'type', 'rooms', 'building_area', 'bathrooms', 'garages', 'suites', 'status', 'revenue'
         ])
     ]);
 })->name('home');

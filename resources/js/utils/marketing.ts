@@ -155,17 +155,17 @@ export const generateCustomMarketingTextMrv = (client: Client, userName: string 
         [neighborhoods[i], neighborhoods[j]] = [neighborhoods[j], neighborhoods[i]];
     }
 
-    let text = randomTitle();
-    text += randomGreeting(client);
+    //let text = randomTitle();
+    let text = randomGreeting(client);
     text += `Sou *${userName}*, ${randomProfession()}\n`;
-    text += `Financiar seu ${randomProperty()} na região de Sorocaba ficou ainda mais fácil com as novas regras do *Minha Casa Minha Vida!* 🚀\n`;
-    text += "Entrada parcelada e as melhores condições em 6 empreendimentos *MRV* em andamento entre diversas opções:\n\n";
+    text += `Financiar seu ${randomProperty()} na ficou ainda mais fácil com as novas regras do *Minha Casa Minha Vida!* 🚀\n\n`;
 
     neighborhoods.forEach(line => {
         text += line;
     });
 
     text += "\n";
+    text += "Além dos empreendimentos *MRV*, temos *diversas outras opções* na região:\n";
     text += randomClosing();
 
     return text;

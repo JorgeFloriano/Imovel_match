@@ -18,7 +18,8 @@ type FilterForm = {
     contact_origin: string;
     initial_date?: string;
     final_date?: string;
-    list_index?: string;
+    notified_until: string;
+    temperature: string;
 };
 
 interface Wishe {
@@ -83,6 +84,8 @@ export default function Clients({
         initial_date: string;
         final_date: string;
         contact_origin: string;
+        notified_until?: string;
+        temperature?: string;
     };
 }) {
     const [clickedClients, setClickedClients] = useState<number[]>([]);
@@ -109,7 +112,8 @@ export default function Clients({
         contact_origin: filters?.contact_origin || 'todos',
         initial_date: filters?.initial_date || defaultInitialDate,
         final_date: filters?.final_date || defaultFinalDate,
-        list_index: '0',
+        notified_until: filters?.notified_until || 'nulo',
+        temperature: filters?.temperature || 'todos',
     });
 
     const handleSetData = (field: keyof FilterForm, value: string | number | undefined | boolean) => {
@@ -122,6 +126,8 @@ export default function Clients({
             initial_date: data.initial_date,
             final_date: data.final_date,
             contact_origin: data.contact_origin,
+            notified_until: data.notified_until,
+            temperature: data.temperature,
         }, { preserveState: true, preserveScroll: true });
     };
 
@@ -252,39 +258,15 @@ export default function Clients({
         }
     };
 
-    const uniqueCreatedAts = Array.from(new Set(clients.data.filter(c => c.created_at).map(c => c.created_at!)))
-        .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-
-    const listaOptions = [
-        { value: '0', label: 'Todas' },
-        ...uniqueCreatedAts.map((createdAt, index) => {
-            const formattedDate = new Date(createdAt).toLocaleDateString('pt-BR');
-            return {
-                value: (index + 1).toString(),
-                label: `${index + 1} - ${formattedDate}`,
-            };
-        })
-    ];
-
-    const filteredClients = clients.data.filter((client) => {
-        if (data.list_index && data.list_index !== '0') {
-            const index = parseInt(data.list_index) - 1;
-            if (uniqueCreatedAts[index] && client.created_at !== uniqueCreatedAts[index]) {
-                return false;
-            }
-        }
-        return true;
-    });
-
     const clientsWithOptimistic = useMemo(() => {
-        return filteredClients.map(client => ({
+        return clients.data.map(client => ({
             ...client,
             last_contact_at: optimisticContacts[client.id] || client.last_contact_at,
             temperature: client.id in optimisticTemps ? optimisticTemps[client.id] : client.temperature
         }));
-    }, [filteredClients, optimisticContacts, optimisticTemps]);
+    }, [clients.data, optimisticContacts, optimisticTemps]);
 
-    const { items: sortedClients, requestSort, sortConfig } = useSortableTable(clientsWithOptimistic, { key: 'last_contact_at', direction: 'asc' });
+    const { items: sortedClients, requestSort, sortConfig } = useSortableTable(clientsWithOptimistic, { key: 'id', direction: 'desc' });
 
     return (
         <AppLayout>
@@ -311,7 +293,7 @@ export default function Clients({
                         <div className="mb-4 text-sm font-medium text-gray-700 dark:text-gray-300">
                             Filtros da Tabela
                         </div>
-                        <div className="grid items-end gap-4 sm:grid-cols-2 lg:grid-cols-5">
+                        <div className="grid items-end gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
                             <FormSelect
                                 label="Origem do Cliente"
                                 value={data.contact_origin}
@@ -326,11 +308,34 @@ export default function Clients({
                                 className="w-full"
                             />
                             <FormSelect
-                                label="Lista"
-                                value={data.list_index || '0'}
-                                onValueChange={(value) => handleSetData('list_index', value)}
-                                customOptions={listaOptions}
-                                error={errors.list_index}
+                                label="Notificado até"
+                                value={data.notified_until}
+                                onValueChange={(value) => handleSetData('notified_until', value)}
+                                customOptions={[
+                                    { value: 'nulo', label: 'Nunca Notificado' },
+                                    { value: 'todos', label: 'Todos' },
+                                    { value: 'hoje', label: 'Hoje' },
+                                    { value: 'ontem', label: 'Ontem ou mais recente' },
+                                    { value: '3_dias', label: 'Últimos 3 dias' },
+                                    { value: '7_dias', label: 'Última semana' },
+                                    { value: '15_dias', label: 'Últimas 2 semanas' },
+                                    { value: '30_dias', label: 'Último mês' }
+                                ]}
+                                error={errors.notified_until}
+                                className="w-full"
+                            />
+                            <FormSelect
+                                label="Temperatura"
+                                value={data.temperature}
+                                onValueChange={(value) => handleSetData('temperature', value)}
+                                customOptions={[
+                                    { value: 'todos', label: 'Todas' },
+                                    { value: 'gelado', label: 'Gelado' },
+                                    { value: 'frio', label: 'Frio' },
+                                    { value: 'morno', label: 'Morno' },
+                                    { value: 'quente', label: 'Quente' }
+                                ]}
+                                error={errors.temperature}
                                 className="w-full"
                             />
                             <FormInput

@@ -1,4 +1,4 @@
-import { MapPin, Bed, Bath, Square, Car, ChevronRight, ShowerHead } from 'lucide-react';
+import { MapPin, Bed, Bath, Square, Car, ChevronRight, ShowerHead, Tag, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +12,7 @@ interface Property {
     bathrooms: number;
     suites: number;
     garages: number;
+    price: number;
     image: string | null;
     district?: { name: string };
     region?: { name: string };
@@ -32,7 +33,16 @@ export default function PropertyCard({ property }: PropertyCardProps) {
         }
         return type.charAt(0).toUpperCase() + type.slice(1);
     };
-    
+
+    const formatPrice = (price: number) => {
+        return price.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+        });
+    };
+
     // Curated list of high-quality real estate images to differentiate properties without photos
     const fallbackImages = [
         '1564013799919-ab600027ffc6', // Classic Modern House
@@ -64,7 +74,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
             </div>
 
             {/* Content Section */}
-            <CardContent className="flex-1 pt-4 px-5 pb-5">
+            <CardContent className="flex-1 px-5 pb-5">
                 <h3 className="text-zinc-900 font-bold text-base mb-1.5 line-clamp-1">
                     {property.description}
                 </h3>
@@ -72,6 +82,13 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                 <p className="text-zinc-600 text-[14px] leading-relaxed line-clamp-2 mb-4 min-h-[2.5rem]">
                     {property.obs || ''}
                 </p>
+
+                {property.price > 0 && (
+                    <div className="flex items-center gap-1.5 text-zinc-500 mb-2 text-[14px] tracking-tight">
+                        <DollarSign className="h-5 w-5 text-pc-gold shrink-0" />
+                        <span>A partir de <span className="text-pc-blue">{formatPrice(property.price)}</span></span>
+                    </div>
+                )}
 
                 <div className="flex items-center gap-1.5 text-zinc-500 mb-2 text-[14px] tracking-tight">
                     <MapPin className="h-5 w-5 text-pc-gold shrink-0" />

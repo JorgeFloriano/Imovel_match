@@ -173,13 +173,11 @@ class Property extends Model
 
     public function range()
     {
-        if ($this->price <= 220000) {
+        if ($this->price <= 264000) {
             return 1;
-        } elseif ($this->price <= 320000) {
-            return 2;
-        } elseif ($this->price <= 380000) {
+        } elseif ($this->price <= 400000) {
             return 3;
-        } elseif ($this->price <= 550000) {
+        } elseif ($this->price <= 600000) {
             return 4;
         } else {
             return 5;

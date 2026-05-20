@@ -90,20 +90,21 @@ class Client extends Model
     }
     public function range()
     {
-        if ($this->revenue <= 1518) {
+        if ($this->revenue <= 1800) {
             return 0;
-        } elseif ($this->revenue <= 2800) {
+        } elseif ($this->revenue <= 3200) {
             return 1;
-        } elseif ($this->revenue <= 4600) {
+        } elseif ($this->revenue <= 5000) {
             return 2;
-        } elseif ($this->revenue <= 8500) {
+        } elseif ($this->revenue <= 9599) {
             return 3;
-        } elseif ($this->revenue <= 12500) {
+        } elseif ($this->revenue <= 13000) {
             return 4;
         } else {
             return 5;
         }
     }
+    
     public function firstName(): string
     {
         if (!$this->name) return '';

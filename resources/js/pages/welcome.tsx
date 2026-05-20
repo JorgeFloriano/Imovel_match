@@ -1,7 +1,7 @@
 import { type SharedData } from '@/types';
 import { Head, usePage, router } from '@inertiajs/react';
-import { useState, useEffect } from 'react';
-import { Search, Menu } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Search, Menu, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import PropertyCard from '@/components/property-card';
@@ -25,7 +25,6 @@ import {
     DialogTitle,
     DialogTrigger,
     DialogFooter,
-    DialogClose,
 } from "@/components/ui/dialog";
 
 import {
@@ -36,6 +35,7 @@ import {
     SheetTrigger,
     SheetClose,
 } from "@/components/ui/sheet";
+import { Icon } from '@/components/icon';
 
 interface Property {
     id: number;
@@ -46,6 +46,7 @@ interface Property {
     bathrooms: number;
     suites: number;
     garages: number;
+    price: number;
     image: string | null;
     district?: { name: string };
     region?: { id: number; name: string; prefix: string };
@@ -80,6 +81,8 @@ interface WelcomeProps {
         garages?: string;
         suites?: string;
         status?: string;
+        max_price?: string;
+        revenue?: string;
     };
 }
 
@@ -116,6 +119,8 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
     const [selectedGarages, setSelectedGarages] = useState<string>(filters?.garages || 'all');
     const [selectedSuites, setSelectedSuites] = useState<string>(filters?.suites || 'all');
     const [selectedStatus, setSelectedStatus] = useState<string>(filters?.status || 'all');
+    const [revenue, setRevenue] = useState<string>(filters?.revenue || '');
+    const skipRevenueSyncRef = useRef(false);
 
     const [displayProperties, setDisplayProperties] = useState(properties.data);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -128,7 +133,9 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
         selectedBathrooms,
         selectedGarages,
         selectedSuites,
-        selectedStatus
+        selectedStatus,
+        filters?.max_price,
+        filters?.revenue
     ].filter(val => val && val !== 'all').length;
 
     // Sync state with props when filters or data change
@@ -141,6 +148,12 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
         setSelectedGarages(filters?.garages || 'all');
         setSelectedSuites(filters?.suites || 'all');
         setSelectedStatus(filters?.status || 'all');
+        if (skipRevenueSyncRef.current) {
+            skipRevenueSyncRef.current = false;
+            setRevenue('');
+        } else {
+            setRevenue(filters?.revenue || '');
+        }
         setDisplayProperties(properties.data);
     }, [filters, properties.data]);
 
@@ -154,6 +167,8 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
         if (selectedGarages !== 'all') params.garages = selectedGarages;
         if (selectedSuites !== 'all') params.suites = selectedSuites;
         if (selectedStatus !== 'all') params.status = selectedStatus;
+        if (filters?.max_price) params.max_price = filters.max_price;
+        if (revenue) params.revenue = revenue;
 
         setIsModalOpen(false); // Close modal when exploring
 
@@ -180,13 +195,42 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
         });
     };
 
+    const handleNavLancamentos = () => {
+        const params: any = { status: 'planta' };
+        if (revenue) params.revenue = revenue;
+        router.get(route('home'), params, {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                const element = document.getElementById('featured-properties');
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    };
+
+    const handleNavAltoPadrao = () => {
+        skipRevenueSyncRef.current = true;
+        router.get(route('home'), { revenue: '15000' }, {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                const element = document.getElementById('featured-properties');
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    };
+
     return (
         <div className="min-h-screen bg-[#FDFDFC]">
             <Head title="Marta de Souza Imobiliária" />
 
             {/* Navbar */}
             <header className="sticky top-0 z-50 w-full border-b bg-[#123251] backdrop-blur-xl transition-all duration-300">
-                <div className="w-full mx-auto flex h-18 items-center justify-between px-4 lg:pl-40 lg:pr-6">
+                <div className="w-full mx-auto flex h-18 items-center justify-between px-2 lg:pl-40 lg:pr-6">
                     <div className="flex items-center gap-4 lg:gap-8">
                         {/* Mobile Menu */}
                         <div className="lg:hidden">
@@ -203,13 +247,16 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
                                     </SheetHeader>
                                     <div className="flex flex-col p-4 space-y-2">
                                         <SheetClose asChild>
-                                            <button className="text-left text-zinc-200 font-bold text-lg hover:text-white transition-colors py-2 px-4 hover:bg-white/5 rounded-lg">Início</button>
+                                            <button className="text-left text-zinc-200 font-bold text-lg hover:text-white transition-colors py-2 px-4 hover:bg-white/5 rounded-lg" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Início</button>
                                         </SheetClose>
                                         <SheetClose asChild>
                                             <button className="text-left text-zinc-200 font-bold text-lg hover:text-white transition-colors py-2 px-4 hover:bg-white/5 rounded-lg" onClick={handleNavImoveis}>Imóveis</button>
                                         </SheetClose>
                                         <SheetClose asChild>
-                                            <button className="text-left text-zinc-200 font-bold text-lg hover:text-white transition-colors py-2 px-4 hover:bg-white/5 rounded-lg">Lançamentos</button>
+                                            <button className="text-left text-zinc-200 font-bold text-lg hover:text-white transition-colors py-2 px-4 hover:bg-white/5 rounded-lg" onClick={handleNavLancamentos}>Lançamentos</button>
+                                        </SheetClose>
+                                        <SheetClose asChild>
+                                            <button className="text-left text-zinc-200 font-bold text-lg hover:text-white transition-colors py-2 px-4 hover:bg-white/5 rounded-lg" onClick={handleNavAltoPadrao}>Alto Padrão</button>
                                         </SheetClose>
                                         <SheetClose asChild>
                                             <button className="text-left text-zinc-200 font-bold text-lg hover:text-white transition-colors py-2 px-4 hover:bg-white/5 rounded-lg">Sobre Nós</button>
@@ -225,9 +272,10 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
                     </div>
 
                     <nav className="hidden lg:flex items-center text-sm font-bold text-zinc-200">
-                        <NavButton variant="primary">Início</NavButton>
+                        <NavButton variant="primary" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Início</NavButton>
                         <NavButton variant="primary" onClick={handleNavImoveis}>Imóveis</NavButton>
-                        <NavButton variant="primary">Lançamentos</NavButton>
+                        <NavButton variant="primary" onClick={handleNavLancamentos}>Lançamentos</NavButton>
+                        <NavButton variant="primary" onClick={handleNavAltoPadrao}>Alto Padrão</NavButton>
                         <NavButton variant="primary">Sobre Nós</NavButton>
                     </nav>
                     <AuthActions auth={auth} />
@@ -235,13 +283,13 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
             </header>
 
             {/* Hero Section */}
-            <section className="relative h-[300px] md:h-[900px] w-full overflow-hidden flex items-center justify-center">
+            <section className="relative h-[450px] md:h-[900px] w-full overflow-hidden flex items-center justify-center">
                 <div className="absolute inset-0 bg-[url('/welcome_bg_mobile.jpg')] md:bg-[url('/welcome_bg.jpg')] bg-cover bg-center scale-105 animate-pulse-slow">
                     <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-transparent" />
                 </div>
 
                 <div className="relative z-10 container mx-auto px-4 text-center">
-                    <div className="flex justify-center mb-12 md:mb-28">
+                    <div className="flex justify-center mb-6 md:mb-28">
                         <img src="/logo_text.png" alt="Logo" className="h-24 md:h-40 w-auto" />
                     </div>
 
@@ -251,33 +299,32 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
                     <h1 className="hidden md:block text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight leading-none">
                         Seu novo capítulo <span className="text-pc-gold">começa agora</span>
                     </h1>
-                    <p className="hidden md:block text-lg md:text-2xl text-zinc-200 mb-12 mx-auto px-4 font-light leading-relaxed">
-                        Curadoria exclusiva de imóveis que combinam com seu estilo de vida. <br className="hidden md:block" /> Descubra o lar dos seus sonhos com a Marta de Souza Imobiliária.
+                    <p className="hidden md:block text-lg md:text-2xl text-zinc-200 mb-6 mx-auto px-4 font-light leading-relaxed">
+                        Curadoria exclusiva de empreendimentos que combinam com seu estilo de vida. <br className="hidden md:block" /> Descubra o lar dos seus sonhos com a Marta de Souza Imobiliária. <br className="hidden md:block" /> Preencha o campo abaixo para iniciarmos a busca pelo imóvel perfeito.
                     </p>
 
-                    <div className="hidden md:flex max-w-2xl mx-auto bg-white/95 backdrop-blur-xl rounded-3xl md:rounded-[2.5rem] shadow-3xl p-3 flex-col md:flex-row gap-2">
-                        <div className="flex-1 flex items-center px-4 md:px-6 py-2 md:py-0 border-b md:border-b-0 md:border-r border-zinc-200">
-                            <Search className="text-pc-blue mr-3 h-5 w-5 flex-shrink-0" />
-                            <Select onValueChange={setSelectedRegion} value={selectedRegion}>
-                                <SelectTrigger className="w-full h-14 md:h-16 bg-transparent border-none focus:ring-0 focus:outline-none text-zinc-900 font-semibold cursor-pointer shadow-none ring-0 p-0 text-left">
-                                    <SelectValue placeholder="Em qual região você gostaria de morar?" />
-                                </SelectTrigger>
-                                <SelectContent className="rounded-2xl border-none shadow-2xl p-2 bg-white/95 backdrop-blur-xl">
-                                    <SelectItem value="all" className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">Onde você quer morar ?</SelectItem>
-                                    {regions && regions.map((region) => (
-                                        <SelectItem key={region.id} value={region.id.toString()} className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">
-                                            {region.prefix ? region.prefix : ""} {region.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                    {/* Stylish and eye-catching revenue input & search button */}
+                    <div className="max-w-lg mx-auto bg-white/10 backdrop-blur-md p-2 rounded-2xl border border-white/20 shadow-[0_0_30px_rgba(212,175,55,0.15)] flex flex-col sm:flex-row gap-2 items-center hover:shadow-[0_0_40px_rgba(212,175,55,0.25)] transition-all duration-300">
+                        <div className="relative w-full flex-1">
+                            <input
+                                type="number"
+                                placeholder="Digite sua renda"
+                                value={revenue}
+                                onChange={(e) => setRevenue(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        handleExplore();
+                                    }
+                                }}
+                                className="w-full pl-12 pr-4 py-3 bg-white/5 focus:bg-white/10 border border-white/10 focus:border-pc-gold/50 rounded-xl text-white placeholder-zinc-300 font-semibold focus:outline-none focus:ring-2 focus:ring-pc-gold/50 transition-all text-base [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            />
                         </div>
-
-                        <Button
+                        <Button 
                             onClick={handleExplore}
-                            className="w-full md:w-auto bg-pc-blue hover:bg-pc-blue/90 text-white h-14 md:h-16 px-8 md:px-12 rounded-2xl md:rounded-[1.8rem] font-bold text-lg shadow-xl shadow-pc-blue/20 transition-all hover:scale-105 active:scale-95 flex items-center justify-center"
+                            className="w-full sm:w-auto bg-pc-blue hover:bg-pc-blue/90 text-white font-black px-6 py-6 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-pc-blue/30 hover:scale-[1.02] active:scale-[0.98] transition-all text-sm md:text-base whitespace-nowrap"
                         >
-                            Explorar
+                            <Heart className="h-5 w-5" />
+                            Exibir opções
                         </Button>
                     </div>
                 </div>
@@ -468,19 +515,6 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
                 </div>
             </section>
 
-            {/* Brands/CTA */}
-            {/* <section className="bg-pc-blue py-16 text-white text-center">
-                <div className="container mx-auto px-4">
-                    <h3 className="text-2xl md:text-3xl font-bold mb-6">Quer vender ou alugar seu imóvel?</h3>
-                    <p className="text-zinc-300 mb-10 max-w-xl mx-auto">
-                        Anuncie conosco e tenha a melhor visibilidade para o seu patrimônio.
-                    </p>
-                    <Button className="w-full md:w-auto bg-pc-gold hover:bg-pc-gold/90 text-white font-bold px-12 py-6 md:py-7 rounded-2xl text-base md:text-lg shadow-xl shadow-black/20">
-                        Anunciar Agora
-                    </Button>
-                </div>
-            </section> */}
-
             {/* Footer */}
             <footer className="bg-zinc-950 text-white pt-16 pb-8">
                 <div className="container mx-auto px-4">
@@ -491,32 +525,6 @@ export default function Welcome({ properties, regions, filters }: WelcomeProps) 
                                 Transformando o mercado imobiliário com transparência, tecnologia e atendimento humanizado em cada negociação.
                             </p>
                         </div>
-                        {/* <div>
-                            <h4 className="font-bold mb-6 text-lg">Links Rápidos</h4>
-                            <ul className="space-y-4 text-sm text-zinc-400 font-medium">
-                                <li><a href="#" className="hover:text-white transition-colors">Comprar Imóveis</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">Alugar Imóveis</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">Lançamentos</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">Venda seu imóvel</a></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 className="font-bold mb-6 text-lg">Atendimento</h4>
-                            <ul className="space-y-4 text-sm text-zinc-400 font-medium">
-                                <li>(00) 00000-0000</li>
-                                <li>contato@martadesouza.com.br</li>
-                                <li>Segunda à Sexta: 09h às 18h</li>
-                                <li>Sábado: 09h às 12h</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 className="font-bold mb-6 text-lg">Localização</h4>
-                            <p className="text-sm text-zinc-400 leading-relaxed font-medium">
-                                Av. Exemplo, 1234 - Sala 101<br />
-                                Centro, Cidade - UF<br />
-                                CEP: 00000-000
-                            </p>
-                        </div> */}
                     </div>
 
                     <div className="pt-8 border-t border-zinc-900 flex flex-col md:flex-row items-center justify-between gap-4 text-zinc-500 text-xs font-medium">
