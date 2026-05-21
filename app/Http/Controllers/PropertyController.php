@@ -61,6 +61,13 @@ class PropertyController extends Controller
 
         $property = Property::create($validated);
 
+        if ($property && $request->hasFile('property_images')) {
+            foreach ($request->file('property_images') as $imageFile) {
+                $imgPath = $imageFile->store('properties/images', 'public');
+                $property->images()->create(['path' => $imgPath]);
+            }
+        }
+
         if ($property) {
             return to_route('properties.index')->with('success', 'Property created successfully');
         }
@@ -71,7 +78,7 @@ class PropertyController extends Controller
     public function publicShow(Property $property)
     {
         return Inertia::render('property-details', [
-            'property' => $property->load(['region', 'district']),
+            'property' => $property->load(['region', 'district', 'images']),
         ]);
     }
 
@@ -79,7 +86,7 @@ class PropertyController extends Controller
     {
         //Gate::authorize('show', $property);
         return Inertia::render('properties/properties-show', [
-            'property' => $property->load(['user', 'region']),
+            'property' => $property->load(['user', 'region', 'images']),
             'typeOptions' => $this->property->typeOpt(),
             'airConditioningOptions' => $this->property->airConOpt(),
             'booleanOptions' => $this->property->boolOpt(),
@@ -90,7 +97,7 @@ class PropertyController extends Controller
     {
         //Gate::authorize('edit', $property);
         return Inertia::render('properties/properties-edit', [
-            'property' => $property,
+            'property' => $property->load('images'),
             'typeOptions' => $this->property->typeOpt(),
             'airConditioningOptions' => $this->property->airConOpt(),
             'booleanOptions' => $this->property->boolOpt(),
@@ -116,6 +123,26 @@ class PropertyController extends Controller
             $validated['image'] = $path;
         } else {
             unset($validated['image']);
+        }
+        
+        unset($validated['property_images']);
+        unset($validated['images_to_delete']);
+
+        if ($request->has('images_to_delete')) {
+            $imagesToDelete = $property->images()->whereIn('id', $request->images_to_delete)->get();
+            foreach ($imagesToDelete as $img) {
+                if (Storage::disk('public')->exists($img->path)) {
+                    Storage::disk('public')->delete($img->path);
+                }
+                $img->delete();
+            }
+        }
+
+        if ($request->hasFile('property_images')) {
+            foreach ($request->file('property_images') as $imageFile) {
+                $imgPath = $imageFile->store('properties/images', 'public');
+                $property->images()->create(['path' => $imgPath]);
+            }
         }
 
         $property->update($validated);

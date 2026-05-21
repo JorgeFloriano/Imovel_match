@@ -20,6 +20,7 @@ type PropertyCreateForm = {
     land_area: number;
     building_area: number;
     image: File | null;
+    property_images: File[];
     address: string | null;
     rooms?: number;
     bathrooms: number | null;
@@ -75,6 +76,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
         land_area: 0,
         building_area: 0,
         image: null,
+        property_images: [],
         address: '',
         rooms: 0,
         bathrooms: 0,
@@ -132,7 +134,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
         // obs: 'Empreendimento alto padrão e bem localizado',
     });
 
-    const handleSetData = (field: keyof PropertyCreateForm, value: string | number | boolean | File | null) => {
+    const handleSetData = (field: keyof PropertyCreateForm, value: string | number | boolean | File | File[] | null) => {
         setData(field, value as any);
     };
 
@@ -206,16 +208,79 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             />
                         </div>
 
-                        <div className="mb-3 grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div className="mb-3 grid grid-cols-1 gap-4">
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-sm font-medium text-zinc-700">Imagem Principal</label>
+                                <label className="text-sm font-medium text-zinc-700">Imagem do Card (Máx 500KB)</label>
                                 <input
                                     type="file"
-                                    accept="image/*"
-                                    onChange={(e) => handleSetData('image', e.target.files ? e.target.files[0] : null)}
+                                    accept="image/jpeg, image/png, image/jpg"
+                                    onChange={(e) => {
+                                        const file = e.target.files ? e.target.files[0] : null;
+                                        if (file && file.size > 500 * 1024) {
+                                            alert("A imagem do card deve ter no máximo 500KB.");
+                                            e.target.value = '';
+                                            return;
+                                        }
+                                        handleSetData('image', file);
+                                    }}
                                     className="block w-full text-sm text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pc-blue/10 file:text-pc-blue hover:file:bg-pc-blue/20 focus:outline-none focus:ring-2 focus:ring-pc-blue/20 cursor-pointer"
                                 />
+                                {data.image && (
+                                    <div className="mt-2 h-24 w-32 shrink-0 overflow-hidden rounded-md border">
+                                        <img src={URL.createObjectURL(data.image)} alt="Preview" className="h-full w-full object-cover" />
+                                    </div>
+                                )}
                                 {errors.image && <p className="text-sm text-red-500">{errors.image}</p>}
+                            </div>
+
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-sm font-medium text-zinc-700">Imagens do Carrossel (Máx 6 imagens, 1MB cada)</label>
+                                <input
+                                    type="file"
+                                    multiple
+                                    accept="image/jpeg, image/png, image/jpg"
+                                    onChange={(e) => {
+                                        const files = Array.from(e.target.files || []);
+                                        let validFiles = [...data.property_images];
+                                        
+                                        for (const file of files) {
+                                            if (validFiles.length >= 6) {
+                                                alert("Você pode adicionar no máximo 6 imagens ao carrossel.");
+                                                break;
+                                            }
+                                            if (file.size > 1024 * 1024) {
+                                                alert(`A imagem ${file.name} excede o limite de 1MB e não foi adicionada.`);
+                                                continue;
+                                            }
+                                            validFiles.push(file);
+                                        }
+                                        
+                                        handleSetData('property_images', validFiles);
+                                        e.target.value = '';
+                                    }}
+                                    className="block w-full text-sm text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pc-blue/10 file:text-pc-blue hover:file:bg-pc-blue/20 focus:outline-none focus:ring-2 focus:ring-pc-blue/20 cursor-pointer"
+                                />
+                                {data.property_images.length > 0 && (
+                                    <div className="mt-2 flex flex-wrap gap-2">
+                                        {data.property_images.map((file, index) => (
+                                            <div key={index} className="relative h-24 w-32 overflow-hidden rounded-md border group">
+                                                <img src={URL.createObjectURL(file)} alt={`Preview ${index}`} className="h-full w-full object-cover" />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const newImages = [...data.property_images];
+                                                        newImages.splice(index, 1);
+                                                        handleSetData('property_images', newImages);
+                                                    }}
+                                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                                >
+                                                    &times;
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                                {(errors as any).property_images && <p className="text-sm text-red-500">{(errors as any).property_images}</p>}
                             </div>
                         </div>
                     </div>

@@ -86,6 +86,11 @@ class Property extends Model
     /**
      * Get the user that owns the property.
      */
+    public function images()
+    {
+        return $this->hasMany(PropertyImage::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

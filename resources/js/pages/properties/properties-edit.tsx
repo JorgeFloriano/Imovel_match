@@ -7,6 +7,12 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
+interface PropertyImage {
+    id: number;
+    property_id: number;
+    path: string;
+}
+
 type PropertyEditForm = {
     _method: string;
     id: number;
@@ -22,6 +28,9 @@ type PropertyEditForm = {
     land_area: number;
     building_area: number;
     image: File | string | null;
+    property_images: File[];
+    existing_images: PropertyImage[];
+    images_to_delete: number[];
     address: string | null;
     rooms?: number;
     bathrooms: number | null;
@@ -46,7 +55,7 @@ type PropertyEditForm = {
 };
 
 interface EditPropertyProps {
-    property: PropertyEditForm;
+    property: PropertyEditForm & { images?: PropertyImage[] };
     typeOptions: Record<string, string>;
     airConditioningOptions: Record<string, string>;
     booleanOptions: Record<string, string>;
@@ -80,6 +89,9 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
         land_area: property.land_area || 0,
         building_area: property.building_area || 0,
         image: property.image || null,
+        property_images: [],
+        existing_images: property.images || [],
+        images_to_delete: [],
         address: property.address || '',
         rooms: property.rooms || 0,
         bathrooms: property.bathrooms || 0,
@@ -103,7 +115,7 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
         obs: property.obs || '',
     });
 
-    const handleSetData = (field: keyof PropertyEditForm, value: string | number | boolean | File | null) => {
+    const handleSetData = (field: keyof PropertyEditForm, value: string | number | boolean | File | File[] | null) => {
         setData(field, value as any);
     };
 
@@ -180,19 +192,102 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
                             />
                         </div>
 
-                        <div className="mb-3 grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div className="mb-3 grid grid-cols-1 gap-4">
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-sm font-medium text-zinc-700">Imagem Principal</label>
+                                <label className="text-sm font-medium text-zinc-700">Imagem do Card (Máx 500KB)</label>
                                 <input
                                     type="file"
-                                    accept="image/*"
-                                    onChange={(e) => handleSetData('image', e.target.files ? e.target.files[0] : null)}
+                                    accept="image/jpeg, image/png, image/jpg"
+                                    onChange={(e) => {
+                                        const file = e.target.files ? e.target.files[0] : null;
+                                        if (file && file.size > 500 * 1024) {
+                                            alert("A imagem do card deve ter no máximo 500KB.");
+                                            e.target.value = '';
+                                            return;
+                                        }
+                                        handleSetData('image', file);
+                                    }}
                                     className="block w-full text-sm text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pc-blue/10 file:text-pc-blue hover:file:bg-pc-blue/20 focus:outline-none focus:ring-2 focus:ring-pc-blue/20 cursor-pointer"
                                 />
                                 {errors.image && <p className="text-sm text-red-500">{errors.image}</p>}
-                                {typeof property.image === 'string' && (
-                                    <p className="text-xs text-zinc-500 mt-1">Já possui imagem. Envie uma nova para substituir.</p>
+                                {data.image instanceof File && (
+                                    <div className="mt-2 h-24 w-32 shrink-0 overflow-hidden rounded-md border">
+                                        <img src={URL.createObjectURL(data.image)} alt="Preview Nova" className="h-full w-full object-cover" />
+                                    </div>
                                 )}
+                                {typeof property.image === 'string' && !(data.image instanceof File) && (
+                                    <div className="mt-2 h-24 w-32 shrink-0 overflow-hidden rounded-md border">
+                                        <img src={`/storage/${property.image}`} alt="Preview Atual" className="h-full w-full object-cover" />
+                                        <p className="text-xs text-zinc-500 mt-1">Imagem atual.</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-sm font-medium text-zinc-700">Imagens do Carrossel (Máx 6 imagens, 1MB cada)</label>
+                                <input
+                                    type="file"
+                                    multiple
+                                    accept="image/jpeg, image/png, image/jpg"
+                                    onChange={(e) => {
+                                        const files = Array.from(e.target.files || []);
+                                        let validFiles = [...data.property_images];
+                                        
+                                        for (const file of files) {
+                                            if (validFiles.length + data.existing_images.length >= 6) {
+                                                alert("Você pode ter no máximo 6 imagens ao carrossel.");
+                                                break;
+                                            }
+                                            if (file.size > 1024 * 1024) {
+                                                alert(`A imagem ${file.name} excede o limite de 1MB e não foi adicionada.`);
+                                                continue;
+                                            }
+                                            validFiles.push(file);
+                                        }
+                                        
+                                        handleSetData('property_images', validFiles);
+                                        e.target.value = '';
+                                    }}
+                                    className="block w-full text-sm text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pc-blue/10 file:text-pc-blue hover:file:bg-pc-blue/20 focus:outline-none focus:ring-2 focus:ring-pc-blue/20 cursor-pointer"
+                                />
+                                {(data.property_images.length > 0 || data.existing_images.length > 0) && (
+                                    <div className="mt-2 flex flex-wrap gap-2">
+                                        {data.existing_images.map((img, index) => (
+                                            <div key={`exist-${img.id}`} className="relative h-24 w-32 overflow-hidden rounded-md border group">
+                                                <img src={`/storage/${img.path}`} alt={`Existing ${index}`} className="h-full w-full object-cover" />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const newExisting = [...data.existing_images];
+                                                        newExisting.splice(index, 1);
+                                                        const newDeleted = [...data.images_to_delete, img.id];
+                                                        setData({ ...data, existing_images: newExisting, images_to_delete: newDeleted });
+                                                    }}
+                                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                                >
+                                                    &times;
+                                                </button>
+                                            </div>
+                                        ))}
+                                        {data.property_images.map((file, index) => (
+                                            <div key={`new-${index}`} className="relative h-24 w-32 overflow-hidden rounded-md border group">
+                                                <img src={URL.createObjectURL(file)} alt={`Preview ${index}`} className="h-full w-full object-cover" />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const newImages = [...data.property_images];
+                                                        newImages.splice(index, 1);
+                                                        handleSetData('property_images', newImages);
+                                                    }}
+                                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                                >
+                                                    &times;
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                                {(errors as any).property_images && <p className="text-sm text-red-500">{(errors as any).property_images}</p>}
                             </div>
                         </div>
                     </div>
