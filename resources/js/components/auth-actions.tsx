@@ -13,7 +13,7 @@ export default function AuthActions({ auth }: AuthActionsProps) {
             <div className="flex items-center gap-3">
                 <Link href={route('properties.index')}>
                     <NavButton variant="primary">
-                        Imóveis
+                        Gerenciar
                     </NavButton>
                 </Link>
             </div>

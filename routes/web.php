@@ -11,6 +11,10 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
+Route::get('/sobre-nos', function () {
+    return Inertia::render('about');
+})->name('public.about');
+
 Route::get('/imoveis', function (\Illuminate\Http\Request $request) {
     $query = \App\Models\Property::withoutGlobalScope('user')
         ->with(['district', 'region']);

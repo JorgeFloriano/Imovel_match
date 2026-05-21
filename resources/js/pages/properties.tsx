@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import PropertyCard from '@/components/property-card';
 import Pagination from '@/components/pagination';
 import WhatsAppButton from '@/components/whatsapp-button';
+import InstagramButton from '@/components/instagram-button';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 
@@ -192,6 +193,15 @@ export default function Properties({ properties, regions, filters }: PropertiesP
                                 </p>
                             </div>
 
+                            <div className="flex justify-center gap-20 -translate-y-4 md:-translate-y-8">
+                                <img
+                                    src="/logo_text.png"
+                                    alt="Marta de Souza Imobiliária"
+                                    className="h-28 w-auto"
+                                    style={{ filter: 'brightness(0) saturate(100%) invert(17%) sepia(45%) saturate(3071%) hue-rotate(187deg) brightness(91%) contrast(93%)' }}
+                                />
+                            </div>
+
                             <Dialog disableDarkMode open={isModalOpen} onOpenChange={setIsModalOpen}>
                                 <DialogTrigger asChild>
                                     <button className="group w-full md:w-auto justify-center flex items-center bg-white/60 backdrop-blur-md px-6 py-3 md:py-4 rounded-full border border-pc-blue/20 text-pc-blue font-black hover:bg-white/80 hover:shadow-md transition-all text-base md:text-lg cursor-pointer gap-3 shadow-sm">
@@ -352,6 +362,7 @@ export default function Properties({ properties, regions, filters }: PropertiesP
 
             <Footer />
             <WhatsAppButton />
+            <InstagramButton />
         </div>
     );
 }

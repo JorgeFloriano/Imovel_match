@@ -4,6 +4,7 @@ import { Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import WhatsAppButton from '@/components/whatsapp-button';
+import InstagramButton from '@/components/instagram-button';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 
@@ -38,7 +39,7 @@ export default function Welcome() {
                         <Badge variant="outline" className="mb-6 text-white border-white/30 px-4 py-1.5 rounded-full backdrop-blur-sm bg-white/10 uppercase tracking-[0.2em] text-[10px] font-bold hidden md:block mx-auto">
                             Excelência em cada detalhe
                         </Badge>
-                        <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight leading-none">
+                        <h1 className="text-4xl md:text-5xl font-extrabold text-white my-12 tracking-tight leading-none">
                             Seu novo capítulo <br className="block md:hidden" /> <span className="text-pc-gold">começa agora</span>
                         </h1>
                         <p className="text-lg md:text-2xl text-zinc-200 mb-6 mx-auto px-4 font-light leading-relaxed">
@@ -94,6 +95,7 @@ export default function Welcome() {
             <Footer />
 
             <WhatsAppButton />
+            <InstagramButton />
         </div>
     );
 }
