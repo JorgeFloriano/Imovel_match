@@ -68,12 +68,11 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
     ];
     const photoId = fallbackImages[property.id % fallbackImages.length];
     const dynamicFallback = `https://images.unsplash.com/photo-${photoId}?q=80&w=1200`;
-    const imageSrc = property.image ? (property.image.startsWith('http') ? property.image : `/storage/${property.image}`) : dynamicFallback;
 
-    const allImages = [
-        { src: imageSrc, alt: 'Imagem Principal' },
-        ...(property.images || []).map(img => ({ src: `/storage/${img.path}`, alt: 'Imagem do Imóvel' }))
-    ];
+    let allImages = (property.images || []).map(img => ({ src: `/storage/${img.path}`, alt: 'Imagem do Imóvel' }));
+    if (allImages.length === 0) {
+        allImages = [{ src: dynamicFallback, alt: 'Imagem Principal' }];
+    }
 
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -87,9 +86,8 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
             <main className="flex-1 w-full">
                 {/* Imagem em destaque */}
                 <div className="container mx-auto lg:px-40">
-                    <div className="w-full h-[40vh] md:h-[70vh] relative overflow-hidden rounded-b-3xl">
+                    <div className="w-full h-[40vh] md:h-[70vh] relative overflow-hidden">
                         <img src={allImages[currentImageIndex].src} alt={allImages[currentImageIndex].alt} className="w-full h-full object-cover transition-opacity duration-500" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                         <div className="absolute bottom-0 left-0 w-full p-4 md:p-8">
                             <Badge className="bg-pc-blue/90 text-white font-bold px-4 py-1.5 rounded-full text-xs shadow-lg uppercase tracking-wider backdrop-blur-sm">
                                 {property.type}

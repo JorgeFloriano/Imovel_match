@@ -5,7 +5,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Transition } from '@headlessui/react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useState } from 'react';
 
 interface PropertyImage {
     id: number;
@@ -29,7 +29,6 @@ type PropertyEditForm = {
     building_area: number;
     image: File | string | null;
     property_images: File[];
-    existing_images: PropertyImage[];
     images_to_delete: number[];
     address: string | null;
     rooms?: number;
@@ -74,7 +73,8 @@ const booleanFeatureLabels = {
 };
 
 export default function EditProperty({ property, typeOptions, airConditioningOptions, booleanOptions, regionOptions }: EditPropertyProps) {
-    const { data, setData, post, processing, errors, recentlySuccessful } = useForm<PropertyEditForm>({
+    const [existingImages, setExistingImages] = useState<PropertyImage[]>(property.images || []);
+    const { data, setData, post, processing, errors, recentlySuccessful, transform } = useForm<PropertyEditForm>({
         _method: 'put',
         id: property.id,
         description: property.description || null,
@@ -90,7 +90,6 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
         building_area: property.building_area || 0,
         image: property.image || null,
         property_images: [],
-        existing_images: property.images || [],
         images_to_delete: [],
         address: property.address || '',
         rooms: property.rooms || 0,
@@ -118,6 +117,11 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
     const handleSetData = (field: keyof PropertyEditForm, value: string | number | boolean | File | File[] | null) => {
         setData(field, value as any);
     };
+
+    transform((data) => ({
+        ...data,
+        image: typeof data.image === 'string' ? null : data.image,
+    }));
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -234,7 +238,7 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
                                         let validFiles = [...data.property_images];
                                         
                                         for (const file of files) {
-                                            if (validFiles.length + data.existing_images.length >= 6) {
+                                            if (validFiles.length + existingImages.length >= 6) {
                                                 alert("Você pode ter no máximo 6 imagens ao carrossel.");
                                                 break;
                                             }
@@ -250,18 +254,19 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
                                     }}
                                     className="block w-full text-sm text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pc-blue/10 file:text-pc-blue hover:file:bg-pc-blue/20 focus:outline-none focus:ring-2 focus:ring-pc-blue/20 cursor-pointer"
                                 />
-                                {(data.property_images.length > 0 || data.existing_images.length > 0) && (
+                                {(data.property_images.length > 0 || existingImages.length > 0) && (
                                     <div className="mt-2 flex flex-wrap gap-2">
-                                        {data.existing_images.map((img, index) => (
+                                        {existingImages.map((img, index) => (
                                             <div key={`exist-${img.id}`} className="relative h-24 w-32 overflow-hidden rounded-md border group">
                                                 <img src={`/storage/${img.path}`} alt={`Existing ${index}`} className="h-full w-full object-cover" />
                                                 <button
                                                     type="button"
                                                     onClick={() => {
-                                                        const newExisting = [...data.existing_images];
+                                                        const newExisting = [...existingImages];
                                                         newExisting.splice(index, 1);
                                                         const newDeleted = [...data.images_to_delete, img.id];
-                                                        setData({ ...data, existing_images: newExisting, images_to_delete: newDeleted });
+                                                        setExistingImages(newExisting);
+                                                        setData('images_to_delete', newDeleted);
                                                     }}
                                                     className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                                                 >
