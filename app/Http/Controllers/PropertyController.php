@@ -30,14 +30,14 @@ class PropertyController extends Controller
             return $property;
         });      
         
-        return Inertia::render('properties/properties-index', [
+        return Inertia::render('admin/properties/properties-index', [
             'properties' => $properties,
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('properties/properties-create', [
+        return Inertia::render('admin/properties/properties-create', [
             'typeOptions' => $this->property->typeOpt(),
             'airConditioningOptions' => $this->property->airConOpt(),
             'booleanOptions' => $this->property->boolOpt(),
@@ -77,7 +77,7 @@ class PropertyController extends Controller
 
     public function publicShow(Property $property)
     {
-        return Inertia::render('property-details', [
+        return Inertia::render('site/property-details', [
             'property' => $property->load(['region', 'district', 'images']),
         ]);
     }
@@ -85,7 +85,7 @@ class PropertyController extends Controller
     public function show(Property $property)
     {
         //Gate::authorize('show', $property);
-        return Inertia::render('properties/properties-show', [
+        return Inertia::render('admin/properties/properties-show', [
             'property' => $property->load(['user', 'region', 'images']),
             'typeOptions' => $this->property->typeOpt(),
             'airConditioningOptions' => $this->property->airConOpt(),
@@ -96,7 +96,7 @@ class PropertyController extends Controller
     public function edit(Property $property)
     {
         //Gate::authorize('edit', $property);
-        return Inertia::render('properties/properties-edit', [
+        return Inertia::render('admin/properties/properties-edit', [
             'property' => $property->load('images'),
             'typeOptions' => $this->property->typeOpt(),
             'airConditioningOptions' => $this->property->airConOpt(),

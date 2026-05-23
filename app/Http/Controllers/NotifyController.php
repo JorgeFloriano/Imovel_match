@@ -21,6 +21,7 @@ class NotifyController extends Controller
         $contactOrigin = $request->query('contact_origin', 'todos');
         $notifiedUntil = $request->query('notified_until', 'nulo');
         $temperature = $request->query('temperature', 'todos');
+        $search = $request->query('search');
 
         // Filtro de Datas
         $query->whereDate('created_at', '>=', $initialDate)
@@ -66,6 +67,18 @@ class NotifyController extends Controller
             $query->where('temperature', $temperature);
         }
 
+        // Filtro de Busca (ID ou Telefone)
+        if ($search) {
+            $searchDigits = preg_replace('/[^0-9]/', '', $search);
+            if (strlen($searchDigits) > 0) {
+                if (strlen($searchDigits) <= 6) {
+                    $query->where('id', $searchDigits);
+                } else {
+                    $query->where('phone', 'LIKE', '%' . $searchDigits . '%');
+                }
+            }
+        }
+
         $clients = $query->orderBy('id', 'desc')->paginate(50)->withQueryString();
 
         $propertyOptions = Property::orderBy('description')->get()->map(fn($property) => [
@@ -76,7 +89,7 @@ class NotifyController extends Controller
             'label' => 'Customizado para o cliente',
         ])->all();
 
-        return Inertia::render('notify/notify-index', [
+        return Inertia::render('admin/notify/notify-index', [
             'clients' => $clients,
             'propertyOptions' => $propertyOptions,
             'filters' => [
@@ -85,6 +98,7 @@ class NotifyController extends Controller
                 'contact_origin' => $contactOrigin,
                 'notified_until' => $notifiedUntil,
                 'temperature' => $temperature,
+                'search' => $search,
             ]
         ]);
     }
@@ -146,7 +160,7 @@ class NotifyController extends Controller
             ['name', 'asc'] // Secondary sort by client name ascending
         ])->values()->all();
 
-        return Inertia::render('notify/notify-property', [
+        return Inertia::render('admin/notify/notify-property', [
             'clients' => $sortedClients,
             'property' => $property
         ]);
@@ -165,5 +179,20 @@ class NotifyController extends Controller
             ->update(['last_contact_at' => now()]);
 
         return response()->json(['message' => 'Contatos registrados com sucesso!']);
+    }
+
+    public function batchDestroy(\Illuminate\Http\Request $request)
+    {
+        $clientIds = $request->input('ids', []);
+        
+        if (empty($clientIds)) {
+            return response()->json(['message' => 'Nenhum cliente selecionado.'], 400);
+        }
+
+        Client::whereIn('id', $clientIds)
+            ->where('user_id', Auth::id())
+            ->delete();
+
+        return response()->json(['message' => 'Clientes excluídos com sucesso!']);
     }
 }

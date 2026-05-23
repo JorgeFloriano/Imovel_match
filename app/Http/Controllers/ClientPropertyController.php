@@ -83,7 +83,7 @@ class ClientPropertyController extends Controller
             ->values(); // Reset array keys
 
         $comp = new Compatible();
-        return Inertia::render('dashboard', $comp->dashboardData($compatibleObjects));
+        return Inertia::render('admin/dashboard', $comp->dashboardData($compatibleObjects));
     }
 
     public function filter(FilterRequest $request)
@@ -113,7 +113,7 @@ class ClientPropertyController extends Controller
             ->values(); // Reset array keys
 
         $comp = new Compatible();
-        return Inertia::render('dashboard', $comp->dashboardData($compatibleObjects));
+        return Inertia::render('admin/dashboard', $comp->dashboardData($compatibleObjects));
     }
 
     public function details(Client $client, Property $property)
@@ -122,6 +122,6 @@ class ClientPropertyController extends Controller
         //Gate::authorize('show', $property);
 
         $comp = new Compatible();
-        return Inertia::render('clients/client-property', $comp->detailsData($client, $property));
+        return Inertia::render('admin/clients/client-property', $comp->detailsData($client, $property));
     }
 }

@@ -33,14 +33,14 @@ class ClientController extends Controller
         ->withQueryString();
 
 
-        return Inertia::render('clients/clients-index', [
+        return Inertia::render('admin/clients/clients-index', [
             'clients' => $clients
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('clients/clients-create', [
+        return Inertia::render('admin/clients/clients-create', [
             'maritalStatusOptions' => $this->client->maritalStatOpt(),
             'booleanOptions' => $this->client->boolOpt(),
             'regionOptions' => Region::orderBy('name')->get()->map(fn($region) => [
@@ -100,7 +100,7 @@ class ClientController extends Controller
         Gate::authorize('show', $client);
         $client->load('wishe.regions');
 
-        return Inertia::render('clients/clients-show', [
+        return Inertia::render('admin/clients/clients-show', [
             'client' => $client,
             'maritalStatusOptions' => $this->client->maritalStatOpt(),
             'booleanOptions' => $this->client->boolOpt(),

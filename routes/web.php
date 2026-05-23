@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('welcome');
+    return Inertia::render('site/welcome');
 })->name('home');
 
 Route::get('/sobre-nos', function () {
-    return Inertia::render('about');
+    return Inertia::render('site/about');
 })->name('public.about');
 
 Route::get('/imoveis', function (\Illuminate\Http\Request $request) {
@@ -93,11 +93,29 @@ Route::get('/imoveis', function (\Illuminate\Http\Request $request) {
         $query->orderBy('price', 'desc');
     }
 
-    return Inertia::render('properties', [
+    if ($request->filled('keyword')) {
+        $keyword = $request->keyword;
+        $query->where(function ($q) use ($keyword) {
+            $q->where('description', 'like', '%' . $keyword . '%')
+              ->orWhere('address', 'like', '%' . $keyword . '%')
+              ->orWhere('obs', 'like', '%' . $keyword . '%');
+        });
+    }
+
+    return Inertia::render('site/properties', [
         'properties' => ($request->filled('revenue') ? $query : $query->latest())->paginate(8)->withQueryString(),
         'regions' => \App\Models\Region::all(),
         'filters' => $request->only([
-            'region', 'type', 'rooms', 'building_area', 'bathrooms', 'garages', 'suites', 'status', 'revenue'
+            'region',
+            'type',
+            'rooms',
+            'building_area',
+            'bathrooms',
+            'garages',
+            'suites',
+            'status',
+            'revenue',
+            'keyword'
         ])
     ]);
 })->name('public.properties');
@@ -131,6 +149,7 @@ Route::middleware(['auth', 'web', 'verified'])->group(function () {
 
     Route::post('/clients/{client}/generate-update-link', [ClientController::class, 'generateTemporaryLink']);
     Route::post('/notify/batch-contacted', [NotifyController::class, 'batchContacted'])->name('notify.batch-contacted');
+    Route::post('/notify/batch-destroy', [NotifyController::class, 'batchDestroy'])->name('notify.batch-destroy');
 });
 
 

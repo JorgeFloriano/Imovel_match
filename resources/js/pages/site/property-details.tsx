@@ -2,7 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
 import { MapPin, Bed, Bath, Square, Car, ShowerHead, Calendar, Waves, Dog, Accessibility, Banknote, Maximize, Sparkles, AirVent, CloudSun, Flower, HeartHandshake } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import WhatsAppButton from '@/components/whatsapp-button';
+import { Breadcrumbs } from '@/components/breadcrumbs';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 
@@ -84,6 +84,13 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
             <Navbar />
 
             <main className="flex-1 w-full">
+                <div className="container mx-auto px-4 lg:px-40 py-4">
+                    <Breadcrumbs breadcrumbs={[
+                        { title: 'Início', href: route('home') },
+                        { title: 'Imóveis', href: route('public.properties') },
+                        { title: property.description || 'Detalhes do Imóvel', href: '#' }
+                    ]} />
+                </div>
                 {/* Imagem em destaque */}
                 <div className="container mx-auto lg:px-40">
                     <div className="w-full h-[40vh] md:h-[70vh] relative overflow-hidden">
@@ -258,7 +265,7 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
             {/* Footer */}
             <Footer />
 
-            <WhatsAppButton message={`Olá! Gostaria de mais informações sobre o imóvel: ${property.description}`} />
+
         </div>
     );
 }

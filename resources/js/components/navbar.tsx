@@ -1,10 +1,11 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { Menu } from 'lucide-react';
+import { Menu, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import NavButton from '@/components/nav-button';
 import AuthActions from '@/components/auth-actions';
 import { type SharedData } from '@/types';
+import FloatingSocials from '@/components/floating-socials';
 
 export default function Navbar() {
     const { auth } = usePage<SharedData>().props;
@@ -33,9 +34,18 @@ export default function Navbar() {
     const isAltoPadrao = url.includes('revenue=15000');
     const isSobreNos = url.startsWith('/sobre-nos');
 
+    const handleBack = () => {
+        if (window.history.length > 2) {
+            window.history.back();
+        } else {
+            router.get(route('home'));
+        }
+    };
+
     return (
+        <>
         <header className="sticky top-0 z-50 w-full border-b bg-[#123251] backdrop-blur-xl transition-all duration-300">
-            <div className="w-full mx-auto flex h-18 items-center justify-between px-4 lg:px-40">
+            <div className="w-full mx-auto flex h-18 items-center justify-between px-4 lg:px-10">
                 <div className="flex items-center gap-4 lg:gap-8">
                     {/* Mobile Menu */}
                     <div className="lg:hidden">
@@ -71,8 +81,16 @@ export default function Navbar() {
                         </Sheet>
                     </div>
 
-                    <div className="hover:scale-105 transition-transform cursor-pointer" onClick={() => navigateTo('home')}>
-                        <img src="/logo_m.png" alt="Logo" className="h-10 w-auto" />
+                    <div className="flex items-center gap-2">
+                        <div className="hover:scale-105 transition-transform cursor-pointer" onClick={() => navigateTo('home')}>
+                            <img src="/logo_m.png" alt="Logo" className="h-10 w-auto" />
+                        </div>
+                        {/* {!isHome && (
+                            <Button variant="ghost" onClick={handleBack} className="text-zinc-200 hover:bg-white/10 hover:text-white px-3 ml-2 lg:ml-4 border border-white/10 rounded-full h-9" title="Voltar">
+                                <ArrowLeft className="h-4 w-4 lg:mr-2" />
+                                <span className="hidden lg:inline font-bold">Voltar</span>
+                            </Button>
+                        )} */}
                     </div>
                 </div>
 
@@ -86,5 +104,7 @@ export default function Navbar() {
                 <AuthActions auth={auth} />
             </div>
         </header>
+        <FloatingSocials />
+        </>
     );
 }

@@ -1,7 +1,8 @@
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { useState } from 'react';
 
 interface ClientShowProps {
     client: {
@@ -70,7 +71,8 @@ const booleanFeatureLabels = {
 };
 
 export default function ShowClient({ client, maritalStatusOptions, booleanOptions }: ClientShowProps) {
-    const { delete: destroy, clearErrors, reset } = useForm(); // Move useForm inside the component
+    const { delete: destroy, clearErrors, reset } = useForm();
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
     const handleDelete = () => {
         destroy(route('clients.destroy', client.id));
@@ -107,27 +109,17 @@ export default function ShowClient({ client, maritalStatusOptions, booleanOption
                             <Link href={route('clients.index')}>Voltar</Link>
                         </Button>
 
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button variant="destructive">Deletar</Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogTitle>Tem certeza que deseja deletar o cadastro desse cliente ?</DialogTitle>
-                                <DialogDescription>Uma vez deletado, todas as informações relacionadas ao cliente serão perdidas.</DialogDescription>
-
-                                <DialogFooter className="gap-2">
-                                    <DialogClose asChild>
-                                        <Button variant="secondary" onClick={closeModal}>
-                                            Cancelar
-                                        </Button>
-                                    </DialogClose>
-
-                                    <Button variant="destructive" onClick={handleDelete}>
-                                        Deletar
-                                    </Button>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
+                        <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>Deletar</Button>
+                        <ConfirmDialog
+                            open={isDeleteDialogOpen}
+                            onOpenChange={(open) => {
+                                setIsDeleteDialogOpen(open);
+                                if (!open) closeModal();
+                            }}
+                            onConfirm={handleDelete}
+                            title="Tem certeza que deseja deletar o cadastro desse cliente ?"
+                            description="Uma vez deletado, todas as informações relacionadas ao cliente serão perdidas."
+                        />
                     </div>
                 </div>
 

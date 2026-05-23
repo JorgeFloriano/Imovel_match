@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
-
+import { useState } from 'react';
 interface PropertyShowProps {
     property: {
         id: number;
@@ -78,6 +78,7 @@ const booleanFeatureLabels = {
 
 export default function ShowProperty({ property, booleanOptions }: PropertyShowProps) {
     const { delete: destroy, reset, clearErrors } = useForm();
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
     const handleDelete = () => {
         destroy(route('properties.destroy', property.id));
@@ -118,27 +119,17 @@ export default function ShowProperty({ property, booleanOptions }: PropertyShowP
                             <Link href={route('properties.index')}>Voltar</Link>
                         </Button>
 
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button variant="destructive">Deletar</Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogTitle>Tem certeza que deseja deletar o cadastro desse imóvel ?</DialogTitle>
-                                <DialogDescription>Uma vez deletado, todas as informações relacionadas ao imóvel serão perdidas.</DialogDescription>
-
-                                <DialogFooter className="gap-2">
-                                    <DialogClose asChild>
-                                        <Button variant="secondary" onClick={closeModal}>
-                                            Cancelar
-                                        </Button>
-                                    </DialogClose>
-
-                                    <Button variant="destructive" onClick={handleDelete}>
-                                        Deletar
-                                    </Button>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
+                        <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>Deletar</Button>
+                        <ConfirmDialog
+                            open={isDeleteDialogOpen}
+                            onOpenChange={(open) => {
+                                setIsDeleteDialogOpen(open);
+                                if (!open) closeModal();
+                            }}
+                            onConfirm={handleDelete}
+                            title="Tem certeza que deseja deletar o cadastro desse imóvel ?"
+                            description="Uma vez deletado, todas as informações relacionadas ao imóvel serão perdidas."
+                        />
                     </div>
                 </div>
 

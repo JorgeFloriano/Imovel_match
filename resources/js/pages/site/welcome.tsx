@@ -3,8 +3,7 @@ import { useState } from 'react';
 import { Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import WhatsAppButton from '@/components/whatsapp-button';
-import InstagramButton from '@/components/instagram-button';
+
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 
@@ -14,7 +13,7 @@ export default function Welcome() {
     const handleExplore = () => {
         const params: any = {};
         if (revenue) params.revenue = revenue;
-        
+
         router.get(route('public.properties'), params);
     };
 
@@ -42,9 +41,9 @@ export default function Welcome() {
                         <h1 className="text-4xl md:text-5xl font-extrabold text-white my-12 tracking-tight leading-none">
                             Seu novo capítulo <br className="block md:hidden" /> <span className="text-pc-gold">começa agora</span>
                         </h1>
-                        <p className="text-lg md:text-2xl text-zinc-200 mb-6 mx-auto px-4 font-light leading-relaxed">
-                            <div className="hidden md:block">Curadoria exclusiva de empreendimentos que combinam com seu estilo de vida. <br/> Descubra o lar dos seus sonhos com a Marta de Souza Imobiliária.</div><div>Preencha o campo abaixo para iniciarmos a busca pelo imóvel perfeito.</div>
-                        </p>
+                        <div className="text-lg md:text-2xl text-zinc-200 mb-6 mx-auto px-4 font-light leading-relaxed">
+                            <div className="hidden md:block">Curadoria exclusiva de empreendimentos que combinam com seu estilo de vida. <br /> Descubra o lar dos seus sonhos com a Marta de Souza Imobiliária.</div><div>Preencha o campo abaixo para iniciarmos a busca pelo imóvel perfeito.</div>
+                        </div>
 
                         <div id="search" className="max-w-lg md:mb-40 mb-20 mx-auto bg-white/10 backdrop-blur-md p-2 rounded-2xl border border-white/20 shadow-[0_0_30px_rgba(212,175,55,0.15)] flex flex-col sm:flex-row gap-2 items-center hover:shadow-[0_0_40px_rgba(212,175,55,0.25)] transition-all duration-300">
                             <div className="relative w-full flex-1">
@@ -77,13 +76,13 @@ export default function Welcome() {
                                     animation: float-icon 4s ease-in-out infinite;
                                 }
                             `}</style>
-                            <Button 
+                            <Button
                                 onClick={handleExplore}
                                 className="group relative overflow-hidden h-15 w-full sm:w-auto bg-[#123251] hover:bg-[#0a1e33] text-white uppercase font-bold px-10 py-6 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(18,50,81,0.4)] hover:shadow-[0_0_25px_rgba(212,175,55,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-500 border border-pc-gold/20 hover:border-pc-gold/40 text-lg tracking-widest whitespace-nowrap"
                             >
                                 {/* Efeito de luz contínuo */}
                                 <div className="absolute top-0 -left-[150%] w-[150%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[30deg] animate-sweep" />
-                                
+
                                 <img src="/logo_build.png" alt="Logo" className="h-10 w-auto mr-3 relative z-10 drop-shadow-md animate-float-icon" />
                                 <span className="relative z-10">buscar!</span>
                             </Button>
@@ -94,8 +93,7 @@ export default function Welcome() {
 
             <Footer />
 
-            <WhatsAppButton />
-            <InstagramButton />
+
         </div>
     );
 }

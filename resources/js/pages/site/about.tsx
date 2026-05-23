@@ -1,14 +1,21 @@
 import { Head } from '@inertiajs/react';
+import { Breadcrumbs } from '@/components/breadcrumbs';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
-import WhatsAppButton from '@/components/whatsapp-button';
-import InstagramButton from '@/components/instagram-button';
+
 
 export default function About() {
     return (
         <div className="min-h-screen bg-[#123251] flex flex-col font-sans relative">
             <Head title="Sobre Nós | Marta de Souza Imobiliária" />
             <Navbar />
+
+            <div className="container mx-auto px-6 py-4 absolute top-18 z-20 w-full left-0 right-0">
+                <Breadcrumbs breadcrumbs={[
+                    { title: 'Início', href: route('home') },
+                    { title: 'Quem Somos', href: '#' }
+                ]} />
+            </div>
 
             <div className="pt-20 pb-4 flex justify-center opacity-90 gap-20">
                 {/* We use an image with brightness adjustments to make the logo look somewhat golden/bright like the image provided */}
@@ -93,8 +100,7 @@ export default function About() {
             </main>
 
             <Footer />
-            <WhatsAppButton />
-            <InstagramButton />
+
         </div>
     );
 }
