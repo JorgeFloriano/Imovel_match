@@ -44,35 +44,42 @@ async def bot_marta():
                 target_phone_btn = None
                 
                 for row in rows:
-                    # O botão do WhatsApp agora está em um TH
-                    phone_btn = await row.query_selector("th button")
+                    phone_btn = await row.query_selector("td:nth-child(6) button")
                     if not phone_btn: continue
                     
-                    # Verifica se já foi clicado (cor azul)
                     is_clicked = await phone_btn.evaluate("el => el.classList.contains('text-blue-600') || el.classList.contains('text-blue-500')")
                     
                     if not is_clicked:
                         target_row = row
                         target_phone_btn = phone_btn
+                        target_checkbox = await row.query_selector("td:nth-child(1) input[type='checkbox']")
                         break
                 
                 if not target_row:
                     print("\n✅ Todos os clientes visíveis foram processados!")
                     # Finaliza salvando no sistema
-                    save_btn = await page_sistema.query_selector("th button[title*='Registrar']")
-                    if save_btn and await save_btn.is_enabled():
-                        print("💾 Clicando em Salvar Tudo no sistema...")
-                        await save_btn.click()
-                        await asyncio.sleep(2)
+                    select_trigger = await page_sistema.query_selector("#batch-action-select-container button[role='combobox']")
+                    if select_trigger:
+                        await select_trigger.click()
+                        await asyncio.sleep(1)
+                        notify_option = await page_sistema.query_selector("div[role='option']:has(#batch-action-notify)")
+                        if notify_option:
+                            print("💾 Clicando em 'Todos notificados' no sistema...")
+                            await notify_option.click()
+                            await asyncio.sleep(2)
                     break
 
                 client_id = await target_row.get_attribute("data-id")
-                # Busca o nome na segunda coluna (td:nth-child(2))
-                name_cell = await target_row.query_selector("td:nth-child(2)")
-                client_name = (await name_cell.inner_text()).strip()
+                name_cell = await target_row.query_selector("td:nth-child(3)")
+                client_name = (await name_cell.inner_text()).strip() if name_cell else "Desconhecido"
                 print(f"\n👤 [{processed_count + 1}] Analisando: {client_name} (ID: {client_id})")
 
-                # 2. Clica no nome para copiar a URL do WhatsApp
+                target_phone_btn = await target_row.query_selector("td:nth-child(6) button")
+                if not target_phone_btn:
+                    print(f"⚠️ Botão de WhatsApp não encontrado para {client_name}")
+                    continue
+
+                # 2. Clica no telefone para copiar a URL do WhatsApp
                 await target_phone_btn.click()
                 await asyncio.sleep(0.8)
                 wa_link = await page_sistema.evaluate("navigator.clipboard.readText()")
@@ -126,6 +133,17 @@ async def bot_marta():
                     
                     if len(previous_messages) > 0:
                         print(f"⏭️ {client_name} já possui histórico ({len(previous_messages)} mensagens). Pulando.")
+                        
+                        # Verifica se está no filtro 'Nunca Notificado'
+                        filter_text = await page_sistema.evaluate("document.querySelector('#filter-notified-until-container button').innerText")
+                        is_never_notified = "Nunca Notificado" in filter_text
+                        
+                        if is_never_notified:
+                            print(f"☑️ Marcando checkbox de {client_name} porque estava como Nunca Notificado mas já tinha histórico.")
+                            await page_sistema.bring_to_front()
+                            is_checked = await target_checkbox.evaluate("el => el.checked")
+                            if not is_checked:
+                                await target_checkbox.click()
                         continue
 
                     # SE CHEGOU AQUI: Número é válido e é o primeiro contato
@@ -150,6 +168,10 @@ async def bot_marta():
                                 final_check = await page_wa.query_selector_all(".message-in, .message-out")
                                 if len(final_check) > 0:
                                     print(f"⏭️ {client_name} carregou histórico agora. Cancelando envio.")
+                                    await page_sistema.bring_to_front()
+                                    is_checked = await target_checkbox.evaluate("el => el.checked")
+                                    if is_checked:
+                                        await target_checkbox.click()
                                     continue
 
                                 await msg_input.focus()
@@ -158,10 +180,21 @@ async def bot_marta():
                                 await page_wa.keyboard.up("Control")
                                 
                                 await asyncio.sleep(1.5)
-                                await page_wa.keyboard.press("Enter") 
+                                #await page_wa.keyboard.press("Enter") 
                                 print(f"✅ Mensagem enviada para {client_name}")
+                                
+                                # Marcar o checkbox se não estiver marcado
+                                await page_sistema.bring_to_front()
+                                is_checked = await target_checkbox.evaluate("el => el.checked")
+                                if not is_checked:
+                                    await target_checkbox.click()
+                                    print(f"☑️ Checkbox marcado para {client_name}")
                             else:
                                 print(f"⚠️ Campo de chat sumiu para {client_name}. Pulando.")
+                                await page_sistema.bring_to_front()
+                                is_checked = await target_checkbox.evaluate("el => el.checked")
+                                if is_checked:
+                                    await target_checkbox.click()
                         except Exception as e:
                             print(f"⚠️ Erro ao focar no chat de {client_name}: {e}")
 

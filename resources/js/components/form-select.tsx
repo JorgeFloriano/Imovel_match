@@ -7,7 +7,7 @@ interface FormSelectProps {
     value: string | boolean;
     onValueChange: (value: string) => void;
     options?: Record<string, string>;
-    customOptions?: { value: string; label: string }[];
+    customOptions?: { value: string; label: React.ReactNode }[];
     placeholder?: string;
     error?: string;
     className?: string;

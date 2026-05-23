@@ -5,7 +5,7 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { Head, useForm, router, usePage } from '@inertiajs/react'; // Import router from Inertia
-import { Check, MessageCircle, CheckCircle, Send, Circle, ThermometerSun, Trash, Flame, ThermometerSnowflake, Snowflake, Thermometer } from 'lucide-react';
+import { Check, MessageCircle, CheckCircle, Send, ThermometerSun, Flame, ThermometerSnowflake, Snowflake, Thermometer, Trash2 } from 'lucide-react';
 import React, { useEffect, useState, useMemo } from 'react'; // Add useEffect
 import { useSortableTable } from '@/hooks/useSortableTable';
 import { SortableTableHeader } from '@/components/ui/sortable-table-header';
@@ -207,7 +207,6 @@ export default function Clients({
         try {
             await navigator.clipboard.writeText(marketingText);
             setClickedClients(prev => Array.from(new Set([...prev, client.id])));
-            setSelectedClients(prev => Array.from(new Set([...prev, client.id])));
         } catch (err) {
             console.error('Failed to copy marketing text: ', err);
         }
@@ -351,16 +350,18 @@ export default function Clients({
                             customOptions={propertyOptions}
                             error={errors.property_id}
                         />
-                        <FormSelect
-                            label="Confirmar para selecionados:"
-                            value={batchAction}
-                            onValueChange={handleBatchSelect}
-                            customOptions={[
-                                { value: 'none', label: 'Selecione uma ação...' },
-                                { value: 'notify', label: 'Todos notificados' },
-                                { value: 'delete', label: 'Excluir todos' }
-                            ]}
-                        />
+                        <div id="batch-action-select-container">
+                            <FormSelect
+                                label="Confirmar para selecionados:"
+                                value={batchAction}
+                                onValueChange={handleBatchSelect}
+                                customOptions={[
+                                    { value: 'none', label: 'Selecione uma ação...' },
+                                    { value: 'notify', label: <span id="batch-action-notify">Todos notificados</span> },
+                                    { value: 'delete', label: <span id="batch-action-delete" className="flex items-center gap-2 text-red-600"><Icon iconNode={Trash2} className="h-4 w-4" /> Excluir todos</span> }
+                                ]}
+                            />
+                        </div>
                         <FormInput
                             type="number"
                             label="Buscar por ID ou WhatsApp:"
@@ -389,23 +390,24 @@ export default function Clients({
                                 error={errors.contact_origin}
                                 className="w-full"
                             />
-                            <FormSelect
-                                label="Notificado até"
-                                value={data.notified_until}
-                                onValueChange={(value) => handleSetData('notified_until', value)}
-                                customOptions={[
-                                    { value: 'nulo', label: 'Nunca Notificado' },
-                                    { value: 'todos', label: 'Todos' },
-                                    { value: 'hoje', label: 'Hoje' },
-                                    { value: 'ontem', label: 'Ontem ou mais recente' },
-                                    { value: '3_dias', label: 'Últimos 3 dias' },
-                                    { value: '7_dias', label: 'Última semana' },
-                                    { value: '15_dias', label: 'Últimas 2 semanas' },
-                                    { value: '30_dias', label: 'Último mês' }
-                                ]}
-                                error={errors.notified_until}
-                                className="w-full"
-                            />
+                            <div id="filter-notified-until-container" className="w-full">
+                                <FormSelect
+                                    label="Notificado até"
+                                    value={data.notified_until}
+                                    onValueChange={(value) => handleSetData('notified_until', value)}
+                                    customOptions={[
+                                        { value: 'nulo', label: 'Nunca Notificado' },
+                                        { value: 'todos', label: 'Todos' },
+                                        { value: 'hoje', label: 'Hoje' },
+                                        { value: 'ontem', label: 'Ontem ou mais recente' },
+                                        { value: '3_dias', label: 'Últimos 3 dias' },
+                                        { value: '7_dias', label: 'Última semana' },
+                                        { value: '15_dias', label: 'Últimas 2 semanas' },
+                                        { value: '30_dias', label: 'Último mês' }
+                                    ]}
+                                    error={errors.notified_until}
+                                />
+                            </div>
                             <FormSelect
                                 label="Temperatura"
                                 value={data.temperature}
