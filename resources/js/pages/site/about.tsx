@@ -10,30 +10,30 @@ export default function About() {
             <Head title="Sobre Nós | Marta de Souza Imobiliária" />
             <Navbar />
 
-            <div className="container mx-auto px-6 py-4 absolute top-18 z-20 w-full left-0 right-0">
-                <Breadcrumbs breadcrumbs={[
+            <div className="container mx-auto px-4 py-8 relative z-30">
+                <Breadcrumbs variant="dark" breadcrumbs={[
                     { title: 'Início', href: route('home') },
                     { title: 'Quem Somos', href: '#' }
                 ]} />
             </div>
 
-            <div className="pt-20 pb-4 flex justify-center opacity-90 gap-20">
+            <div className="pt-8 pb-4 flex justify-center opacity-90 gap-20">
                 {/* We use an image with brightness adjustments to make the logo look somewhat golden/bright like the image provided */}
                 <img
                     src="/logo_build.png"
                     alt="Marta de Souza Imobiliária"
-                    className="h-28 w-auto hidden md:block"
+                    className="h-28 w-auto hidden lg:block"
                 />
                 <img
                     src="/logo_text.png"
                     alt="Marta de Souza Imobiliária"
-                    className="w-auto px-8"
+                    className="w-auto px-8 h-30 md:h-40"
                 //style={{ filter: 'brightness(0) invert(0.8) sepia(1) hue-rotate(5deg) saturate(4)' }}
                 />
                 <img
                     src="/logo_build.png"
                     alt="Marta de Souza Imobiliária"
-                    className="h-28 w-auto hidden md:block"
+                    className="h-28 w-auto hidden lg:block"
                 />
             </div>
 

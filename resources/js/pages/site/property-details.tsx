@@ -1,6 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
-import { MapPin, Bed, Bath, Square, Car, ShowerHead, Calendar, Waves, Dog, Accessibility, Banknote, Maximize, Sparkles, AirVent, CloudSun, Flower, HeartHandshake } from 'lucide-react';
+import { MapPin, Bed, Bath, Square, Car, ShowerHead, Calendar, Waves, Dog, Accessibility, Banknote, Maximize, Sparkles, AirVent, CloudSun, Flower, HeartHandshake, FileText } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import Navbar from '@/components/navbar';
@@ -33,6 +33,8 @@ interface Property {
     installment_payment?: boolean | null;
     incc_financing?: boolean | null;
     finsh_type?: string | null;
+    details?: string | null;
+    book?: string | null;
     images?: { id: number; path: string }[];
 }
 
@@ -59,7 +61,7 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
     const renderBoolean = (value?: boolean | null) => {
         if (value === true) return <span className="text-green-600 font-semibold flex items-center gap-1">Sim</span>;
         if (value === false) return <span className="text-red-500 font-semibold flex items-center gap-1">Não</span>;
-        return <span className="text-zinc-400">Não informado</span>;
+        return <span className="text-zinc-400">Não inf.</span>;
     };
 
     const fallbackImages = [
@@ -111,15 +113,21 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
                             </>
                         )}
                     </div>
-                    {allImages.length > 1 && (
-                        <div className="flex gap-2 mt-4 overflow-x-auto pb-2 custom-scrollbar">
-                            {allImages.map((img, idx) => (
+                    <div className="flex justify-between items-start mt-4 gap-4">
+                        <div className="flex gap-2 overflow-x-auto pb-2 custom-scrollbar flex-1">
+                            {allImages.length > 1 && allImages.map((img, idx) => (
                                 <button key={idx} onClick={() => setCurrentImageIndex(idx)} className={`shrink-0 w-24 h-16 rounded-md overflow-hidden border-2 transition-colors ${currentImageIndex === idx ? 'border-pc-gold' : 'border-transparent'}`}>
                                     <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
                                 </button>
                             ))}
                         </div>
-                    )}
+                        {property.book && (
+                            <a href={`/storage/${property.book}`} target="_blank" rel="noopener noreferrer" className="shrink-0 flex flex-col items-center justify-center text-pc-blue hover:text-pc-gold transition-colors p-3 bg-[#f5f9fc] border border-pc-blue/10 rounded-xl shadow-sm hover:shadow-md min-w-[90px]">
+                                <FileText className="h-8 w-8 mb-1" />
+                                <span className="text-xs font-bold uppercase tracking-wider">Book</span>
+                            </a>
+                        )}
+                    </div>
                 </div>
 
                 <div className="container mx-auto px-4 lg:px-40 py-12">
@@ -256,7 +264,7 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
                     {property.obs && (
                         <div className="max-w-4xl">
                             <h3 className="text-2xl font-bold text-zinc-900 mb-6">Sobre o Imóvel</h3>
-                            <p className="text-zinc-600 leading-relaxed text-lg whitespace-pre-wrap">{property.obs}</p>
+                            <p className="text-zinc-600 leading-relaxed text-lg whitespace-pre-wrap">{property.obs}<br/>{property.details}</p>
                         </div>
                     )}
                 </div>

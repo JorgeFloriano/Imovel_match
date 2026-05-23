@@ -32,7 +32,7 @@ export default function Welcome() {
 
                     <div className="relative z-10 container mx-auto px-4 text-center">
                         <div className="flex justify-center mb-6 md:mb-20">
-                            <img src="/logo_text.png" alt="Logo" className="h-24 md:h-40 w-auto" />
+                            <img src="/logo_text.png" alt="Logo" className="h-30 md:h-40 w-auto" />
                         </div>
 
                         <Badge variant="outline" className="mb-6 text-white border-white/30 px-4 py-1.5 rounded-full backdrop-blur-sm bg-white/10 uppercase tracking-[0.2em] text-[10px] font-bold hidden md:block mx-auto">

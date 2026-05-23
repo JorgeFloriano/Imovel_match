@@ -50,7 +50,6 @@ class PropertyRequest extends FormRequest
             'building_floors' => 'nullable|integer|min:0|max:99',
             'property_floors' => 'nullable|integer|min:0|max:99',
             'delivery_key' => 'nullable|date',
-            'building_area' => 'nullable|numeric|min:0|max:9999',
             'installment_payment' => 'nullable|boolean',
             'incc_financing' => 'nullable|boolean',
             'documents' => 'nullable|boolean',
@@ -62,6 +61,8 @@ class PropertyRequest extends FormRequest
             'acept_pets' => 'nullable|boolean',
             'acessibility' => 'nullable|boolean',
             'obs' => 'nullable|string|max:255',
+            'details' => 'nullable|string|max:600',
+            'book' => 'nullable|file|mimes:pdf|max:1024',
         ];
     }
 }

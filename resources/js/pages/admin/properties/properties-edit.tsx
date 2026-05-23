@@ -1,5 +1,6 @@
 import { FormInput } from '@/components/form-input';
 import { FormSelect } from '@/components/form-select';
+import { FormTextarea } from '@/components/form-textarea';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { Transition } from '@headlessui/react';
@@ -51,6 +52,8 @@ type PropertyEditForm = {
     acept_pets: boolean | null;
     acessibility: boolean | null;
     obs: string | null;
+    details: string | null;
+    book: File | string | null;
 };
 
 interface EditPropertyProps {
@@ -112,6 +115,8 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
         acept_pets: property.acept_pets || null,
         acessibility: property.acessibility || null,
         obs: property.obs || '',
+        details: property.details || null,
+        book: property.book || null,
     });
 
     const handleSetData = (field: keyof PropertyEditForm, value: string | number | boolean | File | File[] | null) => {
@@ -121,6 +126,7 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
     transform((data) => ({
         ...data,
         image: typeof data.image === 'string' ? null : data.image,
+        book: typeof data.book === 'string' ? null : data.book,
     }));
 
     const submit: FormEventHandler = (e) => {
@@ -196,105 +202,7 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
                             />
                         </div>
 
-                        <div className="mb-3 grid grid-cols-1 gap-4">
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-sm font-medium text-zinc-700">Imagem do Card (Máx 500KB)</label>
-                                <input
-                                    type="file"
-                                    accept="image/jpeg, image/png, image/jpg"
-                                    onChange={(e) => {
-                                        const file = e.target.files ? e.target.files[0] : null;
-                                        if (file && file.size > 500 * 1024) {
-                                            alert("A imagem do card deve ter no máximo 500KB.");
-                                            e.target.value = '';
-                                            return;
-                                        }
-                                        handleSetData('image', file);
-                                    }}
-                                    className="block w-full text-sm text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pc-blue/10 file:text-pc-blue hover:file:bg-pc-blue/20 focus:outline-none focus:ring-2 focus:ring-pc-blue/20 cursor-pointer"
-                                />
-                                {errors.image && <p className="text-sm text-red-500">{errors.image}</p>}
-                                {data.image instanceof File && (
-                                    <div className="mt-2 h-24 w-32 shrink-0 overflow-hidden rounded-md border">
-                                        <img src={URL.createObjectURL(data.image)} alt="Preview Nova" className="h-full w-full object-cover" />
-                                    </div>
-                                )}
-                                {typeof property.image === 'string' && !(data.image instanceof File) && (
-                                    <div className="mt-2 h-24 w-32 shrink-0 overflow-hidden rounded-md border">
-                                        <img src={`/storage/${property.image}`} alt="Preview Atual" className="h-full w-full object-cover" />
-                                        <p className="text-xs text-zinc-500 mt-1">Imagem atual.</p>
-                                    </div>
-                                )}
-                            </div>
 
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-sm font-medium text-zinc-700">Imagens do Carrossel (Máx 6 imagens, 1MB cada)</label>
-                                <input
-                                    type="file"
-                                    multiple
-                                    accept="image/jpeg, image/png, image/jpg"
-                                    onChange={(e) => {
-                                        const files = Array.from(e.target.files || []);
-                                        let validFiles = [...data.property_images];
-                                        
-                                        for (const file of files) {
-                                            if (validFiles.length + existingImages.length >= 6) {
-                                                alert("Você pode ter no máximo 6 imagens ao carrossel.");
-                                                break;
-                                            }
-                                            if (file.size > 1024 * 1024) {
-                                                alert(`A imagem ${file.name} excede o limite de 1MB e não foi adicionada.`);
-                                                continue;
-                                            }
-                                            validFiles.push(file);
-                                        }
-                                        
-                                        handleSetData('property_images', validFiles);
-                                        e.target.value = '';
-                                    }}
-                                    className="block w-full text-sm text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pc-blue/10 file:text-pc-blue hover:file:bg-pc-blue/20 focus:outline-none focus:ring-2 focus:ring-pc-blue/20 cursor-pointer"
-                                />
-                                {(data.property_images.length > 0 || existingImages.length > 0) && (
-                                    <div className="mt-2 flex flex-wrap gap-2">
-                                        {existingImages.map((img, index) => (
-                                            <div key={`exist-${img.id}`} className="relative h-24 w-32 overflow-hidden rounded-md border group">
-                                                <img src={`/storage/${img.path}`} alt={`Existing ${index}`} className="h-full w-full object-cover" />
-                                                <button
-                                                    type="button"
-                                                    onClick={() => {
-                                                        const newExisting = [...existingImages];
-                                                        newExisting.splice(index, 1);
-                                                        const newDeleted = [...data.images_to_delete, img.id];
-                                                        setExistingImages(newExisting);
-                                                        setData('images_to_delete', newDeleted);
-                                                    }}
-                                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                                                >
-                                                    &times;
-                                                </button>
-                                            </div>
-                                        ))}
-                                        {data.property_images.map((file, index) => (
-                                            <div key={`new-${index}`} className="relative h-24 w-32 overflow-hidden rounded-md border group">
-                                                <img src={URL.createObjectURL(file)} alt={`Preview ${index}`} className="h-full w-full object-cover" />
-                                                <button
-                                                    type="button"
-                                                    onClick={() => {
-                                                        const newImages = [...data.property_images];
-                                                        newImages.splice(index, 1);
-                                                        handleSetData('property_images', newImages);
-                                                    }}
-                                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                                                >
-                                                    &times;
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                                {(errors as any).property_images && <p className="text-sm text-red-500">{(errors as any).property_images}</p>}
-                            </div>
-                        </div>
                     </div>
 
                     <div className="mb-3 grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -487,11 +395,164 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
                         <div className="col-span-4 md:col-span-2">
                             <FormInput
                                 label="Observações"
+                                placeholder="Ex: Casa com 2 quartos, 1 suite, etc."
+                                maxLength={255}
                                 value={data.obs || ''}
                                 onChange={(value) => handleSetData('obs', value)}
                                 error={errors.obs}
                             />
                         </div>
+                    </div>
+
+                    <div className="mb-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="flex flex-col gap-2 p-4 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-zinc-50 dark:bg-zinc-900/50">
+                            <label className="text-sm font-bold text-zinc-700 dark:text-zinc-300">Imagem do Card (Máx 500KB)</label>
+                            <input
+                                type="file"
+                                accept="image/jpeg, image/png, image/jpg"
+                                onChange={(e) => {
+                                    const file = e.target.files ? e.target.files[0] : null;
+                                    if (file && file.size > 500 * 1024) {
+                                        alert("A imagem do card deve ter no máximo 500KB.");
+                                        e.target.value = '';
+                                        return;
+                                    }
+                                    handleSetData('image', file);
+                                }}
+                                className="block w-full text-sm text-zinc-500 dark:text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-pc-blue/10 file:text-pc-blue dark:file:bg-pc-blue/30 dark:file:text-pc-blue hover:file:bg-pc-blue/20 dark:hover:file:bg-pc-blue/40 focus:outline-none focus:ring-2 focus:ring-pc-blue/20 cursor-pointer transition-colors"
+                            />
+                            {errors.image && <p className="text-sm text-red-500 font-medium">{errors.image}</p>}
+                            {data.image instanceof File && (
+                                <div className="mt-2 h-24 w-32 shrink-0 overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm">
+                                    <img src={URL.createObjectURL(data.image)} alt="Preview Nova" className="h-full w-full object-cover" />
+                                </div>
+                            )}
+                            {typeof property.image === 'string' && !(data.image instanceof File) && (
+                                <div className="mt-2 h-24 w-32 shrink-0 overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm relative group">
+                                    <img src={`/storage/${property.image}`} alt="Preview Atual" className="h-full w-full object-cover" />
+                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <span className="text-white text-xs font-bold">Atual</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="flex flex-col gap-2 p-4 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-zinc-50 dark:bg-zinc-900/50">
+                            <label className="text-sm font-bold text-zinc-700 dark:text-zinc-300">Carrossel (Máx 6 imagens, 1MB cada)</label>
+                            <input
+                                type="file"
+                                multiple
+                                accept="image/jpeg, image/png, image/jpg"
+                                onChange={(e) => {
+                                    const files = Array.from(e.target.files || []);
+                                    let validFiles = [...data.property_images];
+
+                                    for (const file of files) {
+                                        if (validFiles.length + existingImages.length >= 6) {
+                                            alert("Você pode ter no máximo 6 imagens ao carrossel.");
+                                            break;
+                                        }
+                                        if (file.size > 1024 * 1024) {
+                                            alert(`A imagem ${file.name} excede o limite de 1MB e não foi adicionada.`);
+                                            continue;
+                                        }
+                                        validFiles.push(file);
+                                    }
+
+                                    handleSetData('property_images', validFiles);
+                                    e.target.value = '';
+                                }}
+                                className="block w-full text-sm text-zinc-500 dark:text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-pc-blue/10 file:text-pc-blue dark:file:bg-pc-blue/30 dark:file:text-pc-blue hover:file:bg-pc-blue/20 dark:hover:file:bg-pc-blue/40 focus:outline-none focus:ring-2 focus:ring-pc-blue/20 cursor-pointer transition-colors"
+                            />
+                            {(data.property_images.length > 0 || existingImages.length > 0) && (
+                                <div className="mt-2 flex flex-wrap gap-2">
+                                    {existingImages.map((img, index) => (
+                                        <div key={`exist-${img.id}`} className="relative h-24 w-32 overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm group">
+                                            <img src={`/storage/${img.path}`} alt={`Existing ${index}`} className="h-full w-full object-cover" />
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const newExisting = [...existingImages];
+                                                    newExisting.splice(index, 1);
+                                                    const newDeleted = [...data.images_to_delete, img.id];
+                                                    setExistingImages(newExisting);
+                                                    setData('images_to_delete', newDeleted);
+                                                }}
+                                                className="absolute top-1 right-1 bg-red-500/90 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm shadow-sm"
+                                            >
+                                                &times;
+                                            </button>
+                                        </div>
+                                    ))}
+                                    {data.property_images.map((file, index) => (
+                                        <div key={`new-${index}`} className="relative h-24 w-32 overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm group">
+                                            <img src={URL.createObjectURL(file)} alt={`Preview ${index}`} className="h-full w-full object-cover" />
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const newImages = [...data.property_images];
+                                                    newImages.splice(index, 1);
+                                                    handleSetData('property_images', newImages);
+                                                }}
+                                                className="absolute top-1 right-1 bg-red-500/90 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm shadow-sm"
+                                            >
+                                                &times;
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            {(errors as any).property_images && <p className="text-sm text-red-500 font-medium">{(errors as any).property_images}</p>}
+                        </div>
+
+                        <div className="flex flex-col gap-2 p-4 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-zinc-50 dark:bg-zinc-900/50">
+                            <label className="text-sm font-bold text-zinc-700 dark:text-zinc-300">Book Digital (PDF, Máx 1MB)</label>
+                            <input
+                                type="file"
+                                accept="application/pdf"
+                                onChange={(e) => {
+                                    const file = e.target.files ? e.target.files[0] : null;
+                                    if (file && file.size > 1024 * 1024) {
+                                        alert("O book deve ter no máximo 1MB.");
+                                        e.target.value = '';
+                                        return;
+                                    }
+                                    handleSetData('book', file);
+                                }}
+                                className="block w-full text-sm text-zinc-500 dark:text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-pc-blue/10 file:text-pc-blue dark:file:bg-pc-blue/30 dark:file:text-pc-blue hover:file:bg-pc-blue/20 dark:hover:file:bg-pc-blue/40 focus:outline-none focus:ring-2 focus:ring-pc-blue/20 cursor-pointer transition-colors"
+                            />
+                            {errors.book && <p className="text-sm text-red-500 font-medium">{errors.book}</p>}
+                            {data.book instanceof File && (
+                                <div className="mt-2 h-24 w-32 shrink-0 flex items-center justify-center overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm bg-white dark:bg-zinc-800">
+                                    <div className="flex flex-col items-center text-red-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" /><polyline points="14 2 14 8 20 8" /><path d="M8 13h2a2 2 0 0 0 0-4H8v8" /><path d="M14 17h-2v-8h2a2 2 0 0 1 0 4h-2" /></svg>
+                                        <span className="text-xs font-bold mt-1 max-w-[100px] truncate text-center">{data.book.name}</span>
+                                    </div>
+                                </div>
+                            )}
+                            {typeof property.book === 'string' && !(data.book instanceof File) && (
+                                <div className="mt-2 h-24 w-32 shrink-0 flex items-center justify-center overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-sm bg-white dark:bg-zinc-800 relative group">
+                                    <div className="flex flex-col items-center text-red-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" /><polyline points="14 2 14 8 20 8" /><path d="M8 13h2a2 2 0 0 0 0-4H8v8" /><path d="M14 17h-2v-8h2a2 2 0 0 1 0 4h-2" /></svg>
+                                        <span className="text-xs font-bold mt-1 max-w-[100px] truncate text-center">Book Salvo</span>
+                                    </div>
+                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <span className="text-white text-xs font-bold">Atual</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4">
+                        <FormTextarea
+                            label="Detalhes (Texto Longo)"
+                            placeholder="Descreva os detalhes e opcionais do imóvel..."
+                            maxLength={600}
+                            value={data.details || ''}
+                            onChange={(value) => handleSetData('details', value)}
+                            error={errors.details}
+                        />
                     </div>
 
                     <div className="flex items-center gap-4">

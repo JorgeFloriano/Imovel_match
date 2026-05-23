@@ -241,6 +241,7 @@ input[type='date']::-moz-calendar-picker-indicator {
 
     body {
         @apply bg-background text-foreground;
+        overscroll-behavior-y: none;
     }
 
     a, button, [role="button"], input[type="button"], input[type="submit"], input[type="reset"], select, summary {

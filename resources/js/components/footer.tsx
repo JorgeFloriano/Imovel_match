@@ -4,7 +4,7 @@ export default function Footer() {
     return (
         <footer className="bg-zinc-950 text-white pt-16 pb-8">
             <div className="container mx-auto px-4 lg:px-40">
-                <div className="flex flex-col md:flex-row items-center justify-between">
+                <div className="flex flex-col md:flex-row justify-between">
                     <div>
                         <img src="/logo_text.png" alt="Logo" className="h-12 w-auto mb-6 brightness-0 invert" />
                         <p className="text-zinc-400 text-sm leading-relaxed mb-10 max-w-md">

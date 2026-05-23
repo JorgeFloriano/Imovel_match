@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
 import NavButton from './nav-button';
-import { LogIn, UserPlus } from 'lucide-react';
+import { Cog, LogIn, UserPlus } from 'lucide-react';
 import { Auth } from '@/types';
 
 interface AuthActionsProps {
@@ -13,7 +13,8 @@ export default function AuthActions({ auth }: AuthActionsProps) {
             <div className="flex items-center gap-3">
                 <Link href={route('properties.index')}>
                     <NavButton variant="primary">
-                        Gerenciar
+                        <span className="hidden md:block">Gerenciar</span>
+                        <span className="block md:hidden"><Cog className="h-8 w-8" /></span>
                     </NavButton>
                 </Link>
             </div>

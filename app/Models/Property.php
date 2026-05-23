@@ -59,6 +59,8 @@ class Property extends Model
         'acept_pets',
         'acessibility',
         'obs',
+        'details',
+        'book',
     ];
 
     /**

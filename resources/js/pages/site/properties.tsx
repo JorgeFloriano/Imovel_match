@@ -205,15 +205,6 @@ export default function Properties({ properties, regions, filters }: PropertiesP
                                 </p>
                             </div>
 
-                            <div className="flex justify-center gap-20 -translate-y-4 md:-translate-y-8">
-                                <img
-                                    src="/logo_text.png"
-                                    alt="Marta de Souza Imobiliária"
-                                    className="h-28 w-auto"
-                                    style={{ filter: 'brightness(0) saturate(100%) invert(17%) sepia(45%) saturate(3071%) hue-rotate(187deg) brightness(91%) contrast(93%)' }}
-                                />
-                            </div>
-
                             <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
                                 <Dialog disableDarkMode open={isModalOpen} onOpenChange={setIsModalOpen}>
                                     <DialogTrigger asChild>
@@ -249,7 +240,31 @@ export default function Properties({ properties, regions, filters }: PropertiesP
                                                         onKeyDown={(e) => {
                                                             if (e.key === 'Enter') handleExplore();
                                                         }}
-                                                        className="w-full min-h-[36px] bg-zinc-100 border-none focus:outline-none text-zinc-700 font-medium shadow-none rounded-xl h-auto py-2 px-4 transition-all hover:bg-zinc-200 focus:ring-2 focus:ring-pc-blue placeholder:text-zinc-400 placeholder:font-normal"
+                                                        className={`w-full min-h-[36px] border-none focus:outline-none font-medium rounded-xl h-auto py-2 px-4 transition-all focus:ring-2 focus:ring-pc-blue placeholder:font-normal ${
+                                                            searchKeyword 
+                                                                ? 'bg-pc-blue text-white shadow-md placeholder:text-white/60' 
+                                                                : 'bg-zinc-100 text-zinc-700 shadow-none hover:bg-zinc-200 placeholder:text-zinc-400'
+                                                        }`}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="flex flex-col gap-2">
+                                                <label className="text-sm font-semibold text-zinc-700">Renda mensal (R$)</label>
+                                                <div className="relative w-full">
+                                                    <input
+                                                        type="number"
+                                                        placeholder="Ex: 5000"
+                                                        value={revenue}
+                                                        onChange={(e) => setRevenue(e.target.value)}
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === 'Enter') handleExplore();
+                                                        }}
+                                                        className={`w-full min-h-[36px] border-none focus:outline-none font-medium rounded-xl h-auto py-2 px-4 transition-all focus:ring-2 focus:ring-pc-blue placeholder:font-normal ${
+                                                            revenue 
+                                                                ? 'bg-pc-blue text-white shadow-md placeholder:text-white/60' 
+                                                                : 'bg-zinc-100 text-zinc-700 shadow-none hover:bg-zinc-200 placeholder:text-zinc-400'
+                                                        }`}
                                                     />
                                                 </div>
                                             </div>
@@ -257,7 +272,11 @@ export default function Properties({ properties, regions, filters }: PropertiesP
                                             <div className="flex flex-col gap-2">
                                                 <label className="text-sm font-semibold text-zinc-700">Região</label>
                                                 <Select onValueChange={(value) => setSelectedRegion(value === selectedRegion ? 'all' : value)} value={selectedRegion}>
-                                                    <SelectTrigger className="w-full min-h-[36px] bg-zinc-100 border-none focus:ring-0 focus:outline-none text-zinc-700 font-medium cursor-pointer shadow-none rounded-xl h-auto py-2 px-4 transition-all hover:bg-zinc-200 data-[state=open]:ring-2 data-[state=open]:ring-pc-blue">
+                                                    <SelectTrigger className={`w-full min-h-[36px] border-none focus:ring-0 focus:outline-none font-medium cursor-pointer rounded-xl h-auto py-2 px-4 transition-all data-[state=open]:ring-2 data-[state=open]:ring-pc-blue [&>svg]:opacity-100 ${
+                                                        selectedRegion !== 'all'
+                                                            ? 'bg-pc-blue text-white shadow-md'
+                                                            : 'bg-zinc-100 text-zinc-700 shadow-none hover:bg-zinc-200'
+                                                    }`}>
                                                         <SelectValue placeholder="Selecione a região" />
                                                     </SelectTrigger>
                                                     <SelectContent className="rounded-2xl border-none shadow-2xl p-2 bg-white/95 backdrop-blur-xl">

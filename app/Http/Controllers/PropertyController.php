@@ -59,6 +59,11 @@ class PropertyController extends Controller
             $validated['image'] = $path;
         }
 
+        if ($request->hasFile('book')) {
+            $path = $request->file('book')->store('properties/books', 'public');
+            $validated['book'] = $path;
+        }
+
         $property = Property::create($validated);
 
         if ($property && $request->hasFile('property_images')) {
@@ -125,6 +130,16 @@ class PropertyController extends Controller
             unset($validated['image']);
         }
         
+        if ($request->hasFile('book')) {
+            if ($property->book && Storage::disk('public')->exists($property->book)) {
+                Storage::disk('public')->delete($property->book);
+            }
+            $path = $request->file('book')->store('properties/books', 'public');
+            $validated['book'] = $path;
+        } else {
+            unset($validated['book']);
+        }
+        
         unset($validated['property_images']);
         unset($validated['images_to_delete']);
 
@@ -157,6 +172,10 @@ class PropertyController extends Controller
         
         if ($property->image && Storage::disk('public')->exists($property->image)) {
             Storage::disk('public')->delete($property->image);
+        }
+
+        if ($property->book && Storage::disk('public')->exists($property->book)) {
+            Storage::disk('public')->delete($property->book);
         }
 
         $property->delete();
