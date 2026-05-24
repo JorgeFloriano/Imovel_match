@@ -95,14 +95,14 @@ async def bot_marta():
                 is_invalid = False
                 try:
                     # ESPERA INTELIGENTE: Aguarda o ERRO, a CAIXA DE MENSAGEM ou o BOTÃO OK
-                    await page_wa.wait_for_selector('div[data-animate-modal-body="true"], div[contenteditable="true"][data-tab="10"], div[role="button"]', timeout=25000)
+                    await page_wa.wait_for_selector('div[data-animate-modal-body="true"], div[data-animate-modal-popup="true"], div[contenteditable="true"][data-tab="10"], button', timeout=25000)
                     
                     # Pausa essencial para carregar o modal de erro ou o histórico de mensagens
                     await asyncio.sleep(3.5)
 
                     # CHECAGEM DE NÚMERO INVÁLIDO
-                    modal_body = await page_wa.query_selector('div[data-animate-modal-body="true"]')
-                    ok_btn = await page_wa.query_selector('div[role="button"] >> text="OK"')
+                    modal_body = await page_wa.query_selector('div[data-animate-modal-body="true"]') or await page_wa.query_selector('div[data-animate-modal-popup="true"]')
+                    ok_btn = await page_wa.query_selector('button:has-text("OK")') or await page_wa.query_selector('div[role="button"]:has-text("OK")')
                     chat_input_check = await page_wa.query_selector('div[contenteditable="true"][data-tab="10"]')
 
                     if ok_btn and not chat_input_check:

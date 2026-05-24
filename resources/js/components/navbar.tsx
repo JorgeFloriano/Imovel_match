@@ -84,7 +84,9 @@ export default function Navbar() {
                     <div className="flex items-center gap-2">
                         <div className="hover:scale-105 transition-transform cursor-pointer flex items-baseline gap-6" onClick={() => navigateTo('home')}>
                             <img src="/logo_m.png" alt="Logo" className="h-10 w-auto" />
-                            <img src="/martadesouza_dark.png" alt="Logo" className="h-8 md:h-10 w-auto" />
+                            {(!isHome && !isSobreNos) && (
+                                <img src="/martadesouza_dark.png" alt="Logo" className="h-8 md:h-10 w-auto" />
+                            )}
                         </div>
                         {/* {!isHome && (
                             <Button variant="ghost" onClick={handleBack} className="text-zinc-200 hover:bg-white/10 hover:text-white px-3 ml-2 lg:ml-4 border border-white/10 rounded-full h-9" title="Voltar">

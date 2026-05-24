@@ -1,20 +1,21 @@
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
-import { Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export default function Welcome() {
-    const [revenue, setRevenue] = useState<string>('');
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const handleExplore = () => {
-        const params: any = {};
-        if (revenue) params.revenue = revenue;
+        router.get(route('public.properties'));
+    };
 
-        router.get(route('public.properties'), params);
+    const handleSelectFaixa = (revenueValue: number) => {
+        setIsDialogOpen(false);
+        router.get(route('public.properties'), { revenue: revenueValue });
     };
 
     return (
@@ -42,24 +43,19 @@ export default function Welcome() {
                             Seu novo capítulo <br className="block md:hidden" /> <span className="text-pc-gold">começa agora</span>
                         </h1>
                         <div className="text-lg md:text-2xl text-zinc-200 mb-6 mx-auto px-4 font-light leading-relaxed">
-                            <div className="hidden md:block">Curadoria exclusiva de empreendimentos que combinam com seu estilo de vida. <br /> Descubra o lar dos seus sonhos com a Marta de Souza Imobiliária.</div><div>Preencha o campo abaixo para iniciarmos a busca pelo imóvel perfeito.</div>
+                            <div className="hidden md:block">Curadoria exclusiva de empreendimentos que combinam com seu estilo de vida. <br /> Descubra o lar dos seus sonhos com a Marta de Souza Imobiliária.</div>
                         </div>
 
-                        <div id="search" className="max-w-lg md:mb-40 mb-20 mx-auto bg-white/10 backdrop-blur-md p-2 rounded-2xl border border-white/20 shadow-[0_0_30px_rgba(212,175,55,0.15)] flex flex-col sm:flex-row gap-2 items-center hover:shadow-[0_0_40px_rgba(212,175,55,0.25)] transition-all duration-300">
-                            <div className="relative w-full flex-1">
-                                <input
-                                    type="number"
-                                    placeholder="Digite sua renda"
-                                    value={revenue}
-                                    onChange={(e) => setRevenue(e.target.value)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter') {
-                                            handleExplore();
-                                        }
-                                    }}
-                                    className="h-15 w-full pl-12 pr-4 py-3 bg-white/5 focus:bg-white/10 border border-white/10 focus:border-pc-gold/50 rounded-xl text-white placeholder-zinc-300 font-semibold focus:outline-none focus:ring-2 focus:ring-pc-gold/50 transition-all text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                />
-                            </div>
+                        <div id="search" className="max-w-xl md:mb-40 mb-20 mx-auto flex flex-col sm:flex-row gap-2 items-center transition-all duration-300">
+                            <Button
+                                onClick={() => setIsDialogOpen(true)}
+                                className="group relative overflow-hidden h-18 w-full sm:w-auto bg-[#123251] hover:bg-[#0a1e33] text-white px-10 py-6 rounded-xl flex items-center justify-center hover:scale-[1.02] active:scale-[0.98] transition-all duration-500 border border-pc-gold/20 hover:border-pc-gold/40 text-lg tracking-widest whitespace-nowrap"
+                            >
+                                {/* Efeito de luz contínuo */}
+                                <div className="absolute top-0 -left-[150%] w-[150%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[30deg] animate-sweep" />
+
+                                <img src="/mcmv2026.png" alt="Logo" className="h-10 w-auto mr-3 relative z-10 drop-shadow-md" />
+                            </Button>
                             <style>{`
                                 @keyframes sweep {
                                     0% { left: -150%; }
@@ -72,28 +68,78 @@ export default function Welcome() {
                                     0%, 100% { transform: translateY(0); }
                                     50% { transform: translateY(-4px) scale(1.05); }
                                 }
-                                .animate-float-icon {
-                                    animation: float-icon 4s ease-in-out infinite;
-                                }
                             `}</style>
                             <Button
                                 onClick={handleExplore}
-                                className="group relative overflow-hidden h-15 w-full sm:w-auto bg-[#123251] hover:bg-[#0a1e33] text-white uppercase font-bold px-10 py-6 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(18,50,81,0.4)] hover:shadow-[0_0_25px_rgba(212,175,55,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-500 border border-pc-gold/20 hover:border-pc-gold/40 text-lg tracking-widest whitespace-nowrap"
+                                className="group relative overflow-hidden h-18 w-full sm:w-auto bg-[#123251] hover:bg-[#0a1e33] text-white px-10 py-6 rounded-xl flex items-center justify-center hover:scale-[1.02] active:scale-[0.98] transition-all duration-500 border border-pc-gold/20 hover:border-pc-gold/40 text-lg tracking-widest whitespace-nowrap"
                             >
                                 {/* Efeito de luz contínuo */}
                                 <div className="absolute top-0 -left-[150%] w-[150%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[30deg] animate-sweep" />
 
-                                <img src="/logo_build.png" alt="Logo" className="h-10 w-auto mr-3 relative z-10 drop-shadow-md animate-float-icon" />
-                                <span className="relative z-10">buscar!</span>
+                                <img src="/logo_build.png" alt="Logo" className="h-10 w-auto mr-3 relative z-10 drop-shadow-md" />
+                                <span className="relative z-10 uppercase">Exibir catálogo</span>
                             </Button>
                         </div>
                     </div>
                 </section>
             </main>
-
             <Footer />
 
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent className="sm:max-w-[500px] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                    <DialogHeader>
+                        <DialogTitle className="text-2xl font-bold text-center text-[#123251] dark:text-zinc-100 mb-2 flex flex-col items-center gap-3">
+                            <div className="bg-[#123251] px-4 py-2 rounded-xl">
+                                <img src="/mcmv2026.png" alt="MCMV" className="h-8 w-auto object-contain" />
+                            </div>
+                            Novas Condições MCMV
+                        </DialogTitle>
+                        <DialogDescription className="text-center text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-400">
+                            A caixa Econômica Federal ampliou as faixas de renda e o valor dos imóveis. Com juros menores e novos limites, ficou mais fácil realizar o sonho da casa própria.
+                            <br/>
+                            Selecione a sua faixa de renda familiar abaixo para descobrirmos os imóveis ideais para o seu financiamento:
+                        </DialogDescription>
+                    </DialogHeader>
 
+                    <div className="flex flex-col gap-3 mt-4">
+                        <Button 
+                            variant="outline" 
+                            className="h-auto py-3 px-4 flex flex-col items-start gap-1 border-emerald-600/30 hover:border-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-all text-left"
+                            onClick={() => handleSelectFaixa(3200)}
+                        >
+                            <span className="font-bold text-[16px] text-emerald-700 dark:text-emerald-500">Faixa 1</span>
+                            <span className="text-sm font-normal text-zinc-600 dark:text-zinc-400">Renda de até R$ 3.200 (Imóveis até R$ 275 mil)</span>
+                        </Button>
+
+                        <Button 
+                            variant="outline" 
+                            className="h-auto py-3 px-4 flex flex-col items-start gap-1 border-blue-600/30 hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all text-left"
+                            onClick={() => handleSelectFaixa(5000)}
+                        >
+                            <span className="font-bold text-[16px] text-blue-700 dark:text-blue-500">Faixa 2</span>
+                            <span className="text-sm font-normal text-zinc-600 dark:text-zinc-400">Renda de R$ 3.200 a R$ 5.000 (Imóveis até R$ 275 mil)</span>
+                        </Button>
+
+                        <Button 
+                            variant="outline" 
+                            className="h-auto py-3 px-4 flex flex-col items-start gap-1 border-lime-600/30 hover:border-lime-600 hover:bg-lime-50 dark:hover:bg-lime-950/30 transition-all text-left"
+                            onClick={() => handleSelectFaixa(9600)}
+                        >
+                            <span className="font-bold text-[16px] text-lime-700 dark:text-lime-500">Faixa 3</span>
+                            <span className="text-sm font-normal text-zinc-600 dark:text-zinc-400">Renda de R$ 5.000 a R$ 9.600 (Imóveis até R$ 400 mil)</span>
+                        </Button>
+
+                        <Button 
+                            variant="outline" 
+                            className="h-auto py-3 px-4 flex flex-col items-start gap-1 border-cyan-600/30 hover:border-cyan-600 hover:bg-cyan-50 dark:hover:bg-cyan-950/30 transition-all text-left"
+                            onClick={() => handleSelectFaixa(13000)}
+                        >
+                            <span className="font-bold text-[16px] text-cyan-700 dark:text-cyan-500">Faixa 4</span>
+                            <span className="text-sm font-normal text-zinc-600 dark:text-zinc-400">Renda de R$ 9.600 a R$ 13.000 (Imóveis até R$ 600 mil)</span>
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

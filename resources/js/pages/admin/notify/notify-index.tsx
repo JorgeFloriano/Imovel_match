@@ -3,9 +3,11 @@ import { FormSelect } from '@/components/form-select';
 import { Icon } from '@/components/icon';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { SearchInput } from '@/components/search-input';
 import AppLayout from '@/layouts/app-layout';
 import { Head, useForm, router, usePage } from '@inertiajs/react'; // Import router from Inertia
-import { Check, MessageCircle, CheckCircle, Send, ThermometerSun, Flame, ThermometerSnowflake, Snowflake, Thermometer, Trash2 } from 'lucide-react';
+import { Check, MessageCircle, CheckCircle, Send, ThermometerSun, Flame, ThermometerSnowflake, Snowflake, Thermometer, Trash2, Filter } from 'lucide-react';
 import React, { useEffect, useState, useMemo } from 'react'; // Add useEffect
 import { useSortableTable } from '@/hooks/useSortableTable';
 import { SortableTableHeader } from '@/components/ui/sortable-table-header';
@@ -135,6 +137,12 @@ export default function Clients({
             contact_origin: data.contact_origin,
             notified_until: data.notified_until,
             temperature: data.temperature,
+        }, { preserveState: true, preserveScroll: true });
+    };
+
+    const handleSearch = (e?: React.MouseEvent | React.FormEvent) => {
+        if (e) e.preventDefault();
+        router.get(route('notify'), {
             search: data.search,
         }, { preserveState: true, preserveScroll: true });
     };
@@ -362,12 +370,13 @@ export default function Clients({
                                 ]}
                             />
                         </div>
-                        <FormInput
-                            type="number"
+                        <SearchInput
                             label="Buscar por ID ou WhatsApp:"
                             value={data.search || ''}
-                            onChange={(value) => handleSetData('search', String(value).slice(0, 15))}
+                            onChange={(value) => handleSetData('search', value.slice(0, 15))}
+                            onSearch={() => handleSearch()}
                             placeholder="Ex: 97345366"
+                            type="number"
                         />
                     </div>
 
@@ -436,7 +445,8 @@ export default function Clients({
                                 onChange={(value) => handleSetData('final_date', value as string)}
                                 className="w-full"
                             />
-                            <Button type="submit" className="w-full">
+                            <Button type="submit" className="w-full flex items-center gap-2">
+                                <Filter className="h-4 w-4" />
                                 Filtrar
                             </Button>
                         </div>

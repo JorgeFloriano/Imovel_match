@@ -498,14 +498,14 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                         </div>
 
                         <div className="flex flex-col gap-2 p-4 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-zinc-50 dark:bg-zinc-900/50">
-                            <label className="text-sm font-bold text-zinc-700 dark:text-zinc-300">Book Digital (PDF, Máx 1MB)</label>
+                            <label className="text-sm font-bold text-zinc-700 dark:text-zinc-300">Book Digital (PDF, Máx 20MB)</label>
                             <input
                                 type="file"
                                 accept="application/pdf"
                                 onChange={(e) => {
                                     const file = e.target.files ? e.target.files[0] : null;
-                                    if (file && file.size > 1024 * 1024) {
-                                        alert("O book deve ter no máximo 1MB.");
+                                    if (file && file.size > 20 * 1024 * 1024) {
+                                        alert("O book deve ter no máximo 20MB.");
                                         e.target.value = '';
                                         return;
                                     }

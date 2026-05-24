@@ -23,50 +23,6 @@ class NotifyController extends Controller
         $temperature = $request->query('temperature', 'todos');
         $search = $request->query('search');
 
-        // Filtro de Datas
-        $query->whereDate('created_at', '>=', $initialDate)
-              ->whereDate('created_at', '<=', $finalDate);
-
-        // Filtro de Origem
-        if ($contactOrigin === 'mrv') {
-            $query->where('origin', 'LIKE', '%mrv%');
-        } elseif ($contactOrigin === 'access') {
-            $query->where('origin', 'LIKE', '%access%');
-        } elseif ($contactOrigin === 'desconhecido') {
-            $query->where(function ($q) {
-                $q->whereNull('origin')
-                  ->orWhere('origin', '')
-                  ->orWhere('origin', '0');
-            });
-        }
-
-        // Filtro de Notificado Até (last_contact_at)
-        if ($notifiedUntil === 'nulo') {
-            $query->whereNull('last_contact_at');
-        } elseif ($notifiedUntil === 'todos') {
-            // Sem filtro, pega todos
-        } else {
-            $now = now()->timezone('America/Sao_Paulo');
-            if ($notifiedUntil === 'hoje') {
-                $query->whereDate('last_contact_at', '>=', $now->format('Y-m-d'));
-            } elseif ($notifiedUntil === 'ontem') {
-                $query->whereDate('last_contact_at', '>=', $now->subDay()->format('Y-m-d'));
-            } elseif ($notifiedUntil === '3_dias') {
-                $query->whereDate('last_contact_at', '>=', $now->subDays(3)->format('Y-m-d'));
-            } elseif ($notifiedUntil === '7_dias') {
-                $query->whereDate('last_contact_at', '>=', $now->subDays(7)->format('Y-m-d'));
-            } elseif ($notifiedUntil === '15_dias') {
-                $query->whereDate('last_contact_at', '>=', $now->subDays(15)->format('Y-m-d'));
-            } elseif ($notifiedUntil === '30_dias') {
-                $query->whereDate('last_contact_at', '>=', $now->subDays(30)->format('Y-m-d'));
-            }
-        }
-
-        // Filtro de Temperatura
-        if ($temperature && $temperature !== 'todos') {
-            $query->where('temperature', $temperature);
-        }
-
         // Filtro de Busca (ID ou Telefone)
         if ($search) {
             $searchDigits = preg_replace('/[^0-9]/', '', $search);
@@ -76,6 +32,50 @@ class NotifyController extends Controller
                 } else {
                     $query->where('phone', 'LIKE', '%' . $searchDigits . '%');
                 }
+            }
+        } else {
+            // Filtro de Datas
+            $query->whereDate('created_at', '>=', $initialDate)
+                  ->whereDate('created_at', '<=', $finalDate);
+
+            // Filtro de Origem
+            if ($contactOrigin === 'mrv') {
+                $query->where('origin', 'LIKE', '%mrv%');
+            } elseif ($contactOrigin === 'access') {
+                $query->where('origin', 'LIKE', '%access%');
+            } elseif ($contactOrigin === 'desconhecido') {
+                $query->where(function ($q) {
+                    $q->whereNull('origin')
+                      ->orWhere('origin', '')
+                      ->orWhere('origin', '0');
+                });
+            }
+
+            // Filtro de Notificado Até (last_contact_at)
+            if ($notifiedUntil === 'nulo') {
+                $query->whereNull('last_contact_at');
+            } elseif ($notifiedUntil === 'todos') {
+                // Sem filtro, pega todos
+            } else {
+                $now = now()->timezone('America/Sao_Paulo');
+                if ($notifiedUntil === 'hoje') {
+                    $query->whereDate('last_contact_at', '>=', $now->format('Y-m-d'));
+                } elseif ($notifiedUntil === 'ontem') {
+                    $query->whereDate('last_contact_at', '>=', $now->subDay()->format('Y-m-d'));
+                } elseif ($notifiedUntil === '3_dias') {
+                    $query->whereDate('last_contact_at', '>=', $now->subDays(3)->format('Y-m-d'));
+                } elseif ($notifiedUntil === '7_dias') {
+                    $query->whereDate('last_contact_at', '>=', $now->subDays(7)->format('Y-m-d'));
+                } elseif ($notifiedUntil === '15_dias') {
+                    $query->whereDate('last_contact_at', '>=', $now->subDays(15)->format('Y-m-d'));
+                } elseif ($notifiedUntil === '30_dias') {
+                    $query->whereDate('last_contact_at', '>=', $now->subDays(30)->format('Y-m-d'));
+                }
+            }
+
+            // Filtro de Temperatura
+            if ($temperature && $temperature !== 'todos') {
+                $query->where('temperature', $temperature);
             }
         }
 

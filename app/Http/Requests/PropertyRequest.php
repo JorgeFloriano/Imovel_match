@@ -62,7 +62,7 @@ class PropertyRequest extends FormRequest
             'acessibility' => 'nullable|boolean',
             'obs' => 'nullable|string|max:255',
             'details' => 'nullable|string|max:600',
-            'book' => 'nullable|file|mimes:pdf|max:1024',
+            'book' => 'nullable|file|mimes:pdf|max:20480',
         ];
     }
 }

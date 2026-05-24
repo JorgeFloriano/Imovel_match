@@ -55,7 +55,12 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
 
     const formatYear = (dateString?: string | null) => {
         if (!dateString) return null;
-        return new Date(dateString).getFullYear().toString();
+        // Extrai o ano diretamente da string (YYYY) para evitar problemas no Date parser do Edge/Safari
+        if (/^\d{4}/.test(dateString)) {
+            return dateString.substring(0, 4);
+        }
+        const date = new Date(dateString);
+        return isNaN(date.getTime()) ? '' : date.getFullYear().toString();
     };
 
     const renderBoolean = (value?: boolean | null) => {
