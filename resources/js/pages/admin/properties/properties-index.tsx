@@ -10,6 +10,9 @@ import { ArrowRight, Bath, Bed, Calendar, Car, Delete, Edit, Expand, KeyRound } 
 import { useSortableTable } from '@/hooks/useSortableTable';
 import { SortableTableHeader } from '@/components/ui/sortable-table-header';
 import Pagination from '@/components/pagination';
+import { SearchInput } from '@/components/search-input';
+import { useState } from 'react';
+import { router } from '@inertiajs/react';
 
 interface Region {
     id: number;
@@ -70,45 +73,39 @@ interface PaginatedProperties {
     }>;
 }
 
-export default function Properties({ properties }: { properties: PaginatedProperties }) {
+export default function Properties({ properties, filters }: { properties: PaginatedProperties, filters?: { keyword?: string } }) {
     const { items: sortedProperties, requestSort, sortConfig } = useSortableTable(properties.data);
+    const [keyword, setKeyword] = useState(filters?.keyword || '');
+
+    const handleSearch = () => {
+        router.get(route('properties.index'), { keyword }, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    };
 
     return (
         <AppLayout>
             <Head title="Propriedades" />
             <div className="flex h-full min-h-0 flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <h1 className="text-xl font-semibold">Imóveis</h1>
 
-                    {/* {properties.length >= 5 ? (
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button>Cadastrar</Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogTitle>O plano Imóveis-Match free da direito à 5 cadastros de imóveis</DialogTitle>
-                                <DialogDescription>
-                                    Para migrar para um plano mais completo, entre em contato com a equipe JLDev (15) 98165-5797.
-                                </DialogDescription>
-
-                                <DialogFooter className="gap-2">
-                                    <DialogClose asChild>
-                                        <Button variant="secondary">
-                                            Cancelar
-                                        </Button>
-                                    </DialogClose>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
-                    ) : ( */}
-                    <Button asChild>
-                        <a href={route('properties.create')}>
-                            <span className="flex items-center gap-2">
-                                <span>Cadastrar</span>
-                            </span>
-                        </a>
-                    </Button>
-                    {/* ) */}
+                    <div className="flex items-center gap-4">
+                        <SearchInput
+                            value={keyword}
+                            onChange={setKeyword}
+                            onSearch={handleSearch}
+                            placeholder="Buscar empreendimento..."
+                        />
+                        <Button asChild>
+                            <a href={route('properties.create')}>
+                                <span className="flex items-center gap-2">
+                                    <span>Cadastrar</span>
+                                </span>
+                            </a>
+                        </Button>
+                    </div>
                 </div>
 
                 <p className="py-3 text-sm">

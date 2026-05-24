@@ -18,10 +18,15 @@ class PropertyController extends Controller
     {
         $this->property = new Property();
     }
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $properties = Property::with(['user', 'region'])
-            ->orderBy('description')
+        $query = Property::withoutGlobalScope('user')->with(['user', 'region']);
+
+        if ($request->filled('keyword')) {
+            $query->where('description', 'like', '%' . $request->keyword . '%');
+        }
+
+        $properties = $query->orderBy('description')
             ->paginate(50)
             ->withQueryString();
 
@@ -32,6 +37,7 @@ class PropertyController extends Controller
         
         return Inertia::render('admin/properties/properties-index', [
             'properties' => $properties,
+            'filters' => $request->only('keyword')
         ]);
     }
 

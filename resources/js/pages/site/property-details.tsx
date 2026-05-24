@@ -48,8 +48,8 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
         return price.toLocaleString('pt-BR', {
             style: 'currency',
             currency: 'BRL',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
         });
     };
 

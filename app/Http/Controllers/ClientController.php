@@ -22,19 +22,24 @@ class ClientController extends Controller
     {
         $this->client = new Client();
     }
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $clients = Client::with('wishe.regions')
+        $query = Client::with('wishe.regions')
         ->where('user_id', Auth::user()->id)
-        ->where('temperature', '!=', 'frio')
-        ->orderBy('temperature', 'desc')
+        ->where('temperature', '!=', 'frio');
+
+        if ($request->filled('keyword')) {
+            $query->where('name', 'like', '%' . $request->keyword . '%');
+        }
+
+        $clients = $query->orderBy('temperature', 'desc')
         ->orderBy('name', 'asc')
         ->paginate(50)
         ->withQueryString();
 
-
         return Inertia::render('admin/clients/clients-index', [
-            'clients' => $clients
+            'clients' => $clients,
+            'filters' => $request->only('keyword')
         ]);
     }
 

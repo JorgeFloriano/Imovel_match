@@ -12,6 +12,7 @@ import { useSortableTable } from '@/hooks/useSortableTable';
 import { SortableTableHeader } from '@/components/ui/sortable-table-header';
 import IconTooltip from '@/components/ui/icon-tooltip';
 import Pagination from '@/components/pagination';
+import { SearchInput } from '@/components/search-input';
 
 interface Wishe {
     id: number;
@@ -61,8 +62,16 @@ interface PaginatedClients {
     }>;
 }
 
-export default function Clients({ clients }: { clients: PaginatedClients }) {
+export default function Clients({ clients, filters }: { clients: PaginatedClients, filters?: { keyword?: string } }) {
     const [optimisticTemps, setOptimisticTemps] = useState<Record<number, Client['temperature']>>({});
+    const [keyword, setKeyword] = useState(filters?.keyword || '');
+
+    const handleSearch = () => {
+        router.get(route('clients.index'), { keyword }, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    };
 
     const effectiveClients = useMemo(() => {
         return clients.data.map(client => ({
@@ -123,17 +132,24 @@ export default function Clients({ clients }: { clients: PaginatedClients }) {
         <AppLayout>
             <Head title="Clientes" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <h1 className="text-xl font-semibold">Clientes</h1>
 
-                    {/* Button to call route 'clients.create' */}
-                    <Button asChild>
-                        <a href={route('clients.create')}>
-                            <span className="flex items-center gap-2">
-                                <span>Cadastrar</span>
-                            </span>
-                        </a>
-                    </Button>
+                    <div className="flex items-center gap-4">
+                        <SearchInput
+                            value={keyword}
+                            onChange={setKeyword}
+                            onSearch={handleSearch}
+                            placeholder="Buscar cliente..."
+                        />
+                        <Button asChild>
+                            <a href={route('clients.create')}>
+                                <span className="flex items-center gap-2">
+                                    <span>Cadastrar</span>
+                                </span>
+                            </a>
+                        </Button>
+                    </div>
                 </div>
 
                 <p className="py-3 text-sm">
