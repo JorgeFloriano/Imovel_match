@@ -29,9 +29,10 @@ export default function Navbar() {
     );
 
     const isHome = url === '/';
-    const isImoveis = url.startsWith('/imoveis') && !url.includes('status=planta') && !url.includes('revenue=15000');
+    const isImoveis = url.startsWith('/imoveis') && !url.includes('status=planta') && !url.includes('status=pronto') && !url.includes('alto_padrao=true');
     const isLancamentos = url.includes('status=planta');
-    const isAltoPadrao = url.includes('revenue=15000');
+    const isProntoParaMorar = url.includes('status=pronto');
+    const isAltoPadrao = url.includes('alto_padrao=true');
     const isSobreNos = url.startsWith('/sobre-nos');
 
     const handleBack = () => {
@@ -71,7 +72,10 @@ export default function Navbar() {
                                         <button className={`text-left font-bold text-lg hover:text-white transition-colors py-2 px-4 hover:bg-white/5 rounded-lg border-l-4 ${isLancamentos ? 'border-pc-gold text-pc-gold bg-white/5' : 'border-transparent text-zinc-200'}`} onClick={() => navigateTo('public.properties', { status: 'planta' })}>Lançamentos</button>
                                     </SheetClose>
                                     <SheetClose asChild>
-                                        <button className={`text-left font-bold text-lg hover:text-white transition-colors py-2 px-4 hover:bg-white/5 rounded-lg border-l-4 ${isAltoPadrao ? 'border-pc-gold text-pc-gold bg-white/5' : 'border-transparent text-zinc-200'}`} onClick={() => navigateTo('public.properties', { revenue: '15000' })}>Alto Padrão</button>
+                                        <button className={`text-left font-bold text-lg hover:text-white transition-colors py-2 px-4 hover:bg-white/5 rounded-lg border-l-4 ${isProntoParaMorar ? 'border-pc-gold text-pc-gold bg-white/5' : 'border-transparent text-zinc-200'}`} onClick={() => navigateTo('public.properties', { status: 'pronto' })}>Prontos para Morar</button>
+                                    </SheetClose>
+                                    <SheetClose asChild>
+                                        <button className={`text-left font-bold text-lg hover:text-white transition-colors py-2 px-4 hover:bg-white/5 rounded-lg border-l-4 ${isAltoPadrao ? 'border-pc-gold text-pc-gold bg-white/5' : 'border-transparent text-zinc-200'}`} onClick={() => navigateTo('public.properties', { alto_padrao: 'true' })}>Alto Padrão</button>
                                     </SheetClose>
                                     <SheetClose asChild>
                                         <button className={`text-left font-bold text-lg hover:text-white transition-colors py-2 px-4 hover:bg-white/5 rounded-lg border-l-4 ${isSobreNos ? 'border-pc-gold text-pc-gold bg-white/5' : 'border-transparent text-zinc-200'}`} onClick={() => navigateTo('public.about')}>Sobre Nós</button>
@@ -84,8 +88,10 @@ export default function Navbar() {
                     <div className="flex items-center gap-2">
                         <div className="hover:scale-105 transition-transform cursor-pointer flex items-baseline gap-6" onClick={() => navigateTo('home')}>
                             <img src="/logo_m.png" alt="Logo" className="h-10 w-auto" />
-                            {(!isHome && !isSobreNos) && (
+                            {(!isHome && !isSobreNos) ? (
                                 <img src="/martadesouza_dark.png" alt="Logo" className="h-8 md:h-10 w-auto" />
+                            ) : (
+                                <img src="/martadesouza.png" alt="Logo" className="h-8 md:h-10 w-auto" />
                             )}
                         </div>
                         {/* {!isHome && (
@@ -101,7 +107,8 @@ export default function Navbar() {
                     <NavbarLink isActive={isHome} onClick={() => navigateTo('home')}>Início</NavbarLink>
                     <NavbarLink isActive={isImoveis} onClick={() => navigateTo('public.properties')}>Imóveis</NavbarLink>
                     <NavbarLink isActive={isLancamentos} onClick={() => navigateTo('public.properties', { status: 'planta' })}>Lançamentos</NavbarLink>
-                    <NavbarLink isActive={isAltoPadrao} onClick={() => navigateTo('public.properties', { revenue: '15000' })}>Alto Padrão</NavbarLink>
+                    <NavbarLink isActive={isProntoParaMorar} onClick={() => navigateTo('public.properties', { status: 'pronto' })}>Prontos para Morar</NavbarLink>
+                    <NavbarLink isActive={isAltoPadrao} onClick={() => navigateTo('public.properties', { alto_padrao: 'true' })}>Alto Padrão</NavbarLink>
                     <NavbarLink isActive={isSobreNos} onClick={() => navigateTo('public.about')}>Sobre Nós</NavbarLink>
                 </nav>
                 <AuthActions auth={auth}/>

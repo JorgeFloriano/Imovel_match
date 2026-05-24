@@ -12,8 +12,9 @@ export default function Footer() {
                         </p>
                     </div>
                     <p className="text-zinc-400 text-sm leading-relaxed mb-10 max-w-md">
-                        Whatsapp / Telefone: 15 99160-0906<br />
-                        E-mail: souzamartaimoveis@gmail.com<br />
+                        Whatsapp / Telefone: <a href="https://wa.me/5515991600906" target="_blank" rel="noopener noreferrer" className="hover:text-white hover:underline transition-colors">15 99160-0906</a><br />
+                        E-mail: <a href="mailto:souzamartaimoveis@gmail.com" className="hover:text-white hover:underline transition-colors">souzamartaimoveis@gmail.com</a><br />
+                        E-mail-creci: <a href="mailto:marta.souza@creci.org.br" className="hover:text-white hover:underline transition-colors">marta.souza@creci.org.br</a><br />
                         CRECI - Pessoa Física: 240707-F<br />
                         CRECI - Pessoa Jurídica: 43608-J<br />
                         CNPJ: 28094541/0001-45

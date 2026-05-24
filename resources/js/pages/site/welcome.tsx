@@ -6,6 +6,44 @@ import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
+const formatMonetaryText = (text: string) => {
+    const parts = text.split(/(R\$\s[\d.,]+(?:\smil)?)/g);
+    return parts.map((part, index) => {
+        if (/^R\$\s[\d.,]+(?:\smil)?$/.test(part)) {
+            const match = part.match(/^(R\$\s)([\d.,]+)(\smil)?$/);
+            if (match) {
+                return (
+                    <span key={index}>
+                        {match[1]}<strong className="text-pc-gold font-bold">{match[2]}</strong>{match[3] || ''}
+                    </span>
+                );
+            }
+        }
+        return <span key={index}>{part}</span>;
+    });
+};
+
+const MCMVFaixaButton = ({
+    faixa,
+    description,
+    onClick
+}: {
+    faixa: string;
+    description: string;
+    onClick: () => void;
+}) => (
+    <Button 
+        variant="outline" 
+        className="h-auto w-full py-3 px-4 flex flex-col items-start gap-1 border-[#123251] hover:bg-[#123251]/5 hover:scale-[1.02] dark:border-[#123251]/50 dark:hover:bg-[#123251]/20 transition-all duration-300 text-left whitespace-normal"
+        onClick={onClick}
+    >
+        <span className="font-bold text-[16px] text-[#123251] dark:text-zinc-100">{faixa}</span>
+        <span className="text-sm font-semibold text-[#123251] dark:text-zinc-300 leading-relaxed block">
+            {formatMonetaryText(description)}
+        </span>
+    </Button>
+);
+
 export default function Welcome() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -46,23 +84,23 @@ export default function Welcome() {
                             <div className="hidden md:block">Curadoria exclusiva de empreendimentos que combinam com seu estilo de vida. <br /> Descubra o lar dos seus sonhos com a Marta de Souza Imobiliária.</div>
                         </div>
 
-                        <div id="search" className="max-w-xl md:mb-40 mb-20 mx-auto flex flex-col sm:flex-row gap-2 items-center transition-all duration-300">
+                        <div id="search" className="max-w-xl md:mb-40 mb-20 mx-auto flex flex-col sm:flex-row gap-6 items-center transition-all duration-300">
                             <Button
                                 onClick={() => setIsDialogOpen(true)}
                                 className="group relative overflow-hidden h-18 w-full sm:w-auto bg-[#123251] hover:bg-[#0a1e33] text-white px-10 py-6 rounded-xl flex items-center justify-center hover:scale-[1.02] active:scale-[0.98] transition-all duration-500 border border-pc-gold/20 hover:border-pc-gold/40 text-lg tracking-widest whitespace-nowrap"
                             >
                                 {/* Efeito de luz contínuo */}
-                                <div className="absolute top-0 -left-[150%] w-[150%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[30deg] animate-sweep" />
+                                <div className="absolute top-0 -left-[150%] w-[150%] h-full bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-[30deg] animate-sweep" />
 
-                                <img src="/mcmv2026.png" alt="Logo" className="h-10 w-auto mr-3 relative z-10 drop-shadow-md" />
+                                <img src="/mcmv2027.png" alt="Logo" className="h-10 w-auto mr-3 relative z-10 drop-shadow-md" />
                             </Button>
                             <style>{`
                                 @keyframes sweep {
-                                    0% { left: -150%; }
-                                    40%, 100% { left: 150%; }
+                                    0% { left: -200%; }
+                                    40%, 100% { left: 200%; }
                                 }
                                 .animate-sweep {
-                                    animation: sweep 4s ease-in-out infinite;
+                                    animation: sweep 6s ease-in-out infinite;
                                 }
                                 @keyframes float-icon {
                                     0%, 100% { transform: translateY(0); }
@@ -74,7 +112,7 @@ export default function Welcome() {
                                 className="group relative overflow-hidden h-18 w-full sm:w-auto bg-[#123251] hover:bg-[#0a1e33] text-white px-10 py-6 rounded-xl flex items-center justify-center hover:scale-[1.02] active:scale-[0.98] transition-all duration-500 border border-pc-gold/20 hover:border-pc-gold/40 text-lg tracking-widest whitespace-nowrap"
                             >
                                 {/* Efeito de luz contínuo */}
-                                <div className="absolute top-0 -left-[150%] w-[150%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[30deg] animate-sweep" />
+                                <div className="absolute top-0 -left-[150%] w-[150%] h-full bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-[30deg] animate-sweep" />
 
                                 <img src="/logo_build.png" alt="Logo" className="h-10 w-auto mr-3 relative z-10 drop-shadow-md" />
                                 <span className="relative z-10 uppercase">Exibir catálogo</span>
@@ -89,54 +127,40 @@ export default function Welcome() {
                 <DialogContent className="sm:max-w-[500px] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
                     <DialogHeader>
                         <DialogTitle className="text-2xl font-bold text-center text-[#123251] dark:text-zinc-100 mb-2 flex flex-col items-center gap-3">
-                            <div className="bg-[#123251] px-4 py-2 rounded-xl">
-                                <img src="/mcmv2026.png" alt="MCMV" className="h-8 w-auto object-contain" />
+                            <div className="p-2">
+                                <img src="/mcmv.png" alt="MCMV" className="h-8 w-auto object-contain" />
                             </div>
                             Novas Condições MCMV
                         </DialogTitle>
                         <DialogDescription className="text-center text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-400">
-                            A caixa Econômica Federal ampliou as faixas de renda e o valor dos imóveis. Com juros menores e novos limites, ficou mais fácil realizar o sonho da casa própria.
-                            <br/>
-                            Selecione a sua faixa de renda familiar abaixo para descobrirmos os imóveis ideais para o seu financiamento:
+                            A Caixa Econômica Federal ampliou as faixas de renda e o valor dos imóveis contemplados pelo Minha Casa Minha Vida. Com juros menores e novos limites, ficou mais fácil realizar o sonho da casa própria (<a href="https://caixanoticias.caixa.gov.br/Paginas/Not%C3%ADcias/2026/04-ABRIL/CAIXA-inicia-opera%C3%A7%C3%A3o-das-novas-condi%C3%A7%C3%B5es-do-Minha-Casa,-Minha-Vida-na-pr%C3%B3xima-quarta-feira-(22).aspx" target="_blank" rel="noreferrer" className="text-[#123251] font-semibold hover:underline">saiba mais</a>). Selecione a sua faixa de renda familiar abaixo para descobrirmos os imóveis ideais para o seu financiamento:
                         </DialogDescription>
                     </DialogHeader>
 
                     <div className="flex flex-col gap-3 mt-4">
-                        <Button 
-                            variant="outline" 
-                            className="h-auto py-3 px-4 flex flex-col items-start gap-1 border-emerald-600/30 hover:border-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-all text-left"
+                        <MCMVFaixaButton 
+                            faixa="Faixa 1"
+                            description="Renda de até R$ 3.200 (Imóveis até R$ 275 mil)"
                             onClick={() => handleSelectFaixa(3200)}
-                        >
-                            <span className="font-bold text-[16px] text-emerald-700 dark:text-emerald-500">Faixa 1</span>
-                            <span className="text-sm font-normal text-zinc-600 dark:text-zinc-400">Renda de até R$ 3.200 (Imóveis até R$ 275 mil)</span>
-                        </Button>
-
-                        <Button 
-                            variant="outline" 
-                            className="h-auto py-3 px-4 flex flex-col items-start gap-1 border-blue-600/30 hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all text-left"
+                        />
+                        
+                        <MCMVFaixaButton
+                            faixa="Faixa 2"
+                            description="Renda de R$ 3.200 a R$ 5.000 (Imóveis até R$ 275 mil)"
                             onClick={() => handleSelectFaixa(5000)}
-                        >
-                            <span className="font-bold text-[16px] text-blue-700 dark:text-blue-500">Faixa 2</span>
-                            <span className="text-sm font-normal text-zinc-600 dark:text-zinc-400">Renda de R$ 3.200 a R$ 5.000 (Imóveis até R$ 275 mil)</span>
-                        </Button>
+                        />
 
-                        <Button 
-                            variant="outline" 
-                            className="h-auto py-3 px-4 flex flex-col items-start gap-1 border-lime-600/30 hover:border-lime-600 hover:bg-lime-50 dark:hover:bg-lime-950/30 transition-all text-left"
+                        <MCMVFaixaButton 
+                            faixa="Faixa 3"
+                            description="Renda de R$ 5.000 a R$ 9.600 (Imóveis até R$ 400 mil)"
                             onClick={() => handleSelectFaixa(9600)}
-                        >
-                            <span className="font-bold text-[16px] text-lime-700 dark:text-lime-500">Faixa 3</span>
-                            <span className="text-sm font-normal text-zinc-600 dark:text-zinc-400">Renda de R$ 5.000 a R$ 9.600 (Imóveis até R$ 400 mil)</span>
-                        </Button>
+                        />
 
-                        <Button 
-                            variant="outline" 
-                            className="h-auto py-3 px-4 flex flex-col items-start gap-1 border-cyan-600/30 hover:border-cyan-600 hover:bg-cyan-50 dark:hover:bg-cyan-950/30 transition-all text-left"
+                        <MCMVFaixaButton 
+                            faixa="Faixa 4"
+                            description="Renda de R$ 9.600 a R$ 13.000 (Imóveis até R$ 600 mil)"
                             onClick={() => handleSelectFaixa(13000)}
-                        >
-                            <span className="font-bold text-[16px] text-cyan-700 dark:text-cyan-500">Faixa 4</span>
-                            <span className="text-sm font-normal text-zinc-600 dark:text-zinc-400">Renda de R$ 9.600 a R$ 13.000 (Imóveis até R$ 600 mil)</span>
-                        </Button>
+                        />
                     </div>
                 </DialogContent>
             </Dialog>

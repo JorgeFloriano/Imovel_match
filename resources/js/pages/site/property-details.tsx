@@ -1,6 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
-import { MapPin, Bed, Bath, Square, Car, ShowerHead, Calendar, Waves, Dog, Accessibility, Banknote, Maximize, Sparkles, AirVent, CloudSun, Flower, HeartHandshake, FileText } from 'lucide-react';
+import { MapPin, Bed, Bath, Square, Car, ShowerHead, Calendar, Waves, Dog, Accessibility, Banknote, Maximize, Sparkles, AirVent, CloudSun, Flower, HeartHandshake, FileText, ArrowLeft } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import Navbar from '@/components/navbar';
@@ -91,7 +91,15 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
             <Navbar />
 
             <main className="flex-1 w-full">
-                <div className="container mx-auto px-4 lg:px-40 py-4">
+                <div className="container mx-auto px-4 lg:px-40 py-4 flex items-center justify-start gap-4">
+                    <button 
+                        onClick={() => window.history.back()} 
+                        className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 text-sm font-semibold flex items-center gap-1.5 transition-colors shrink-0"
+                        title="Voltar"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        <span className="hidden sm:inline">Voltar</span>
+                    </button>
                     <Breadcrumbs breadcrumbs={[
                         { title: 'Início', href: route('home') },
                         { title: 'Imóveis', href: route('public.properties') },
@@ -248,7 +256,7 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
                             {property.min_act != null && property.min_act > 0 && (
                                 <div className="mb-4 flex justify-between items-center border-b border-zinc-200 pb-4">
                                     <span className="text-zinc-600">Ato Mínimo</span>
-                                    <span className="font-bold text-zinc-900">{formatPrice(property.min_act)}</span>
+                                    <span className="font-bold text-zinc-900">{property.min_act}%</span>
                                 </div>
                             )}
 
@@ -260,7 +268,13 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
                             {property.delivery_key && (
                                 <div className="flex items-center gap-3">
                                     <Calendar className="h-5 w-5 text-pc-gold shrink-0" />
-                                    <span className="text-zinc-600">Previsão de entrega:</span> <span className="font-semibold">{formatYear(property.delivery_key)}</span>
+                                    {new Date(property.delivery_key) <= new Date() ? (
+                                        <span className="text-zinc-600 font-semibold">Pronto para morar</span>
+                                    ) : (
+                                        <>
+                                            <span className="text-zinc-600">Previsão de entrega:</span> <span className="font-semibold">{formatYear(property.delivery_key)}</span>
+                                        </>
+                                    )}
                                 </div>
                             )}
                         </div>

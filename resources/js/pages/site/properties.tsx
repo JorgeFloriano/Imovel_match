@@ -76,6 +76,7 @@ interface PropertiesProps {
         max_price?: string;
         revenue?: string;
         keyword?: string;
+        alto_padrao?: string;
     };
 }
 
@@ -111,7 +112,7 @@ export default function Properties({ properties, regions, filters }: PropertiesP
     const [selectedGarages, setSelectedGarages] = useState<string>(filters?.garages || 'all');
     const [selectedSuites, setSelectedSuites] = useState<string>(filters?.suites || 'all');
     const [selectedStatus, setSelectedStatus] = useState<string>(filters?.status || 'all');
-    const [revenue, setRevenue] = useState<string>(filters?.revenue || '');
+    const [revenue, setRevenue] = useState<string>(filters?.revenue || 'all');
     const [searchKeyword, setSearchKeyword] = useState<string>(filters?.keyword || '');
 
     const [displayProperties, setDisplayProperties] = useState(properties.data);
@@ -127,7 +128,7 @@ export default function Properties({ properties, regions, filters }: PropertiesP
         selectedSuites,
         selectedStatus,
         filters?.max_price,
-        filters?.revenue,
+        revenue,
         searchKeyword
     ].filter(val => val && val !== 'all' && val !== '').length;
 
@@ -140,7 +141,7 @@ export default function Properties({ properties, regions, filters }: PropertiesP
         setSelectedGarages(filters?.garages || 'all');
         setSelectedSuites(filters?.suites || 'all');
         setSelectedStatus(filters?.status || 'all');
-        setRevenue(filters?.revenue || '');
+        setRevenue(filters?.revenue || 'all');
         setSearchKeyword(filters?.keyword || '');
         setDisplayProperties(properties.data);
     }, [filters, properties.data]);
@@ -156,7 +157,7 @@ export default function Properties({ properties, regions, filters }: PropertiesP
         if (selectedSuites !== 'all') params.suites = selectedSuites;
         if (selectedStatus !== 'all') params.status = selectedStatus;
         if (filters?.max_price) params.max_price = filters.max_price;
-        if (revenue) params.revenue = revenue;
+        if (revenue && revenue !== 'all') params.revenue = revenue;
         if (searchKeyword) params.keyword = searchKeyword;
 
         setIsModalOpen(false);
@@ -166,6 +167,58 @@ export default function Properties({ properties, regions, filters }: PropertiesP
             preserveScroll: true,
         });
     };
+
+    const getPageHeaders = () => {
+        if (filters?.alto_padrao === 'true') {
+            return {
+                badge: 'Alto Padrão',
+                title: 'Imóveis de Alto Padrão',
+                subtitle: 'Catálogo apresentado do maior para o menor valor, para quem busca sofisticação, conforto e exclusividade em cada detalhe.'
+            };
+        }
+        if (filters?.status === 'planta') {
+            return {
+                badge: 'Lançamentos',
+                title: 'Imóveis na Planta',
+                subtitle: 'As melhores oportunidades para investir ou planejar o seu futuro.'
+            };
+        }
+        if (filters?.status === 'pronto') {
+            return {
+                badge: 'Prontos para Morar',
+                title: 'Imóveis Concluídos',
+                subtitle: 'Descubra imóveis com obras já finalizadas, esperando por você para se mudar agora.'
+            };
+        }
+        if (filters?.revenue === '3200' || filters?.revenue === '5000') {
+            return {
+                badge: 'MCMV faixas 1 e 2',
+                title: 'Oportunidades Únicas',
+                subtitle: 'Faixas 1 e 2. Imóveis de até R$ 275 mil com as melhores taxas do Minha Casa Minha Vida.'
+            };
+        }
+        if (filters?.revenue === '9600') {
+            return {
+                badge: 'MCMV Faixa 3',
+                title: 'Oportunidades Únicas',
+                subtitle: 'Faixa 3. Imóveis de até R$ 400 mil enquadrados nas novas condições de financiamento.'
+            };
+        }
+        if (filters?.revenue === '13000') {
+            return {
+                badge: 'MCMV Faixa 4',
+                title: 'Oportunidades Únicas',
+                subtitle: 'Faixa 4. Opções de até R$ 600 mil para quem deseja aproveitar os novos limites do programa.'
+            };
+        }
+        return {
+            badge: 'Seleção Exclusiva',
+            title: 'Oportunidades Únicas',
+            subtitle: 'Conheça as propriedades que estão definindo novos padrões de morar bem.'
+        };
+    };
+
+    const headers = getPageHeaders();
 
     return (
         <div className="min-h-screen bg-[#FDFDFC] flex flex-col">
@@ -194,14 +247,14 @@ export default function Properties({ properties, regions, filters }: PropertiesP
                     <div className="container mx-auto px-4 relative z-30">
                         <div className="flex flex-col md:flex-row items-center md:items-end justify-between mb-16 gap-6 text-center md:text-left">
                             <div>
-                                <Badge variant="outline" className="mb-4 text-pc-gold  border-pc-gold/30 px-3 py-1 rounded-full uppercase tracking-widest text-[10px] font-bold hidden md:block">
-                                    Seleção Exclusiva
+                                <Badge variant="outline" className="mb-4 text-pc-gold  border-pc-gold/30 px-3 py-1 rounded-full uppercase tracking-widest text-[10px] font-bold hidden md:block w-fit">
+                                    {headers.badge}
                                 </Badge>
                                 <h2 className="text-4xl md:text-5xl font-black text-zinc-900 my-4 tracking-tighter">
-                                    Oportunidades Únicas
+                                    {headers.title}
                                 </h2>
                                 <p className="text-zinc-900 text-lg max-w-xl font-medium">
-                                    Conheça as propriedades que estão definindo novos padrões de morar bem.
+                                    {headers.subtitle}
                                 </p>
                             </div>
 
@@ -250,23 +303,23 @@ export default function Properties({ properties, regions, filters }: PropertiesP
                                             </div>
 
                                             <div className="flex flex-col gap-2">
-                                                <label className="text-sm font-semibold text-zinc-700">Renda mensal (R$)</label>
-                                                <div className="relative w-full">
-                                                    <input
-                                                        type="number"
-                                                        placeholder="Ex: 5000"
-                                                        value={revenue}
-                                                        onChange={(e) => setRevenue(e.target.value)}
-                                                        onKeyDown={(e) => {
-                                                            if (e.key === 'Enter') handleExplore();
-                                                        }}
-                                                        className={`w-full min-h-[36px] border-none focus:outline-none font-medium rounded-xl h-auto py-2 px-4 transition-all focus:ring-2 focus:ring-pc-blue placeholder:font-normal ${
-                                                            revenue 
-                                                                ? 'bg-pc-blue text-white shadow-md placeholder:text-white/60' 
-                                                                : 'bg-zinc-100 text-zinc-700 shadow-none hover:bg-zinc-200 placeholder:text-zinc-400'
-                                                        }`}
-                                                    />
-                                                </div>
+                                                <label className="text-sm font-semibold text-zinc-700">Faixa MCMV para financiamento</label>
+                                                <Select onValueChange={(value) => setRevenue(value === revenue ? 'all' : value)} value={revenue}>
+                                                    <SelectTrigger className={`w-full min-h-[36px] border-none focus:ring-0 focus:outline-none font-medium cursor-pointer rounded-xl h-auto py-2 px-4 transition-all data-[state=open]:ring-2 data-[state=open]:ring-pc-blue [&>svg]:opacity-100 ${
+                                                        revenue !== 'all'
+                                                            ? 'bg-pc-blue text-white shadow-md'
+                                                            : 'bg-zinc-100 text-zinc-700 shadow-none hover:bg-zinc-200'
+                                                    }`}>
+                                                        <SelectValue placeholder="Selecione a faixa" />
+                                                    </SelectTrigger>
+                                                    <SelectContent className="rounded-2xl border-none shadow-2xl p-2 bg-white/95 backdrop-blur-xl">
+                                                        <SelectItem value="all" className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">Qualquer Faixa</SelectItem>
+                                                        <SelectItem value="3200" className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">1 - Renda até R$ 3.200</SelectItem>
+                                                        <SelectItem value="5000" className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">2 - Renda de R$ 3.200 a R$ 5.000</SelectItem>
+                                                        <SelectItem value="9600" className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">3 - Renda de R$ 5.000 a R$ 9.600</SelectItem>
+                                                        <SelectItem value="13000" className="rounded-xl py-3 px-4 font-semibold !focus:bg-pc-blue !focus:text-white data-[highlighted]:bg-pc-blue data-[highlighted]:text-white transition-colors cursor-pointer">4 - Renda de R$ 9.600 a R$ 13.000</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
                                             </div>
 
                                             <div className="flex flex-col gap-2">
@@ -382,6 +435,7 @@ export default function Properties({ properties, regions, filters }: PropertiesP
                                                 setSelectedGarages('all');
                                                 setSelectedSuites('all');
                                                 setSelectedStatus('all');
+                                                setRevenue('all');
                                             }}>Limpar</Button>
                                             <Button className="w-full sm:w-auto bg-pc-blue hover:bg-pc-blue/90 text-white font-bold" onClick={handleExplore}>
                                                 Aplicar Filtros
