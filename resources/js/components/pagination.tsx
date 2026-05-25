@@ -37,10 +37,7 @@ export default function Pagination({ links, className }: PaginationProps) {
                         href={link.url || '#'}
                         preserveScroll
                         onSuccess={() => {
-                            const element = document.getElementById('featured-properties');
-                            if (element) {
-                                element.scrollIntoView({ behavior: 'smooth' });
-                            }
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
                         }}
                         className={cn(
                             "flex shrink-0 items-center justify-center font-bold transition-all duration-300",
