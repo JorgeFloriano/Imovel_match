@@ -22,4 +22,3 @@ php artisan optimize
 php artisan up
 
 echo "✅ Deploy de código finalizado com sucesso!"
-echo "⚠️  Lembre-se: Se houve alterações no Frontend (React/CSS), você ainda precisa subir o arquivo public_build.zip!"

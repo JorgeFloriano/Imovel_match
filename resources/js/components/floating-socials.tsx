@@ -20,7 +20,7 @@ export default function FloatingSocials({
     
     const defaultMessage = property 
         ? `Olá! Gostaria de mais informações sobre o imóvel: ${property.description}`
-        : "Olá! Gostaria de tirar algumas dúvidas.";
+        : "Olá! Marta, Gostaria de algumas informações.";
         
     const finalMessage = whatsappMessage || defaultMessage;
     const encodedMessage = finalMessage ? `?text=${encodeURIComponent(finalMessage)}` : '';

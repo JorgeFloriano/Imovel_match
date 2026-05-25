@@ -283,3 +283,48 @@ export const generateSpecificPropertyMarketingText = (client: any, property: any
 
     return text;
 };
+
+// Fallback for default marketing text (without properties for now)
+export const generateFeiraoCasaPaulistaText = (client: Client, userName: string = 'Marta de Souza'): string => {
+
+    const facilities = [
+        `📄 *Desconto casa paulista de R$13 mil*\n`,
+        `💰 *Subsídio de até R$55 mil*\n`,
+        `🔑 *Entrada facilitada*\n`,
+    ];
+
+    const randomFeiraoClosing = (): string => {
+        const closings = [
+            "Vamos proveitar e simular as condições? 😊",
+            "Posso te ajudar com uma simulação sem compromisso? 📑",
+            "Que tal conhecer as oportunidades disponíveis? 🚪",
+            "Quer saber como ficariam as parcelas para o seu perfil? 💹"
+        ];
+        return closings[Math.floor(Math.random() * closings.length)];
+    };
+
+    // Shuffle array
+    for (let i = facilities.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [facilities[i], facilities[j]] = [facilities[j], facilities[i]];
+    }
+
+    let text = randomTitle();
+    text += randomGreeting(client);
+    text += `Sou *${userName}*, ${randomProfession()}\n`;
+    text += "Estamos com oportunidades imperdíveis no *FEIRÃO CASA PAULISTA* 🏡\n";
+
+    text += "\n";
+    
+    facilities.forEach(line => {
+        text += line;
+    });
+
+    text += "\n";
+
+    text += "O evento acontece nos *dias 29, 30, 31 de maio e 01 de junho no parque das águas* e a partir de agora já estamos negociando nas *condições facilitadas!!*\n";
+    text += `Adquirir um ${randomProperty()} é mais que um investimento, é o começo de uma nova história. ❤️🏠\n`;
+    text += randomFeiraoClosing();
+
+    return text;
+};

@@ -3,7 +3,6 @@ import { FormSelect } from '@/components/form-select';
 import { Icon } from '@/components/icon';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { SearchInput } from '@/components/search-input';
 import AppLayout from '@/layouts/app-layout';
 import { Head, useForm, router, usePage } from '@inertiajs/react'; // Import router from Inertia
@@ -11,7 +10,7 @@ import { Check, MessageCircle, CheckCircle, Send, ThermometerSun, Flame, Thermom
 import React, { useEffect, useState, useMemo } from 'react'; // Add useEffect
 import { useSortableTable } from '@/hooks/useSortableTable';
 import { SortableTableHeader } from '@/components/ui/sortable-table-header';
-import { generateCustomMarketingText, generateCustomMarketingTextAccess, generateCustomMarketingTextMrv } from '@/utils/marketing';
+import { generateCustomMarketingText, generateCustomMarketingTextAccess, generateCustomMarketingTextMrv, generateFeiraoCasaPaulistaText } from '@/utils/marketing';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import IconTooltip from '@/components/ui/icon-tooltip';
 import Pagination from '@/components/pagination';
@@ -209,7 +208,8 @@ export default function Clients({
         } else if (data.contact_origin === 'access') {
             marketingText = generateCustomMarketingTextAccess(client, userName);
         } else {
-            marketingText = generateCustomMarketingText(client, userName);
+            //marketingText = generateCustomMarketingText(client, userName);
+            marketingText = generateFeiraoCasaPaulistaText(client, userName);
         }
 
         try {

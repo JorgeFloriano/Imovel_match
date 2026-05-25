@@ -71,7 +71,7 @@ export default function Welcome() {
                     </div>
 
                     <div className="relative z-10 container mx-auto px-4 text-center">
-                        <div id="main-image" className="flex justify-center mb-[4vh] md:mb-[8vh]">
+                        <div id="main-image" className="flex justify-center mb-[8vh] md:mb-[8vh]">
                             <img src="/logo_text.png" alt="Logo" className="h-30 md:h-40 w-auto" />
                         </div>
 
