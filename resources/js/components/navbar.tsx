@@ -1,8 +1,7 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { Menu, ArrowLeft } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
-import NavButton from '@/components/nav-button';
 import AuthActions from '@/components/auth-actions';
 import { type SharedData } from '@/types';
 import FloatingSocials from '@/components/floating-socials';

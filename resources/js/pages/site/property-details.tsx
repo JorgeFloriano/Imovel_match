@@ -1,7 +1,6 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { useState } from 'react';
-import { MapPin, Bed, Bath, Square, Car, ShowerHead, Calendar, Waves, Dog, Accessibility, Banknote, Maximize, Sparkles, AirVent, CloudSun, Flower, HeartHandshake, FileText, ArrowLeft } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { MapPin, Bed, Bath, Square, Car, ShowerHead, Calendar, Waves, Dog, Accessibility, Maximize, AirVent, CloudSun, Flower, HeartHandshake, FileText, ArrowLeft, House, Building } from 'lucide-react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
@@ -92,8 +91,8 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
 
             <main className="flex-1 w-full">
                 <div className="container mx-auto px-4 lg:px-40 py-4 flex items-center justify-start gap-4">
-                    <button 
-                        onClick={() => window.history.back()} 
+                    <button
+                        onClick={() => window.history.back()}
                         className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 text-sm font-semibold flex items-center gap-1.5 transition-colors shrink-0"
                         title="Voltar"
                     >
@@ -109,12 +108,7 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
                 {/* Imagem em destaque */}
                 <div className="container mx-auto lg:px-40">
                     <div className="w-full h-[40vh] md:h-[70vh] relative overflow-hidden">
-                        <img src={allImages[currentImageIndex].src} alt={allImages[currentImageIndex].alt} className="w-full h-full object-cover transition-opacity duration-500" />
-                        <div className="absolute bottom-0 left-0 w-full p-4 md:p-8">
-                            <Badge className="bg-pc-blue/90 text-white font-bold px-4 py-1.5 rounded-full text-xs shadow-lg uppercase tracking-wider backdrop-blur-sm">
-                                {property.type}
-                            </Badge>
-                        </div>
+                        <img src={allImages[currentImageIndex].src} alt={allImages[currentImageIndex].alt} className="w-full h-full object-cover transition-opacity duration-500" />                
                         {allImages.length > 1 && (
                             <>
                                 <button onClick={() => setCurrentImageIndex((prev) => (prev > 0 ? prev - 1 : allImages.length - 1))} className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 text-white w-10 h-10 rounded-full hover:bg-black/80 transition-colors flex items-center justify-center">
@@ -154,37 +148,56 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
                                     {property.address} {property.region?.name ? ` - ${property.region.prefix} ${property.region.name}` : ''}
                                 </span>
                             </div>
-                            
+
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8 text-zinc-700">
-                                
+
+                                {property.type && (
+                                    <div className="flex items-center gap-3">
+                                        {['apart. c/ elevad.', 'apartamento'].includes(property.type.toLowerCase()) ? (
+                                            <Building className="h-5 w-5 text-pc-gold shrink-0" />
+                                        ) : (
+                                            <House className="h-5 w-5 text-pc-gold shrink-0" />
+                                        )}
+                                        {property.type.toLowerCase() === 'apart. c/ elevad.' ? (
+                                            <>
+                                                <span>Elevador:</span> {renderBoolean(true)}
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span>{property.type}</span>
+                                            </>
+                                        )}
+                                    </div>
+                                )}
+
                                 {property.rooms != null && property.rooms > 0 && (
                                     <div className="flex items-center gap-3">
                                         <Bed className="h-5 w-5 text-pc-gold shrink-0" />
                                         <span><span className="font-semibold">{property.rooms}</span> {property.rooms === 1 ? 'Dormitório' : 'Dormitórios'}</span>
                                     </div>
                                 )}
-                                
+
                                 {property.suites != null && property.suites > 0 && (
                                     <div className="flex items-center gap-3">
                                         <Bath className="h-5 w-5 text-pc-gold shrink-0" />
                                         <span><span className="font-semibold">{property.suites}</span> {property.suites === 1 ? 'Suíte' : 'Suítes'}</span>
                                     </div>
                                 )}
-                                
+
                                 {property.bathrooms != null && property.bathrooms > 0 && (
                                     <div className="flex items-center gap-3">
                                         <ShowerHead className="h-5 w-5 text-pc-gold shrink-0" />
                                         <span><span className="font-semibold">{property.bathrooms}</span> {property.bathrooms === 1 ? 'Banheiro' : 'Banheiros'}</span>
                                     </div>
                                 )}
-                                
+
                                 {property.garages != null && property.garages > 0 && (
                                     <div className="flex items-center gap-3">
                                         <Car className="h-5 w-5 text-pc-gold shrink-0" />
                                         <span><span className="font-semibold">{property.garages}</span> {property.garages === 1 ? 'Vaga' : 'Vagas'}</span>
                                     </div>
                                 )}
-                                
+
                                 {property.building_area != null && property.building_area > 0 && (
                                     <div className="flex items-center gap-3">
                                         <Square className="h-5 w-5 text-pc-gold shrink-0" />
@@ -196,13 +209,6 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
                                     <div className="flex items-center gap-3">
                                         <Maximize className="h-5 w-5 text-pc-gold shrink-0" />
                                         <span><span className="font-semibold">{property.land_area} m²</span> Terreno</span>
-                                    </div>
-                                )}
-                                
-                                {property.finsh_type && (
-                                    <div className="flex items-center gap-3">
-                                        <Sparkles className="h-5 w-5 text-pc-gold shrink-0" />
-                                        <span>Acabamento:</span> <span className="font-semibold capitalize">{property.finsh_type}</span>
                                     </div>
                                 )}
 
@@ -247,7 +253,7 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
                                 <HeartHandshake className="h-6 w-6 text-pc-gold" />
                                 Condições
                             </h3>
-                            
+
                             <div className="mb-6">
                                 <p className="text-zinc-500 text-sm mb-1 uppercase tracking-wider">A partir de</p>
                                 <p className="text-xl font-black text-pc-blue">{formatPrice(property.price)}</p>
@@ -283,7 +289,9 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
                     {property.obs && (
                         <div className="max-w-4xl">
                             <h3 className="text-2xl font-bold text-zinc-900 mb-6">Sobre o Imóvel</h3>
-                            <p className="text-zinc-600 leading-relaxed text-lg whitespace-pre-wrap">{property.obs}<br/>{property.details}</p>
+                            <p className="text-zinc-600 leading-relaxed text-lg whitespace-pre-wrap">{property.obs}<br />
+                                {property.details}<br />
+                                {property.finsh_type && (<>Acabamento: {property.finsh_type}</>)}</p>
                         </div>
                     )}
                 </div>

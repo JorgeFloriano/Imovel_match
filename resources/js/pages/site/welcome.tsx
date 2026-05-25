@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import AnimatedSearch from '@/components/animated-search';
 
 const formatMonetaryText = (text: string) => {
     const parts = text.split(/(R\$\s[\d.,]+(?:\smil)?)/g);
@@ -70,21 +71,33 @@ export default function Welcome() {
                     </div>
 
                     <div className="relative z-10 container mx-auto px-4 text-center">
-                        <div className="flex justify-center mb-6 md:mb-20">
+                        <div id="main-image" className="flex justify-center mb-[4vh] md:mb-[8vh]">
                             <img src="/logo_text.png" alt="Logo" className="h-30 md:h-40 w-auto" />
                         </div>
 
-                        <Badge variant="outline" className="mb-6 text-white border-white/30 px-4 py-1.5 rounded-full backdrop-blur-sm bg-white/10 uppercase tracking-[0.2em] text-[10px] font-bold hidden md:block mx-auto">
+                        <Badge id="center-badge" variant="outline" className="text-white border-white/30 px-4 py-1.5 rounded-full backdrop-blur-sm bg-white/10 uppercase tracking-[0.2em] text-[10px] font-bold hidden md:block mx-auto mb-[2vh]">
                             Excelência em cada detalhe
                         </Badge>
-                        <h1 className="text-4xl md:text-5xl font-extrabold text-white my-12 tracking-tight leading-none">
+
+                        <h1 id="main-slogan" className="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-none mb-[1vh]">
                             Seu novo capítulo <br className="block md:hidden" /> <span className="text-pc-gold">começa agora</span>
                         </h1>
-                        <div className="text-lg md:text-2xl text-zinc-200 mb-6 mx-auto px-4 font-light leading-relaxed">
+
+                        <div id="main-text" className="text-lg md:text-2xl text-zinc-200 mx-auto px-4 font-light leading-relaxed mb-[3vh]">
                             <div className="hidden md:block">Curadoria exclusiva de empreendimentos que combinam com seu estilo de vida. <br /> Descubra o lar dos seus sonhos com a Marta de Souza Imobiliária.</div>
                         </div>
 
-                        <div id="search" className="max-w-xl md:mb-40 mb-20 mx-auto flex flex-col sm:flex-row gap-6 items-center transition-all duration-300">
+                        <div id="search-text" className="max-w-xl mx-auto w-full flex justify-center mb-[2vh]">
+                            <AnimatedSearch 
+                                routeUrl={route('public.properties')} 
+                                disableAnimation={true}
+                                className="w-full"
+                                inputClassName="text-base p-4 text-[20px]"
+                                placeholder="Buscar por empreendimento ou referência"
+                            />
+                        </div>
+
+                        <div id="search" className="max-w-xl mx-auto flex flex-col sm:flex-row gap-6 items-center transition-all duration-300 mb-[7vh]">
                             <Button
                                 onClick={() => setIsDialogOpen(true)}
                                 className="group relative overflow-hidden h-18 w-full sm:w-auto bg-[#123251] hover:bg-[#0a1e33] text-white px-10 py-6 rounded-xl flex items-center justify-center hover:scale-[1.02] active:scale-[0.98] transition-all duration-500 border border-pc-gold/20 hover:border-pc-gold/40 text-lg tracking-widest whitespace-nowrap"
