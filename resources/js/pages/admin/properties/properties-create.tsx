@@ -12,6 +12,7 @@ type PropertyCreateForm = {
     description: string | null;
     contact_name: string | null;
     contact_phone: string | null;
+    available: boolean | null;
     contact_link: string | null;
     place_link: string | null;
     region_id?: string;
@@ -70,6 +71,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
         description: null,
         contact_name: null,
         contact_phone: null,
+        available: true,
         contact_link: null,
         place_link: null,
         region_id: undefined,
@@ -184,14 +186,23 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                             error={errors.address}
                         />
 
-                        <FormInput
-                            label="Nome do Contato"
-                            placeholder="Ex: João da Silva (Construtora Planeta)"
-                            maxLength={100}
-                            value={data.contact_name || ''}
-                            onChange={(value) => handleSetData('contact_name', value)}
-                            error={errors.contact_name}
-                        />
+                        <div className="mb-3 grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <FormInput
+                                label="Nome do Contato"
+                                placeholder="Ex: João da Silva (Construtora Planeta)"
+                                maxLength={100}
+                                value={data.contact_name || ''}
+                                onChange={(value) => handleSetData('contact_name', value)}
+                                error={errors.contact_name}
+                            />
+                            <FormSelect
+                                label="Disponível"
+                                value={data.available === false ? 'false' : 'true'}
+                                onValueChange={(value) => handleSetData('available', value === 'true')}
+                                options={booleanOptions}
+                                error={errors.available}
+                            />
+                        </div>
 
                         <div className="mb-3 grid grid-cols-1 gap-4 md:grid-cols-2">
                             <FormInput

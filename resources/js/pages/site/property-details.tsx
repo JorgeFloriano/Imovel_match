@@ -93,7 +93,7 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
                 <div className="container mx-auto px-4 lg:px-40 py-4 flex items-center justify-start gap-4">
                     <button
                         onClick={() => window.history.back()}
-                        className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 text-sm font-semibold flex items-center gap-1.5 transition-colors shrink-0"
+                        className="text-zinc-400 hover:text-zinc-600 text-sm font-semibold flex items-center gap-1.5 transition-colors shrink-0"
                         title="Voltar"
                     >
                         <ArrowLeft className="h-4 w-4" />

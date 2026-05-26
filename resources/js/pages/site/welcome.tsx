@@ -33,13 +33,13 @@ const MCMVFaixaButton = ({
     description: string;
     onClick: () => void;
 }) => (
-    <Button 
-        variant="outline" 
-        className="h-auto w-full py-3 px-4 flex flex-col items-start gap-1 border-[#123251] hover:bg-[#123251]/5 hover:scale-[1.02] dark:border-[#123251]/50 dark:hover:bg-[#123251]/20 transition-all duration-300 text-left whitespace-normal"
+    <Button
+        variant="outline"
+        className="h-auto w-full py-3 px-4 flex flex-col items-start gap-1 border-[#123251] hover:bg-[#123251]/5 hover:scale-[1.02] transition-all duration-300 text-left whitespace-normal"
         onClick={onClick}
     >
-        <span className="font-bold text-[16px] text-[#123251] dark:text-zinc-100">{faixa}</span>
-        <span className="text-sm font-semibold text-[#123251] dark:text-zinc-300 leading-relaxed block">
+        <span className="font-bold text-[16px] text-[#123251]">{faixa}</span>
+        <span className="text-sm font-semibold text-[#123251] leading-relaxed block">
             {formatMonetaryText(description)}
         </span>
     </Button>
@@ -137,15 +137,15 @@ export default function Welcome() {
             <Footer />
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent className="sm:max-w-[500px] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                <DialogContent className="sm:max-w-[500px] bg-white border border-zinc-200">
                     <DialogHeader>
-                        <DialogTitle className="text-2xl font-bold text-center text-[#123251] dark:text-zinc-100 mb-2 flex flex-col items-center gap-3">
+                        <DialogTitle className="text-2xl font-bold text-center text-[#123251] mb-2 flex flex-col items-center gap-3">
                             <div className="p-2">
                                 <img src="/mcmv.png" alt="MCMV" className="h-8 w-auto object-contain" />
                             </div>
                             Novas Condições MCMV
                         </DialogTitle>
-                        <DialogDescription className="text-center text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-400">
+                        <DialogDescription className="text-center text-[15px] leading-relaxed text-zinc-600">
                             A Caixa Econômica Federal ampliou as faixas de renda e o valor dos imóveis contemplados pelo Minha Casa Minha Vida. Com juros menores e novos limites, ficou mais fácil realizar o sonho da casa própria (<a href="https://caixanoticias.caixa.gov.br/Paginas/Not%C3%ADcias/2026/04-ABRIL/CAIXA-inicia-opera%C3%A7%C3%A3o-das-novas-condi%C3%A7%C3%B5es-do-Minha-Casa,-Minha-Vida-na-pr%C3%B3xima-quarta-feira-(22).aspx" target="_blank" rel="noreferrer" className="text-[#123251] font-semibold hover:underline">saiba mais</a>). Selecione a sua faixa de renda familiar abaixo para descobrirmos os imóveis ideais para o seu financiamento:
                         </DialogDescription>
                     </DialogHeader>

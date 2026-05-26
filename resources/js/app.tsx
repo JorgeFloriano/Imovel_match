@@ -1,4 +1,5 @@
 import { createRoot } from 'react-dom/client';
+import type { Appearance } from './hooks/use-appearance';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -8,9 +9,9 @@ Promise.all([
   import('laravel-vite-plugin/inertia-helpers'),
   import('./hooks/use-appearance')
 ]).then(([
-  { createInertiaApp },
+  { createInertiaApp, router },
   { resolvePageComponent },
-  { initializeTheme }
+  { initializeTheme, applyTheme }
 ]) => {
   createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -29,6 +30,15 @@ Promise.all([
   });
 
   initializeTheme();
+  
+  router.on('navigate', (event) => {
+    if (event.detail.page.component.startsWith('site/')) {
+        document.documentElement.classList.remove('dark');
+    } else {
+        const savedAppearance = (localStorage.getItem('appearance') as Appearance) || 'system';
+        applyTheme(savedAppearance);
+    }
+  });
 });
 
 // Critical CSS only

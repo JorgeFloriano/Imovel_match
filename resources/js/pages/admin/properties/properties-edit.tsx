@@ -20,6 +20,7 @@ type PropertyEditForm = {
     description: string | null;
     contact_name: string | null;
     contact_phone: string | null;
+    available: boolean | null;
     contact_link: string | null;
     place_link: string | null;
     region_id?: string;
@@ -83,6 +84,7 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
         description: property.description || null,
         contact_name: property.contact_name || null,
         contact_phone: property.contact_phone || null,
+        available: property.available !== undefined ? property.available : true,
         contact_link: property.contact_link || null,
         place_link: property.place_link || null,
         region_id: property.region_id || undefined,
@@ -174,13 +176,22 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
                             error={errors.address}
                         />
 
-                        <FormInput
-                            label="Nome do Contato"
-                            placeholder="Ex: João da Silva (Construtora Planeta)"
-                            value={data.contact_name || ''}
-                            onChange={(value) => handleSetData('contact_name', value)}
-                            error={errors.contact_name}
-                        />
+                        <div className="mb-3 grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <FormInput
+                                label="Nome do Contato"
+                                placeholder="Ex: João da Silva (Construtora Planeta)"
+                                value={data.contact_name || ''}
+                                onChange={(value) => handleSetData('contact_name', value)}
+                                error={errors.contact_name}
+                            />
+                            <FormSelect
+                                label="Disponível"
+                                value={data.available === false ? 'false' : 'true'}
+                                onValueChange={(value) => handleSetData('available', value === 'true')}
+                                options={booleanOptions}
+                                error={errors.available}
+                            />
+                        </div>
 
                         <div className="mb-3 grid grid-cols-1 gap-4 md:grid-cols-2">
                             <FormInput

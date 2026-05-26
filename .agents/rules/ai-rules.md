@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Regras e Arquitetura - Imovel_match (Laravel Breeze + React + Inertia.js)
 
 Este documento dita as regras arquiteturais e de negócio para Assistentes de IA e novos desenvolvedores trabalhando neste projeto. Sempre consulte estas regras antes de criar novas páginas ou alterar o fluxo de dados.

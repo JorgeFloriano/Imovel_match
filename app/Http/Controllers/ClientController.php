@@ -116,7 +116,7 @@ class ClientController extends Controller
     {
         Gate::authorize('edit', $client);
 
-        return Inertia::render('clients/clients-edit', [
+        return Inertia::render('admin/clients/clients-edit', [
             'client' => $client->load('wishe.regions'),
             'maritalStatusOptions' => $this->client->maritalStatOpt(),
             'booleanOptions' => $this->client->boolOpt(),
@@ -276,7 +276,7 @@ class ClientController extends Controller
             ['description', 'asc'] // Secondary sort by client name ascending
         ])->values()->all();
 
-        return Inertia::render('clients/client-properties', [
+        return Inertia::render('admin/clients/client-properties', [
             'properties' => $sortedProperties,
             'client' => $client
         ]);
@@ -305,7 +305,7 @@ class ClientController extends Controller
             abort(404);
         }
 
-        return Inertia::render('clients/clients-self-edit', [
+        return Inertia::render('admin/clients/clients-self-edit', [
             'client' => $client->load('wishe.regions'),
             'maritalStatusOptions' => $this->client->maritalStatOpt(),
             'booleanOptions' => $this->client->boolOpt(),

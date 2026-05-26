@@ -22,7 +22,7 @@ class SiteController extends Controller
 
     public function properties(Request $request)
     {
-        $query = Property::withoutGlobalScope('user')->with(['district', 'region']);
+        $query = Property::withoutGlobalScope('user')->where('available', true)->with(['district', 'region']);
 
         if ($request->filled('region') && $request->region !== 'all') {
             $query->where('region_id', $request->region);
@@ -129,6 +129,8 @@ class SiteController extends Controller
 
     public function showProperty(Property $property)
     {
+        abort_if(!$property->available, 404);
+        
         return Inertia::render('site/property-details', [
             'property' => $property->load(['region', 'district', 'images']),
         ]);
