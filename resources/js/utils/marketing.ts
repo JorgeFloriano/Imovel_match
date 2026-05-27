@@ -56,26 +56,44 @@ const randomGreeting = (client: Client): string => {
     } else if (hour >= 12 && hour < 18) {
         timeGreeting = "Boa tarde ";
     }
-
-    let firstName = client.name ? client.name.split(' ')[0] : '';
-    // Se o nome for "Nome", "NOME" ou "nome", deixamos vazio para evitar "Bom dia Nome"
-    if (firstName.toLowerCase() === 'nome') {
-        firstName = '';
-    }
-
-    const namePart = firstName ? ` ${firstName}` : '';
     
     const greetings = [
-        `Olá${namePart}, tudo bem? 👋🏼\n`,
-        `${timeGreeting.trim()}${namePart}, tudo bem? 👋🏼\n`,
-        `Oi${namePart}, como vai você? 😊\n`,
-        `${timeGreeting.trim()}${namePart}, como vai você? 😊\n`,
-        `Olá${namePart}, prazer em falar com você! 👋\n`,
-        `${timeGreeting.trim()}${namePart}, prazer em falar com você! 👋\n`
+        `${timeGreeting.trim()}, como vai?`,
+        `${timeGreeting.trim()}, tudo bem?`,
+        `Olá, tudo bem?`,
+        `Olá, como vai?`,
+        `Oi, como vai?`,
+        `Oi, tudo bem?`,
     ];
 
     return greetings[Math.floor(Math.random() * greetings.length)];
 };
+
+const randomAskClientName = (client: Client): string => {
+
+    const nullName = [
+        'nome',
+        'sim',
+        'não',
+        'nao'
+    ];
+
+    let firstName = client.name ? client.name.split(' ')[0] : '';
+    if (!firstName || nullName.includes(firstName.toLowerCase())) {
+        return '';
+    }
+
+    const askClientName = [
+        `Eu falo com ${firstName}?`,
+        `Neste número falo com ${firstName}?`,
+        `Nesse número falo com ${firstName}?`,
+        `${firstName} é neste número?`,
+        `Èsse é o contato de ${firstName}?`,
+        `Nesse contato falo com ${firstName}?`,
+    ];
+
+    return askClientName[Math.floor(Math.random() * askClientName.length)];
+}
 
 const randomProfession = (): string => {
     const professions = [
@@ -209,20 +227,12 @@ export const generateCustomMarketingTextAccess = (client: Client, userName: stri
 };
 
 // Fallback for default marketing text (without properties for now)
-export const generateCustomMarketingText = (client: Client, userName: string = 'Marta de Souza'): string => {
-    let text = randomTitle();
-    text += randomGreeting(client);
-    text += `Sou *${userName}*, ${randomProfession()}\n`;
-    text += "Que tal conhecer as *melhores oportunidades* para morar ou investir na região de Sorocaba?\n";
-    text += "🎯 *Temos ótimas opções que podem combinar perfeitamente com seu perfil!*\n\n";
-    
-    text += shuffleExclusiveAdvantages();
+export const generateCustomMarketingText = (client: Client): string => {
+    let text = randomGreeting(client);
 
-    text += "⏳ *Não deixe o tempo passar!*\n";
-    text += "Sonhar alto também começa com um bom planejamento! 💭🔑\n";
-    text += "💬 Fale comigo, te mostro as novidades e detalhes sobre esses e outros lançamentos! 📱💬 \n";
-    text += `Adquirir um ${randomProperty()} é mais que um investimento, é o começo de uma nova história. ❤️🏠\n`;
-    text += randomClosing();
+    if (randomAskClientName(client)) {
+        text += "\n" + randomAskClientName(client);
+    }
 
     return text;
 };
