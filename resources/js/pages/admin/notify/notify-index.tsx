@@ -401,18 +401,18 @@ export default function Clients({
                             />
                             <div id="filter-notified-until-container" className="w-full">
                                 <FormSelect
-                                    label="Notificado até"
+                                    label="Notificado antes de"
                                     value={data.notified_until}
                                     onValueChange={(value) => handleSetData('notified_until', value)}
                                     customOptions={[
                                         { value: 'nulo', label: 'Nunca Notificado' },
                                         { value: 'todos', label: 'Todos' },
                                         { value: 'hoje', label: 'Hoje' },
-                                        { value: 'ontem', label: 'Ontem ou mais recente' },
-                                        { value: '3_dias', label: 'Últimos 3 dias' },
-                                        { value: '7_dias', label: 'Última semana' },
-                                        { value: '15_dias', label: 'Últimas 2 semanas' },
-                                        { value: '30_dias', label: 'Último mês' }
+                                        { value: 'ontem', label: 'Ontem' },
+                                        { value: '3_dias', label: '3 dias' },
+                                        { value: '7_dias', label: 'Uma semana' },
+                                        { value: '15_dias', label: 'Duas semanas' },
+                                        { value: '30_dias', label: 'Um mês' }
                                     ]}
                                     error={errors.notified_until}
                                 />

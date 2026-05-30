@@ -95,7 +95,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                     <div className="flex items-center gap-1.5 text-zinc-500 mb-2 text-[14px] tracking-tight">
                         <MapPin className="h-5 w-5 text-pc-gold shrink-0" />
                         <span className="line-clamp-1">
-                            {property.district?.name ? ` ${property.district.name}` : ` ${property.address}`}
+                            {property.district?.name || property.address || 'Localização sob consulta'}
                         </span>
                     </div>
 

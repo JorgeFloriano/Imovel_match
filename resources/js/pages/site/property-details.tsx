@@ -144,8 +144,8 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
 
                             <div className="flex items-center gap-2 mb-6  tracking-tight">
                                 <MapPin className="h-5 w-5 text-pc-gold shrink-0" />
-                                <span className="line-clamp-1">
-                                    {property.address} {property.region?.name ? ` - ${property.region.prefix} ${property.region.name}` : ''}
+                                <span>
+                                    {property.address || property.district?.name || 'Localização sob consulta'} {property.region?.name ? ` - ${property.region.prefix || ''} ${property.region.name}` : ''}
                                 </span>
                             </div>
 

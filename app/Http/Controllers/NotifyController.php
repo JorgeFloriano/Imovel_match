@@ -51,7 +51,7 @@ class NotifyController extends Controller
                 });
             }
 
-            // Filtro de Notificado Até (last_contact_at)
+            // Filtro de Notificado antes de (last_contact_at)
             if ($notifiedUntil === 'nulo') {
                 $query->whereNull('last_contact_at');
             } elseif ($notifiedUntil === 'todos') {
@@ -59,17 +59,17 @@ class NotifyController extends Controller
             } else {
                 $now = now()->timezone('America/Sao_Paulo');
                 if ($notifiedUntil === 'hoje') {
-                    $query->whereDate('last_contact_at', '>=', $now->format('Y-m-d'));
+                    $query->whereDate('last_contact_at', '<', $now->format('Y-m-d'));
                 } elseif ($notifiedUntil === 'ontem') {
-                    $query->whereDate('last_contact_at', '>=', $now->subDay()->format('Y-m-d'));
+                    $query->whereDate('last_contact_at', '<', $now->subDay()->format('Y-m-d'));
                 } elseif ($notifiedUntil === '3_dias') {
-                    $query->whereDate('last_contact_at', '>=', $now->subDays(3)->format('Y-m-d'));
+                    $query->whereDate('last_contact_at', '<', $now->subDays(3)->format('Y-m-d'));
                 } elseif ($notifiedUntil === '7_dias') {
-                    $query->whereDate('last_contact_at', '>=', $now->subDays(7)->format('Y-m-d'));
+                    $query->whereDate('last_contact_at', '<', $now->subDays(7)->format('Y-m-d'));
                 } elseif ($notifiedUntil === '15_dias') {
-                    $query->whereDate('last_contact_at', '>=', $now->subDays(15)->format('Y-m-d'));
+                    $query->whereDate('last_contact_at', '<', $now->subDays(15)->format('Y-m-d'));
                 } elseif ($notifiedUntil === '30_dias') {
-                    $query->whereDate('last_contact_at', '>=', $now->subDays(30)->format('Y-m-d'));
+                    $query->whereDate('last_contact_at', '<', $now->subDays(30)->format('Y-m-d'));
                 }
             }
 
