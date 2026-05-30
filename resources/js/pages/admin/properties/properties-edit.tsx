@@ -359,7 +359,7 @@ export default function EditProperty({ property, typeOptions, airConditioningOpt
                         />
 
                         <FormInput
-                            label="Ato Mínimo"
+                            label="Ato Mínimo (%)"
                             type="number"
                             min={0}
                             max={9999999999}

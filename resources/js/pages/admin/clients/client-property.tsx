@@ -336,7 +336,7 @@ export default function ClientProperties({ property, client, match }: ClientProp
                             />
 
                             <TableRole
-                                label="Ato mínimo (R$)"
+                                label="Ato mínimo (%)"
                                 clientValue={formatCurrency(client.wishe?.min_act)}
                                 propertyValue={formatCurrency(property.min_act)}
                                 iconValue={match.min_act}

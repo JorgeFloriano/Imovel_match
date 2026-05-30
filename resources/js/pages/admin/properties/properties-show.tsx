@@ -209,7 +209,7 @@ export default function ShowProperty({ property, booleanOptions }: PropertyShowP
                                 <p className="text-sm">{formatDate(property.delivery_key || '-')}</p>
                             </div>
                             <div>
-                                <h3 className="text-sm font-medium text-neutral-500">Ato Mínimo</h3>
+                                <h3 className="text-sm font-medium text-neutral-500">Ato Mínimo (%)</h3>
                                 <p className="text-sm">{property.min_act || '-'}</p>
                             </div>
                             <div>

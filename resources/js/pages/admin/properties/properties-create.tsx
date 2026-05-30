@@ -376,7 +376,7 @@ export default function CreateProperty({ typeOptions, airConditioningOptions, bo
                         />
 
                         <FormInput
-                            label="Ato Mínimo"
+                            label="Ato Mínimo (%)"
                             type="number"
                             min={0}
                             max={9999999999}

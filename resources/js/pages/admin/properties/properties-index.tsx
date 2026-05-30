@@ -333,7 +333,7 @@ export default function Properties({ properties, filters }: { properties: Pagina
                                                             ? new Date(property.delivery_key).toLocaleDateString('pt-BR')
                                                             : 'Não informada'}
                                                         <br />
-                                                        <strong>Ato Mínimo: </strong> {property.min_act || 'Não informado'}
+                                                        <strong>Ato Mínimo (%): </strong> {property.min_act || 'Não informado'}
                                                         <br />
                                                         <strong>Entrada Parcelada: </strong>
                                                         <Status value={property.installment_payment} />

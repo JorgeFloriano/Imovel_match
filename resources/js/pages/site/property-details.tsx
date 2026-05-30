@@ -261,7 +261,7 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
 
                             {property.min_act != null && property.min_act > 0 && (
                                 <div className="mb-4 flex justify-between items-center border-b border-zinc-200 pb-4">
-                                    <span className="text-zinc-600">Ato Mínimo</span>
+                                    <span className="text-zinc-600">Ato Mínimo (%)</span>
                                     <span className="font-bold text-zinc-900">{property.min_act}%</span>
                                 </div>
                             )}
