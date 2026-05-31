@@ -1,7 +1,7 @@
 import { type SharedData } from '@/types';
 import { Head, usePage, router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
-import { Search } from 'lucide-react';
+import { Filter, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import PropertyCard from '@/components/property-card';
@@ -262,9 +262,9 @@ export default function Properties({ properties, regions, filters }: PropertiesP
                                 <Dialog disableDarkMode open={isModalOpen} onOpenChange={setIsModalOpen}>
                                     <DialogTrigger asChild>
                                         <button className="group w-full md:w-auto justify-center flex items-center bg-white/60 backdrop-blur-md px-6 py-3 md:py-4 rounded-full border border-pc-blue/20 text-pc-blue font-black hover:bg-white/80 hover:shadow-md transition-all text-base md:text-lg cursor-pointer gap-3 shadow-sm">
-                                            Busca Personalizada
+                                            Filtros
                                             <div className="relative flex items-center">
-                                                <Search className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                                                <Filter className="h-5 w-5 group-hover:scale-110 transition-transform" />
                                                 {activeFiltersCount > 0 && (
                                                     <span className="absolute -top-2.5 -right-3 flex h-5 w-5 items-center justify-center rounded-full bg-pc-gold text-[11px] font-black text-white shadow-sm ring-2 ring-white animate-in zoom-in">
                                                         {activeFiltersCount}
