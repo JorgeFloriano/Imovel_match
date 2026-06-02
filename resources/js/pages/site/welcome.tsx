@@ -88,8 +88,8 @@ export default function Welcome() {
                         </div>
 
                         <div id="search-text" className="max-w-xl mx-auto w-full flex justify-center mb-[2vh]">
-                            <AnimatedSearch 
-                                routeUrl={route('public.properties')} 
+                            <AnimatedSearch
+                                routeUrl={route('public.properties')}
                                 disableAnimation={true}
                                 className="w-full"
                                 inputClassName="text-base p-4 text-[20px]"
@@ -151,25 +151,25 @@ export default function Welcome() {
                     </DialogHeader>
 
                     <div className="flex flex-col gap-3 mt-4">
-                        <MCMVFaixaButton 
+                        <MCMVFaixaButton
                             faixa="Faixa 1"
-                            description="Renda de até R$ 3.200 (Imóveis até R$ 264 mil)"
+                            description="Renda de até R$ 3.200 (Imóveis até R$ 275 mil)"
                             onClick={() => handleSelectFaixa(3200)}
                         />
-                        
+
                         <MCMVFaixaButton
                             faixa="Faixa 2"
-                            description="Renda de R$ 3.200 a R$ 5.000 (Imóveis até R$ 264 mil)"
+                            description="Renda de R$ 3.200 a R$ 5.000 (Imóveis até R$ 275 mil)"
                             onClick={() => handleSelectFaixa(5000)}
                         />
 
-                        <MCMVFaixaButton 
+                        <MCMVFaixaButton
                             faixa="Faixa 3"
                             description="Renda de R$ 5.000 a R$ 9.600 (Imóveis até R$ 400 mil)"
                             onClick={() => handleSelectFaixa(9600)}
                         />
 
-                        <MCMVFaixaButton 
+                        <MCMVFaixaButton
                             faixa="Faixa 4"
                             description="Renda de R$ 9.600 a R$ 13.000 (Imóveis até R$ 600 mil)"
                             onClick={() => handleSelectFaixa(13000)}

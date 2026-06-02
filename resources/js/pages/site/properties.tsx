@@ -194,7 +194,7 @@ export default function Properties({ properties, regions, filters }: PropertiesP
             return {
                 badge: 'MCMV faixas 1 e 2',
                 title: 'Oportunidades Únicas',
-                subtitle: 'Faixas 1 e 2. Imóveis de até R$ 264 mil com as melhores taxas do Minha Casa Minha Vida.'
+                subtitle: 'Faixas 1 e 2. Imóveis de até R$ 275 mil com as melhores taxas do Minha Casa Minha Vida.'
             };
         }
         if (filters?.revenue === '9600') {
@@ -293,11 +293,10 @@ export default function Properties({ properties, regions, filters }: PropertiesP
                                                         onKeyDown={(e) => {
                                                             if (e.key === 'Enter') handleExplore();
                                                         }}
-                                                        className={`w-full min-h-[36px] border-none focus:outline-none font-medium rounded-xl h-auto py-2 px-4 transition-all focus:ring-2 focus:ring-pc-blue placeholder:font-normal ${
-                                                            searchKeyword 
-                                                                ? 'bg-pc-blue text-white shadow-md placeholder:text-white/60' 
+                                                        className={`w-full min-h-[36px] border-none focus:outline-none font-medium rounded-xl h-auto py-2 px-4 transition-all focus:ring-2 focus:ring-pc-blue placeholder:font-normal ${searchKeyword
+                                                                ? 'bg-pc-blue text-white shadow-md placeholder:text-white/60'
                                                                 : 'bg-zinc-100 text-zinc-700 shadow-none hover:bg-zinc-200 placeholder:text-zinc-400'
-                                                        }`}
+                                                            }`}
                                                     />
                                                 </div>
                                             </div>
@@ -305,11 +304,10 @@ export default function Properties({ properties, regions, filters }: PropertiesP
                                             <div className="flex flex-col gap-2">
                                                 <label className="text-sm font-semibold text-zinc-700">Faixa MCMV para financiamento</label>
                                                 <Select onValueChange={(value) => setRevenue(value === revenue ? 'all' : value)} value={revenue}>
-                                                    <SelectTrigger className={`w-full min-h-[36px] border-none focus:ring-0 focus:outline-none font-medium cursor-pointer rounded-xl h-auto py-2 px-4 transition-all data-[state=open]:ring-2 data-[state=open]:ring-pc-blue [&>svg]:opacity-100 ${
-                                                        revenue !== 'all'
+                                                    <SelectTrigger className={`w-full min-h-[36px] border-none focus:ring-0 focus:outline-none font-medium cursor-pointer rounded-xl h-auto py-2 px-4 transition-all data-[state=open]:ring-2 data-[state=open]:ring-pc-blue [&>svg]:opacity-100 ${revenue !== 'all'
                                                             ? 'bg-pc-blue text-white shadow-md'
                                                             : 'bg-zinc-100 text-zinc-700 shadow-none hover:bg-zinc-200'
-                                                    }`}>
+                                                        }`}>
                                                         <SelectValue placeholder="Selecione a faixa" />
                                                     </SelectTrigger>
                                                     <SelectContent className="rounded-2xl border-none shadow-2xl p-2 bg-white/95 backdrop-blur-xl">
@@ -325,11 +323,10 @@ export default function Properties({ properties, regions, filters }: PropertiesP
                                             <div className="flex flex-col gap-2">
                                                 <label className="text-sm font-semibold text-zinc-700">Região</label>
                                                 <Select onValueChange={(value) => setSelectedRegion(value === selectedRegion ? 'all' : value)} value={selectedRegion}>
-                                                    <SelectTrigger className={`w-full min-h-[36px] border-none focus:ring-0 focus:outline-none font-medium cursor-pointer rounded-xl h-auto py-2 px-4 transition-all data-[state=open]:ring-2 data-[state=open]:ring-pc-blue [&>svg]:opacity-100 ${
-                                                        selectedRegion !== 'all'
+                                                    <SelectTrigger className={`w-full min-h-[36px] border-none focus:ring-0 focus:outline-none font-medium cursor-pointer rounded-xl h-auto py-2 px-4 transition-all data-[state=open]:ring-2 data-[state=open]:ring-pc-blue [&>svg]:opacity-100 ${selectedRegion !== 'all'
                                                             ? 'bg-pc-blue text-white shadow-md'
                                                             : 'bg-zinc-100 text-zinc-700 shadow-none hover:bg-zinc-200'
-                                                    }`}>
+                                                        }`}>
                                                         <SelectValue placeholder="Selecione a região" />
                                                     </SelectTrigger>
                                                     <SelectContent className="rounded-2xl border-none shadow-2xl p-2 bg-white/95 backdrop-blur-xl">

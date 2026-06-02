@@ -86,7 +86,7 @@ class SiteController extends Controller
         if ($request->filled('revenue')) {
             $revenue = (float) $request->revenue;
             if ($revenue <= 5000) {
-                $query->where('price', '<=', 264000);
+                $query->where('price', '<=', 275000);
             } elseif ($revenue <= 9600) {
                 $query->where('price', '<=', 400000);
             } else {
@@ -103,8 +103,8 @@ class SiteController extends Controller
             $keyword = $request->keyword;
             $query->where(function ($q) use ($keyword) {
                 $q->where('description', 'like', '%' . $keyword . '%')
-                  ->orWhere('address', 'like', '%' . $keyword . '%')
-                  ->orWhere('obs', 'like', '%' . $keyword . '%');
+                    ->orWhere('address', 'like', '%' . $keyword . '%')
+                    ->orWhere('obs', 'like', '%' . $keyword . '%');
             });
         }
 
@@ -130,7 +130,7 @@ class SiteController extends Controller
     public function showProperty(Property $property)
     {
         abort_if(!$property->available, 404);
-        
+
         return Inertia::render('site/property-details', [
             'property' => $property->load(['region', 'district', 'images']),
         ]);
