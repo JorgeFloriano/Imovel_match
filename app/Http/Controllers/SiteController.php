@@ -86,7 +86,7 @@ class SiteController extends Controller
         if ($request->filled('revenue')) {
             $revenue = (float) $request->revenue;
             if ($revenue <= 5000) {
-                $query->where('price', '<=', 275000);
+                $query->where('price', '<=', 264000);
             } elseif ($revenue <= 9600) {
                 $query->where('price', '<=', 400000);
             } else {

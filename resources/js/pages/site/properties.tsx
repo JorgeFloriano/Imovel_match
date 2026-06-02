@@ -194,7 +194,7 @@ export default function Properties({ properties, regions, filters }: PropertiesP
             return {
                 badge: 'MCMV faixas 1 e 2',
                 title: 'Oportunidades Únicas',
-                subtitle: 'Faixas 1 e 2. Imóveis de até R$ 275 mil com as melhores taxas do Minha Casa Minha Vida.'
+                subtitle: 'Faixas 1 e 2. Imóveis de até R$ 264 mil com as melhores taxas do Minha Casa Minha Vida.'
             };
         }
         if (filters?.revenue === '9600') {

@@ -153,13 +153,13 @@ export default function Welcome() {
                     <div className="flex flex-col gap-3 mt-4">
                         <MCMVFaixaButton 
                             faixa="Faixa 1"
-                            description="Renda de até R$ 3.200 (Imóveis até R$ 275 mil)"
+                            description="Renda de até R$ 3.200 (Imóveis até R$ 264 mil)"
                             onClick={() => handleSelectFaixa(3200)}
                         />
                         
                         <MCMVFaixaButton
                             faixa="Faixa 2"
-                            description="Renda de R$ 3.200 a R$ 5.000 (Imóveis até R$ 275 mil)"
+                            description="Renda de R$ 3.200 a R$ 5.000 (Imóveis até R$ 264 mil)"
                             onClick={() => handleSelectFaixa(5000)}
                         />
 
