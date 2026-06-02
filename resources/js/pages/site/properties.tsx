@@ -201,14 +201,14 @@ export default function Properties({ properties, regions, filters }: PropertiesP
             return {
                 badge: 'MCMV Faixa 3',
                 title: 'Oportunidades Únicas',
-                subtitle: 'Faixa 3. Imóveis de até R$ 400 mil enquadrados nas novas condições de financiamento.'
+                subtitle: 'Faixa 3. Imóveis acima de R$ 275 mil e até R$ 400 mil enquadrados nas novas condições de financiamento.'
             };
         }
         if (filters?.revenue === '13000') {
             return {
                 badge: 'MCMV Faixa 4',
                 title: 'Oportunidades Únicas',
-                subtitle: 'Faixa 4. Opções de até R$ 600 mil para quem deseja aproveitar os novos limites do programa.'
+                subtitle: 'Faixa 4. Opções acima de R$ 400 mil e até R$ 600 mil para quem deseja aproveitar os novos limites do programa.'
             };
         }
         return {

@@ -88,11 +88,13 @@ class SiteController extends Controller
             if ($revenue <= 5000) {
                 $query->where('price', '<=', 275000);
             } elseif ($revenue <= 9600) {
+                $query->where('price', '>', 275000);
                 $query->where('price', '<=', 400000);
             } else {
+                $query->where('price', '>', 400000);
                 $query->where('price', '<=', 600000);
             }
-            $query->orderBy('price', 'desc');
+            $query->orderBy('price');
         }
 
         if ($request->filled('alto_padrao') && $request->alto_padrao == 'true') {
