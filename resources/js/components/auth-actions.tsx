@@ -23,11 +23,8 @@ export default function AuthActions({ auth }: AuthActionsProps) {
 
     return (
         <div className="flex items-center gap-3">
-            <Link href={route('login')}>
-                <NavButton variant="primary">
-                    <LogIn className="mr-2 h-4 w-4 hidden md:block" />
-                    Logar
-                </NavButton>
+            <Link href={route('public.properties')}>
+                <img src="/logo_build.png" alt="Logo" className="h-10 w-auto mr-3 relative z-10 drop-shadow-md" />
             </Link>
             {/* <Link href={route('register')}>
                 <NavButton variant="primary">

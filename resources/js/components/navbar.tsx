@@ -1,4 +1,4 @@
-import { Link, router, usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
@@ -34,14 +34,6 @@ export default function Navbar() {
     const isProntoParaMorar = url.includes('status=pronto');
     const isAltoPadrao = url.includes('alto_padrao=true');
     const isSobreNos = url.startsWith('/sobre-nos');
-
-    const handleBack = () => {
-        if (window.history.length > 2) {
-            window.history.back();
-        } else {
-            router.get(route('home'));
-        }
-    };
 
     return (
         <>
