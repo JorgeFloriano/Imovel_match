@@ -137,7 +137,7 @@ export default function Welcome() {
             <Footer />
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent className="sm:max-w-[500px] bg-white border border-zinc-200">
+                <DialogContent className="sm:max-w-[500px] bg-white border border-zinc-200 max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
                         <DialogTitle className="text-2xl font-bold text-center text-[#123251] mb-2 flex flex-col items-center gap-3">
                             <div className="p-2">
