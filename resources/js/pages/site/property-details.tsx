@@ -142,14 +142,14 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
                         <div className="flex-1">
                             <h2 className="text-3xl md:text-4xl font-bold text-pc-blue mb-4">{property.description}</h2>
 
-                            <div className="flex items-center gap-2 mb-6  tracking-tight">
+                            <div className="flex items-center gap-2 mb-6 text-zinc-600 tracking-tight">
                                 <MapPin className="h-5 w-5 text-pc-gold shrink-0" />
                                 <span>
                                     {property.address || property.district?.name || 'Localização sob consulta'} {property.region?.name ? ` - ${property.region.prefix || ''} ${property.region.name}` : ''}
                                 </span>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8 text-zinc-700">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8 text-zinc-600">
 
                                 {property.type && (
                                     <div className="flex items-center gap-3">
