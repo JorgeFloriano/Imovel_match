@@ -10,7 +10,7 @@ import { Check, MessageCircle, CheckCircle, Send, ThermometerSun, Flame, Thermom
 import React, { useEffect, useState, useMemo } from 'react'; // Add useEffect
 import { useSortableTable } from '@/hooks/useSortableTable';
 import { SortableTableHeader } from '@/components/ui/sortable-table-header';
-import { generateCustomMarketingText, generateCustomMarketingTextAccess, generateCustomMarketingTextMrv, generateFeiraoCasaPaulistaText } from '@/utils/marketing';
+import { generateCustomMarketingText, generateCustomMarketingTextAccess, generateCustomMarketingTextMrv, generateFeiraoCasaPaulistaText, generateSiteLinkMarketingText } from '@/utils/marketing';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import IconTooltip from '@/components/ui/icon-tooltip';
 import Pagination from '@/components/pagination';
@@ -202,7 +202,7 @@ export default function Clients({
     const sendMarketingText = async (client: Client, e: React.MouseEvent) => {
         e.preventDefault();
 
-        let marketingText = generateCustomMarketingText(client);
+        let marketingText = generateSiteLinkMarketingText(client);
         // if (data.contact_origin === 'mrv') {
         //     marketingText = generateCustomMarketingTextMrv(client, userName);
         // } else if (data.contact_origin === 'access') {

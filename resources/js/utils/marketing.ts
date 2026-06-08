@@ -27,6 +27,21 @@ export const generateWhatsAppLink = (phone: string, message: string): string => 
     return `https://api.whatsapp.com/send?phone=${client_phone}&text=${encodeURIComponent(message)}`;
 };
 
+const getFirstName = (client: Client): string => {
+    const nullName = [
+        'nome',
+        'sim',
+        'não',
+        'nao'
+    ];
+
+    let firstName = client.name ? client.name.split(' ')[0] : '';
+    if (!firstName || nullName.includes(firstName.toLowerCase())) {
+        return '';
+    }
+    return firstName;
+}
+
 const randomTitle = (): string => {
     const titles = [
         "🌟 *SEU NOVO APÊ ESTÁ AQUI!* 🌟\n\n",
@@ -58,12 +73,12 @@ const randomGreeting = (client: Client): string => {
     }
     
     const greetings = [
-        `${timeGreeting.trim()}, como vai?`,
-        `${timeGreeting.trim()}, tudo bem?`,
-        `Olá, tudo bem?`,
-        `Olá, como vai?`,
-        `Oi, como vai?`,
-        `Oi, tudo bem?`,
+        `${timeGreeting.trim()} ${getFirstName(client)}, como vai? 😊`,
+        `${timeGreeting.trim()} ${getFirstName(client)}, tudo bem? ☺️`,
+        `Olá ${getFirstName(client)}, tudo bem? 🙂`,
+        `Olá ${getFirstName(client)}, como vai? 😊`,
+        `Oi ${getFirstName(client)}, como vai? ☺️`,
+        `Oi ${getFirstName(client)}, tudo bem? 🙂`,
     ];
 
     return greetings[Math.floor(Math.random() * greetings.length)];
@@ -71,25 +86,13 @@ const randomGreeting = (client: Client): string => {
 
 const randomAskClientName = (client: Client): string => {
 
-    const nullName = [
-        'nome',
-        'sim',
-        'não',
-        'nao'
-    ];
-
-    let firstName = client.name ? client.name.split(' ')[0] : '';
-    if (!firstName || nullName.includes(firstName.toLowerCase())) {
-        return '';
-    }
-
     const askClientName = [
-        `Eu falo com ${firstName}?`,
-        `Neste número falo com ${firstName}?`,
-        `Nesse número falo com ${firstName}?`,
-        `${firstName} é neste número?`,
-        `Èsse é o contato de ${firstName}?`,
-        `Nesse contato falo com ${firstName}?`,
+        `Eu falo com ${getFirstName(client)}?`,
+        `Neste número falo com ${getFirstName(client)}?`,
+        `Nesse número falo com ${getFirstName(client)}?`,
+        `${getFirstName(client)} é neste número?`,
+        `Èsse é o contato de ${getFirstName(client)}?`,
+        `Nesse contato falo com ${getFirstName(client)}?`,
     ];
 
     return askClientName[Math.floor(Math.random() * askClientName.length)];
@@ -336,5 +339,43 @@ export const generateFeiraoCasaPaulistaText = (client: Client, userName: string 
     text += `Adquirir um ${randomProperty()} é mais que um investimento, é o começo de uma nova história. ❤️🏠\n`;
     text += randomFeiraoClosing();
 
+    return text;
+};
+
+// Fallback for default marketing text (without properties for now)
+export const generateSiteLinkMarketingText = (client: Client, userName: string = 'Marta de Souza'): string => {
+
+    const randomSentenceOne = (): string => {
+        const sentences = [
+            "Trabalhamos com imóveis prontos e lançamentos em Sorocaba e região.",
+            "Temos excelentes opções de prontos para morar e lançamentos em Sorocaba e cidades vizinhas.",
+            "Contamos com um catálogo completo de imóveis novos e na planta pela região de Sorocaba.",
+            "Oferecemos desde oportunidades na planta até imóveis prontos na região de Sorocaba.",
+            "Atuamos com lançamentos exclusivos e imóveis já finalizados em Sorocaba e arredores.",
+            "Seja para morar ou investir, temos opções prontas e na planta em Sorocaba e municípios próximos.",
+            "Dispomos de uma grande variedade de lançamentos e prontos na região de Sorocaba."
+        ];
+        return sentences[Math.floor(Math.random() * sentences.length)];
+    };
+
+    const randomSentenceTwo = (): string => {
+        const sentences = [
+            "Posso te apresentar as opções ou se preferir acesse nosso site em: martadesouzaimoveis.com",
+            "Posso te enviar algumas propostas por aqui ou se preferir navegar no nosso site: martadesouzaimoveis.com",
+            "Se quiser, te mando os melhores perfis agora mesmo, ou você pode conferir as fotos no site: martadesouzaimoveis.com",
+            "Posso selecionar os melhores projetos para você ou, se preferir navegar sozinho, visite: martadesouzaimoveis.com",
+            "Fico à disposição para te mostrar os imóveis por aqui, mas você também pode conhecer nossa vitrine virtual: martadesouzaimoveis.com",
+            "Posso te guiar nessa escolha enviando fotos por chat, ou você pode explorar nosso catálogo em: martadesouzaimoveis.com",
+            "Se preferir um atendimento personalizado, te mando as opções agora. Para ver todos os modelos, acesse: martadesouzaimoveis.com"
+        ];
+        return sentences[Math.floor(Math.random() * sentences.length)];
+    };
+
+    let text = randomGreeting(client) + `\n`;
+    text += `Sou *${userName}*, ${randomProfession()}\n`;
+    text += `Financiar seu ${randomProperty()} ficou ainda mais fácil com as novas regras do *Minha Casa Minha Vida!* 🏡\n`;
+    text += randomSentenceOne() + "\n";
+    text += randomSentenceTwo() + "\n";
+    text += randomClosing();
     return text;
 };
