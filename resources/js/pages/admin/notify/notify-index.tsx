@@ -202,7 +202,7 @@ export default function Clients({
     const sendMarketingText = async (client: Client, e: React.MouseEvent) => {
         e.preventDefault();
 
-        let marketingText = generateSiteLinkMarketingText(client);
+        let marketingText = generateCustomMarketingText(client);
         // if (data.contact_origin === 'mrv') {
         //     marketingText = generateCustomMarketingTextMrv(client, userName);
         // } else if (data.contact_origin === 'access') {

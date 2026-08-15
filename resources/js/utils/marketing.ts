@@ -72,13 +72,22 @@ const randomGreeting = (client: Client): string => {
         timeGreeting = "Boa tarde ";
     }
     
+    // const greetings = [
+    //     `${timeGreeting.trim()} ${getFirstName(client)}, como vai? 😊`,
+    //     `${timeGreeting.trim()} ${getFirstName(client)}, tudo bem? ☺️`,
+    //     `Olá ${getFirstName(client)}, tudo bem? 🙂`,
+    //     `Olá ${getFirstName(client)}, como vai? 😊`,
+    //     `Oi ${getFirstName(client)}, como vai? ☺️`,
+    //     `Oi ${getFirstName(client)}, tudo bem? 🙂`,
+    // ];
+
     const greetings = [
-        `${timeGreeting.trim()} ${getFirstName(client)}, como vai? 😊`,
-        `${timeGreeting.trim()} ${getFirstName(client)}, tudo bem? ☺️`,
-        `Olá ${getFirstName(client)}, tudo bem? 🙂`,
-        `Olá ${getFirstName(client)}, como vai? 😊`,
-        `Oi ${getFirstName(client)}, como vai? ☺️`,
-        `Oi ${getFirstName(client)}, tudo bem? 🙂`,
+        `${timeGreeting.trim()}, como vai? 😊`,
+        `${timeGreeting.trim()}, tudo bem? ☺️`,
+        `Olá, tudo bem? 🙂`,
+        `Olá, como vai? 😊`,
+        `Oi, como vai? ☺️`,
+        `Oi, tudo bem? 🙂`,
     ];
 
     return greetings[Math.floor(Math.random() * greetings.length)];
@@ -91,7 +100,7 @@ const randomAskClientName = (client: Client): string => {
         `Neste número falo com ${getFirstName(client)}?`,
         `Nesse número falo com ${getFirstName(client)}?`,
         `${getFirstName(client)} é neste número?`,
-        `Èsse é o contato de ${getFirstName(client)}?`,
+        `Esse é o contato de ${getFirstName(client)}?`,
         `Nesse contato falo com ${getFirstName(client)}?`,
     ];
 
@@ -372,8 +381,10 @@ export const generateSiteLinkMarketingText = (client: Client, userName: string =
     };
 
     let text = randomGreeting(client) + `\n`;
-    text += `Sou *${userName}*, ${randomProfession()}\n`;
-    text += `Financiar seu ${randomProperty()} ficou ainda mais fácil com as novas regras do *Minha Casa Minha Vida!* 🏡\n`;
+    text += `*${userName}* aqui, ${randomProfession()}\n`;
+    // text += `Financiar seu ${randomProperty()} ficou ainda mais fácil com as novas regras do *Minha Casa Minha Vida!* 🏡\n`;
+    text += `Passando para informar sobre o *RESIDENCIAL LAGO DE DAVOS* o mais novo empreendimento da construtora *MRV* em Sorocaba.\n`;
+    text += `Pertinho do supermercado correia do Bairro Santa Barbara, com variedade de comércio na Américo de Figueiredo, fácil acesso para a Raposo Tavares e Cruz de ferro na zona norte.\n`;
     text += randomSentenceOne() + "\n";
     text += randomSentenceTwo() + "\n";
     text += randomClosing();
