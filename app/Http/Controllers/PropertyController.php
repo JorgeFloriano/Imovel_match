@@ -88,7 +88,7 @@ class PropertyController extends Controller
 
     public function show(Property $property)
     {
-        //Gate::authorize('show', $property);
+        Gate::authorize('show', $property);
         return Inertia::render('admin/properties/properties-show', [
             'property' => $property->load(['user', 'region', 'images']),
             'typeOptions' => $this->property->typeOpt(),
@@ -99,7 +99,7 @@ class PropertyController extends Controller
 
     public function edit(Property $property)
     {
-        //Gate::authorize('edit', $property);
+        Gate::authorize('edit', $property);
         return Inertia::render('admin/properties/properties-edit', [
             'property' => $property->load('images'),
             'typeOptions' => $this->property->typeOpt(),
@@ -114,7 +114,7 @@ class PropertyController extends Controller
 
     public function update(PropertyRequest $request, Property $property): RedirectResponse
     {
-        //Gate::authorize('update', $property);
+        Gate::authorize('update', $property);
         session()->forget('compatibleObjects');
         $validated = $request->validated();
         $validated['user_id'] = Auth::user()->id;

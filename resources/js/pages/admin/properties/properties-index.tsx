@@ -12,7 +12,7 @@ import { SortableTableHeader } from '@/components/ui/sortable-table-header';
 import Pagination from '@/components/pagination';
 import { SearchInput } from '@/components/search-input';
 import { useState } from 'react';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 
 interface Region {
     id: number;
@@ -76,6 +76,7 @@ interface PaginatedProperties {
 export default function Properties({ properties, filters }: { properties: PaginatedProperties, filters?: { keyword?: string } }) {
     const { items: sortedProperties, requestSort, sortConfig } = useSortableTable(properties.data);
     const [keyword, setKeyword] = useState(filters?.keyword || '');
+    const { auth } = usePage().props as any;
 
     const handleSearch = () => {
         router.get(route('properties.index'), { keyword }, {
@@ -283,19 +284,23 @@ export default function Properties({ properties, filters }: { properties: Pagina
 
                                     <td className="px-6 py-3 align-middle text-center">
                                         <div className="inline-flex items-center gap-2">
-                                            <a
-                                                href={route('properties.edit', property.id)}
-                                                className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                                            >
-                                                {Edit && <Icon iconNode={Edit} />}
-                                            </a>
+                                            {auth.user.role === 'super-admin' && (
+                                                <a
+                                                    href={route('properties.edit', property.id)}
+                                                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                                                >
+                                                    {Edit && <Icon iconNode={Edit} />}
+                                                </a>
+                                            )}
 
-                                            <a
-                                                href={route('properties.show', property.id)}
-                                                className="font-medium text-red-600 hover:underline dark:text-red-500"
-                                            >
-                                                {Delete && <Icon iconNode={Delete} />}
-                                            </a>
+                                            {auth.user.role === 'super-admin' && (
+                                                <a
+                                                    href={route('properties.show', property.id)}
+                                                    className="font-medium text-red-600 hover:underline dark:text-red-500"
+                                                >
+                                                    {Delete && <Icon iconNode={Delete} />}
+                                                </a>
+                                            )}
 
                                             <Dialog>
                                                 <DialogTrigger asChild>

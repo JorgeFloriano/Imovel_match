@@ -17,7 +17,7 @@ class PropertyPolicy
 
     public function edit(User $user, Property $property): bool
     {
-        return $user->id === $property->user_id;
+        return $user->isSuperAdmin();
     }
 
     /**
@@ -26,7 +26,7 @@ class PropertyPolicy
 
     public function update(User $user, Property $property): bool
     {
-        return $user->id === $property->user_id;
+        return $user->isSuperAdmin();
     }
 
     /**
@@ -34,7 +34,7 @@ class PropertyPolicy
      */
     public function show(User $user, Property $property): bool
     {
-        return $user->id === $property->user_id;
+        return $user->isSuperAdmin();
     }
 
     /**
@@ -42,7 +42,7 @@ class PropertyPolicy
      */
     public function delete(User $user, Property $property): bool
     {
-        return $user->id === $property->user_id;
+        return $user->isSuperAdmin();
     }
 
     public function canStore(User $user): Response
