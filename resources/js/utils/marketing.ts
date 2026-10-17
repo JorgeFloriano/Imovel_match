@@ -35,7 +35,7 @@ const getFirstName = (client: Client): string => {
         'nao'
     ];
 
-    let firstName = client.name ? client.name.split(' ')[0] : '';
+    const firstName = client.name ? client.name.split(' ')[0] : '';
     if (!firstName || nullName.includes(firstName.toLowerCase())) {
         return '';
     }
@@ -55,7 +55,7 @@ const randomTitle = (): string => {
     return titles[Math.floor(Math.random() * titles.length)];
 };
 
-const randomGreeting = (client: Client): string => {
+const randomGreeting = (client: Client, name: boolean = false): string => {
     // Get current hour in Sao Paulo timezone
     const now = new Date();
     const formatter = new Intl.DateTimeFormat('pt-BR', {
@@ -72,14 +72,14 @@ const randomGreeting = (client: Client): string => {
         timeGreeting = "Boa tarde ";
     }
     
-    // const greetings = [
-    //     `${timeGreeting.trim()} ${getFirstName(client)}, como vai? 😊`,
-    //     `${timeGreeting.trim()} ${getFirstName(client)}, tudo bem? ☺️`,
-    //     `Olá ${getFirstName(client)}, tudo bem? 🙂`,
-    //     `Olá ${getFirstName(client)}, como vai? 😊`,
-    //     `Oi ${getFirstName(client)}, como vai? ☺️`,
-    //     `Oi ${getFirstName(client)}, tudo bem? 🙂`,
-    // ];
+    const clientNameGreetings = [
+        `${timeGreeting.trim()} ${getFirstName(client)}, como vai? 😊`,
+        `${timeGreeting.trim()} ${getFirstName(client)}, tudo bem? ☺️`,
+        `Olá ${getFirstName(client)}, tudo bem? 🙂`,
+        `Olá ${getFirstName(client)}, como vai? 😊`,
+        `Oi ${getFirstName(client)}, como vai? ☺️`,
+        `Oi ${getFirstName(client)}, tudo bem? 🙂`,
+    ];
 
     const greetings = [
         `${timeGreeting.trim()}, como vai? 😊`,
@@ -89,6 +89,10 @@ const randomGreeting = (client: Client): string => {
         `Oi, como vai? ☺️`,
         `Oi, tudo bem? 🙂`,
     ];
+
+    if (name) {
+        return clientNameGreetings[Math.floor(Math.random() * clientNameGreetings.length)];
+    }
 
     return greetings[Math.floor(Math.random() * greetings.length)];
 };
@@ -380,7 +384,7 @@ export const generateSiteLinkMarketingText = (client: Client, userName: string =
         return sentences[Math.floor(Math.random() * sentences.length)];
     };
 
-    let text = randomGreeting(client) + `\n`;
+    let text = randomGreeting(client, true) + `\n`;
     text += `*${userName}* aqui, ${randomProfession()}\n`;
     // text += `Financiar seu ${randomProperty()} ficou ainda mais fácil com as novas regras do *Minha Casa Minha Vida!* 🏡\n`;
     text += `Passando para informar sobre o *RESIDENCIAL LAGO DE DAVOS* o mais novo empreendimento da construtora *MRV* em Sorocaba.\n`;

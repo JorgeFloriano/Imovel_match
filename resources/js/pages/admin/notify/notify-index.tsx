@@ -203,6 +203,11 @@ export default function Clients({
         e.preventDefault();
 
         let marketingText = generateCustomMarketingText(client);
+
+        if (data.contact_origin === 'link') {
+            marketingText = generateSiteLinkMarketingText(client, userName);
+        }
+
         // if (data.contact_origin === 'mrv') {
         //     marketingText = generateCustomMarketingTextMrv(client, userName);
         // } else if (data.contact_origin === 'access') {
@@ -387,11 +392,13 @@ export default function Clients({
                         </div>
                         <div className="grid items-end gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
                             <FormSelect
-                                label="Origem do Cliente"
+                                label="Origem/Tipo msg"
                                 value={data.contact_origin}
                                 onValueChange={(value) => handleSetData('contact_origin', value)}
                                 customOptions={[
                                     { value: 'todos', label: 'Todos' },
+                                    { value: 'saudacao', label: 'Saudação' },
+                                    { value: 'link', label: 'Link/Site' },
                                     { value: 'desconhecido', label: 'Desconhecido' },
                                     { value: 'mrv', label: 'MRV' },
                                     { value: 'access', label: 'ACCESS' }
