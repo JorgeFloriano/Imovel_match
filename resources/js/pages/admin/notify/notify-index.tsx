@@ -208,7 +208,7 @@ export default function Clients({
     const sendMarketingText = async (client: Client, e: React.MouseEvent) => {
         e.preventDefault();
 
-        let marketingText = generateCustomMarketingText(client);
+        let marketingText = generateCustomMarketingText(client, userName);
 
         if (data.contact_origin === 'link') {
             marketingText = generateSiteLinkMarketingText(client, userName);
