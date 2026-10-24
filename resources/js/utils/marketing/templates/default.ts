@@ -3,6 +3,7 @@ import {
     getRandomGreeting,
     getRandomProfession,
     getRandomAskClientName,
+    getRandomDefaultTextBody
 } from '../helpers';
 
 /**
@@ -14,12 +15,14 @@ export const generateCustomMarketingText = (
 ): string => {
     let text = getRandomGreeting(client);
 
+    text += `\nSou *${userName}*, ${getRandomProfession()}.`;
+    
     const askName = getRandomAskClientName(client);
     if (askName) {
         text += "\n" + askName;
     }
 
-    text += `\nSou *${userName}*, ${getRandomProfession()}\nEstou entrando em contato referente ao interesse demonstrado em nosso stand de vendas.\n\n`;
+    text += `\n${getRandomDefaultTextBody()}`;
 
     return text;
 };

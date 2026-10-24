@@ -101,13 +101,29 @@ export const getRandomAskClientName = (client: Client): string => {
  */
 export const getRandomProfession = (): string => {
     const professions = [
-        "consultora imobiliária.",
-        "especialista em imóveis.",
-        "corretora imobiliária.",
-        "corretora de imóveis.",
-        "consultora de imóveis."
+        "consultora imobiliária",
+        "especialista em imóveis",
+        "corretora imobiliária",
+        "corretora de imóveis",
+        "consultora de imóveis",
+        "trabalho com consultoria imobiliária",
+        "trabalho com vendas de imóveis",
+        "trabalho como consultora imobiliária",
+        "trabalho como corretora imobiliária",
     ];
     return professions[Math.floor(Math.random() * professions.length)];
+};
+
+export const getRandomDefaultTextBody = (): string => {
+    const textBodies = [
+        "Recebi seu contato devido ao interesse na compra de apartamento na região de Sorocaba, está correto?\n\n",
+        "Recebi seu contato devido ao possível interesse na compra de imóvel em Sorocaba, ainda está pesquisando?\n",
+        "Estou entrando em contato pois recebi seu número associado ao interesse na compra de apartamento na região de Sorocaba. Gostaria de confirmar, sua busca continua ativa?\n\n",
+        "Estou entrando em contato porque recebi seu número como interessado em comprar um apartamento, você ainda está procurando?\n",
+        "Meu contato é referente ao seu possível interesse na compra de apartamento na região de Sorocaba, está correto?",
+        ""
+    ];
+    return textBodies[Math.floor(Math.random() * textBodies.length)];
 };
 
 /**
