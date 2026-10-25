@@ -79,7 +79,7 @@ class NotifyController extends Controller
             }
         }
 
-        $clients = $query->orderBy('id', 'desc')->paginate(50)->withQueryString();
+        $clients = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
 
         $propertyOptions = Property::orderBy('description')->get()->map(fn($property) => [
             'value' => strval($property->id),

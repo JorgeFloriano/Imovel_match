@@ -151,20 +151,29 @@ async def bot_marta():
                     
                     # 4. Volta ao sistema para pegar o texto de marketing
                     await page_sistema.bring_to_front()
+
+                    # PAUSA 1: entre trocar de aba e clicar no botão de marketing
+                    await asyncio.sleep(random.uniform(2.0, 8.0))
+
                     marketing_btn = await target_row.query_selector("td button[title*='marketing']")
                     if marketing_btn:
                         await marketing_btn.click()
-                        await asyncio.sleep(0.8)
                         
-                        # 5. Volta ao WA para colar
+                        # PAUSA 2: entre clicar no botão e trocar de aba (simula "lendo" antes de ir pro WA)
+                        await asyncio.sleep(random.uniform(1.5, 4.5))
+                        
+                        # 5. Volta ao WA para digitar
                         await page_wa.bring_to_front()
+                        
+                        # PAUSA 3: após trocar de aba, antes de focar no campo
+                        await asyncio.sleep(random.uniform(2.0, 6.0))
                         
                         # RE-VERIFICAÇÃO DE SEGURANÇA FINAL
                         try:
                             msg_input = await page_wa.wait_for_selector('div[contenteditable="true"][data-tab="10"]', timeout=12000)
                             if msg_input:
-                                # Última checagem de histórico antes de colar (segurança tripla)
-                                await asyncio.sleep(1)
+                                # Última checagem de histórico antes de digitar (segurança tripla)
+                                await asyncio.sleep(random.uniform(1.0, 2.5))
                                 final_check = await page_wa.query_selector_all(".message-in, .message-out")
                                 if len(final_check) > 0:
                                     print(f"⏭️ {client_name} carregou histórico agora. Cancelando envio.")
@@ -174,13 +183,31 @@ async def bot_marta():
                                         await target_checkbox.click()
                                     continue
 
+                                # PAUSA 4: antes de focar no campo (simula "pensar" antes de escrever)
+                                await asyncio.sleep(random.uniform(1.5, 4.0))
                                 await msg_input.focus()
-                                await page_wa.keyboard.down("Control")
-                                await page_wa.keyboard.press("v")
-                                await page_wa.keyboard.up("Control")
                                 
-                                await asyncio.sleep(1.5)
-                                #await page_wa.keyboard.press("Enter") 
+                                # PAUSA 4b: após focar, antes de começar a digitar
+                                await asyncio.sleep(random.uniform(0.8, 2.0))
+                                
+                                # DIGITAÇÃO SIMULADA
+                                texto_mensagem = await page_sistema.evaluate("navigator.clipboard.readText()")
+                                await page_wa.keyboard.type(texto_mensagem, delay=random.randint(40, 100))
+                                
+                                # PAUSA 5: após terminar de digitar, antes do Enter (simula releitura)
+                                await asyncio.sleep(random.uniform(1.5, 3.5))
+                                # await page_wa.keyboard.press("Enter")
+                                print(f"✅ Mensagem enviada para {client_name}")
+                                
+                                # PAUSA 6: após enviar, antes de voltar ao sistema (simula conferir envio)
+                                await asyncio.sleep(random.uniform(1.5, 3.0))
+                                
+                                # Marcar o checkbox se não estiver marcado
+                                await page_sistema.bring_to_front()
+                                is_checked = await target_checkbox.evaluate("el => el.checked")
+                                if not is_checked:
+                                    await target_checkbox.click()
+                                    print(f"☑️ Checkbox marcado para {client_name}")
                                 print(f"✅ Mensagem enviada para {client_name}")
                                 
                                 # Marcar o checkbox se não estiver marcado
@@ -202,7 +229,7 @@ async def bot_marta():
                     print(f"⚠️ Erro ao processar WhatsApp para {client_name}: {e}")
                 
                 processed_count += 1
-                wait_time = random.uniform(3.0, 6.0)
+                wait_time = random.uniform(60, 120)
                 await asyncio.sleep(wait_time)
 
             # RELATÓRIO FINAL
