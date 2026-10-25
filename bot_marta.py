@@ -192,7 +192,20 @@ async def bot_marta():
                                 
                                 # DIGITAÇÃO SIMULADA
                                 texto_mensagem = await page_sistema.evaluate("navigator.clipboard.readText()")
-                                await page_wa.keyboard.type(texto_mensagem, delay=random.randint(40, 100))
+                                # Divide o texto em linhas por \n
+                                linhas = texto_mensagem.split("\n")
+
+                                for i, linha in enumerate(linhas):
+                                    # Digita o conteúdo da linha atual
+                                    if linha:
+                                        await page_wa.keyboard.type(linha, delay=random.randint(40, 100))
+                                    
+                                    # Se não for a última linha, insere uma quebra de linha (Shift+Enter)
+                                    if i < len(linhas) - 1:
+                                        await page_wa.keyboard.down("Shift")
+                                        await page_wa.keyboard.press("Enter")
+                                        await page_wa.keyboard.up("Shift")
+                                        await asyncio.sleep(random.uniform(0.2, 0.6))  # Pequena pausa após a quebra de linha
                                 
                                 # PAUSA 5: após terminar de digitar, antes do Enter (simula releitura)
                                 await asyncio.sleep(random.uniform(1.5, 3.5))
