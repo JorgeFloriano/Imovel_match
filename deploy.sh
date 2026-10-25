@@ -22,3 +22,5 @@ php artisan optimize
 php artisan up
 
 echo "✅ Deploy de código finalizado com sucesso!"
+echo "⚠️ Não esqueça de rodar 'php artisan up'"
+echo "⚠️ Não esqueça de rodar o './deploy-local.sh' no editor de código na sequência, caso tenha alterações no frontend!"

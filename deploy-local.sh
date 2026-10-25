@@ -19,4 +19,4 @@ echo "📦 Enviando arquivos para o servidor via Rsync..."
 rsync -avz -e "ssh -p $PORTA_SSH" public/build/ $USER_HOSTGATOR@$IP_HOSTGATOR:$CAMINHO_PROJETO/public/build/
 
 echo "✅ Build e Upload do Frontend Finalizados com sucesso!"
-echo "⚠️  Não esqueça de entrar no servidor e rodar o './deploy.sh' caso tenha alterações no backend/PHP."
+
